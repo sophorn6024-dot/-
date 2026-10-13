@@ -83,6 +83,33 @@
     .f-moul { font-family: 'Khmer OS Muol Light', 'Moul', cursive; font-weight: normal; }
     .f-bold { font-weight: 700; }
 
+    /* 🌟 TOAST NOTIFICATION */
+    .toast-notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #16a34a;
+      color: white;
+      padding: 11px 20px;
+      border-radius: 14px;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      z-index: 99999;
+      transform: translateY(-50px);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      max-width: calc(100vw - 40px);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .toast-notification.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
     /* ================= 🔒 AUTH DENIED WRAPPER ================= */
     #authDeniedWrap {
       display: none;
@@ -133,6 +160,8 @@
       gap: 8px;
       box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
       transition: all 0.2s;
+      cursor: pointer;
+      border: none;
     }
     .btn-login-redirect:hover { transform: translateY(-2px); }
 
@@ -270,7 +299,6 @@
       flex-wrap: wrap;
     }
 
-    /* 🌟 ផ្លាកថ្នាក់របស់គ្រូ (ពេលជាគ្រូ Dropdown នឹងត្រូវលាក់) */
     .teacher-class-badge {
       display: inline-flex;
       align-items: center;
@@ -662,14 +690,19 @@
 </head>
 <body>
 
+  <!-- 🌟 TOAST NOTIFICATION CONTAINER -->
+  <div id="toastNotification" class="toast-notification"></div>
+
   <!-- ══════════════ 🔒 0. AUTH DENIED WRAPPER (ពេលមិនទាន់ LOGIN) ══════════════ -->
   <div id="authDeniedWrap">
     <div class="auth-card">
       <div class="auth-icon">🔒</div>
       <h2 class="f-moul">សូមចូលប្រើប្រាស់ជាមុនសិន!</h2>
       <p>លោកអ្នកមិនទាន់បាន Login ចូលក្នុងប្រព័ន្ធនៅឡើយទេ។ សូម Login គណនីរបស់អ្នកដើម្បីមើល ឬកត់ត្រាពិន្ទុសិស្ស។</p>
-      <a href="login.html" class="btn-login-redirect">
-        <span>🔑</span> <span>ទៅកាន់ទំព័រ Login</span>
+      
+      <!-- 👉 ប៊ូតុងរុញទៅកាន់ index.html ទាំងក្នុង និងក្រៅ iframe -->
+      <a href="index.html" target="_top" class="btn-login-redirect" onclick="goToIndex(event)">
+        <span>🔑</span> <span>ទៅកាន់ទំព័រដើម (Login)</span>
       </a>
     </div>
   </div>
@@ -768,7 +801,10 @@
         <div class="tb-right">
           <span id="autoSaveStatus" class="autosave-pill saved">✓ រួចរាល់</span>
           <button class="action-btn btn-report" onclick="openScoreReportModal()">📋 របាយការណ៍ពិន្ទុ</button>
-          <button class="action-btn" onclick="toggleLock()" id="btnLock">🔓 ដោះសោ</button>
+          
+          <!-- 👉 ប៊ូតុងចាក់សោរ ដែលមាន Tooltip សារពន្យល់ -->
+          <button class="action-btn" onclick="toggleLock()" id="btnLock" title="ចុចដើម្បីចាក់សោការពារកុំឱ្យកែប្រែ ឬដោះសោដើម្បីបញ្ចូលពិន្ទុ">🔓 ដោះសោ</button>
+          
           <button class="action-btn btn-save" id="btnSave" onclick="saveScores()">💾 រក្សាទុក</button>
           <button class="action-btn" onclick="exportToExcel()">📥 Excel</button>
         </div>
@@ -796,7 +832,7 @@
   </div>
 
   <!-- =========================================================
-       ⚙️ JAVASCRIPT : SUPABASE AUTH GUARD & SCORE ENGINE
+       ⚙️ JAVASCRIPT : SUPABASE SCORE ENGINE
   ========================================================= -->
   <script>
     /* 1. SUPABASE CLIENT CONFIG */
@@ -821,6 +857,19 @@
       return true;
     }
 
+    // 👉 អនុគមន៍បញ្ជូនត្រឡប់ទៅទំព័រដើម index.html
+    function goToIndex(e) {
+      if (e) e.preventDefault();
+      if (window.parent && window.parent !== window) {
+        try {
+          window.parent.postMessage({ type: 'OPEN_LOGIN', action: 'LOGIN' }, '*');
+          window.parent.location.href = 'index.html';
+          return;
+        } catch(err) {}
+      }
+      window.location.href = 'index.html';
+    }
+
     var USER_ROLE    = CURRENT_USER?.role || "teacher";
     var USER_CLASS   = CURRENT_USER?.assigned_classes || CURRENT_USER?.assigned_class || "";
     var TEACHER_NAME = CURRENT_USER?.teacher_name || "";
@@ -830,6 +879,18 @@
     var KHMER_DIGITS = ['០','១','២','៣','៤','៥','៦','៧','៨','៩'];
     function toKhmerNum(n) { return String(n).replace(/\d/g, d => KHMER_DIGITS[d]); }
     function cleanGrade(g) { return String(g || '').replace(/^ថ្នាក់ទី\s*/, '').trim(); }
+
+    /* 🌟 TOAST NOTIFICATION FUNCTION */
+    let toastTimer = null;
+    function showToast(msg, isError) {
+      const toast = document.getElementById('toastNotification');
+      if (!toast) return;
+      toast.innerText = msg;
+      toast.style.background = isError ? '#dc2626' : '#059669';
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 3200);
+    }
 
     /* 🎨 THEME SYNC */
     function applyTheme(th) {
@@ -960,7 +1021,6 @@
       var bTxt = document.getElementById('monthlyBadgeText');
       if (bTxt) bTxt.textContent = curMonth + ' · ស្រង់ពិន្ទុ';
 
-      // 👉 បង្ហាញតែថ្នាក់ដែលគ្រូទទួលបន្ទុកលើ Landing Page
       var lBadge = document.getElementById('landingClassBadgeTxt');
       if (lBadge) {
         if (IS_ADMIN) {
@@ -1044,19 +1104,26 @@
       btn.textContent = isLocked ? '🔒 ចាក់សោ' : '🔓 ដោះសោ';
       btn.style.background = isLocked ? 'rgba(239, 68, 68, 0.15)' : 'var(--surface)';
       btn.style.color = isLocked ? '#ef4444' : 'var(--text)';
+      btn.title = isLocked ? 'តារាងកំពុងចាក់សោ (ចុចដើម្បីដោះសោ)' : 'តារាងកំពុងបើក (ចុចដើម្បីចាក់សោការពារ)';
+
       document.querySelectorAll('.score-box').forEach(el => {
         el.disabled = isLocked;
       });
+
+      if (isLocked) {
+        showToast('🔒 បានចាក់សោ — រារាំងមិនឱ្យកែប្រែ ឬបញ្ចូលពិន្ទុ');
+      } else {
+        showToast('🔓 បានដោះសោ — អ្នកអាចកែប្រែ និងបញ្ចូលពិន្ទុបាន');
+      }
     }
 
     /* =========================================================
-       🏫 LOAD CLASS LIST (ចាក់សោរបង្ហាញតែថ្នាក់ដែលគ្រូកាន់)
+       🏫 LOAD CLASS LIST (SUPABASE)
     ========================================================= */
     async function loadClassList() {
       var sel = document.getElementById('classSelect');
       var cleanUserClass = cleanGrade(USER_CLASS);
 
-      // 👉 បើជាគ្រូបង្រៀន (មិនមែន Admin)៖ លាក់ Dropdown ចោល ហើយបង្ហាញតែផ្លាកថ្នាក់របស់គាត់ប៉ុណ្ណោះ!
       if (!IS_ADMIN) {
         document.getElementById('adminClassBox').style.display = 'none';
         var badge = document.getElementById('teacherClassBadge');
@@ -1077,7 +1144,6 @@
         return;
       }
 
-      // 👉 បើជា Admin៖ ទើបបង្ហាញ Dropdown ជ្រើសរើសគ្រប់ថ្នាក់បាន
       document.getElementById('teacherClassBadge').style.display = 'none';
       document.getElementById('adminClassBox').style.display = 'inline-block';
       sel.innerHTML = '<option value="">កំពុងទាញយកថ្នាក់...</option>';
@@ -1580,9 +1646,15 @@
     }
 
     async function saveScores() {
-      if (isLocked) { alert('🔒 ពិន្ទុត្រូវបានចាក់សោ!'); return; }
+      if (isLocked) { 
+        showToast('🔒 ពិន្ទុត្រូវបានចាក់សោ — សូមដោះសោជាមុនសិន!', true); 
+        return; 
+      }
       var cls = document.getElementById('classSelect').value;
-      if (!cls) { alert('សូមជ្រើសរើសថ្នាក់!'); return; }
+      if (!cls) { 
+        showToast('⚠️ សូមជ្រើសរើសថ្នាក់!', true); 
+        return; 
+      }
       
       var btn = document.getElementById('btnSave');
       btn.textContent = '⏳ កំពុងរក្សា...';
@@ -1623,12 +1695,12 @@
         btn.textContent = '💾 រក្សាទុក';
         btn.disabled = false;
         setAutoSaveStatus('✓ បានរក្សាទុក', 'saved');
-        alert('✓ រក្សាទុកទិន្នន័យពិន្ទុទៅ Supabase បានជោគជ័យ!');
+        showToast('✓ បានរក្សាទុកពិន្ទុទៅ Supabase ដោយជោគជ័យ!');
       } catch(err) {
         btn.textContent = '💾 រក្សាទុក';
         btn.disabled = false;
         setAutoSaveStatus('⚠ រក្សាមិនបាន', 'error');
-        alert('❌ កំហុស៖ ' + err.message);
+        showToast('❌ កំហុស៖ ' + err.message, true);
       }
     }
 
@@ -1636,7 +1708,7 @@
     function openScoreReportModal() {
       var cls = document.getElementById('classSelect').value;
       if (!cls || !displayedStudents.length) {
-        alert('សូមជ្រើសរើសថ្នាក់ដែលមានទិន្នន័យសិស្សសិន!');
+        showToast('⚠️ សូមជ្រើសរើសថ្នាក់ដែលមានទិន្នន័យសិស្សសិន!', true);
         return;
       }
       document.getElementById('scoreReportModal').style.display = 'block';
@@ -1824,7 +1896,10 @@
     }
 
     function exportToExcel() {
-      if (!displayedStudents.length) { alert('ពុំមានទិន្នន័យ!'); return; }
+      if (!displayedStudents.length) { 
+        showToast('⚠️ ពុំមានទិន្នន័យសម្រាប់ទាញយកទេ!', true); 
+        return; 
+      }
       var grps = groups();
       var keys = allKeys();
       var labels = grps.flatMap(g => g.cols.map(c => c.label));
@@ -1859,6 +1934,7 @@
       XLSX.utils.book_append_sheet(wb, ws, 'ពិន្ទុ');
       var cls = document.getElementById('classSelect').value;
       XLSX.writeFile(wb, 'ពិន្ទុ_ថ្នាក់ទី' + cls + '_' + getSelectedPeriod() + '.xlsx');
+      showToast('📥 បានទាញយកឯកសារ Excel រួចរាល់!');
     }
   </script>
 </body>
