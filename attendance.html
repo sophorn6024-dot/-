@@ -66,6 +66,60 @@
     }
     .f-moul { font-family: 'Khmer OS Muol Light', 'Moul', cursive !important; font-weight: normal; }
 
+    /* ══════════════ 🔒 AUTH DENIED WRAPPER ══════════════ */
+    #authDeniedWrap {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 85vh;
+      text-align: center;
+      padding: 30px 20px;
+    }
+    .auth-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 24px;
+      padding: 40px 28px;
+      max-width: 440px;
+      width: 100%;
+      box-shadow: var(--card-shadow);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .auth-icon {
+      width: 68px;
+      height: 68px;
+      border-radius: 20px;
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      margin-bottom: 16px;
+    }
+    .auth-card h2 { font-size: 18px; margin-bottom: 8px; color: #ef4444; font-weight: 700; }
+    .auth-card p { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 24px; }
+    .btn-login-redirect {
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      color: #ffffff;
+      padding: 10px 24px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 13.5px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-login-redirect:hover { transform: translateY(-2px); }
+
     #saveToast {
       visibility: hidden; min-width: 220px; background: #059669; color: #fff; text-align: center;
       border-radius: 12px; padding: 10px 18px; position: fixed; z-index: 999999; left: 50%; bottom: 24px;
@@ -267,7 +321,7 @@
     @page { size: A4 landscape; margin: 5mm 6mm; }
     @media print {
       body { background: #fff !important; color: #000 !important; padding: 0 !important; }
-      .top-nav-bar, #tabDailyView, #tabReportsMenu, #saveToast, #statusActionSheetModal, .viewer-top-bar { display: none !important; }
+      #authDeniedWrap, .top-nav-bar, #tabDailyView, #tabReportsMenu, #saveToast, #statusActionSheetModal, .viewer-top-bar { display: none !important; }
       #reportViewerModal { display: block !important; position: static !important; padding: 0 !important; background: transparent !important; }
       .report-paper-container { width: 100% !important; box-shadow: none !important; padding: 0 !important; }
       .report-paper-container *:not(.f-moul) { font-family: 'Khmer OS Battambang', 'Battambang', sans-serif !important; }
@@ -280,257 +334,282 @@
 
 <body>
 
-  <div id="saveToast"><i class="fa-solid fa-circle-check"></i> បានរក្សាទុកដោយជោគជ័យ</div>
+  <!-- ══════════════ 🔒 0. AUTH DENIED WRAPPER (ពេលមិនទាន់ LOGIN) ══════════════ -->
+  <div id="authDeniedWrap">
+    <div class="auth-card">
+      <div class="auth-icon">🔒</div>
+      <h2 class="f-moul">សូមចូលប្រើប្រាស់ជាមុនសិន!</h2>
+      <p>លោកអ្នកមិនទាន់បាន Login ចូលក្នុងប្រព័ន្ធនៅឡើយទេ។ សូម Login គណនីរបស់អ្នកដើម្បីមើល ឬស្រង់វត្តមានសិស្ស។</p>
+      <a href="index.html" target="_top" class="btn-login-redirect" onclick="goToIndex(event)">
+        <span>🔑</span> <span>ទៅកាន់ទំព័រដើម (Login)</span>
+      </a>
+    </div>
+  </div>
 
-  <div class="top-nav-bar">
-    <div class="tabs-group">
-      <button class="tab-pill-btn active" id="btnTabDaily" onclick="switchNavTab('daily')">
-        <i class="fa-solid fa-calendar-check"></i> វត្តមានប្រចាំថ្ងៃ
-      </button>
-      <button class="tab-pill-btn" id="btnTabReports" onclick="switchNavTab('reports')">
-        <i class="fa-solid fa-chart-pie"></i> របាយការណ៍ & សង្ខេបខែ
-      </button>
+  <!-- ══════════════ 🌟 MAIN ATTENDANCE PAGE CONTENT ══════════════ -->
+  <div id="mainPageContent" style="display:none;">
 
-      <div style="position: relative;">
-        <button class="date-trigger-btn" id="btnDateDisplay" onclick="toggleCalendarPopup()">
-          <i class="fa-regular fa-calendar" style="color:var(--primary);"></i>
-          <span id="txtDisplayDate">...</span>
+    <div id="saveToast"><i class="fa-solid fa-circle-check"></i> បានរក្សាទុកដោយជោគជ័យ</div>
+
+    <div class="top-nav-bar">
+      <div class="tabs-group">
+        <button class="tab-pill-btn active" id="btnTabDaily" onclick="switchNavTab('daily')">
+          <i class="fa-solid fa-calendar-check"></i> វត្តមានប្រចាំថ្ងៃ
+        </button>
+        <button class="tab-pill-btn" id="btnTabReports" onclick="switchNavTab('reports')">
+          <i class="fa-solid fa-chart-pie"></i> របាយការណ៍ & សង្ខេបខែ
         </button>
 
-        <div class="calendar-popup" id="calPopup">
-          <div class="cal-head-selectors">
-            <select id="calMonthSelect" onchange="renderCalendarDays()">
-              <option value="0">មករា</option><option value="1">កុម្ភៈ</option>
-              <option value="2">មីនា</option><option value="3">មេសា</option>
-              <option value="4">ឧសភា</option><option value="5">មិថុនា</option>
-              <option value="6">កក្កដា</option><option value="7">សីហា</option>
-              <option value="8">កញ្ញា</option><option value="9">តុលា</option>
-              <option value="10">វិច្ឆិកា</option><option value="11">ធ្នូ</option>
-            </select>
-            <select id="calYearSelect" onchange="renderCalendarDays()">
-              <option value="2025">2025</option>
-              <option value="2026">2026</option>
-              <option value="2027">2027</option>
-            </select>
-          </div>
-
-          <div class="cal-month-title" id="calMonthYearTitle">...</div>
-
-          <div class="cal-weekdays">
-            <span>អា</span><span>ច</span><span>អ</span><span>ព</span><span>ព្រ</span><span>សុ</span><span>ស</span>
-          </div>
-
-          <div class="cal-days-grid" id="calDaysGrid"></div>
-
-          <div style="display:flex; justify-content:space-between; margin-top:12px; font-size:12px; font-weight:600;">
-            <span style="color:var(--primary); cursor:pointer;" onclick="selectTodayDate()">ថ្ងៃនេះ</span>
-            <span style="color:var(--text-muted); cursor:pointer;" onclick="toggleCalendarPopup()">បិទ</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div>
-      <select id="classSelect" class="class-select-pill" onchange="onClassChange()">
-        <option value="">កំពុងទាញយកថ្នាក់...</option>
-      </select>
-    </div>
-  </div>
-
-  <div id="tabDailyView">
-    <div class="daily-layout-grid">
-      
-      <div class="daily-sidebar-card">
-        <div style="font-size:12px; color:var(--text-muted);">
-          <div>កាលបរិច្ឆេទជ្រើសរើស៖</div>
-          <div style="font-size:15px; font-weight:700; color:var(--text); margin-top:2px;" id="lblSelectedDateIso">...</div>
-        </div>
-
-        <div class="gender-summary-box">
-          <div class="gender-chip">
-            <span>ប្រុស</span>
-            <strong id="countMale">0</strong>
-          </div>
-          <div class="gender-chip">
-            <span style="color:#f43f5e;">ស្រី</span>
-            <strong id="countFemale" style="color:#f43f5e;">0</strong>
-          </div>
-          <div class="gender-chip">
-            <span>សរុប</span>
-            <strong id="countTotal">0</strong>
-          </div>
-        </div>
-
-        <div class="status-counter-grid">
-          <div class="counter-card present">
-            <div class="c-label">វត្តមាន</div>
-            <div class="c-val" id="cntPresent">0</div>
-          </div>
-          <div class="counter-card absent">
-            <div class="c-label">អវត្តមាន</div>
-            <div class="c-val" id="cntAbsent">0</div>
-          </div>
-          <div class="counter-card late">
-            <div class="c-label">យឺត</div>
-            <div class="c-val" id="cntLate">0</div>
-          </div>
-          <div class="counter-card permission">
-            <div class="c-label">មានច្បាប់</div>
-            <div class="c-val" id="cntPerm">0</div>
-          </div>
-        </div>
-
-        <div class="search-pill-wrap">
-          <i class="fa-solid fa-magnifying-glass" style="color:var(--text-muted); font-size:12px;"></i>
-          <input type="text" id="searchBox" placeholder="ស្វែងរកឈ្មោះសិស្ស..." oninput="renderDailyList()">
-        </div>
-
-        <div class="bulk-actions-row">
-          <button class="btn-bulk present" onclick="setBulkDailyStatus('P')">
-            <i class="fa-solid fa-check-double"></i> វត្តមានទាំងអស់
+        <div style="position: relative;">
+          <button class="date-trigger-btn" id="btnDateDisplay" onclick="toggleCalendarPopup()">
+            <i class="fa-regular fa-calendar" style="color:var(--primary);"></i>
+            <span id="txtDisplayDate">...</span>
           </button>
-          <button class="btn-bulk absent" onclick="setBulkDailyStatus('A')">
-            <i class="fa-solid fa-xmark"></i> អវត្តមានទាំងអស់
-          </button>
-        </div>
 
-        <div style="background:var(--surface-elevated); border-radius:12px; padding:10px; font-size:11.5px; color:var(--text-muted); line-height:1.45;">
-          💡 <b>ចំណាំ៖</b> ចុចលើ [វត្តមាន | អវត្តមាន | យឺត | ច្បាប់] ដើម្បីប្ដូរវត្តមានរហ័ស ឬចុចលើឈ្មោះសិស្សដើម្បីបើកផ្ទាំងជ្រើសរើស។
-        </div>
-      </div>
+          <div class="calendar-popup" id="calPopup">
+            <div class="cal-head-selectors">
+              <select id="calMonthSelect" onchange="renderCalendarDays()">
+                <option value="0">មករា</option><option value="1">កុម្ភៈ</option>
+                <option value="2">មីនា</option><option value="3">មេសា</option>
+                <option value="4">ឧសភា</option><option value="5">មិថុនា</option>
+                <option value="6">កក្កដា</option><option value="7">សីហា</option>
+                <option value="8">កញ្ញា</option><option value="9">តុលា</option>
+                <option value="10">វិច្ឆិកា</option><option value="11">ធ្នូ</option>
+              </select>
+              <select id="calYearSelect" onchange="renderCalendarDays()">
+                <option value="2025">2025</option>
+                <option value="2026">2026</option>
+                <option value="2027">2027</option>
+              </select>
+            </div>
 
-      <div class="daily-list-card">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid var(--border);">
-          <div>
-            <h3 style="font-size:15px; font-weight:700; color:var(--text);">បញ្ជីឈ្មោះសិស្ស</h3>
-            <span style="font-size:11.5px; color:var(--text-muted);">ប្រព័ន្ធរក្សាទុកស្វ័យប្រវត្តិទៅ Supabase</span>
+            <div class="cal-month-title" id="calMonthYearTitle">...</div>
+
+            <div class="cal-weekdays">
+              <span>អា</span><span>ច</span><span>អ</span><span>ព</span><span>ព្រ</span><span>សុ</span><span>ស</span>
+            </div>
+
+            <div class="cal-days-grid" id="calDaysGrid"></div>
+
+            <div style="display:flex; justify-content:space-between; margin-top:12px; font-size:12px; font-weight:600;">
+              <span style="color:var(--primary); cursor:pointer;" onclick="selectTodayDate()">ថ្ងៃនេះ</span>
+              <span style="color:var(--text-muted); cursor:pointer;" onclick="toggleCalendarPopup()">បិទ</span>
+            </div>
           </div>
-          <span style="font-size:11.5px; font-weight:600; color:#059669; background:var(--p-bg); padding:4px 10px; border-radius:20px;">✓ សកម្ម</span>
-        </div>
-
-        <div id="studentListContainer">
-          <div style="text-align:center; padding:40px; color:var(--text-muted);">កំពុងទាញយកទិន្នន័យ...</div>
         </div>
       </div>
 
+      <div>
+        <!-- 🌟 បង្ហាញ Dropdown តែពេល Admin -->
+        <div id="adminClassBox" style="display:none;">
+          <select id="classSelect" class="class-select-pill" onchange="onClassChange()">
+            <option value="">កំពុងទាញយកថ្នាក់...</option>
+          </select>
+        </div>
+
+        <!-- 🌟 ផ្លាកថ្នាក់របស់គ្រូ (ពេលជាគ្រូ Dropdown នឹងត្រូវលាក់) -->
+        <div id="teacherClassBadge" class="class-select-pill" style="display:none; background:linear-gradient(135deg, #2563eb, #7c3aed); color:#fff; border-color:transparent;">
+          <span>🏫</span>
+          <span id="teacherClassText">ថ្នាក់ទី...</span>
+        </div>
+      </div>
     </div>
-  </div>
 
-  <div id="tabReportsMenu" style="display:none;">
-    <div class="report-launcher-card" style="max-width: 820px; margin: 0 auto;">
-      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
-        <div style="display:flex; align-items:center; gap:10px;">
-          <div style="width:40px; height:40px; border-radius:12px; background:var(--primary-soft); color:var(--primary); display:flex; align-items:center; justify-content:center; font-size:18px;">📋</div>
-          <div>
-            <h2 class="f-moul" style="font-size:14.5px; color:var(--text);">របាយការណ៍អវត្តមាន</h2>
-            <p style="font-size:11.5px; color:var(--text-muted);">ទាញយកជារបាយការណ៍ប្រចាំខែ និងសរុបប្រចាំឆ្នាំ</p>
+    <div id="tabDailyView">
+      <div class="daily-layout-grid">
+        
+        <div class="daily-sidebar-card">
+          <div style="font-size:12px; color:var(--text-muted);">
+            <div>កាលបរិច្ឆេទជ្រើសរើស៖</div>
+            <div style="font-size:15px; font-weight:700; color:var(--text); margin-top:2px;" id="lblSelectedDateIso">...</div>
           </div>
-        </div>
 
-        <!-- បញ្ជីរើសខែ នឹងត្រូវចាប់យកខែបច្ចុប្បន្នដោយស្វ័យប្រវត្តិពី JavaScript -->
-        <select id="rptMonthSelect" class="class-select-pill" onchange="renderHolidayConfigSection()">
-          <option value="មករា">មករា</option><option value="កុម្ភៈ">កុម្ភៈ</option>
-          <option value="មីនា">មីនា</option><option value="មេសា">មេសា</option>
-          <option value="ឧសភា">ឧសភា</option><option value="មិថុនា">មិថុនា</option>
-          <option value="កក្កដា">កក្កដា</option><option value="សីហា">សីហា</option>
-          <option value="កញ្ញា">កញ្ញា</option><option value="តុលា">តុលា</option>
-          <option value="វិច្ឆិកា">វិច្ឆិកា</option><option value="ធ្នូ">ធ្នូ</option>
-        </select>
-      </div>
-
-      <div class="holiday-config-box">
-        <div style="font-size:13px; font-weight:700; color:var(--text); margin-bottom:6px; display:flex; align-items:center; gap:6px;">
-          <i class="fa-solid fa-umbrella-beach" style="color:#059669;"></i>
-          <span>កំណត់ថ្ងៃឈប់សម្រាកក្នុងខែ (មិនរាប់ជាថ្ងៃរៀន)៖</span>
-        </div>
-        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:10px; margin-top:10px;">
-          <div style="position: relative;">
-            <button class="date-trigger-btn" onclick="toggleHolidayCalPopup()">
-              <i class="fa-regular fa-calendar-days" style="color:var(--primary);"></i>
-              <span id="selectedHolidayDateTxt">ជ្រើសរើសថ្ងៃទី</span>
-            </button>
-
-            <div class="calendar-popup" id="holidayCalPopup" style="top:46px;">
-              <div class="cal-month-title" id="holidayCalTitle">...</div>
-              <div class="cal-weekdays">
-                <span>អា</span><span>ច</span><span>អ</span><span>ព</span><span>ព្រ</span><span>សុ</span><span>ស</span>
-              </div>
-              <div class="cal-days-grid" id="holidayCalDaysGrid"></div>
-              <div style="display:flex; justify-content:flex-end; margin-top:10px;">
-                <span style="color:var(--text-muted); cursor:pointer; font-size:12px; font-weight:600;" onclick="toggleHolidayCalPopup()">បិទ</span>
-              </div>
+          <div class="gender-summary-box">
+            <div class="gender-chip">
+              <span>ប្រុស</span>
+              <strong id="countMale">0</strong>
+            </div>
+            <div class="gender-chip">
+              <span style="color:#f43f5e;">ស្រី</span>
+              <strong id="countFemale" style="color:#f43f5e;">0</strong>
+            </div>
+            <div class="gender-chip">
+              <span>សរុប</span>
+              <strong id="countTotal">0</strong>
             </div>
           </div>
 
-          <input type="text" id="holidayReasonInput" placeholder="មូលហេតុ (ឧ. បុណ្យភ្ជុំបិណ្ឌ)" style="flex:1; min-width:180px; padding:8px 12px; border-radius:12px; border:1px solid var(--border); background:var(--surface); color:var(--text); outline:none; font-size:12.5px;">
-          <button onclick="addHolidayForCurrentMonth()" class="btn-open-report" style="background:#059669;"><i class="fa-solid fa-plus"></i> បន្ថែម</button>
-        </div>
-        <div id="holidayTagsContainer" style="display:flex; flex-wrap:wrap; gap:4px; margin-top:6px;"></div>
-      </div>
+          <div class="status-counter-grid">
+            <div class="counter-card present">
+              <div class="c-label">វត្តមាន</div>
+              <div class="c-val" id="cntPresent">0</div>
+            </div>
+            <div class="counter-card absent">
+              <div class="c-label">អវត្តមាន</div>
+              <div class="c-val" id="cntAbsent">0</div>
+            </div>
+            <div class="counter-card late">
+              <div class="c-label">យឺត</div>
+              <div class="c-val" id="cntLate">0</div>
+            </div>
+            <div class="counter-card permission">
+              <div class="c-label">មានច្បាប់</div>
+              <div class="c-val" id="cntPerm">0</div>
+            </div>
+          </div>
 
-      <div class="report-menu-row">
-        <div style="display:flex; align-items:center; gap:10px; font-weight:600; font-size:13.5px; color:var(--text);">
-          <span style="font-size:18px;">📄</span>
-          <span>តារាងវត្តមានប្រចាំខែ</span>
-        </div>
-        <button class="btn-open-report" onclick="openReportView('monthly')">
-          <i class="fa-solid fa-print"></i> បើកមើល
-        </button>
-      </div>
+          <div class="search-pill-wrap">
+            <i class="fa-solid fa-magnifying-glass" style="color:var(--text-muted); font-size:12px;"></i>
+            <input type="text" id="searchBox" placeholder="ស្វែងរកឈ្មោះសិស្ស..." oninput="renderDailyList()">
+          </div>
 
-      <div class="report-menu-row">
-        <div style="display:flex; align-items:center; gap:10px; font-weight:600; font-size:13.5px; color:var(--text);">
-          <span style="font-size:18px;">📊</span>
-          <span>តារាងសរុបអវត្តមានប្រចាំឆ្នាំ</span>
+          <div class="bulk-actions-row">
+            <button class="btn-bulk present" onclick="setBulkDailyStatus('P')">
+              <i class="fa-solid fa-check-double"></i> វត្តមានទាំងអស់
+            </button>
+            <button class="btn-bulk absent" onclick="setBulkDailyStatus('A')">
+              <i class="fa-solid fa-xmark"></i> អវត្តមានទាំងអស់
+            </button>
+          </div>
+
+          <div style="background:var(--surface-elevated); border-radius:12px; padding:10px; font-size:11.5px; color:var(--text-muted); line-height:1.45;">
+            💡 <b>ចំណាំ៖</b> ចុចលើ [វត្តមាន | អវត្តមាន | យឺត | ច្បាប់] ដើម្បីប្ដូរវត្តមានរហ័ស ឬចុចលើឈ្មោះសិស្សដើម្បីបើកផ្ទាំងជ្រើសរើស។
+          </div>
         </div>
-        <button class="btn-open-report" onclick="openReportView('yearly')">
-          <i class="fa-solid fa-print"></i> បើកមើល
+
+        <div class="daily-list-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid var(--border);">
+            <div>
+              <h3 style="font-size:15px; font-weight:700; color:var(--text);">បញ្ជីឈ្មោះសិស្ស</h3>
+              <span style="font-size:11.5px; color:var(--text-muted);">ប្រព័ន្ធរក្សាទុកស្វ័យប្រវត្តិទៅ Supabase</span>
+            </div>
+            <span style="font-size:11.5px; font-weight:600; color:#059669; background:var(--p-bg); padding:4px 10px; border-radius:20px;">✓ សកម្ម</span>
+          </div>
+
+          <div id="studentListContainer">
+            <div style="text-align:center; padding:40px; color:var(--text-muted);">កំពុងទាញយកទិន្នន័យ...</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div id="tabReportsMenu" style="display:none;">
+      <div class="report-launcher-card" style="max-width: 820px; margin: 0 auto;">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div style="width:40px; height:40px; border-radius:12px; background:var(--primary-soft); color:var(--primary); display:flex; align-items:center; justify-content:center; font-size:18px;">📋</div>
+            <div>
+              <h2 class="f-moul" style="font-size:14.5px; color:var(--text);">របាយការណ៍អវត្តមាន</h2>
+              <p style="font-size:11.5px; color:var(--text-muted);">ទាញយកជារបាយការណ៍ប្រចាំខែ និងសរុបប្រចាំឆ្នាំ</p>
+            </div>
+          </div>
+
+          <select id="rptMonthSelect" class="class-select-pill" onchange="renderHolidayConfigSection()">
+            <option value="មករា">មករា</option><option value="កុម្ភៈ">កុម្ភៈ</option>
+            <option value="មីនា">មីនា</option><option value="មេសា">មេសា</option>
+            <option value="ឧសភា">ឧសភា</option><option value="មិថុនា">មិថុនា</option>
+            <option value="កក្កដា">កក្កដា</option><option value="សីហា">សីហា</option>
+            <option value="កញ្ញា">កញ្ញា</option><option value="តុលា">តុលា</option>
+            <option value="វិច្ឆិកា">វិច្ឆិកា</option><option value="ធ្នូ">ធ្នូ</option>
+          </select>
+        </div>
+
+        <div class="holiday-config-box">
+          <div style="font-size:13px; font-weight:700; color:var(--text); margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+            <i class="fa-solid fa-umbrella-beach" style="color:#059669;"></i>
+            <span>កំណត់ថ្ងៃឈប់សម្រាកក្នុងខែ (មិនរាប់ជាថ្ងៃរៀន)៖</span>
+          </div>
+          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:10px; margin-top:10px;">
+            <div style="position: relative;">
+              <button class="date-trigger-btn" onclick="toggleHolidayCalPopup()">
+                <i class="fa-regular fa-calendar-days" style="color:var(--primary);"></i>
+                <span id="selectedHolidayDateTxt">ជ្រើសរើសថ្ងៃទី</span>
+              </button>
+
+              <div class="calendar-popup" id="holidayCalPopup" style="top:46px;">
+                <div class="cal-month-title" id="holidayCalTitle">...</div>
+                <div class="cal-weekdays">
+                  <span>អា</span><span>ច</span><span>អ</span><span>ព</span><span>ព្រ</span><span>សុ</span><span>ស</span>
+                </div>
+                <div class="cal-days-grid" id="holidayCalDaysGrid"></div>
+                <div style="display:flex; justify-content:flex-end; margin-top:10px;">
+                  <span style="color:var(--text-muted); cursor:pointer; font-size:12px; font-weight:600;" onclick="toggleHolidayCalPopup()">បិទ</span>
+                </div>
+              </div>
+            </div>
+
+            <input type="text" id="holidayReasonInput" placeholder="មូលហេតុ (ឧ. បុណ្យភ្ជុំបិណ្ឌ)" style="flex:1; min-width:180px; padding:8px 12px; border-radius:12px; border:1px solid var(--border); background:var(--surface); color:var(--text); outline:none; font-size:12.5px;">
+            <button onclick="addHolidayForCurrentMonth()" class="btn-open-report" style="background:#059669;"><i class="fa-solid fa-plus"></i> បន្ថែម</button>
+          </div>
+          <div id="holidayTagsContainer" style="display:flex; flex-wrap:wrap; gap:4px; margin-top:6px;"></div>
+        </div>
+
+        <div class="report-menu-row">
+          <div style="display:flex; align-items:center; gap:10px; font-weight:600; font-size:13.5px; color:var(--text);">
+            <span style="font-size:18px;">📄</span>
+            <span>តារាងវត្តមានប្រចាំខែ</span>
+          </div>
+          <button class="btn-open-report" onclick="openReportView('monthly')">
+            <i class="fa-solid fa-print"></i> បើកមើល
+          </button>
+        </div>
+
+        <div class="report-menu-row">
+          <div style="display:flex; align-items:center; gap:10px; font-weight:600; font-size:13.5px; color:var(--text);">
+            <span style="font-size:18px;">📊</span>
+            <span>តារាងសរុបអវត្តមានប្រចាំឆ្នាំ</span>
+          </div>
+          <button class="btn-open-report" onclick="openReportView('yearly')">
+            <i class="fa-solid fa-print"></i> បើកមើល
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="statusActionSheetModal" class="action-sheet-backdrop" onclick="closeStatusActionSheet()">
+      <div class="action-sheet-card" onclick="event.stopPropagation()">
+        <div class="sheet-header-row">
+          <div class="sheet-student-name" id="actionSheetStudentName">ឈ្មោះសិស្ស</div>
+          <button type="button" class="sheet-close-x" onclick="closeStatusActionSheet()" title="បិទ">✕</button>
+        </div>
+        
+        <div class="sheet-options-grid">
+          <button type="button" class="sheet-choice-btn p" onclick="selectActionStatus('P')">
+            <i class="fa-solid fa-check"></i> វត្តមាន (P)
+          </button>
+          <button type="button" class="sheet-choice-btn a" onclick="selectActionStatus('A')">
+            <i class="fa-solid fa-xmark"></i> អវត្តមាន (A)
+          </button>
+          <button type="button" class="sheet-choice-btn l" onclick="selectActionStatus('L')">
+            <i class="fa-regular fa-clock"></i> យឺត (L)
+          </button>
+          <button type="button" class="sheet-choice-btn c" onclick="selectActionStatus('C')">
+            <i class="fa-solid fa-shield-halved"></i> មានច្បាប់ (C)
+          </button>
+        </div>
+
+        <button type="button" class="btn-sheet-cancel" onclick="closeStatusActionSheet()">
+          បោះបង់ / បិទ
         </button>
       </div>
     </div>
-  </div>
 
-  <div id="statusActionSheetModal" class="action-sheet-backdrop" onclick="closeStatusActionSheet()">
-    <div class="action-sheet-card" onclick="event.stopPropagation()">
-      <div class="sheet-header-row">
-        <div class="sheet-student-name" id="actionSheetStudentName">ឈ្មោះសិស្ស</div>
-        <button type="button" class="sheet-close-x" onclick="closeStatusActionSheet()" title="បិទ">✕</button>
+    <div id="reportViewerModal">
+      <div class="viewer-top-bar">
+        <button class="tab-pill-btn" onclick="closeReportView()">⬅ ត្រឡប់ក្រោយ</button>
+        <div style="display:flex; gap:8px;">
+          <button class="tab-pill-btn" style="background:#059669; color:#fff;" onclick="downloadPDF()"><i class="fa-solid fa-file-pdf"></i> ទាញយក PDF</button>
+          <button class="tab-pill-btn" style="background:var(--primary); color:#fff;" onclick="window.print()"><i class="fa-solid fa-print"></i> បោះពុម្ព</button>
+        </div>
       </div>
-      
-      <div class="sheet-options-grid">
-        <button type="button" class="sheet-choice-btn p" onclick="selectActionStatus('P')">
-          <i class="fa-solid fa-check"></i> វត្តមាន (P)
-        </button>
-        <button type="button" class="sheet-choice-btn a" onclick="selectActionStatus('A')">
-          <i class="fa-solid fa-xmark"></i> អវត្តមាន (A)
-        </button>
-        <button type="button" class="sheet-choice-btn l" onclick="selectActionStatus('L')">
-          <i class="fa-regular fa-clock"></i> យឺត (L)
-        </button>
-        <button type="button" class="sheet-choice-btn c" onclick="selectActionStatus('C')">
-          <i class="fa-solid fa-shield-halved"></i> មានច្បាប់ (C)
-        </button>
-      </div>
-
-      <button type="button" class="btn-sheet-cancel" onclick="closeStatusActionSheet()">
-        បោះបង់ / បិទ
-      </button>
+      <div class="report-paper-container" id="printableReportPaper"></div>
     </div>
-  </div>
 
-  <div id="reportViewerModal">
-    <div class="viewer-top-bar">
-      <button class="tab-pill-btn" onclick="closeReportView()">⬅ ត្រឡប់ក្រោយ</button>
-      <div style="display:flex; gap:8px;">
-        <button class="tab-pill-btn" style="background:#059669; color:#fff;" onclick="downloadPDF()"><i class="fa-solid fa-file-pdf"></i> ទាញយក PDF</button>
-        <button class="tab-pill-btn" style="background:var(--primary); color:#fff;" onclick="window.print()"><i class="fa-solid fa-print"></i> បោះពុម្ព</button>
-      </div>
-    </div>
-    <div class="report-paper-container" id="printableReportPaper"></div>
-  </div>
+  </div> <!-- END #mainPageContent -->
 
   <!-- =========================================================
-       ⚙️ ផ្នែក JavaScript : SUPABASE FULL ENGINE & SYNC MONTH
+       ⚙️ JAVASCRIPT : SUPABASE AUTH GUARD & ATTENDANCE ENGINE
   ========================================================= -->
   <script>
     /* 1. SUPABASE CLIENT CONFIG */
@@ -538,17 +617,42 @@
     const SUPABASE_ANON_KEY = "sb_publishable_AHDcUJbuMAfhaocyfm2X7w_O9s06wML";
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    /* 2. READ SESSION */
+    /* 2. READ SESSION & AUTH GUARD */
     function readSession() {
       try { return JSON.parse(localStorage.getItem('krou_supabase_user') || 'null'); } catch (e) { return null; }
     }
     const CURRENT_USER = readSession();
-    var USER_ROLE = CURRENT_USER?.role || "teacher";
-    var USER_CLASS = CURRENT_USER?.assigned_classes || "";
+
+    function checkAuthentication() {
+      if (!CURRENT_USER || !CURRENT_USER.username) {
+        document.getElementById('mainPageContent').style.display = 'none';
+        document.getElementById('authDeniedWrap').style.display = 'flex';
+        return false;
+      }
+      document.getElementById('authDeniedWrap').style.display = 'none';
+      document.getElementById('mainPageContent').style.display = 'block';
+      return true;
+    }
+
+    function goToIndex(e) {
+      if (e) e.preventDefault();
+      if (window.parent && window.parent !== window) {
+        try {
+          window.parent.postMessage({ type: 'OPEN_LOGIN', action: 'LOGIN' }, '*');
+          window.parent.location.href = 'index.html';
+          return;
+        } catch(err) {}
+      }
+      window.location.href = 'index.html';
+    }
+
+    var USER_ROLE    = CURRENT_USER?.role || "teacher";
+    var USER_CLASS   = CURRENT_USER?.assigned_classes || CURRENT_USER?.assigned_class || "";
     var TEACHER_NAME = CURRENT_USER?.teacher_name || "";
+    var IS_ADMIN     = String(USER_ROLE).toLowerCase().trim() === 'admin';
 
     var KHMER_MONTHS = ["មករា","កុម្ភៈ","មីនា","មេសា","ឧសភា","មិថុនា","កក្កដា","សីហា","កញ្ញា","តុលា","វិច្ឆិកា","ធ្នូ"];
-    var WEEKDAYS_KH = ["អា","ច","អ","ព","ព្រ","សុ","ស"];
+    var WEEKDAYS_KH  = ["អា","ច","អ","ព","ព្រ","សុ","ស"];
     var KHMER_DIGITS = ['០','១','២','៣','៤','៥','៦','៧','៨','៩'];
 
     var monthlyHolidaysMap = {};
@@ -581,10 +685,12 @@
 
     /* 3. LIFECYCLE INITIALIZATION */
     window.onload = async function() {
+      // 🌟 ១. ត្រួតពិនិត្យ Auth Guard ជាមុនសិន
+      if (!checkAuthentication()) return;
+
       syncThemeWithParent();
       updateDateUI();
 
-      // 👉 កំណត់ខែបច្ចុប្បន្នទៅក្នុងប្រអប់រើសខែនៃរបាយការណ៍ដោយស្វ័យប្រវត្តិ
       var curMonthName = KHMER_MONTHS[selectedDate.getMonth()];
       var rptSel = document.getElementById('rptMonthSelect');
       if (rptSel) rptSel.value = curMonthName;
@@ -594,10 +700,37 @@
       await loadAllStudentsAndClasses();
     };
 
-    /* 4. ទាញយកសិស្សទាំងអស់ និងបង្កើតបញ្ជីថ្នាក់ស្វ័យប្រវត្តិ */
+    /* 4. ទាញយកសិស្ស និងចាក់សោថ្នាក់គ្រូ */
     async function loadAllStudentsAndClasses() {
       var sel = document.getElementById('classSelect');
       var container = document.getElementById('studentListContainer');
+      var userCls = cleanGrade(USER_CLASS);
+
+      // 👉 បើជាគ្រូធម្មតា (មិនមែន Admin)៖ លាក់ Dropdown បង្ហាញតែផ្លាកថ្នាក់របស់គាត់
+      if (!IS_ADMIN) {
+        document.getElementById('adminClassBox').style.display = 'none';
+        var badge = document.getElementById('teacherClassBadge');
+        var text = document.getElementById('teacherClassText');
+
+        if (userCls) {
+          text.innerText = 'ថ្នាក់ទី ' + userCls;
+          badge.style.display = 'inline-flex';
+          sel.innerHTML = '<option value="' + userCls + '">ថ្នាក់ទី ' + userCls + '</option>';
+          sel.value = userCls;
+          currentClassName = userCls;
+        } else {
+          badge.style.display = 'inline-flex';
+          text.innerText = 'មិនទាន់កំណត់ថ្នាក់';
+          container.innerHTML = `<div style="text-align:center; padding:40px; color:#f59e0b; font-weight:bold;">
+            ⚠️ គណនីរបស់អ្នកមិនទាន់មានថ្នាក់ទទួលបន្ទុកនៅឡើយទេ។ សូមទាក់ទង Admin។
+          </div>`;
+          return;
+        }
+      } else {
+        // 👉 បើជា Admin៖ បង្ហាញ Dropdown
+        document.getElementById('teacherClassBadge').style.display = 'none';
+        document.getElementById('adminClassBox').style.display = 'inline-block';
+      }
 
       container.innerHTML = `
         <div style="text-align:center; padding:35px; color:var(--text-muted);">
@@ -623,26 +756,26 @@
 
         allStudentsCache = stList;
 
-        // ចម្រាញ់ឈ្មោះថ្នាក់ស្វ័យប្រវត្តពី Database
-        var uniqueClasses = [...new Set(stList.map(s => cleanGrade(s.grade)).filter(Boolean))];
-        if (!uniqueClasses.length) uniqueClasses = ['១', '២', '៣', '៤(ក)', '៤(ខ)', '៥', '៦'];
+        if (IS_ADMIN) {
+          var uniqueClasses = [...new Set(stList.map(s => cleanGrade(s.grade)).filter(Boolean))];
+          if (!uniqueClasses.length) uniqueClasses = ['១', '២', '៣', '៤(ក)', '៤(ខ)', '៥', '៦'];
 
-        sel.innerHTML = '';
-        uniqueClasses.forEach(function(c) {
-          var opt = document.createElement('option');
-          opt.value = c;
-          opt.textContent = 'ថ្នាក់ទី ' + c;
-          sel.appendChild(opt);
-        });
+          sel.innerHTML = '';
+          uniqueClasses.forEach(function(c) {
+            var opt = document.createElement('option');
+            opt.value = c;
+            opt.textContent = 'ថ្នាក់ទី ' + c;
+            sel.appendChild(opt);
+          });
 
-        var userCls = cleanGrade(USER_CLASS);
-        if (userCls && uniqueClasses.includes(userCls)) {
-          sel.value = userCls;
-        } else {
-          sel.value = uniqueClasses[0];
+          if (userCls && uniqueClasses.includes(userCls)) {
+            sel.value = userCls;
+          } else {
+            sel.value = uniqueClasses[0];
+          }
+          currentClassName = sel.value;
         }
 
-        currentClassName = sel.value;
         await loadDailyAttendanceData();
       } catch (err) {
         console.error('Students fetch error:', err);
@@ -663,16 +796,29 @@
       if (!currentClassName) return;
       var curPure = cleanGrade(currentClassName);
 
-      // ចម្រាញ់សិស្សតាមថ្នាក់ដែលបានរើស
+      // 👉 បង្កើត Unique ID ដោយឡែកពីគ្នា កុំឱ្យជាន់គ្នានាំឱ្យដូរវត្តមានម្នាក់ទៅប្តូរទាំងអស់
+      var usedIds = new Set();
       rawStudentsData = allStudentsCache
         .filter(s => cleanGrade(s.grade) === curPure)
-        .map(s => ({
-          id: String(s.student_id || s.id),
-          name: s.student_name || 'គ្មានឈ្មោះ',
-          sex: s.gender || 'ប្រុស',
-          grade: s.grade,
-          days: {}
-        }));
+        .map((s, idx) => {
+          var baseId = (s.student_id && String(s.student_id).trim()) 
+                    || (s.id !== null && s.id !== undefined && String(s.id).trim()) 
+                    || ('student_' + idx);
+          
+          var uniqueId = baseId;
+          if (usedIds.has(uniqueId)) {
+            uniqueId = baseId + '_' + idx;
+          }
+          usedIds.add(uniqueId);
+
+          return {
+            id: String(uniqueId),
+            name: s.student_name || 'គ្មានឈ្មោះ',
+            sex: s.gender || 'ប្រុស',
+            grade: s.grade,
+            days: {}
+          };
+        });
 
       var y = selectedDate.getFullYear();
       var m = selectedDate.getMonth();
@@ -698,15 +844,16 @@
             var dNum = parseInt(row.attendance_date.split('-')[2], 10);
             var sid = String(row.student_id);
             var sObj = rawStudentsData.find(x => x.id === sid);
-            if (sObj) sObj.days[dNum] = row.status;
-            if (dNum === curDay) {
-              dailyAttendanceState[sid] = row.status;
-              studentNotesMap[sid] = row.note || '';
+            if (sObj) {
+              sObj.days[dNum] = row.status;
+              if (dNum === curDay) {
+                dailyAttendanceState[sObj.id] = row.status;
+                studentNotesMap[sObj.id] = row.note || '';
+              }
             }
           }
         });
 
-        // ដាក់ 'P' ជា Default ប្រសិនបើមិនទាន់បានកត់ត្រា
         rawStudentsData.forEach(s => {
           if (!dailyAttendanceState[s.id]) dailyAttendanceState[s.id] = 'P';
         });
@@ -857,7 +1004,7 @@
       }
     }
 
-    /* 6. HOLIDAYS MANAGEMENT (ភ្ជាប់ជាមួយ TABLE: school_holidays) */
+    /* 6. HOLIDAYS MANAGEMENT (TABLE: school_holidays) */
     async function loadSchoolHolidays() {
       var yr = selectedDate.getFullYear();
       try {
@@ -974,7 +1121,7 @@
       container.innerHTML = html;
     }
 
-    /* 7. CALENDAR & TAB LOGIC (SYNC MONTH AUTOMATICALLY) */
+    /* 7. CALENDAR & TAB LOGIC (SYNC MONTH) */
     function switchNavTab(tab) {
       document.getElementById('btnTabDaily').classList.toggle('active', tab === 'daily');
       document.getElementById('btnTabReports').classList.toggle('active', tab === 'reports');
@@ -982,7 +1129,6 @@
       document.getElementById('tabReportsMenu').style.display = (tab === 'reports') ? 'block' : 'none';
 
       if(tab === 'reports') {
-        // 👉 Sync ខែដែលកំពុងកត់ត្រាវត្តមាន ទៅកាន់របាយការណ៍ស្វ័យប្រវត្តិ
         var rptSel = document.getElementById('rptMonthSelect');
         if (rptSel) {
           rptSel.value = KHMER_MONTHS[selectedDate.getMonth()];
@@ -1032,7 +1178,6 @@
       updateDateUI();
       toggleCalendarPopup();
 
-      // 👉 Sync ខែទៅកាន់របាយការណ៍
       var rptSel = document.getElementById('rptMonthSelect');
       if (rptSel) rptSel.value = KHMER_MONTHS[m];
 
@@ -1044,7 +1189,6 @@
       updateDateUI();
       toggleCalendarPopup();
 
-      // 👉 Sync ខែទៅកាន់របាយការណ៍
       var rptSel = document.getElementById('rptMonthSelect');
       if (rptSel) rptSel.value = KHMER_MONTHS[selectedDate.getMonth()];
 
@@ -1100,14 +1244,12 @@
       var curPure = cleanGrade(currentClassName);
 
       try {
-        var students = allStudentsCache
-          .filter(s => cleanGrade(s.grade) === curPure)
-          .map(s => ({
-            id: String(s.student_id || s.id),
-            name: s.student_name || 'គ្មានឈ្មោះ',
-            sex: s.gender || 'ប្រុស',
-            days: {}
-          }));
+        var students = rawStudentsData.map(s => ({
+          id: s.id,
+          name: s.name,
+          sex: s.sex,
+          days: {}
+        }));
 
         var firstStr = `${currentYear}-${String(mIdx+1).padStart(2,'0')}-01`;
         var lastStr = `${currentYear}-${String(mIdx+1).padStart(2,'0')}-${String(endOfMonthDate.getDate()).padStart(2,'0')}`;
@@ -1311,13 +1453,11 @@
       var sem2Months = ["ឧសភា", "មិថុនា", "កក្កដា", "សីហា", "កញ្ញា", "តុលា"];
 
       try {
-        var students = allStudentsCache
-          .filter(s => cleanGrade(s.grade) === curPure)
-          .map(s => ({
-            id: String(s.student_id || s.id),
-            name: s.student_name || 'គ្មានឈ្មោះ',
-            sex: s.gender || 'ប្រុស'
-          }));
+        var students = rawStudentsData.map(s => ({
+          id: s.id,
+          name: s.name,
+          sex: s.sex
+        }));
 
         const { data: attList } = await sb.from('attendance')
           .select('student_id, attendance_date, status, assigned_class')
