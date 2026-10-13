@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="km" data-theme="dark">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>សៀវភៅសិក្ខាគារិក</title>
+  
+  <!-- 🔤 Google Fonts Khmer & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;700&family=Kantumruy+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Moul&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- ⚡ Supabase JS Client (v2) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    /* =========================================================
+       🎨 DYNAMIC THEME SYSTEM (LIGHT & DARK MODE)
+    ========================================================= */
+    :root {
+      --app-bg: #f8fafc;
+      --tb-bg: rgba(255, 255, 255, 0.96);
+      --tb-border: #e2e8f0;
+      --card-panel-bg: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --input-bg: #ffffff;
+      --input-border: #cbd5e1;
+      --input-focus: #0284c7;
+      --ctrl-group-bg: #f1f5f9;
+      --shadow-sm: 0 4px 16px rgba(15, 23, 42, 0.06);
+
+      --navy: #132d56;
+      --navy-light: #1e3a8a;
+      --red-star: #dc2626;
+      --border-color: #132d56;
+    }
+
+    [data-theme="dark"] {
+      --app-bg: #090e17;
+      --tb-bg: rgba(15, 23, 42, 0.95);
+      --tb-border: #1e293b;
+      --card-panel-bg: #111e33;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --input-bg: #162642;
+      --input-border: #233f66;
+      --input-focus: #38bdf8;
+      --ctrl-group-bg: #0e1a2d;
+      --shadow-sm: 0 8px 24px rgba(0, 0, 0, 0.45);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    body {
+      font-family: 'Khmer OS Battambang', 'Battambang', 'Kantumruy Pro', sans-serif;
+      background-color: var(--app-bg);
+      color: var(--text-main);
+      font-size: 14px;
+      line-height: 1.45;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 0.25s ease, color 0.25s ease;
+      min-height: 100vh;
+      padding-bottom: 50px;
+    }
+
+    .f-moul { font-family: 'Khmer OS Muol Light', 'Moul', cursive; font-weight: normal; letter-spacing: 0.3px; }
+    .f-bold { font-family: 'Khmer OS Battambang', 'Battambang', sans-serif; font-weight: 700; }
+    .f-regular { font-family: 'Khmer OS Battambang', 'Battambang', 'Kantumruy Pro', sans-serif; font-weight: 400; }
+
+    /* ══════════════ 🔒 AUTH DENIED WRAPPER ══════════════ */
+    .auth-wrapper {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 80vh;
+      text-align: center;
+      padding: 30px 20px;
+    }
+    .auth-card {
+      background: var(--card-panel-bg);
+      border: 1.5px solid var(--tb-border);
+      border-radius: 24px;
+      padding: 40px 28px;
+      max-width: 440px;
+      width: 100%;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .auth-icon {
+      width: 68px;
+      height: 68px;
+      border-radius: 20px;
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      margin-bottom: 16px;
+    }
+    .auth-card h2 { font-size: 18px; margin-bottom: 8px; color: #ef4444; font-weight: 700; }
+    .auth-card p { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 24px; }
+    .btn-login-redirect {
+      background: linear-gradient(135deg, #0284c7, #7c3aed);
+      color: #ffffff;
+      padding: 10px 24px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 13.5px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
+      cursor: pointer;
+      border: none;
+    }
+
+    /* =========================================================
+       🎛️ SLEEK SINGLE-ROW TOOLBAR (សន្សំទំហំ & ស្អាតលើ TABLET)
+    ========================================================= */
+    .no-print-bar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: var(--tb-bg);
+      backdrop-filter: blur(14px);
+      padding: 7px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      box-shadow: var(--shadow-sm);
+      border-bottom: 1.5px solid var(--tb-border);
+      transition: all 0.25s ease;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      white-space: nowrap;
+    }
+    .no-print-bar::-webkit-scrollbar { height: 3px; }
+    .no-print-bar::-webkit-scrollbar-thumb { background: rgba(2, 132, 199, 0.25); border-radius: 3px; }
+
+    .tb-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .panel-pill-box {
+      background: var(--ctrl-group-bg);
+      border: 1px solid var(--tb-border);
+      border-radius: 9px;
+      padding: 3px 7px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .toolbar-label {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+
+    .form-control {
+      padding: 4px 7px;
+      font-family: 'Kantumruy Pro', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1.5px solid var(--input-border);
+      border-radius: 7px;
+      outline: none;
+      background: var(--input-bg);
+      color: var(--text-main);
+      transition: all 0.2s ease;
+      height: 30px;
+    }
+    .form-control:focus {
+      border-color: var(--input-focus);
+      box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15);
+    }
+
+    .teacher-class-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      color: #ffffff;
+      padding: 3px 10px;
+      border-radius: 9px;
+      font-weight: 700;
+      font-size: 12px;
+      height: 30px;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .btn {
+      padding: 4px 10px;
+      font-family: 'Kantumruy Pro', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+      user-select: none;
+      white-space: nowrap;
+      height: 30px;
+    }
+    .btn:active { transform: scale(0.96); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      color: #fff;
+      box-shadow: 0 2px 7px rgba(2, 132, 199, 0.25);
+    }
+    .btn-success {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #fff;
+      box-shadow: 0 2px 7px rgba(16, 185, 129, 0.25);
+    }
+
+    .zoom-btn-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      background: var(--ctrl-group-bg);
+      padding: 2px;
+      border-radius: 8px;
+      border: 1px solid var(--tb-border);
+      height: 30px;
+    }
+    .zoom-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 2px 7px;
+      border-radius: 5px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-family: 'Kantumruy Pro', sans-serif;
+      height: 24px;
+      display: flex;
+      align-items: center;
+    }
+    .zoom-btn:hover { color: var(--text-main); }
+    .zoom-btn.active {
+      background: #0284c7 !important;
+      color: #ffffff !important;
+      box-shadow: 0 1px 5px rgba(2, 132, 199, 0.35);
+    }
+
+    /* =========================================================
+       📱 TABLET & MOBILE RESPONSIVE TWEAKS
+    ========================================================= */
+    @media screen and (min-width: 769px) and (max-width: 1180px) {
+      .no-print-bar { padding: 8px 16px; gap: 8px; }
+      .panel-pill-box { padding: 3px 8px; }
+      .form-control, .btn { height: 32px; font-size: 12.5px; }
+      .zoom-btn-group { height: 32px; }
+      .zoom-btn { height: 26px; font-size: 11.5px; }
+      .preview-wrapper { padding: 14px 10px; gap: 18px; }
+    }
+
+    @media screen and (max-width: 768px) {
+      body { padding-bottom: 40px; }
+      .no-print-bar { padding: 6px 10px; gap: 6px; }
+      .tb-group { gap: 4px; }
+      .panel-pill-box { padding: 2px 6px; }
+      .form-control { height: 28px; font-size: 11px; padding: 2px 5px; }
+      .btn { height: 28px; padding: 2px 7px; font-size: 11px; gap: 4px; }
+      .zoom-btn-group { height: 28px; }
+      .zoom-btn { height: 22px; padding: 1px 5px; font-size: 10px; }
+      .preview-wrapper {
+        padding: 10px 4px; gap: 14px; width: 100%;
+        overflow-x: auto; -webkit-overflow-scrolling: touch;
+      }
+    }
+
+    /* =========================================================
+       📄 A4 BOOKLET PREVIEW (សៀវភៅសិក្ខាគារិក)
+    ========================================================= */
+    .preview-wrapper {
+      padding: 18px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 22px;
+      transition: zoom 0.2s ease;
+      transform-origin: top center;
+    }
+
+    .sheet-page {
+      background: #ffffff !important; 
+      color: var(--navy) !important;
+      width: 297mm; 
+      height: 210mm; 
+      max-height: 210mm;
+      padding: 6mm 7.5mm; 
+      display: grid; 
+      grid-template-columns: 1fr 1fr; 
+      gap: 7mm;
+      box-shadow: 0 10px 28px rgba(0,0,0,0.35); 
+      page-break-after: always; 
+      position: relative; 
+      overflow: hidden;
+      flex-shrink: 0;
+      border-radius: 4px;
+    }
+
+    .page-box {
+      border: 3.5px double var(--navy); 
+      padding: 14px 18px 12px 18px; 
+      display: flex;
+      flex-direction: column; 
+      justify-content: space-between; 
+      height: 100%; 
+      position: relative;
+      background: #ffffff !important;
+    }
+
+    .header-text { text-align: center; color: var(--navy); }
+    .header-text h2 { font-size: 17.5px; margin-bottom: 2px; line-height: 1.3; }
+    .header-text h3 { font-size: 15.5px; margin-bottom: 2px; line-height: 1.3; }
+    .header-icons { font-size: 14px; letter-spacing: 6px; color: var(--red-star); margin: 3px 0 5px 0; }
+
+    .dotted-row { display: flex; align-items: flex-end; width: 100%; margin-bottom: 12px; font-size: 15px; }
+    .dotted-label { white-space: nowrap; font-weight: bold; font-size: 15px; }
+    .dotted-space { flex: 1; border-bottom: 1.5px dotted var(--navy); margin-left: 6px; padding-left: 6px; min-height: 23px; font-weight: bold; font-size: 15px; }
+
+    .cover-info-block {
+      margin: 30px 0 20px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+    .cover-dotted-row { display: flex; align-items: flex-end; width: 100%; font-size: 16px; }
+    .cover-dotted-label { white-space: nowrap; font-weight: bold; font-size: 16px; }
+    .cover-dotted-space {
+      flex: 1; border-bottom: 1.6px dotted var(--navy); margin-left: 6px; padding-left: 6px; min-height: 26px; font-weight: bold; font-size: 16px;
+    }
+
+    /* ── Table Styling ── */
+    .custom-table {
+      width: 100%; 
+      border-collapse: collapse; 
+      font-size: 13px; 
+      text-align: center; 
+      border: 1.35px solid var(--navy) !important; 
+      margin-bottom: 3px; 
+      table-layout: fixed;
+      background: #ffffff !important;
+    }
+    .custom-table th, .custom-table td {
+      border: 1.15px solid var(--navy) !important; 
+      padding: 1.8px 2px; 
+      height: 21.5px; 
+      vertical-align: middle;
+      background: #ffffff !important;
+      color: var(--navy) !important;
+    }
+    .custom-table th { background: #f8fafc !important; font-weight: bold; font-size: 13.5px; }
+    .custom-table td.text-left { text-align: left; padding-left: 7px; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .red-bold { color: #dc2626 !important; font-weight: bold; font-size: 13.5px; }
+
+    .sig-block { display: flex; justify-content: flex-end; margin-top: 6px; }
+    .sig-inner { text-align: center; min-width: 180px; }
+
+    /* =========================================================
+       🖨️ PRINT RULES (A4 LANDSCAPE)
+    ========================================================= */
+    @media print {
+      html, body { background: none !important; padding: 0 !important; margin: 0 !important; width: 297mm; height: 210mm; }
+      .no-print-bar { display: none !important; }
+      .preview-wrapper { padding: 0 !important; gap: 0 !important; zoom: 1 !important; transform: none !important; }
+      .sheet-page {
+        box-shadow: none !important; margin: 0 !important; width: 297mm !important; height: 210mm !important;
+        padding: 6mm 7.5mm !important; page-break-after: always !important; break-after: page !important;
+        page-break-inside: avoid !important; border-radius: 0 !important;
+      }
+      @page { size: A4 landscape; margin: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════ 🔒 AUTH DENIED WRAPPER ══════════════ -->
+  <div class="auth-wrapper" id="authDeniedWrap">
+    <div class="auth-card">
+      <div class="auth-icon">🔒</div>
+      <h2>សូមចូលប្រើប្រាស់ជាមុនសិន!</h2>
+      <p>លោកអ្នកមិនទាន់បាន Login ចូលក្នុងប្រព័ន្ធនៅឡើយទេ។ សូម Login គណនីរបស់អ្នកដើម្បីមើលសៀវភៅសិក្ខាគារិក។</p>
+      <a href="index.html" target="_top" class="btn-login-redirect" onclick="goToIndex(event)">
+        <span>🔑</span> <span>ទៅកាន់ទំព័រដើម (Login)</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       🎛️ NEW SINGLE-ROW SLEEK TOOLBAR DESIGN
+  ========================================================= -->
+  <div class="no-print-bar" id="controlToolbar" style="display:none;">
+    
+    <!-- ផ្នែកខាងឆ្វេង ៖ Filters -->
+    <div class="tb-group">
+      <!-- ថ្នាក់ -->
+      <div class="panel-pill-box" id="adminClassBox" style="display:none;">
+        <span class="toolbar-label"><i class="fa-solid fa-graduation-cap" style="color:#0284c7;"></i> ថ្នាក់៖</span>
+        <select id="classSelect" class="form-control" onchange="onClassSelectChange()">
+          <option value="">កំពុងទាញយក...</option>
+        </select>
+      </div>
+
+      <div id="teacherClassBadge" class="teacher-class-badge" style="display:none;">
+        <i class="fa-solid fa-chalkboard-user"></i>
+        <span id="teacherClassText">ថ្នាក់ទី...</span>
+      </div>
+
+      <!-- សិស្ស -->
+      <div class="panel-pill-box">
+        <span class="toolbar-label"><i class="fa-solid fa-user" style="color:#10b981;"></i> សិស្ស៖</span>
+        <select id="studentSelect" class="form-control" style="min-width:130px; max-width:180px;" onchange="renderSemesterView()">
+          <option value="ALL">🏫 ទាំងថ្នាក់</option>
+        </select>
+      </div>
+
+      <!-- សន្លឹក -->
+      <div class="panel-pill-box">
+        <span class="toolbar-label"><i class="fa-solid fa-file-lines" style="color:#f59e0b;"></i> សន្លឹក៖</span>
+        <select id="sheetFilterSelect" class="form-control" onchange="renderSemesterView()">
+          <option value="ALL">ទាំងអស់ (៣ សន្លឹក)</option>
+          <option value="1">សន្លឹកទី១ (ក្របក្រៅ)</option>
+          <option value="2">សន្លឹកទី២ (ក្របក្នុង)</option>
+          <option value="3" selected>សន្លឹកទី៣ (លទ្ធផលប្រឡង)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- ផ្នែកខាងស្តាំ ៖ Zoom & Action Buttons -->
+    <div class="tb-group">
+      <!-- 🔍 Zoom Buttons -->
+      <div class="zoom-btn-group" title="ពង្រីក/បង្រួមទំហំ">
+        <button type="button" class="zoom-btn active" id="zFit" onclick="setFitZoom()">សម</button>
+        <button type="button" class="zoom-btn" id="z75" onclick="setZoom(0.75, 'z75')">75%</button>
+        <button type="button" class="zoom-btn" id="z100" onclick="setZoom(1, 'z100')">100%</button>
+      </div>
+
+      <button class="btn btn-primary" onclick="loadSemesterData()" title="ទាញយកទិន្នន័យឡើងវិញ">
+        <i class="fa-solid fa-rotate"></i> <span>ផ្ទុកឡើងវិញ</span>
+      </button>
+
+      <button class="btn btn-success" onclick="doPrint()" title="បោះពុម្ពសៀវភៅសិក្ខាគារិក">
+        <i class="fa-solid fa-print"></i> <span>បោះពុម្ព</span>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- =========================================================
+       📄 A4 BOOKLET PREVIEW CONTAINER
+  ========================================================= -->
+  <div class="preview-wrapper" id="semesterContainer" style="display:none;">
+    <div style="color:var(--text-muted); text-align: center; padding: 60px 20px; font-size: 15px; font-weight: 600;">
+      <i class="fa-solid fa-spinner fa-spin fa-2x" style="color:#0284c7;"></i>
+      <p style="margin-top:12px;">កំពុងទាញយកទិន្នន័យសៀវភៅសិក្ខាគារិក...</p>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       ⚙️ JAVASCRIPT ENGINE (SUPABASE INTEGRATED)
+  ========================================================= -->
+  <script>
+    /* 1. SUPABASE CLIENT CONFIG */
+    const SUPABASE_URL = "https://nggnuobnrxiqjtcwlvwk.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_AHDcUJbuMAfhaocyfm2X7w_O9s06wML";
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    /* 2. AUTH GUARD */
+    function readSession() {
+      try { return JSON.parse(localStorage.getItem('krou_supabase_user') || 'null'); } catch(e) { return null; }
+    }
+    const CURRENT_USER = readSession();
+
+    function checkAuthentication() {
+      if (!CURRENT_USER || !CURRENT_USER.username) {
+        document.getElementById('controlToolbar').style.display = 'none';
+        document.getElementById('semesterContainer').style.display = 'none';
+        document.getElementById('authDeniedWrap').style.display = 'flex';
+        return false;
+      }
+      document.getElementById('authDeniedWrap').style.display = 'none';
+      document.getElementById('controlToolbar').style.display = 'flex';
+      document.getElementById('semesterContainer').style.display = 'flex';
+      return true;
+    }
+
+    function goToIndex(e) {
+      if (e) e.preventDefault();
+      if (window.parent && window.parent !== window) {
+        try {
+          window.parent.postMessage({ type: 'OPEN_LOGIN', action: 'LOGIN' }, '*');
+          window.parent.location.href = 'index.html';
+          return;
+        } catch(err) {}
+      }
+      window.location.href = 'index.html';
+    }
+
+    const USER_ROLE    = CURRENT_USER?.role || "teacher";
+    const USER_CLASS   = CURRENT_USER?.assigned_classes || CURRENT_USER?.assigned_class || "";
+    const TEACHER_NAME = CURRENT_USER?.teacher_name || "";
+    const IS_ADMIN     = String(USER_ROLE).toLowerCase().trim() === 'admin';
+
+    const KHMER_DIGITS = ['០','១','២','៣','៤','៥','៦','៧','៨','៩'];
+    function cleanGrade(g) { return String(g || '').replace(/^ថ្នាក់ទី\s*/, '').trim(); }
+    function toKhmerNum(num) {
+      if (num === null || num === undefined) return '';
+      return num.toString().replace(/\d/g, d => KHMER_DIGITS[parseInt(d)] !== undefined ? KHMER_DIGITS[parseInt(d)] : d);
+    }
+
+    function applyTheme(theme) { document.documentElement.setAttribute('data-theme', theme || 'dark'); }
+    applyTheme(localStorage.getItem('krou_theme_manual') || 'dark');
+    window.addEventListener('message', e => { if (e.data && (e.data.type === 'THEME_CHANGE' || e.data.theme)) applyTheme(e.data.theme || e.data); });
+
+    /* 3. SEMESTER SUBJECT LIST */
+    const SEMESTER_SUBJECTS = [
+      { key: 'read',      label: 'អំណាន' },
+      { key: 'listen',    label: 'ស្តាប់ និងនិយាយ' },
+      { key: 'dictation', label: 'សរសេរតាមអាន' },
+      { key: 'essay',     label: 'តែងសេចក្តី' },
+      { key: 'math',      label: 'គណិតវិទ្យា' },
+      { key: 'science',   label: 'វិទ្យាសាស្ត្រ' },
+      { key: 'social',    label: 'សិក្សាសង្គម' },
+      { key: 'homeArts',  label: 'គេហវិទ្យា-អប់រំសិល្បៈ' },
+      { key: 'pe',        label: 'អប់រំកាយ-សុខភាព' },
+      { key: 'ethics',    label: 'អប់រំបំណិនជីវិត' },
+      { key: 'foreign',   label: 'ភាសាបរទេស' }
+    ];
+
+    let bundleData = null;
+
+    function setZoom(scale, btnId) {
+      const container = document.getElementById('semesterContainer');
+      if (container) container.style.zoom = scale;
+      ['zFit', 'z75', 'z100'].forEach(id => document.getElementById(id)?.classList.remove('active'));
+      document.getElementById(btnId)?.classList.add('active');
+    }
+
+    function setFitZoom() {
+      const screenW = window.innerWidth;
+      const targetW = 1125; // 297mm Landscape Booklet Width
+      let scale = (screenW - 20) / targetW;
+      if (scale > 1) scale = 1;
+      if (scale < 0.28) scale = 0.28;
+      setZoom(scale, 'zFit');
+    }
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth <= 1180 && document.getElementById('zFit')?.classList.contains('active')) {
+        setFitZoom();
+      }
+    });
+
+    function doPrint() {
+      window.focus();
+      setTimeout(() => {
+        try { window.print(); } catch(e) { window.parent.print(); }
+      }, 100);
+    }
+
+    // ── COMPETITION RANKING HELPER ──
+    function computeCompetitionRanks(items) {
+      const valid = items.filter(x => x.val !== '' && x.val !== null && !isNaN(Number(x.val)));
+      valid.sort((a, b) => Number(b.val) - Number(a.val));
+      const ranks = {};
+      let curRank = 1;
+      for (let i = 0; i < valid.length; i++) {
+        if (i > 0 && Number(valid[i].val) < Number(valid[i - 1].val)) {
+          curRank = i + 1;
+        }
+        ranks[String(valid[i].id).trim()] = curRank;
+      }
+      return ranks;
+    }
+
+    function getGradeFromAverage(avg) {
+      const n = Number(avg);
+      if (!Number.isFinite(n) || n <= 0) return '-';
+      if (n >= 9.00) return 'A';
+      if (n >= 8.00) return 'B';
+      if (n >= 7.00) return 'C';
+      if (n >= 6.00) return 'D';
+      if (n >= 5.00) return 'E';
+      return 'F';
+    }
+
+    /* 4. INITIALIZATION */
+    window.addEventListener('DOMContentLoaded', async () => {
+      if (!checkAuthentication()) return;
+      await initClasses();
+      if (window.innerWidth <= 1180) {
+        setFitZoom();
+      }
+    });
+
+    async function initClasses() {
+      const adminBox = document.getElementById('adminClassBox');
+      const teacherBadge = document.getElementById('teacherClassBadge');
+      const select = document.getElementById('classSelect');
+      const cleanCls = cleanGrade(USER_CLASS);
+
+      if (!IS_ADMIN) {
+        adminBox.style.display = 'none';
+        if (cleanCls) {
+          document.getElementById('teacherClassText').innerText = 'ថ្នាក់ទី ' + cleanCls;
+          teacherBadge.style.display = 'inline-flex';
+          select.innerHTML = `<option value="${cleanCls}">ថ្នាក់ទី ${cleanCls}</option>`;
+          select.value = cleanCls;
+          loadSemesterData();
+        } else {
+          teacherBadge.style.display = 'inline-flex';
+          document.getElementById('teacherClassText').innerText = 'មិនទាន់កំណត់ថ្នាក់';
+          document.getElementById('semesterContainer').innerHTML = 
+            '<div style="text-align:center; padding:50px; color:#f59e0b; font-weight:700;">⚠️ គណនីរបស់អ្នកមិនទាន់មានថ្នាក់ទទួលបន្ទុកឡើយ។ សូមទាក់ទង Admin។</div>';
+        }
+        return;
+      }
+
+      teacherBadge.style.display = 'none';
+      adminBox.style.display = 'inline-flex';
+
+      try {
+        const { data, error } = await sb.from('students').select('grade');
+        let classes = [];
+        if (!error && data) {
+          classes = [...new Set(data.map(d => cleanGrade(d.grade)).filter(Boolean))];
+        }
+        if (!classes.length) classes = ['១', '២', '៣', '៤(ក)', '៤(ខ)', '៥', '៦'];
+
+        select.innerHTML = classes.map(c => `<option value="${c}">ថ្នាក់ទី ${c}</option>`).join('');
+        if (cleanCls && classes.includes(cleanCls)) select.value = cleanCls;
+        loadSemesterData();
+      } catch (err) {
+        select.innerHTML = '<option value="">កំហុសទាញយកថ្នាក់</option>';
+      }
+    }
+
+    function onClassSelectChange() {
+      loadSemesterData();
+    }
+
+    /* 5. FETCH SEMESTER DATA BUNDLE FROM SUPABASE */
+    async function loadSemesterData() {
+      const cls = document.getElementById('classSelect').value || cleanGrade(USER_CLASS);
+      const curPure = cleanGrade(cls);
+      const container = document.getElementById('semesterContainer');
+
+      if (!curPure) return;
+
+      container.innerHTML = `
+        <div style="color:var(--text-muted); text-align: center; padding: 60px 20px; font-size: 15px; font-weight: 600;">
+          <i class="fa-solid fa-spinner fa-spin fa-2x" style="color:#0284c7;"></i>
+          <p style="margin-top:12px;">កំពុងទាញយកទិន្នន័យថ្នាក់ទី ${curPure}...</p>
+        </div>`;
+
+      try {
+        // ក. ទាញយកសិស្សក្នុងថ្នាក់
+        const { data: stList, error: stErr } = await sb
+          .from('students')
+          .select('*')
+          .order('id', { ascending: true });
+
+        if (stErr) throw stErr;
+
+        const students = (stList || [])
+          .filter(s => cleanGrade(s.grade) === curPure)
+          .map(s => ({
+            id: String(s.student_id || s.id),
+            name: s.student_name || 'គ្មានឈ្មោះ',
+            sex: s.gender || 'ប្រុស',
+            dob: s.dob || '',
+            pob: s.pob || '',
+            address: s.address || '',
+            father: s.father_name || '',
+            fatherJob: s.father_job || '',
+            mother: s.mother_name || '',
+            motherJob: s.mother_job || ''
+          }));
+
+        if (!students.length) {
+          container.innerHTML = '<div style="color:var(--text-muted); text-align:center; padding:40px;">មិនមានទិន្នន័យសិស្សក្នុងថ្នាក់នេះឡើយ</div>';
+          return;
+        }
+
+        const studentIds = students.map(s => s.id);
+
+        // ខ. ទាញយកពិន្ទុប្រឡងឆមាសទី១ និងទី២
+        const { data: scData, error: scErr } = await sb
+          .from('scores')
+          .select('student_id, score_type, period, scores, total, average, rank, grade_label')
+          .eq('assigned_class', curPure)
+          .in('student_id', studentIds);
+
+        if (scErr) console.warn("Scores error:", scErr);
+
+        const sem1Scores = {}, sem2Scores = {};
+        const sem1RankMap = {}, sem2RankMap = {}, yearRankMap = {};
+        const s1MonthlyAvgMap = {}, s2MonthlyAvgMap = {};
+
+        // គណនាពិន្ទុប្រចាំខែសម្រាប់ Sem 1 & Sem 2
+        const s1Months = ['វិច្ឆិកា', 'ធ្នូ', 'មករា', 'កុម្ភៈ', 'មីនា', 'មេសា'];
+        const s2Months = ['ឧសភា', 'មិថុនា', 'កក្កដា', 'សីហា', 'កញ្ញា', 'តុលា'];
+
+        students.forEach(st => {
+          const sId = st.id;
+          const myScores = (scData || []).filter(r => String(r.student_id) === sId);
+
+          // ប្រឡងឆមាសទី១
+          const e1 = myScores.find(r => r.score_type === 'semester' && r.period === 'ឆមាសទី១');
+          if (e1) {
+            sem1Scores[sId] = Object.assign({}, e1.scores || {}, { avg: e1.average, total: e1.total });
+            sem1RankMap[sId] = { rank: e1.rank, avg: e1.average, grade: e1.grade_label };
+          }
+
+          // ប្រឡងឆមាសទី២
+          const e2 = myScores.find(r => r.score_type === 'semester' && r.period === 'ឆមាសទី២');
+          if (e2) {
+            sem2Scores[sId] = Object.assign({}, e2.scores || {}, { avg: e2.average, total: e2.total });
+            sem2RankMap[sId] = { rank: e2.rank, avg: e2.average, grade: e2.grade_label };
+          }
+
+          // មធ្យមភាគពិន្ទុខែ Sem 1
+          let sum1 = 0, c1 = 0;
+          s1Months.forEach(m => {
+            const r = myScores.find(sc => sc.score_type === 'monthly' && sc.period === m);
+            if (r && Number(r.average) > 0) { sum1 += Number(r.average); c1++; }
+          });
+          if (c1 > 0) s1MonthlyAvgMap[sId] = (sum1 / c1).toFixed(2);
+
+          // មធ្យមភាគពិន្ទុខែ Sem 2
+          let sum2 = 0, c2 = 0;
+          s2Months.forEach(m => {
+            const r = myScores.find(sc => sc.score_type === 'monthly' && sc.period === m);
+            if (r && Number(r.average) > 0) { sum2 += Number(r.average); c2++; }
+          });
+          if (c2 > 0) s2MonthlyAvgMap[sId] = (sum2 / c2).toFixed(2);
+        });
+
+        // គ. ទាញយកវត្តមាន Sem 1 & Sem 2
+        const attMap = {};
+        students.forEach(st => attMap[st.id] = { sem1_p:0, sem1_a:0, sem2_p:0, sem2_a:0 });
+
+        const { data: attData } = await sb
+          .from('attendance')
+          .select('student_id, attendance_date, status')
+          .eq('assigned_class', curPure)
+          .in('student_id', studentIds)
+          .in('status', ['A', 'C']);
+
+        (attData || []).forEach(r => {
+          const sid = String(r.student_id);
+          if (!attMap[sid]) return;
+          const dt = new Date(r.attendance_date);
+          const m = dt.getMonth() + 1; // 1 to 12
+          // Sem 1 months: 11, 12, 1, 2, 3, 4
+          const isSem1 = [11, 12, 1, 2, 3, 4].includes(m);
+          if (isSem1) {
+            if (r.status === 'C') attMap[sid].sem1_p++;
+            if (r.status === 'A') attMap[sid].sem1_a++;
+          } else {
+            if (r.status === 'C') attMap[sid].sem2_p++;
+            if (r.status === 'A') attMap[sid].sem2_a++;
+          }
+        });
+
+        bundleData = {
+          className: curPure,
+          schoolName: 'កំពង់ល្ពៅ',
+          students: students,
+          sem1Scores: sem1Scores,
+          sem2Scores: sem2Scores,
+          sem1RankMap: sem1RankMap,
+          sem2RankMap: sem2RankMap,
+          yearRankMap: yearRankMap,
+          s1MonthlyAvgMap: s1MonthlyAvgMap,
+          s2MonthlyAvgMap: s2MonthlyAvgMap,
+          attMap: attMap
+        };
+
+        const sSelect = document.getElementById('studentSelect');
+        sSelect.innerHTML = '<option value="ALL">🏫 ទាំងថ្នាក់</option>';
+        students.forEach(s => {
+          const opt = document.createElement('option');
+          opt.value = s.id;
+          opt.textContent = `${s.id} - ${s.name}`;
+          sSelect.appendChild(opt);
+        });
+
+        renderSemesterView();
+
+      } catch (err) {
+        container.innerHTML = `<div style="color: #ef4444; text-align: center; padding: 40px; font-weight: 700;">❌ កំហុស៖ ${err.message}</div>`;
+      }
+    }
+
+    /* 6. RENDER BOOKLET */
+    function renderSemesterView() {
+      if (!bundleData) return;
+      const selectedSid = document.getElementById('studentSelect').value;
+      const sheetFilter = document.getElementById('sheetFilterSelect').value;
+      const cls = bundleData.className;
+      const container = document.getElementById('semesterContainer');
+      container.innerHTML = '';
+
+      const studentsList = bundleData.students || [];
+      const targetStudents = (selectedSid === 'ALL') ? studentsList : studentsList.filter(s => s.id === selectedSid);
+      
+      if (!targetStudents.length) {
+        container.innerHTML = '<div style="color:var(--text-muted); text-align: center; padding: 40px;">មិនមានទិន្នន័យសិស្សឡើយ</div>';
+        return;
+      }
+
+      const totalClassCount = studentsList.length;
+
+      // 🌟 គណនាចំណាត់ថ្នាក់តាមមុខវិជ្ជានីមួយៗ
+      const s1SubRanks = {}, s2SubRanks = {};
+      const s1TotList = [], s2TotList = [];
+      const s1AvgList = [], s2AvgList = [], yAvgList = [];
+
+      SEMESTER_SUBJECTS.forEach(sub => {
+        const s1Items = [], s2Items = [];
+        studentsList.forEach(st => {
+          const sc1 = (bundleData.sem1Scores && bundleData.sem1Scores[st.id]) ? bundleData.sem1Scores[st.id][sub.key] : '';
+          const sc2 = (bundleData.sem2Scores && bundleData.sem2Scores[st.id]) ? bundleData.sem2Scores[st.id][sub.key] : '';
+          if (sc1 !== '' && sc1 !== undefined && !isNaN(Number(sc1))) s1Items.push({ id: st.id, val: Number(sc1) });
+          if (sc2 !== '' && sc2 !== undefined && !isNaN(Number(sc2))) s2Items.push({ id: st.id, val: Number(sc2) });
+        });
+        s1SubRanks[sub.key] = computeCompetitionRanks(s1Items);
+        s2SubRanks[sub.key] = computeCompetitionRanks(s2Items);
+      });
+
+      // គណនាពិន្ទុសរុប និងមធ្យមភាគ
+      studentsList.forEach(st => {
+        const s1 = (bundleData.sem1Scores && bundleData.sem1Scores[st.id]) ? bundleData.sem1Scores[st.id] : {};
+        const s2 = (bundleData.sem2Scores && bundleData.sem2Scores[st.id]) ? bundleData.sem2Scores[st.id] : {};
+
+        let tot1 = 0, cnt1 = 0;
+        let tot2 = 0, cnt2 = 0;
+
+        SEMESTER_SUBJECTS.forEach(sub => {
+          const v1 = s1[sub.key]; if (v1 !== '' && v1 !== undefined && !isNaN(Number(v1))) { tot1 += Number(v1); cnt1++; }
+          const v2 = s2[sub.key]; if (v2 !== '' && v2 !== undefined && !isNaN(Number(v2))) { tot2 += Number(v2); cnt2++; }
+        });
+
+        if (tot1 > 0) {
+          s1TotList.push({ id: st.id, val: tot1 });
+          s1AvgList.push({ id: st.id, val: Number((tot1 / (cnt1 || 1)).toFixed(2)) });
+        }
+        if (tot2 > 0) {
+          s2TotList.push({ id: st.id, val: tot2 });
+          s2AvgList.push({ id: st.id, val: Number((tot2 / (cnt2 || 1)).toFixed(2)) });
+        }
+
+        const a1 = cnt1 > 0 ? (tot1 / cnt1) : 0;
+        const a2 = cnt2 > 0 ? (tot2 / cnt2) : 0;
+        const yAvg = (a1 > 0 && a2 > 0) ? ((a1 + a2) / 2) : (a1 || a2 || 0);
+        if (yAvg > 0) yAvgList.push({ id: st.id, val: Number(yAvg.toFixed(2)) });
+      });
+
+      const s1TotRanks = computeCompetitionRanks(s1TotList);
+      const s2TotRanks = computeCompetitionRanks(s2TotList);
+      const s1AvgRanks = computeCompetitionRanks(s1AvgList);
+      const s2AvgRanks = computeCompetitionRanks(s2AvgList);
+      const yAvgRanks  = computeCompetitionRanks(yAvgList);
+
+      targetStudents.forEach(student => {
+        const s1Score = (bundleData.sem1Scores && bundleData.sem1Scores[student.id]) ? bundleData.sem1Scores[student.id] : {};
+        const s2Score = (bundleData.sem2Scores && bundleData.sem2Scores[student.id]) ? bundleData.sem2Scores[student.id] : {};
+
+        const s1RankObj = (bundleData.sem1RankMap && bundleData.sem1RankMap[student.id]) ? bundleData.sem1RankMap[student.id] : {};
+        const s2RankObj = (bundleData.sem2RankMap && bundleData.sem2RankMap[student.id]) ? bundleData.sem2RankMap[student.id] : {};
+        const yRankObj  = (bundleData.yearRankMap && bundleData.yearRankMap[student.id]) ? bundleData.yearRankMap[student.id] : {};
+        const att       = (bundleData.attMap && bundleData.attMap[student.id]) ? bundleData.attMap[student.id] : { sem1_p:0, sem1_a:0, sem2_p:0, sem2_a:0 };
+
+        const s1AvgVal = Number(s1Score.avg || s1RankObj.avg || 0);
+        const s2AvgVal = Number(s2Score.avg || s2RankObj.avg || 0);
+
+        const s1RankNum = s1RankObj.rank || s1AvgRanks[student.id] || '-';
+        const s2RankNum = s2RankObj.rank || s2AvgRanks[student.id] || '-';
+        const yRankNum  = yRankObj.rank || yAvgRanks[student.id] || '-';
+
+        const yAvgVal = Number(yRankObj.avg || ((s1AvgVal > 0 && s2AvgVal > 0) ? ((s1AvgVal + s2AvgVal) / 2) : (s1AvgVal || s2AvgVal || 0))).toFixed(2);
+        const yGradeVal = yRankObj.grade || getGradeFromAverage(yAvgVal);
+
+        const s1MonthlyVal = (bundleData.s1MonthlyAvgMap && bundleData.s1MonthlyAvgMap[student.id]) ? bundleData.s1MonthlyAvgMap[student.id] : (s1AvgVal > 0 ? s1AvgVal.toFixed(2) : '');
+        const s2MonthlyVal = (bundleData.s2MonthlyAvgMap && bundleData.s2MonthlyAvgMap[student.id]) ? bundleData.s2MonthlyAvgMap[student.id] : (s2AvgVal > 0 ? s2AvgVal.toFixed(2) : '');
+
+        // ================= SHEET 1: ក្របក្រៅ =================
+        if (sheetFilter === 'ALL' || sheetFilter === '1') {
+          const sheet1 = document.createElement('div');
+          sheet1.className = 'sheet-page';
+          sheet1.innerHTML = `
+            <div></div>
+            <div class="page-box">
+              <div style="display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+                <div>
+                  <div class="header-text" style="margin-top: 5px;">
+                    <h2 class="f-moul">ព្រះរាជាណាចក្រកម្ពុជា</h2>
+                    <h3 class="f-moul">ជាតិ សាសនា ព្រះមហាក្សត្រ</h3>
+                    <div class="header-icons">✻ ✻ ✻ 📖 ✻ ✻ ✻</div>
+                    <h2 class="f-moul" style="font-size: 17px; margin-top: 15px;">ក្រសួងអប់រំ យុវជន និងកីឡា</h2>
+                  </div>
+
+                  <div style="text-align: center; margin: 30px 0 20px 0;">
+                    <h1 class="f-moul" style="font-size: 32px; color: var(--navy); line-height: 1.35;">សៀវភៅសិក្ខាគារិក</h1>
+                    <h3 class="f-moul" style="font-size: 17px; margin-top: 10px;">សាលាបឋមសិក្សាចំណេះទូទៅ</h3>
+                  </div>
+
+                  <div class="cover-info-block">
+                    <div class="cover-dotted-row">
+                      <span class="cover-dotted-label">សាលាបឋមសិក្សា ៖</span>
+                      <span class="cover-dotted-space">${bundleData.schoolName || 'កំពង់ល្ពៅ'}</span>
+                    </div>
+                    <div class="cover-dotted-row">
+                      <span class="cover-dotted-label">ឃុំ/សង្កាត់</span>
+                      <span class="cover-dotted-space">កំពង់ល្ពៅ</span>
+                      <span class="cover-dotted-label" style="margin-left: 12px;">ស្រុក/ខណ្ឌ</span>
+                      <span class="cover-dotted-space">សំឡូត</span>
+                      <span class="cover-dotted-label" style="margin-left: 12px;">ខេត្ត/ក្រុង</span>
+                      <span class="cover-dotted-space">បាត់ដំបង</span>
+                    </div>
+                    <div class="cover-dotted-row">
+                      <span class="cover-dotted-label">នាមត្រកូល និងនាមខ្លួន ៖</span>
+                      <span class="cover-dotted-space">${student.name}</span>
+                    </div>
+                    <div class="cover-dotted-row">
+                      <span class="cover-dotted-label">ថ្ងៃ ខែ ឆ្នាំកំណើត ៖</span>
+                      <span class="cover-dotted-space">${student.dob || ''}</span>
+                    </div>
+                    <div class="cover-dotted-row">
+                      <span class="cover-dotted-label">ទីកន្លែងកំណើត ៖</span>
+                      <span class="cover-dotted-space">${student.pob || ''}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="text-align: center; font-size: 17px; letter-spacing: 10px; color: var(--red-star); margin-bottom: 12px;">
+                  ✻ ✻ ✻ ✻ ✻
+                </div>
+              </div>
+            </div>
+          `;
+          container.appendChild(sheet1);
+        }
+
+        // ================= SHEET 2: ក្របក្នុង & សេចក្តីណែនាំ =================
+        if (sheetFilter === 'ALL' || sheetFilter === '2') {
+          const sheet2 = document.createElement('div');
+          sheet2.className = 'sheet-page';
+          sheet2.innerHTML = `
+            <div class="page-box" style="font-size: 12.8px; line-height: 1.55;">
+              <div style="display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+                <div>
+                  <div style="text-align: center; margin-bottom: 12px;">
+                    <h2 class="f-moul" style="font-size: 16.5px;">សេចក្តីណែនាំ</h2>
+                  </div>
+                  <p style="margin-bottom: 7px;">នាយកសាលាត្រូវចេញ និងគ្រប់គ្រងសៀវភៅសិក្ខាគារិក ហើយត្រូវអនុវត្តតាមចំណុចខាងក្រោម ៖</p>
+                  <p style="margin-bottom: 6px;">១. ចាប់ពីថ្នាក់ទី៣ ឡើងទៅ សិស្សត្រូវមានសៀវភៅសិក្ខាគារិកដែលចេញឱ្យដោយនាយកសាលា ។</p>
+                  <p style="margin-bottom: 6px;">២. ត្រូវចុះនាមត្រកូល និងនាមខ្លួន ភេទ ថ្ងៃ ខែ ឆ្នាំកំណើត ទីកន្លែងកំណើត ឈ្មោះ និងមុខរបរឪពុក/ម្តាយ ឱ្យបានច្បាស់លាស់ ។</p>
+                  <p style="margin-bottom: 6px;">៣. នៅបញ្ចប់ឆមាសនីមួយៗ និងបញ្ចប់ឆ្នាំសិក្សា គ្រូទទួលបន្ទុកថ្នាក់ត្រូវចុះ ចំណាត់ថ្នាក់ និងមធ្យមភាគឱ្យបានត្រឹមត្រូវ ។ ចំណែកនាយកសាលាក៏ត្រូវចុះមូលវិចារ ការសរសើរ ឬកំណែទម្រង់ នៅចុងឆ្នាំសិក្សានីមួយៗដែរ ។</p>
+                  <p style="margin-bottom: 6px;">៤. ចំពោះសិស្សផ្ទេរការសិក្សា នាយកសាលាត្រូវបូកសរុបលទ្ធផលនៃការសិក្សារបស់សិស្ស ឱ្យបានសព្វគ្រប់ រួចចុះហត្ថលេខាដោយដាក់ឈ្មោះ ។</p>
+                  <p style="margin-bottom: 6px;">៥. ហាមគូសលុប ឬសរសេរបន្ថែម ។ ក្នុងករណីមានកែកំហុស ត្រូវចុះហត្ថលេខា និងបញ្ជាក់បន្ថែមពីនាយកសាលា ។</p>
+                  <p style="font-weight: bold; margin-top: 7px; margin-bottom: 3px;">៦. របៀបគណនាមធ្យមភាគប្រចាំឆមាស និងដំណាច់ឆ្នាំ ៖</p>
+                  <div style="margin-left: 15px; font-size: 12px; margin-bottom: 6px; line-height: 1.6;">
+                    <p><strong>ក. ឆមាសទី១ ៖</strong> (មធ្យមភាគពិន្ទុខែ + មធ្យមភាគពិន្ទុប្រឡងឆមាសទី១) / ២</p>
+                    <p><strong>ខ. ឆមាសទី២ ៖</strong> (មធ្យមភាគពិន្ទុខែ + មធ្យមភាគពិន្ទុប្រឡងឆមាសទី២) / ២</p>
+                    <p><strong>គ. ដំណាច់ឆ្នាំសិក្សា ៖</strong> (មធ្យមភាគប្រចាំឆមាសទី១ + មធ្យមភាគប្រចាំឆមាសទី២) / ២</p>
+                  </div>
+                  <p style="margin-bottom: 6px;">៧. មធ្យមភាគប្រចាំឆមាសទី១ ទី២ និងដំណាច់ឆ្នាំ ដែលលោកគ្រូ/អ្នកគ្រូ រកឃើញ ហើយត្រូវស្រង់យកទៅដាក់ត្រង់លទ្ធផលនៃការប្រឡងឆមាស ត្រង់ឆមាស និងដំណាច់ឆ្នាំ ។</p>
+                  <div style="margin-top: 8px; line-height: 1.5;">
+                    <p><strong>កំណត់សម្គាល់ ៖</strong></p>
+                    <p>- ក្នុង ១ ឆមាស មាន ៤ ខែ ឬ ៦ ខែ ។</p>
+                    <p>- នាយកសាលាត្រូវចុះហត្ថលេខាលើរូបថតសិស្ស ។</p>
+                  </div>
+                </div>
+                <div style="text-align: center; letter-spacing: 6px; color: var(--red-star); margin-bottom: 4px;">✻ ✻ ✻ ✻ ✻</div>
+              </div>
+            </div>
+
+            <div class="page-box">
+              <div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                  <div style="border: 1.2px solid var(--navy); width: 32mm; height: 40mm; display: flex; align-items: center; justify-content: center; font-size: 13px; text-align: center;">
+                    រូបថត<br>៤x៦
+                  </div>
+                  <div style="flex: 1; text-align: center; margin-left: 10px;">
+                    <h2 class="f-moul" style="font-size: 19px; margin-top: 5px;">សៀវភៅសិក្ខាគារិក</h2>
+                    <div class="header-icons">✻ ✻ ✻ 📖 ✻ ✻ ✻</div>
+                  </div>
+                </div>
+
+                <div style="margin-top: 14px; font-size: 14px;">
+                  <div class="dotted-row"><span class="dotted-label">នាមត្រកូល និងនាមខ្លួន ៖</span><span class="dotted-space">${student.name}</span></div>
+                  <div class="dotted-row"><span class="dotted-label">ថ្ងៃ ខែ ឆ្នាំកំណើត ៖</span><span class="dotted-space">${student.dob || ''}</span></div>
+                  <div class="dotted-row"><span class="dotted-label">ទីកន្លែងកំណើត ៖</span><span class="dotted-space">${student.pob || ''}</span></div>
+                  <div class="dotted-row"><span class="dotted-label">ឈ្មោះ និងមុខរបរឪពុក ៖</span><span class="dotted-space">${student.father ? student.father + (student.fatherJob ? ' (' + student.fatherJob + ')' : '') : ''}</span></div>
+                  <div class="dotted-row"><span class="dotted-label">ឈ្មោះ និងមុខរបរម្តាយ ៖</span><span class="dotted-space">${student.mother ? student.mother + (student.motherJob ? ' (' + student.motherJob + ')' : '') : ''}</span></div>
+                  <div class="dotted-row"><span class="dotted-label">អាសយដ្ឋានបច្ចុប្បន្ន ៖</span><span class="dotted-space">${student.address || ''}</span></div>
+                </div>
+
+                <div class="sig-block" style="margin-top: 8px; font-size: 12.5px;">
+                  <div class="sig-inner">
+                    <div>ថ្ងៃទី...... ខែ...... ឆ្នាំ២០២៦</div>
+                    <div class="f-bold" style="margin-top: 3px;">នាយកសាលា</div>
+                  </div>
+                </div>
+              </div>
+
+              <table class="custom-table" style="margin-top: 10px;">
+                <thead>
+                  <tr>
+                    <th style="width: 18%;">ឆ្នាំសិក្សា</th>
+                    <th style="width: 12%;">ថ្នាក់ទី</th>
+                    <th style="width: 25%;">គ្រឹះស្ថានសិក្សា</th>
+                    <th style="width: 18%;">ថ្ងៃ ខែ ឆ្នាំចូលរៀន</th>
+                    <th style="width: 17%;">ថ្ងៃ ខែ ឆ្នាំចេញ</th>
+                    <th style="width: 10%;">អត្តលេខ</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>២០២៦-២០២៧</td>
+                    <td>${cls}</td>
+                    <td>${bundleData.schoolName || 'កំពង់ល្ពៅ'}</td>
+                    <td>០១ វិច្ឆិកា ២០២៦</td>
+                    <td>៣១ តុលា ២០២៧</td>
+                    <td>${student.id}</td>
+                  </tr>
+                  <tr><td>&nbsp;</td><td></td><td></td><td></td><td></td><td></td></tr>
+                  <tr><td>&nbsp;</td><td></td><td></td><td></td><td></td><td></td></tr>
+                  <tr><td>&nbsp;</td><td></td><td></td><td></td><td></td><td></td></tr>
+                  <tr><td>&nbsp;</td><td></td><td></td><td></td><td></td><td></td></tr>
+                  <tr><td>&nbsp;</td><td></td><td></td><td></td><td></td><td></td></tr>
+                </tbody>
+              </table>
+            </div>
+          `;
+          container.appendChild(sheet2);
+        }
+
+        // ================= SHEET 3: លទ្ធផលប្រឡងឆមាស និងប្រចាំឆ្នាំ =================
+        if (sheetFilter === 'ALL' || sheetFilter === '3') {
+          let tableRowsHtml = '';
+          let s1Total = 0, s2Total = 0;
+
+          SEMESTER_SUBJECTS.forEach(sub => {
+            const v1 = (s1Score[sub.key] !== undefined && s1Score[sub.key] !== '') ? Number(s1Score[sub.key]) : '';
+            const v2 = (s2Score[sub.key] !== undefined && s2Score[sub.key] !== '') ? Number(s2Score[sub.key]) : '';
+            if (v1 !== '') s1Total += v1;
+            if (v2 !== '') s2Total += v2;
+
+            const r1 = (v1 !== '' && s1SubRanks[sub.key] && s1SubRanks[sub.key][student.id]) ? s1SubRanks[sub.key][student.id] : '';
+            const r2 = (v2 !== '' && s2SubRanks[sub.key] && s2SubRanks[sub.key][student.id]) ? s2SubRanks[sub.key][student.id] : '';
+
+            tableRowsHtml += `
+              <tr>
+                <td class="text-left">${sub.label}</td>
+                <td>${v1 !== '' ? v1 : ''}</td>
+                <td class="red-bold">${r1 !== '' ? toKhmerNum(r1) : ''}</td>
+                <td>${v2 !== '' ? v2 : ''}</td>
+                <td class="red-bold">${r2 !== '' ? toKhmerNum(r2) : ''}</td>
+              </tr>
+            `;
+          });
+
+          const s1TotRank = (s1Total > 0 && s1TotRanks[student.id]) ? s1TotRanks[student.id] : '';
+          const s2TotRank = (s2Total > 0 && s2TotRanks[student.id]) ? s2TotRanks[student.id] : '';
+
+          const sheet3 = document.createElement('div');
+          sheet3.className = 'sheet-page';
+          sheet3.innerHTML = `
+            <div class="page-box">
+              <div>
+                <div style="display: flex; justify-content: space-between; font-size: 13.5px; margin-bottom: 4px;" class="f-bold">
+                  <div>នាមត្រកូល និងនាមខ្លួន ៖ ${student.name}</div>
+                  <div>ថ្នាក់ទី ៖ ${cls}</div>
+                  <div>ចំនួនសិស្ស ៖ ${toKhmerNum(totalClassCount)} នាក់</div>
+                </div>
+
+                <div class="f-bold" style="margin-bottom: 3px; font-size: 13.5px;">ក. លទ្ធផលនៃការប្រឡងឆមាស</div>
+                <table class="custom-table">
+                  <thead>
+                    <tr>
+                      <th rowspan="2" style="width: 38%; font-size: 13.5px;">មុខវិជ្ជា</th>
+                      <th colspan="2" style="font-size: 13.5px;">ឆមាសទី១</th>
+                      <th colspan="2" style="font-size: 13.5px;">ឆមាសទី២</th>
+                    </tr>
+                    <tr>
+                      <th style="width: 15%;">ពិន្ទុ</th>
+                      <th style="width: 15%;">ចំណាត់ថ្នាក់</th>
+                      <th style="width: 15%;">ពិន្ទុ</th>
+                      <th style="width: 15%;">ចំណាត់ថ្នាក់</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${tableRowsHtml}
+                    <tr class="f-bold">
+                      <td class="text-left">សរុបពិន្ទុ</td>
+                      <td>${s1Total > 0 ? s1Total.toFixed(2) : ''}</td>
+                      <td class="red-bold">${s1TotRank !== '' ? toKhmerNum(s1TotRank) : ''}</td>
+                      <td>${s2Total > 0 ? s2Total.toFixed(2) : ''}</td>
+                      <td class="red-bold">${s2TotRank !== '' ? toKhmerNum(s2TotRank) : ''}</td>
+                    </tr>
+                    <tr class="f-bold">
+                      <td class="text-left">មធ្យមភាគ</td>
+                      <td>${s1AvgVal > 0 ? s1AvgVal.toFixed(2) : ''}</td>
+                      <td></td>
+                      <td>${s2AvgVal > 0 ? s2AvgVal.toFixed(2) : ''}</td>
+                      <td></td>
+                    </tr>
+                    <tr class="f-bold">
+                      <td class="text-left">មធ្យមភាគប្រចាំខែ</td>
+                      <td>${s1MonthlyVal}</td>
+                      <td></td>
+                      <td>${s2MonthlyVal}</td>
+                      <td></td>
+                    </tr>
+                    <tr class="f-bold">
+                      <td class="text-left">មធ្យមភាគប្រចាំឆមាស</td>
+                      <td>${s1AvgVal > 0 ? s1AvgVal.toFixed(2) : '0'}</td>
+                      <td class="red-bold">${s1RankNum !== '-' ? toKhmerNum(s1RankNum) : '-'}</td>
+                      <td>${s2AvgVal > 0 ? s2AvgVal.toFixed(2) : '0'}</td>
+                      <td class="red-bold">${s2RankNum !== '-' ? toKhmerNum(s2RankNum) : '-'}</td>
+                    </tr>
+                    <tr class="f-bold" style="background: #f1f5f9; font-size: 13.5px;">
+                      <td colspan="5" style="padding: 4.5px;">
+                        លទ្ធផលដំណាច់ឆ្នាំ ( មធ្យមភាគ <strong class="red-bold">${yAvgVal > 0 ? yAvgVal : '0'}</strong> - ចំណាត់ថ្នាក់ <strong class="red-bold">${yRankNum !== '-' ? toKhmerNum(yRankNum) : '-'}</strong> - និទ្ទេស <strong class="red-bold">${yGradeVal}</strong> )
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <div class="f-bold" style="margin: 6px 0 3px 0; font-size: 13.5px;">ខ. ចំនួនពេលអវត្តមាន</div>
+                <table class="custom-table">
+                  <thead>
+                    <tr>
+                      <th colspan="2" style="font-size: 13px;">ឆមាសទី១</th>
+                      <th colspan="2" style="font-size: 13px;">ឆមាសទី២</th>
+                      <th rowspan="2" style="font-size: 13px;">សរុប</th>
+                    </tr>
+                    <tr>
+                      <th>មានច្បាប់</th>
+                      <th>គ្មានច្បាប់</th>
+                      <th>មានច្បាប់</th>
+                      <th>គ្មានច្បាប់</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>${toKhmerNum(att.sem1_p || 0)}</td>
+                      <td>${toKhmerNum(att.sem1_a || 0)}</td>
+                      <td>${toKhmerNum(att.sem2_p || 0)}</td>
+                      <td>${toKhmerNum(att.sem2_a || 0)}</td>
+                      <td class="f-bold red-bold">${toKhmerNum((att.sem1_p || 0) + (att.sem1_a || 0) + (att.sem2_p || 0) + (att.sem2_a || 0))}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="page-box">
+              <div>
+                <div style="display: flex; justify-content: space-between; font-size: 13.5px; margin-bottom: 4px;" class="f-bold">
+                  <div>សាលា ៖ ${bundleData.schoolName || 'កំពង់ល្ពៅ'}</div>
+                  <div>ឆ្នាំសិក្សា ៖ ២០២៦-២០២៧</div>
+                </div>
+
+                <div class="f-bold" style="margin-bottom: 3px; font-size: 13.5px;">គ. វាយតម្លៃសិស្សលើការសិក្សា</div>
+                <table class="custom-table" style="height: 65px;">
+                  <thead>
+                    <tr>
+                      <th style="width: 25%;">ឆមាសទី១</th>
+                      <th style="width: 35%;">ឆមាសទី២</th>
+                      <th style="width: 40%;">ប្រចាំឆ្នាំ</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr style="font-size: 12.5px; text-align: left; vertical-align: top; padding: 4px;">
+                      <td>${s1AvgVal >= 5 ? 'លទ្ធផលសិក្សាមធ្យម' : ''}</td>
+                      <td>${s2AvgVal >= 5 ? 'លទ្ធផលសិក្សាមធ្យម គួរខិតខំរៀនបន្ថែម' : ''}</td>
+                      <td>និទ្ទេសប្រចាំឆ្នាំ ${yGradeVal} លទ្ធផលសិក្សាមធ្យម គួរខិតខំរៀនបន្ថែមទៀត។ សមនឹងឡើងថ្នាក់បាន។</td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <div class="f-bold" style="margin: 6px 0 3px 0; font-size: 13.5px;">ឃ. លទ្ធផលប្រចាំឆ្នាំ</div>
+                <div style="font-size: 13px; line-height: 1.65; margin-left: 6px;">
+                  <div>ត្រូវបានឡើងថ្នាក់ទី ៖ <strong class="f-bold">${parseInt(cls) < 6 ? toKhmerNum(parseInt(cls) + 1) : 'បញ្ចប់បឋម'}</strong></div>
+                  <div>ត្រូវប្រឡងឡើងថ្នាក់ ៖ ................. មុខវិជ្ជាដែលត្រូវប្រឡង ៖ .................</div>
+                  <div>ត្រូវរៀនត្រួតថ្នាក់ ៖ ................. ត្រូវរៀនឡើងថ្នាក់ទី ៖ .................</div>
+                </div>
+
+                <div class="f-bold" style="margin: 6px 0 3px 0; font-size: 13.5px;">ង. ការសរសើរ និងកំណែទម្រង់</div>
+                <table class="custom-table" style="height: 55px;">
+                  <thead>
+                    <tr>
+                      <th style="width: 50%;">ការសរសើរ</th>
+                      <th style="width: 50%;">កំណែទម្រង់</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr style="font-size: 12.5px; text-align: left; vertical-align: top; padding: 4px;">
+                      <td>${Number(yRankNum) <= 5 && Number(yRankNum) > 0 ? 'បានចំណាត់ថ្នាក់ទី ' + toKhmerNum(yRankNum) + ' ក្នុងថ្នាក់ ។ ពូកែខាងសិក្សាសង្គម ។' : 'ខិតខំរៀនសូត្រ'}</td>
+                      <td>គួរពង្រឹងមុខវិជ្ជាសរសេរតាមអាន ។</td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <div class="sig-block" style="margin-top: 4px; font-size: 12.5px;">
+                  <div class="sig-inner">
+                    <div>ថ្ងៃទី...... ខែ...... ឆ្នាំ២០២៦</div>
+                    <div class="f-bold" style="margin-top: 2px;">គ្រូទទួលបន្ទុកថ្នាក់</div>
+                    <div style="font-weight: bold; margin-top: 20px; font-size: 13.5px;">${TEACHER_NAME || ''}</div>
+                  </div>
+                </div>
+
+                <div class="f-bold" style="margin-top: 4px; font-size: 13.5px;">ច. មូលវិចាររបស់នាយកសាលា</div>
+                <div style="border-bottom: 1.2px dotted var(--navy); min-height: 18px;"></div>
+                <div style="border-bottom: 1.2px dotted var(--navy); min-height: 18px;"></div>
+                
+                <div class="sig-block" style="margin-top: 4px; font-size: 12.5px;">
+                  <div class="sig-inner">
+                    <div>ថ្ងៃទី...... ខែ...... ឆ្នាំ២០២៦</div>
+                    <div class="f-bold" style="margin-top: 2px;">នាយកសាលា</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+          container.appendChild(sheet3);
+        }
+      });
+    }
+  </script>
+</body>
+</html>
