@@ -529,7 +529,7 @@
   </div>
 
   <!-- =========================================================
-       ⚙️ ផ្នែក JavaScript : SUPABASE INTEGRATION (កែសម្រួល STUDENT_NAME)
+       ⚙️ ផ្នែក JavaScript : SUPABASE FULL INTEGRATION
   ========================================================= -->
   <script>
     /* 1. SUPABASE CLIENT CONFIG */
@@ -542,23 +542,21 @@
       try { return JSON.parse(localStorage.getItem('krou_supabase_user') || 'null'); } catch (e) { return null; }
     }
     const CURRENT_USER = readSession();
-    var USER_ROLE = CURRENT_USER?.role || (window.parent && window.parent.USER_ROLE) || "teacher";
+    var USER_ROLE = CURRENT_USER?.role || "teacher";
     var USER_CLASS = CURRENT_USER?.assigned_classes || "";
-    var TEACHER_NAME = CURRENT_USER?.teacher_name || (window.parent && window.parent.TEACHER_NAME) || "";
+    var TEACHER_NAME = CURRENT_USER?.teacher_name || "";
 
     var KHMER_MONTHS = ["មករា","កុម្ភៈ","មីនា","មេសា","ឧសភា","មិថុនា","កក្កដា","សីហា","កញ្ញា","តុលា","វិច្ឆិកា","ធ្នូ"];
     var WEEKDAYS_KH = ["អា","ច","អ","ព","ព្រ","សុ","ស"];
     var KHMER_DIGITS = ['០','១','២','៣','៤','៥','៦','៧','៨','៩'];
 
-    var monthlyHolidaysMap = {
-      "មករា": [], "កុម្ភៈ": [], "មីនា": [], "មេសា": [], 
-      "ឧសភា": [], "មិថុនា": [], "កក្កដា": [], "សីហា": [], 
-      "កញ្ញា": [], "តុលា": [], "វិច្ឆិកា": [], "ធ្នូ"
-    };
+    var monthlyHolidaysMap = {};
+    KHMER_MONTHS.forEach(m => monthlyHolidaysMap[m] = []);
 
     var selectedHolidayDay = null;
     var selectedDate = new Date();
     var currentClassName = "";
+    var allStudentsCache = [];
     var rawStudentsData = [];
     var dailyAttendanceState = {};
     var studentNotesMap = {};
@@ -566,6 +564,7 @@
     var saveDebounceTimer = null;
 
     function toKhmerNum(n) { return String(n).replace(/\d/g, d => KHMER_DIGITS[d]); }
+    function cleanGrade(g) { return String(g || '').replace(/^ថ្នាក់ទី\s*/, '').trim(); }
 
     function showSaveToast() {
       var toast = document.getElementById("saveToast");
@@ -575,234 +574,132 @@
 
     function syncThemeWithParent() {
       var pTheme = (window.parent && window.parent.document && window.parent.document.documentElement.getAttribute('data-theme'))
-        || localStorage.getItem('krou_theme_manual') 
-        || 'light';
+        || localStorage.getItem('krou_theme_manual') || 'light';
       document.documentElement.setAttribute('data-theme', pTheme);
     }
 
     /* 3. LIFECYCLE INITIALIZATION */
     window.onload = async function() {
       syncThemeWithParent();
-      setInterval(syncThemeWithParent, 2000);
       updateDateUI();
-
       await loadSchoolHolidays();
       renderHolidayConfigSection();
-      await loadAvailableClasses();
-      await loadDailyAttendanceData();
+      await loadAllStudentsAndClasses();
     };
 
-    /* 4. CLASS SELECTION */
-    async function loadAvailableClasses() {
-      var fallbackClasses = ['១', '២', '៣', '៤(ក)', '៤(ខ)', '៥', '៦'];
-      var classList = [...fallbackClasses];
-
-      try {
-        const { data, error } = await sb.from('students').select('grade');
-        if (!error && data && data.length) {
-          const unique = [...new Set(data.map(d => String(d.grade || '').replace(/^ថ្នាក់ទី\s*/, '').trim()).filter(Boolean))];
-          if (unique.length) classList = unique;
-        }
-      } catch (e) {
-        console.warn('Could not query students grade:', e);
-      }
-
+    /* 4. ទាញយកសិស្សទាំងអស់ និងបង្កើតបញ្ជីថ្នាក់ស្វ័យប្រវត្តិ */
+    async function loadAllStudentsAndClasses() {
       var sel = document.getElementById('classSelect');
-      sel.innerHTML = '';
-      classList.forEach(function(c) {
-        var opt = document.createElement('option');
-        opt.value = c;
-        opt.textContent = 'ថ្នាក់ទី ' + c;
-        sel.appendChild(opt);
-      });
-
-      var normUserClass = String(USER_CLASS || '').replace(/^ថ្នាក់ទី\s*/, '').trim();
-      if (normUserClass && classList.includes(normUserClass)) {
-        sel.value = normUserClass;
-      }
-      currentClassName = sel.value || classList[0] || '១';
-    }
-
-    function onClassChange() {
-      currentClassName = document.getElementById('classSelect').value;
-      if (!currentClassName) return;
-      loadDailyAttendanceData();
-    }
-
-    /* 5. HOLIDAYS (SUPABASE) */
-    async function loadSchoolHolidays() {
-      var yr = selectedDate.getFullYear();
-      try {
-        const { data, error } = await sb.from('school_holidays').select('*').eq('year', yr);
-        if (!error && data) {
-          KHMER_MONTHS.forEach(m => monthlyHolidaysMap[m] = []);
-          data.forEach(h => {
-            if (!monthlyHolidaysMap[h.month]) monthlyHolidaysMap[h.month] = [];
-            monthlyHolidaysMap[h.month].push({ day: h.day, reason: h.reason || 'ឈប់' });
-          });
-          KHMER_MONTHS.forEach(m => monthlyHolidaysMap[m].sort((a,b) => a.day - b.day));
-        }
-      } catch(e) {
-        console.warn('Holidays load error:', e);
-      }
-    }
-
-    async function addHolidayForCurrentMonth() {
-      var mName = document.getElementById('rptMonthSelect').value;
-      var reasonInput = document.getElementById('holidayReasonInput');
-      if (!selectedHolidayDay) { alert('សូមចុចលើប្រអប់ប្រតិទិន ដើម្បីជ្រើសរើសថ្ងៃឈប់សម្រាកសិន!'); return; }
-      var reason = (reasonInput.value || 'ថ្ងៃឈប់សម្រាក').trim();
-      var yr = selectedDate.getFullYear();
-
-      try {
-        await sb.from('school_holidays').upsert({
-          year: yr, month: mName, day: selectedHolidayDay, reason: reason
-        }, { onConflict: 'year,month,day' });
-
-        if (!monthlyHolidaysMap[mName]) monthlyHolidaysMap[mName] = [];
-        monthlyHolidaysMap[mName] = monthlyHolidaysMap[mName].filter(h => h.day !== selectedHolidayDay);
-        monthlyHolidaysMap[mName].push({ day: selectedHolidayDay, reason: reason });
-        monthlyHolidaysMap[mName].sort((a, b) => a.day - b.day);
-
-        reasonInput.value = '';
-        selectedHolidayDay = null;
-        document.getElementById('selectedHolidayDateTxt').textContent = `ជ្រើសរើសថ្ងៃទី (${mName})`;
-        renderHolidayTagsList();
-        showSaveToast();
-      } catch (err) {
-        alert('មានបញ្ហាក្នុងការរក្សាទុកថ្ងៃឈប់៖ ' + (err.message || err));
-      }
-    }
-
-    async function removeHoliday(mName, dayNum) {
-      var yr = selectedDate.getFullYear();
-      try {
-        await sb.from('school_holidays').delete().eq('year', yr).eq('month', mName).eq('day', dayNum);
-        if (monthlyHolidaysMap[mName]) {
-          monthlyHolidaysMap[mName] = monthlyHolidaysMap[mName].filter(h => h.day !== dayNum);
-          renderHolidayTagsList();
-          showSaveToast();
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    }
-
-    function toggleHolidayCalPopup() {
-      var pop = document.getElementById('holidayCalPopup');
-      pop.classList.toggle('show');
-      if (pop.classList.contains('show')) renderHolidayCalendarDays();
-    }
-
-    function renderHolidayCalendarDays() {
-      var mName = document.getElementById('rptMonthSelect').value;
-      var mIdx = KHMER_MONTHS.indexOf(mName);
-      var currentYear = selectedDate.getFullYear();
-      document.getElementById('holidayCalTitle').textContent = mName + " " + currentYear;
-      var grid = document.getElementById('holidayCalDaysGrid');
-      grid.innerHTML = '';
-
-      var firstDay = new Date(currentYear, mIdx, 1).getDay();
-      var totalDays = new Date(currentYear, mIdx + 1, 0).getDate();
-      var prevTotal = new Date(currentYear, mIdx, 0).getDate();
-
-      for (var p = firstDay - 1; p >= 0; p--) grid.innerHTML += `<div class="cal-day-cell muted">${prevTotal - p}</div>`;
-      for (var d = 1; d <= totalDays; d++) {
-        var isSel = (selectedHolidayDay === d);
-        grid.innerHTML += `<div class="cal-day-cell ${isSel ? 'selected' : ''}" onclick="pickHolidayCalendarDate(${d})">${d}</div>`;
-      }
-    }
-
-    function pickHolidayCalendarDate(d) {
-      selectedHolidayDay = d;
-      var mName = document.getElementById('rptMonthSelect').value;
-      document.getElementById('selectedHolidayDateTxt').textContent = `ថ្ងៃទី ${toKhmerNum(d)}  ${mName}`;
-      toggleHolidayCalPopup();
-    }
-
-    function renderHolidayConfigSection() {
-      selectedHolidayDay = null;
-      var mName = document.getElementById('rptMonthSelect').value;
-      document.getElementById('selectedHolidayDateTxt').textContent = `ជ្រើសរើសថ្ងៃទី (${mName})`;
-      renderHolidayTagsList();
-    }
-
-    function renderHolidayTagsList() {
-      var mName = document.getElementById('rptMonthSelect').value;
-      var container = document.getElementById('holidayTagsContainer');
-      var list = monthlyHolidaysMap[mName] || [];
-      if (list.length === 0) {
-        container.innerHTML = '<span style="font-size:11.5px; color:var(--text-muted); font-style:italic;">មិនទាន់មានថ្ងៃឈប់សម្រាកសម្រាប់ខែនេះទេ</span>';
-        return;
-      }
-      var html = '';
-      list.forEach(function(h) {
-        html += `<span class="holiday-tag-pill">ថ្ងៃទី${toKhmerNum(h.day)} (${h.reason}) <i class="fa-solid fa-xmark" onclick="removeHoliday('${mName}', ${h.day})"></i></span>`;
-      });
-      container.innerHTML = html;
-    }
-
-    /* 6. DAILY ATTENDANCE (SUPABASE READ/WRITE) */
-    async function loadDailyAttendanceData() {
-      if (!currentClassName) return;
       var container = document.getElementById('studentListContainer');
+
       container.innerHTML = `
         <div style="text-align:center; padding:35px; color:var(--text-muted);">
           <i class="fa-solid fa-spinner fa-spin fa-2x" style="color:var(--primary);"></i>
-          <p style="margin-top:10px; font-weight:600;">កំពុងទាញយកទិន្នន័យ...</p>
+          <p style="margin-top:10px; font-weight:600;">កំពុងទាញយកទិន្នន័យសិស្សពី Supabase...</p>
         </div>`;
 
       try {
-        var pureClass = currentClassName.replace(/^ថ្នាក់ទី\s*/, '').trim();
-
-        // ✅ ១. ទាញយកសិស្សដោយប្រើ student_name (និងស្គាល់ទាំង '១' និង 'ថ្នាក់ទី ១')
         const { data: stList, error: stErr } = await sb
           .from('students')
           .select('id, student_id, student_name, gender, grade')
-          .or(`grade.eq.${pureClass},grade.eq.ថ្នាក់ទី ${pureClass}`)
           .order('id', { ascending: true });
 
         if (stErr) throw stErr;
 
-        rawStudentsData = (stList || []).map(s => ({
+        if (!stList || stList.length === 0) {
+          container.innerHTML = `<div style="text-align:center; padding:40px; color:#d97706; font-weight:bold;">
+            ⚠️ តារាង students មិនទាន់មានទិន្នន័យសិស្សនៅឡើយទេ!
+          </div>`;
+          sel.innerHTML = '<option value="">គ្មានថ្នាក់</option>';
+          return;
+        }
+
+        allStudentsCache = stList;
+
+        // ចម្រាញ់ឈ្មោះថ្នាក់ស្វ័យប្រវត្តពី Database
+        var uniqueClasses = [...new Set(stList.map(s => cleanGrade(s.grade)).filter(Boolean))];
+        if (!uniqueClasses.length) uniqueClasses = ['១', '២', '៣', '៤(ក)', '៤(ខ)', '៥', '៦'];
+
+        sel.innerHTML = '';
+        uniqueClasses.forEach(function(c) {
+          var opt = document.createElement('option');
+          opt.value = c;
+          opt.textContent = 'ថ្នាក់ទី ' + c;
+          sel.appendChild(opt);
+        });
+
+        var userCls = cleanGrade(USER_CLASS);
+        if (userCls && uniqueClasses.includes(userCls)) {
+          sel.value = userCls;
+        } else {
+          sel.value = uniqueClasses[0];
+        }
+
+        currentClassName = sel.value;
+        await loadDailyAttendanceData();
+      } catch (err) {
+        console.error('Students fetch error:', err);
+        container.innerHTML = `
+          <div style="text-align:center; padding:30px; color:#dc2626;">
+            ❌ មិនអាចទាញយកសិស្សបានទេ៖ <b>${err.message || JSON.stringify(err)}</b>
+          </div>`;
+      }
+    }
+
+    function onClassChange() {
+      currentClassName = document.getElementById('classSelect').value;
+      loadDailyAttendanceData();
+    }
+
+    /* 5. ទាញយកវត្តមានប្រចាំថ្ងៃ */
+    async function loadDailyAttendanceData() {
+      if (!currentClassName) return;
+      var curPure = cleanGrade(currentClassName);
+
+      // ចម្រាញ់យកសិស្សតាមថ្នាក់ដែលបានរើស
+      rawStudentsData = allStudentsCache
+        .filter(s => cleanGrade(s.grade) === curPure)
+        .map(s => ({
           id: String(s.student_id || s.id),
-          name: s.student_name || '', // 👈 ប្រើ student_name
+          name: s.student_name || 'គ្មានឈ្មោះ',
           sex: s.gender || 'ប្រុស',
           grade: s.grade,
           days: {}
         }));
 
-        // ២. ទាញយកទិន្នន័យវត្តមានតាម assigned_class
-        var y = selectedDate.getFullYear();
-        var m = selectedDate.getMonth();
-        var firstDateStr = `${y}-${String(m+1).padStart(2,'0')}-01`;
-        var lastDay = new Date(y, m + 1, 0).getDate();
-        var lastDateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(lastDay).padStart(2,'0')}`;
+      var y = selectedDate.getFullYear();
+      var m = selectedDate.getMonth();
+      var firstDateStr = `${y}-${String(m+1).padStart(2,'0')}-01`;
+      var lastDay = new Date(y, m + 1, 0).getDate();
+      var lastDateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(lastDay).padStart(2,'0')}`;
 
+      try {
         const { data: attList, error: attErr } = await sb
           .from('attendance')
-          .select('student_id, attendance_date, status, note')
-          .or(`assigned_class.eq.${pureClass},assigned_class.eq.ថ្នាក់ទី ${pureClass}`)
+          .select('student_id, attendance_date, status, note, assigned_class')
           .gte('attendance_date', firstDateStr)
           .lte('attendance_date', lastDateStr);
 
-        if (attErr) throw attErr;
+        if (attErr) console.warn('Attendance query warning:', attErr);
 
         var curDay = selectedDate.getDate();
         dailyAttendanceState = {};
         studentNotesMap = {};
 
         (attList || []).forEach(row => {
-          var dNum = parseInt(row.attendance_date.split('-')[2], 10);
-          var sid = String(row.student_id);
-          var sObj = rawStudentsData.find(x => x.id === sid);
-          if (sObj) sObj.days[dNum] = row.status;
-          if (dNum === curDay) {
-            dailyAttendanceState[sid] = row.status;
-            studentNotesMap[sid] = row.note || '';
+          if (cleanGrade(row.assigned_class) === curPure) {
+            var dNum = parseInt(row.attendance_date.split('-')[2], 10);
+            var sid = String(row.student_id);
+            var sObj = rawStudentsData.find(x => x.id === sid);
+            if (sObj) sObj.days[dNum] = row.status;
+            if (dNum === curDay) {
+              dailyAttendanceState[sid] = row.status;
+              studentNotesMap[sid] = row.note || '';
+            }
           }
         });
 
+        // ដាក់ 'P' ជា Default ប្រសិនបើមិនទាន់បានកត់ត្រា
         rawStudentsData.forEach(s => {
           if (!dailyAttendanceState[s.id]) dailyAttendanceState[s.id] = 'P';
         });
@@ -810,17 +707,18 @@
         renderDailyList();
         updateStatsCounters();
       } catch (err) {
-        container.innerHTML = `
-          <div style="text-align:center; padding:30px; color:#dc2626;">
-            ⚠️ មិនអាចទាញយកទិន្នន័យបានទេ៖ ${err.message || err}
-          </div>`;
+        console.error(err);
+        renderDailyList();
       }
     }
 
     function renderDailyList() {
       var container = document.getElementById('studentListContainer');
       if (!rawStudentsData.length) {
-        container.innerHTML = '<div style="text-align:center; padding:40px; color:var(--text-muted);">គ្មានទិន្នន័យសិស្សក្នុងថ្នាក់នេះឡើយ</div>';
+        container.innerHTML = `<div style="text-align:center; padding:40px; color:var(--text-muted);">
+          មិនមានសិស្សនៅក្នុងថ្នាក់ទី ${currentClassName} ឡើយ
+        </div>`;
+        updateStatsCounters();
         return;
       }
       var q = (document.getElementById('searchBox').value || '').trim().toLowerCase();
@@ -853,7 +751,6 @@
                 <button type="button" class="q-btn ${st==='C'?'active-C':''}" onclick="setStudentDirectStatus('${s.id}', 'C')">ច្បាប់</button>
               </div>
             </div>
-
             ${noteInputHtml}
           </div>
         `;
@@ -921,15 +818,16 @@
     function triggerDebouncedSave() {
       showSaveToast();
       clearTimeout(saveDebounceTimer);
-      saveDebounceTimer = setTimeout(saveDailyAttendance, 500);
+      saveDebounceTimer = setTimeout(saveDailyAttendance, 400);
     }
 
+    /* រក្សាទុកវត្តមានទៅ Table: attendance */
     async function saveDailyAttendance() {
       var y = selectedDate.getFullYear();
       var m = selectedDate.getMonth();
       var d = selectedDate.getDate();
       var isoDate = `${y}-${String(m+1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-      var pureClass = currentClassName.replace(/^ថ្នាក់ទី\s*/, '').trim();
+      var curPure = cleanGrade(currentClassName);
 
       var records = rawStudentsData.map(function(s) {
         if (!s.days) s.days = {};
@@ -937,7 +835,7 @@
         s.days[d] = st;
         return {
           student_id: String(s.id),
-          assigned_class: pureClass,
+          assigned_class: curPure,
           attendance_date: isoDate,
           status: st,
           note: studentNotesMap[s.id] || ''
@@ -945,10 +843,128 @@
       });
 
       try {
-        await sb.from('attendance').upsert(records, { onConflict: 'student_id,attendance_date' });
+        const { error } = await sb.from('attendance').upsert(records, { onConflict: 'student_id,attendance_date' });
+        if (error) console.error('Save attendance error:', error);
       } catch (err) {
-        console.warn('Save attendance failed:', err);
+        console.warn('Save attendance exception:', err);
       }
+    }
+
+    /* 6. HOLIDAYS MANAGEMENT (ភ្ជាប់ជាមួយ TABLE: school_holidays) */
+    async function loadSchoolHolidays() {
+      var yr = selectedDate.getFullYear();
+      try {
+        const { data, error } = await sb.from('school_holidays').select('*').eq('year', yr);
+        if (!error && data) {
+          KHMER_MONTHS.forEach(m => monthlyHolidaysMap[m] = []);
+          data.forEach(h => {
+            if (!monthlyHolidaysMap[h.month]) monthlyHolidaysMap[h.month] = [];
+            monthlyHolidaysMap[h.month].push({ day: Number(h.day), reason: h.reason || 'ថ្ងៃឈប់សម្រាក' });
+          });
+          KHMER_MONTHS.forEach(m => monthlyHolidaysMap[m].sort((a,b) => a.day - b.day));
+        }
+      } catch(e) {
+        console.warn('Holidays load error:', e);
+      }
+    }
+
+    async function addHolidayForCurrentMonth() {
+      var mName = document.getElementById('rptMonthSelect').value;
+      var reasonInput = document.getElementById('holidayReasonInput');
+      if (!selectedHolidayDay) { alert('សូមចុចលើប្រអប់ប្រតិទិន ដើម្បីជ្រើសរើសថ្ងៃឈប់សម្រាកសិន!'); return; }
+      var reason = (reasonInput.value || 'ថ្ងៃឈប់សម្រាក').trim();
+      var yr = selectedDate.getFullYear();
+
+      try {
+        const { error } = await sb.from('school_holidays').upsert({
+          year: yr, month: mName, day: selectedHolidayDay, reason: reason
+        }, { onConflict: 'year,month,day' });
+
+        if (error) throw error;
+
+        if (!monthlyHolidaysMap[mName]) monthlyHolidaysMap[mName] = [];
+        monthlyHolidaysMap[mName] = monthlyHolidaysMap[mName].filter(h => h.day !== selectedHolidayDay);
+        monthlyHolidaysMap[mName].push({ day: selectedHolidayDay, reason: reason });
+        monthlyHolidaysMap[mName].sort((a, b) => a.day - b.day);
+
+        reasonInput.value = '';
+        selectedHolidayDay = null;
+        document.getElementById('selectedHolidayDateTxt').textContent = `ជ្រើសរើសថ្ងៃទី (${mName})`;
+        renderHolidayTagsList();
+        showSaveToast();
+      } catch (err) {
+        alert('មានបញ្ហាក្នុងការរក្សាទុកថ្ងៃឈប់៖ ' + (err.message || err));
+      }
+    }
+
+    async function removeHoliday(mName, dayNum) {
+      var yr = selectedDate.getFullYear();
+      try {
+        const { error } = await sb.from('school_holidays').delete().eq('year', yr).eq('month', mName).eq('day', dayNum);
+        if (error) throw error;
+
+        if (monthlyHolidaysMap[mName]) {
+          monthlyHolidaysMap[mName] = monthlyHolidaysMap[mName].filter(h => h.day !== dayNum);
+          renderHolidayTagsList();
+          showSaveToast();
+        }
+      } catch (err) {
+        alert('មានបញ្ហាក្នុងការលុបថ្ងៃឈប់៖ ' + (err.message || err));
+      }
+    }
+
+    function toggleHolidayCalPopup() {
+      var pop = document.getElementById('holidayCalPopup');
+      pop.classList.toggle('show');
+      if (pop.classList.contains('show')) renderHolidayCalendarDays();
+    }
+
+    function renderHolidayCalendarDays() {
+      var mName = document.getElementById('rptMonthSelect').value;
+      var mIdx = KHMER_MONTHS.indexOf(mName);
+      var currentYear = selectedDate.getFullYear();
+      document.getElementById('holidayCalTitle').textContent = mName + " " + currentYear;
+      var grid = document.getElementById('holidayCalDaysGrid');
+      grid.innerHTML = '';
+
+      var firstDay = new Date(currentYear, mIdx, 1).getDay();
+      var totalDays = new Date(currentYear, mIdx + 1, 0).getDate();
+      var prevTotal = new Date(currentYear, mIdx, 0).getDate();
+
+      for (var p = firstDay - 1; p >= 0; p--) grid.innerHTML += `<div class="cal-day-cell muted">${prevTotal - p}</div>`;
+      for (var d = 1; d <= totalDays; d++) {
+        var isSel = (selectedHolidayDay === d);
+        grid.innerHTML += `<div class="cal-day-cell ${isSel ? 'selected' : ''}" onclick="pickHolidayCalendarDate(${d})">${d}</div>`;
+      }
+    }
+
+    function pickHolidayCalendarDate(d) {
+      selectedHolidayDay = d;
+      var mName = document.getElementById('rptMonthSelect').value;
+      document.getElementById('selectedHolidayDateTxt').textContent = `ថ្ងៃទី ${toKhmerNum(d)}  ${mName}`;
+      toggleHolidayCalPopup();
+    }
+
+    function renderHolidayConfigSection() {
+      selectedHolidayDay = null;
+      var mName = document.getElementById('rptMonthSelect').value;
+      document.getElementById('selectedHolidayDateTxt').textContent = `ជ្រើសរើសថ្ងៃទី (${mName})`;
+      renderHolidayTagsList();
+    }
+
+    function renderHolidayTagsList() {
+      var mName = document.getElementById('rptMonthSelect').value;
+      var container = document.getElementById('holidayTagsContainer');
+      var list = monthlyHolidaysMap[mName] || [];
+      if (list.length === 0) {
+        container.innerHTML = '<span style="font-size:11.5px; color:var(--text-muted); font-style:italic;">មិនទាន់មានថ្ងៃឈប់សម្រាកសម្រាប់ខែនេះទេ</span>';
+        return;
+      }
+      var html = '';
+      list.forEach(function(h) {
+        html += `<span class="holiday-tag-pill">ថ្ងៃទី${toKhmerNum(h.day)} (${h.reason}) <i class="fa-solid fa-xmark" onclick="removeHoliday('${mName}', ${h.day})"></i></span>`;
+      });
+      container.innerHTML = html;
     }
 
     /* 7. CALENDAR & TAB LOGIC */
@@ -1045,7 +1061,7 @@
       html2pdf().from(element).set(opt).save();
     }
 
-    /* 8. REPORTS */
+    /* 8. REPORTS GENERATION (MONTHLY & YEARLY) */
     async function renderMonthlyPrintReport() {
       var mName = document.getElementById('rptMonthSelect').value;
       var currentYear = selectedDate.getFullYear();
@@ -1056,34 +1072,32 @@
       var khDate = getFullKhmerDateString(endOfMonthDate);
       var monthHolidays = monthlyHolidaysMap[mName] || [];
       var holidayDaysList = monthHolidays.map(h => h.day);
-      var pureClass = currentClassName.replace(/^ថ្នាក់ទី\s*/, '').trim();
+      var curPure = cleanGrade(currentClassName);
 
       try {
-        const { data: stList } = await sb.from('students')
-          .select('*')
-          .or(`grade.eq.${pureClass},grade.eq.ថ្នាក់ទី ${pureClass}`)
-          .order('id');
-
-        var students = (stList || []).map(s => ({
-          id: String(s.student_id || s.id),
-          name: s.student_name || '', // 👈 student_name
-          sex: s.gender || 'ប្រុស',
-          days: {}
-        }));
+        var students = allStudentsCache
+          .filter(s => cleanGrade(s.grade) === curPure)
+          .map(s => ({
+            id: String(s.student_id || s.id),
+            name: s.student_name || 'គ្មានឈ្មោះ',
+            sex: s.gender || 'ប្រុស',
+            days: {}
+          }));
 
         var firstStr = `${currentYear}-${String(mIdx+1).padStart(2,'0')}-01`;
         var lastStr = `${currentYear}-${String(mIdx+1).padStart(2,'0')}-${String(endOfMonthDate.getDate()).padStart(2,'0')}`;
         
         const { data: attList } = await sb.from('attendance')
-          .select('*')
-          .or(`assigned_class.eq.${pureClass},assigned_class.eq.ថ្នាក់ទី ${pureClass}`)
+          .select('student_id, attendance_date, status, assigned_class')
           .gte('attendance_date', firstStr)
           .lte('attendance_date', lastStr);
 
         (attList || []).forEach(r => {
-          var dNum = parseInt(r.attendance_date.split('-')[2], 10);
-          var s = students.find(x => x.id === String(r.student_id));
-          if (s) s.days[dNum] = r.status;
+          if (cleanGrade(r.assigned_class) === curPure) {
+            var dNum = parseInt(r.attendance_date.split('-')[2], 10);
+            var s = students.find(x => x.id === String(r.student_id));
+            if (s) s.days[dNum] = r.status;
+          }
         });
 
         var daysCount = endOfMonthDate.getDate();
@@ -1266,37 +1280,35 @@
       var currentYear = selectedDate.getFullYear();
       var endOfYearDate = new Date(currentYear, 8, 0);
       var khDate = getFullKhmerDateString(endOfYearDate);
-      var pureClass = currentClassName.replace(/^ថ្នាក់ទី\s*/, '').trim();
+      var curPure = cleanGrade(currentClassName);
 
       var sem1Months = ["វិច្ឆិកា", "ធ្នូ", "មករា", "កុម្ភៈ", "មីនា", "មេសា"];
       var sem2Months = ["ឧសភា", "មិថុនា", "កក្កដា", "សីហា", "កញ្ញា", "តុលា"];
 
       try {
-        const { data: stList } = await sb.from('students')
-          .select('*')
-          .or(`grade.eq.${pureClass},grade.eq.ថ្នាក់ទី ${pureClass}`)
-          .order('id');
-
-        var students = (stList || []).map(s => ({
-          id: String(s.student_id || s.id),
-          name: s.student_name || '', // 👈 student_name
-          sex: s.gender || 'ប្រុស'
-        }));
+        var students = allStudentsCache
+          .filter(s => cleanGrade(s.grade) === curPure)
+          .map(s => ({
+            id: String(s.student_id || s.id),
+            name: s.student_name || 'គ្មានឈ្មោះ',
+            sex: s.gender || 'ប្រុស'
+          }));
 
         const { data: attList } = await sb.from('attendance')
-          .select('student_id, attendance_date, status')
-          .or(`assigned_class.eq.${pureClass},assigned_class.eq.ថ្នាក់ទី ${pureClass}`)
+          .select('student_id, attendance_date, status, assigned_class')
           .in('status', ['C', 'A']);
 
         var mData = {};
         (attList || []).forEach(r => {
-          var dt = new Date(r.attendance_date);
-          var mName = KHMER_MONTHS[dt.getMonth()];
-          var sid = String(r.student_id);
-          if (!mData[mName]) mData[mName] = {};
-          if (!mData[mName][sid]) mData[mName][sid] = { c: 0, a: 0 };
-          if (r.status === 'C') mData[mName][sid].c++;
-          if (r.status === 'A') mData[mName][sid].a++;
+          if (cleanGrade(r.assigned_class) === curPure) {
+            var dt = new Date(r.attendance_date);
+            var mName = KHMER_MONTHS[dt.getMonth()];
+            var sid = String(r.student_id);
+            if (!mData[mName]) mData[mName] = {};
+            if (!mData[mName][sid]) mData[mName][sid] = { c: 0, a: 0 };
+            if (r.status === 'C') mData[mName][sid].c++;
+            if (r.status === 'A') mData[mName][sid].a++;
+          }
         });
 
         var thS1 = sem1Months.map(m => `<th colspan="2" style="font-size:8px; padding:3px 0;"><div class="vertical-sun-box" style="height:42px;"><span class="vertical-sun-text">${m}</span></div></th>`).join('');
