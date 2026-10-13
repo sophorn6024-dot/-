@@ -529,7 +529,7 @@
   </div>
 
   <!-- =========================================================
-       ⚙️ ផ្នែក JavaScript : SUPABASE INTEGRATION (ASSIGNED_CLASS)
+       ⚙️ ផ្នែក JavaScript : SUPABASE INTEGRATION (កែសម្រួល STUDENT_NAME)
   ========================================================= -->
   <script>
     /* 1. SUPABASE CLIENT CONFIG */
@@ -742,7 +742,7 @@
       container.innerHTML = html;
     }
 
-    /* 6. DAILY ATTENDANCE (SUPABASE READ/WRITE តាម ASSIGNED_CLASS) */
+    /* 6. DAILY ATTENDANCE (SUPABASE READ/WRITE) */
     async function loadDailyAttendanceData() {
       if (!currentClassName) return;
       var container = document.getElementById('studentListContainer');
@@ -753,23 +753,26 @@
         </div>`;
 
       try {
-        // ក. ទាញយកបញ្ជីសិស្សតាមថ្នាក់
+        var pureClass = currentClassName.replace(/^ថ្នាក់ទី\s*/, '').trim();
+
+        // ✅ ១. ទាញយកសិស្សដោយប្រើ student_name (និងស្គាល់ទាំង '១' និង 'ថ្នាក់ទី ១')
         const { data: stList, error: stErr } = await sb
           .from('students')
-          .select('id, student_id, name, gender, grade')
-          .eq('grade', currentClassName)
+          .select('id, student_id, student_name, gender, grade')
+          .or(`grade.eq.${pureClass},grade.eq.ថ្នាក់ទី ${pureClass}`)
           .order('id', { ascending: true });
 
         if (stErr) throw stErr;
+
         rawStudentsData = (stList || []).map(s => ({
           id: String(s.student_id || s.id),
-          name: s.name,
+          name: s.student_name || '', // 👈 ប្រើ student_name
           sex: s.gender || 'ប្រុស',
           grade: s.grade,
           days: {}
         }));
 
-        // ខ. ទាញយកទិន្នន័យវត្តមានតាម assigned_class
+        // ២. ទាញយកទិន្នន័យវត្តមានតាម assigned_class
         var y = selectedDate.getFullYear();
         var m = selectedDate.getMonth();
         var firstDateStr = `${y}-${String(m+1).padStart(2,'0')}-01`;
@@ -779,7 +782,7 @@
         const { data: attList, error: attErr } = await sb
           .from('attendance')
           .select('student_id, attendance_date, status, note')
-          .eq('assigned_class', currentClassName)
+          .or(`assigned_class.eq.${pureClass},assigned_class.eq.ថ្នាក់ទី ${pureClass}`)
           .gte('attendance_date', firstDateStr)
           .lte('attendance_date', lastDateStr);
 
@@ -789,7 +792,6 @@
         dailyAttendanceState = {};
         studentNotesMap = {};
 
-        // បំពេញថ្ងៃ និង Status
         (attList || []).forEach(row => {
           var dNum = parseInt(row.attendance_date.split('-')[2], 10);
           var sid = String(row.student_id);
@@ -801,7 +803,6 @@
           }
         });
 
-        // Default 'P' ប្រសិនបើមិនទាន់មានកត់ត្រា
         rawStudentsData.forEach(s => {
           if (!dailyAttendanceState[s.id]) dailyAttendanceState[s.id] = 'P';
         });
@@ -923,12 +924,12 @@
       saveDebounceTimer = setTimeout(saveDailyAttendance, 500);
     }
 
-    /* រក្សាទុកដោយប្រើ Column: assigned_class */
     async function saveDailyAttendance() {
       var y = selectedDate.getFullYear();
       var m = selectedDate.getMonth();
       var d = selectedDate.getDate();
       var isoDate = `${y}-${String(m+1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+      var pureClass = currentClassName.replace(/^ថ្នាក់ទី\s*/, '').trim();
 
       var records = rawStudentsData.map(function(s) {
         if (!s.days) s.days = {};
@@ -936,7 +937,7 @@
         s.days[d] = st;
         return {
           student_id: String(s.id),
-          assigned_class: currentClassName,
+          assigned_class: pureClass,
           attendance_date: isoDate,
           status: st,
           note: studentNotesMap[s.id] || ''
@@ -1044,7 +1045,7 @@
       html2pdf().from(element).set(opt).save();
     }
 
-    /* 8. REPORTS (MONTHLY & YEARLY តាម ASSIGNED_CLASS) */
+    /* 8. REPORTS */
     async function renderMonthlyPrintReport() {
       var mName = document.getElementById('rptMonthSelect').value;
       var currentYear = selectedDate.getFullYear();
@@ -1055,12 +1056,17 @@
       var khDate = getFullKhmerDateString(endOfMonthDate);
       var monthHolidays = monthlyHolidaysMap[mName] || [];
       var holidayDaysList = monthHolidays.map(h => h.day);
+      var pureClass = currentClassName.replace(/^ថ្នាក់ទី\s*/, '').trim();
 
       try {
-        const { data: stList } = await sb.from('students').select('*').eq('grade', currentClassName).order('id');
+        const { data: stList } = await sb.from('students')
+          .select('*')
+          .or(`grade.eq.${pureClass},grade.eq.ថ្នាក់ទី ${pureClass}`)
+          .order('id');
+
         var students = (stList || []).map(s => ({
           id: String(s.student_id || s.id),
-          name: s.name,
+          name: s.student_name || '', // 👈 student_name
           sex: s.gender || 'ប្រុស',
           days: {}
         }));
@@ -1068,10 +1074,9 @@
         var firstStr = `${currentYear}-${String(mIdx+1).padStart(2,'0')}-01`;
         var lastStr = `${currentYear}-${String(mIdx+1).padStart(2,'0')}-${String(endOfMonthDate.getDate()).padStart(2,'0')}`;
         
-        // Query ដោយប្រើ assigned_class
         const { data: attList } = await sb.from('attendance')
           .select('*')
-          .eq('assigned_class', currentClassName)
+          .or(`assigned_class.eq.${pureClass},assigned_class.eq.ថ្នាក់ទី ${pureClass}`)
           .gte('attendance_date', firstStr)
           .lte('attendance_date', lastStr);
 
@@ -1261,22 +1266,26 @@
       var currentYear = selectedDate.getFullYear();
       var endOfYearDate = new Date(currentYear, 8, 0);
       var khDate = getFullKhmerDateString(endOfYearDate);
+      var pureClass = currentClassName.replace(/^ថ្នាក់ទី\s*/, '').trim();
 
       var sem1Months = ["វិច្ឆិកា", "ធ្នូ", "មករា", "កុម្ភៈ", "មីនា", "មេសា"];
       var sem2Months = ["ឧសភា", "មិថុនា", "កក្កដា", "សីហា", "កញ្ញា", "តុលា"];
 
       try {
-        const { data: stList } = await sb.from('students').select('*').eq('grade', currentClassName).order('id');
+        const { data: stList } = await sb.from('students')
+          .select('*')
+          .or(`grade.eq.${pureClass},grade.eq.ថ្នាក់ទី ${pureClass}`)
+          .order('id');
+
         var students = (stList || []).map(s => ({
           id: String(s.student_id || s.id),
-          name: s.name,
+          name: s.student_name || '', // 👈 student_name
           sex: s.gender || 'ប្រុស'
         }));
 
-        // Query អវត្តមានប្រចាំឆ្នាំតាម assigned_class
         const { data: attList } = await sb.from('attendance')
           .select('student_id, attendance_date, status')
-          .eq('assigned_class', currentClassName)
+          .or(`assigned_class.eq.${pureClass},assigned_class.eq.ថ្នាក់ទី ${pureClass}`)
           .in('status', ['C', 'A']);
 
         var mData = {};
