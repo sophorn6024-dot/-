@@ -131,7 +131,7 @@
     }
 
     /* =====================================================
-       🎛️ NEW SINGLE-ROW SLEEK TOOLBAR DESIGN
+       🎛️ 2-ROW BALANCED & SLEEK TOOLBAR DESIGN
     ===================================================== */
     .no-print-toolbar {
       position: sticky;
@@ -140,61 +140,63 @@
       width: 100%;
       background: var(--tb-bg);
       backdrop-filter: blur(14px);
-      padding: 7px 14px;
+      padding: 10px 18px;
       display: flex;
-      align-items: center;
-      justify-content: space-between;
+      flex-direction: column;
       gap: 8px;
       box-shadow: var(--shadow-sm);
       border-bottom: 1.5px solid var(--tb-border);
       transition: all 0.25s ease;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      white-space: nowrap;
+      margin-bottom: 18px;
     }
 
-    .no-print-toolbar::-webkit-scrollbar { height: 3px; }
-    .no-print-toolbar::-webkit-scrollbar-thumb { background: rgba(2, 132, 199, 0.25); border-radius: 3px; }
-
-    .tb-group {
-      display: inline-flex;
+    .toolbar-row {
+      display: flex;
+      flex-wrap: wrap;
       align-items: center;
-      gap: 6px;
-      flex-shrink: 0;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .toolbar-section {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
     }
 
     .panel-pill-box {
       background: var(--ctrl-group-bg);
       border: 1px solid var(--tb-border);
-      border-radius: 9px;
-      padding: 3px 7px;
+      border-radius: 10px;
+      padding: 4px 8px;
       display: inline-flex;
       align-items: center;
-      gap: 5px;
+      gap: 6px;
     }
 
     .toolbar-label {
-      font-size: 11.5px;
+      font-size: 12px;
       font-weight: 700;
       color: var(--text-muted);
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 5px;
       white-space: nowrap;
     }
 
     .form-control {
-      padding: 4px 7px;
+      padding: 5px 8px;
       font-family: 'Kantumruy Pro', sans-serif;
-      font-size: 12px;
+      font-size: 12.5px;
       font-weight: 600;
       border: 1.5px solid var(--input-border);
-      border-radius: 7px;
+      border-radius: 8px;
       outline: none;
       background: var(--input-bg);
       color: var(--text-main);
       transition: all 0.2s ease;
-      height: 30px;
+      height: 32px;
     }
     .form-control:focus {
       border-color: var(--input-focus);
@@ -204,46 +206,45 @@
     .teacher-class-badge {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
+      gap: 6px;
       background: linear-gradient(135deg, #0284c7, #2563eb);
       color: #ffffff;
-      padding: 3px 10px;
-      border-radius: 9px;
+      padding: 4px 12px;
+      border-radius: 10px;
       font-weight: 700;
-      font-size: 12px;
-      height: 30px;
+      font-size: 12.5px;
+      height: 32px;
       white-space: nowrap;
       user-select: none;
     }
 
     .btn {
-      padding: 4px 10px;
+      padding: 5px 12px;
       font-family: 'Kantumruy Pro', sans-serif;
-      font-size: 12px;
+      font-size: 12.5px;
       font-weight: 700;
       border-radius: 8px;
       border: 1px solid transparent;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 5px;
+      gap: 6px;
       transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
       user-select: none;
       white-space: nowrap;
-      height: 30px;
+      height: 32px;
     }
     .btn:active { transform: scale(0.96); }
 
     .btn-primary {
       background: linear-gradient(135deg, #0284c7, #2563eb);
       color: #fff;
-      box-shadow: 0 2px 7px rgba(37, 99, 235, 0.25);
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
     }
-
     .btn-success {
       background: linear-gradient(135deg, #10b981, #059669);
       color: #fff;
-      box-shadow: 0 2px 7px rgba(16, 185, 129, 0.25);
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
     }
 
     .zoom-btn-group {
@@ -254,20 +255,20 @@
       padding: 2px;
       border-radius: 8px;
       border: 1px solid var(--tb-border);
-      height: 30px;
+      height: 32px;
     }
     .zoom-btn {
       background: transparent;
       border: none;
       color: var(--text-muted);
-      padding: 2px 7px;
-      border-radius: 5px;
-      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11.5px;
       font-weight: 700;
       cursor: pointer;
       transition: all 0.15s ease;
       font-family: 'Kantumruy Pro', sans-serif;
-      height: 24px;
+      height: 26px;
       display: flex;
       align-items: center;
     }
@@ -275,23 +276,17 @@
     .zoom-btn.active {
       background: #0284c7 !important;
       color: #ffffff !important;
-      box-shadow: 0 1px 5px rgba(2, 132, 199, 0.35);
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.35);
     }
 
-    /* ── Tablet & Mobile Responsive Tweaks ── */
-    @media screen and (min-width: 769px) and (max-width: 1180px) {
-      .no-print-toolbar { padding: 8px 16px; gap: 8px; }
-      .form-control, .btn { height: 32px; font-size: 12.5px; }
-    }
-
+    /* ── Tablet & Mobile Responsive ── */
     @media screen and (max-width: 768px) {
       body { padding: 0 0 50px 0 !important; }
-      .no-print-toolbar { padding: 6px 10px; gap: 5px; }
-      .tb-group { gap: 4px; }
-      .form-control { height: 28px; font-size: 11px; padding: 2px 5px; }
-      .btn { height: 28px; padding: 2px 7px; font-size: 11px; gap: 4px; }
+      .no-print-toolbar { padding: 8px 10px; gap: 6px; }
+      .toolbar-row { gap: 6px; }
+      .form-control, .btn { height: 28px; font-size: 11.5px; padding: 3px 6px; }
       .zoom-btn-group { height: 28px; }
-      .zoom-btn { height: 22px; padding: 1px 5px; font-size: 10px; }
+      .zoom-btn { height: 24px; padding: 2px 6px; font-size: 10.5px; }
     }
 
     /* =====================================================
@@ -303,7 +298,7 @@
       gap: 25px;
       align-items: center;
       transition: zoom 0.2s ease;
-      margin-top: 15px;
+      margin-top: 10px;
       transform-origin: top center;
     }
 
@@ -551,8 +546,6 @@
         padding: 0 !important;
         margin: 0 !important;
         overflow: visible !important;
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
       }
 
       .no-print-toolbar {
@@ -611,79 +604,85 @@
   </div>
 
   <!-- =====================================================
-       🎛️ NEW SINGLE-ROW SLEEK TOOLBAR DESIGN
+       🎛️ 2-ROW BALANCED TOOLBAR DESIGN
   ===================================================== -->
   <div class="no-print-toolbar" id="controlToolbar" style="display:none;">
     
-    <!-- ផ្នែកខាងឆ្វេង ៖ Filters & Settings -->
-    <div class="tb-group">
-      <!-- ថ្នាក់ -->
-      <div class="panel-pill-box" id="adminClassBox" style="display:none;">
-        <span class="toolbar-label"><i class="fa-solid fa-graduation-cap" style="color:#0284c7;"></i> ថ្នាក់៖</span>
-        <select id="selectClass" class="form-control" onchange="loadTopStudents()">
-          <option value="">កំពុងទាញយក...</option>
-        </select>
+    <!-- ជួរទី ១ ៖ ការកំណត់ចម្បង & ប៊ូតុងបញ្ជា -->
+    <div class="toolbar-row">
+      <div class="toolbar-section">
+        <!-- ថ្នាក់ -->
+        <div class="panel-pill-box" id="adminClassBox" style="display:none;">
+          <span class="toolbar-label"><i class="fa-solid fa-graduation-cap" style="color:#0284c7;"></i> ថ្នាក់ទី៖</span>
+          <select id="selectClass" class="form-control" onchange="loadTopStudents()">
+            <option value="">កំពុងទាញយក...</option>
+          </select>
+        </div>
+
+        <div id="teacherClassBadge" class="teacher-class-badge" style="display:none;">
+          <i class="fa-solid fa-chalkboard-user"></i>
+          <span id="teacherClassText">ថ្នាក់ទី...</span>
+        </div>
+
+        <!-- ស៊ុម -->
+        <div class="panel-pill-box">
+          <span class="toolbar-label"><i class="fa-solid fa-border-all" style="color:#7c3aed;"></i> ស៊ុម៖</span>
+          <select id="selectFrame" class="form-control" onchange="updateAllFrames()">
+            <option value="">ស៊ុមលំនាំដើម (Kbach)</option>
+            <option value="1">ស៊ុមទី១</option>
+            <option value="2">ស៊ុមទី២</option>
+            <option value="3">ស៊ុមទី៣</option>
+            <option value="4">ស៊ុមទី៤</option>
+            <option value="5">ស៊ុមទី៥</option>
+            <option value="6">ស៊ុមទី៦</option>
+            <option value="7">ស៊ុមទី៧</option>
+            <option value="8">ស៊ុមទី៨</option>
+            <option value="9">ស៊ុមទី៩</option>
+            <option value="10">ស៊ុមទី១០</option>
+            <option value="11">ស៊ុមទី១១</option>
+          </select>
+        </div>
+
+        <!-- ឆ្នាំសិក្សា -->
+        <div class="panel-pill-box">
+          <span class="toolbar-label"><i class="fa-solid fa-calendar-days" style="color:#f59e0b;"></i> ឆ្នាំសិក្សា៖</span>
+          <input type="text" id="inYear" class="form-control" value="" style="width:120px;" oninput="updateAllCertText()">
+        </div>
       </div>
 
-      <div id="teacherClassBadge" class="teacher-class-badge" style="display:none;">
-        <i class="fa-solid fa-chalkboard-user"></i>
-        <span id="teacherClassText">ថ្នាក់ទី...</span>
-      </div>
+      <div class="toolbar-section">
+        <!-- 🔍 Zoom Buttons -->
+        <div class="zoom-btn-group" title="ពង្រីក/បង្រួមទំហំ">
+          <button type="button" class="zoom-btn active" id="zFit" onclick="setFitZoom()">សម</button>
+          <button type="button" class="zoom-btn" id="z75" onclick="setZoom(0.75, 'z75')">75%</button>
+          <button type="button" class="zoom-btn" id="z100" onclick="setZoom(1, 'z100')">100%</button>
+        </div>
 
-      <!-- ស៊ុម -->
-      <div class="panel-pill-box">
-        <span class="toolbar-label"><i class="fa-solid fa-border-all" style="color:#7c3aed;"></i> ស៊ុម៖</span>
-        <select id="selectFrame" class="form-control" onchange="updateAllFrames()">
-          <option value="">ស៊ុមលំនាំដើម (Kbach)</option>
-          <option value="1">ស៊ុមទី១</option>
-          <option value="2">ស៊ុមទី២</option>
-          <option value="3">ស៊ុមទី៣</option>
-          <option value="4">ស៊ុមទី៤</option>
-          <option value="5">ស៊ុមទី៥</option>
-          <option value="6">ស៊ុមទី៦</option>
-          <option value="7">ស៊ុមទី៧</option>
-          <option value="8">ស៊ុមទី៨</option>
-          <option value="9">ស៊ុមទី៩</option>
-          <option value="10">ស៊ុមទី១០</option>
-          <option value="11">ស៊ុមទី១១</option>
-        </select>
-      </div>
+        <button class="btn btn-primary" onclick="loadTopStudents()" title="ផ្ទុកទិន្នន័យឡើងវិញ">
+          <i class="fa-solid fa-rotate"></i> <span>ផ្ទុកទិន្នន័យ</span>
+        </button>
 
-      <!-- សាលា -->
-      <div class="panel-pill-box">
-        <span class="toolbar-label"><i class="fa-solid fa-school" style="color:#10b981;"></i> សាលា៖</span>
-        <input type="text" id="inSchool" class="form-control" value="សាលាបឋមសិក្សាកំពង់ល្ពៅ" style="width:160px;" oninput="updateAllCertText()">
-      </div>
-
-      <!-- ឆ្នាំ -->
-      <div class="panel-pill-box">
-        <span class="toolbar-label"><i class="fa-solid fa-calendar-days" style="color:#f59e0b;"></i> ឆ្នាំសិក្សា៖</span>
-        <input type="text" id="inYear" class="form-control" value="" style="width:115px;" oninput="updateAllCertText()">
-      </div>
-
-      <!-- កាលបរិច្ឆេទ -->
-      <div class="panel-pill-box">
-        <span class="toolbar-label"><i class="fa-solid fa-pen-nib" style="color:#0284c7;"></i> កាលបរិច្ឆេទ៖</span>
-        <input type="text" id="inDate" class="form-control" value="ថ្ងៃព្រហស្បតិ៍ ១៤កើត ខែស្រាពណ៍ ឆ្នាំមមី អដ្ឋស័ក ព.ស ២៥៧០&#10;កំពង់ល្ពៅ ថ្ងៃទី២៧ ខែសីហា ឆ្នាំ២០២៦" style="width:230px;" oninput="updateAllCertText()" title="ចុចដើម្បីកែប្រែកាលបរិច្ឆេទចន្ទគតិ និងសុរិយគតិ">
+        <button class="btn btn-success" onclick="doPrint()" title="បោះពុម្ពបណ្ណសរសើរទាំងអស់">
+          <i class="fa-solid fa-print"></i> <span>បោះពុម្ពទាំងអស់</span>
+        </button>
       </div>
     </div>
 
-    <!-- ផ្នែកខាងស្តាំ ៖ Zoom & Actions -->
-    <div class="tb-group">
-      <!-- 🔍 Zoom Buttons (មានប៊ូតុង សម / Fit សម្រាប់ Tablet & Mobile) -->
-      <div class="zoom-btn-group" title="ពង្រីក/បង្រួមទំហំ">
-        <button type="button" class="zoom-btn active" id="zFit" onclick="setFitZoom()">សម</button>
-        <button type="button" class="zoom-btn" id="z75" onclick="setZoom(0.75, 'z75')">75%</button>
-        <button type="button" class="zoom-btn" id="z100" onclick="setZoom(1, 'z100')">100%</button>
+    <!-- ជួរទី ២ ៖ ព័ត៌មានលម្អិតលើបណ្ណសរសើរ -->
+    <div class="toolbar-row" style="background:var(--ctrl-group-bg); padding:6px 10px; border-radius:10px; border:1px solid var(--tb-border);">
+      <div class="toolbar-section" style="width:100%;">
+        <!-- សាលា -->
+        <div class="panel-pill-box">
+          <span class="toolbar-label"><i class="fa-solid fa-school" style="color:#10b981;"></i> សាលារៀន៖</span>
+          <input type="text" id="inSchool" class="form-control" value="សាលាបឋមសិក្សាកំពង់ល្ពៅ" style="width:210px;" oninput="updateAllCertText()">
+        </div>
+
+        <!-- កាលបរិច្ឆេទ -->
+        <div class="panel-pill-box" style="flex:1;">
+          <span class="toolbar-label"><i class="fa-solid fa-pen-nib" style="color:#0284c7;"></i> កាលបរិច្ឆេទ៖</span>
+          <input type="text" id="inDate" class="form-control" style="width:100%; min-width:260px;" value="ថ្ងៃព្រហស្បតិ៍ ១៤កើត ខែស្រាពណ៍ ឆ្នាំមមី អដ្ឋស័ក ព.ស ២៥៧០&#10;កំពង់ល្ពៅ ថ្ងៃទី២៧ ខែសីហា ឆ្នាំ២០២៦" oninput="updateAllCertText()" title="ចុចដើម្បីកែប្រែកាលបរិច្ឆេទចន្ទគតិ និងសុរិយគតិ">
+        </div>
       </div>
-
-      <button class="btn btn-primary" onclick="loadTopStudents()" title="ផ្ទុកទិន្នន័យឡើងវិញ">
-        <i class="fa-solid fa-rotate"></i> <span>ផ្ទុកទិន្នន័យ</span>
-      </button>
-
-      <button class="btn btn-success" onclick="doPrint()" title="បោះពុម្ពបណ្ណសរសើរទាំងអស់">
-        <i class="fa-solid fa-print"></i> <span>បោះពុម្ពទាំងអស់</span>
-      </button>
     </div>
 
   </div>
@@ -786,7 +785,6 @@
 
     function setFitZoom() {
       const screenW = window.innerWidth;
-      // Target width 960px + margins
       let scale = (screenW - 24) / 980;
       if (scale > 1) scale = 1;
       if (scale < 0.28) scale = 0.28;
@@ -876,7 +874,6 @@
         </div>`;
 
       try {
-        // ក. ទាញយកសិស្សសកម្មក្នុងថ្នាក់
         const { data: stList, error: stErr } = await sb
           .from('students')
           .select('id, student_id, student_name, gender, dob, grade, photo_url, dropout_semester')
@@ -899,7 +896,6 @@
 
         const studentIds = students.map(s => String(s.student_id || s.id));
 
-        // ខ. ទាញយកពិន្ទុពី Table: scores
         const { data: scData, error: scErr } = await sb
           .from('scores')
           .select('student_id, score_type, period, average, rank')
@@ -908,7 +904,6 @@
 
         if (scErr) console.warn("Scores fetch warning:", scErr);
 
-        // គ. គណនាមធ្យមភាគប្រចាំឆ្នាំ (Yearly Average) សម្រាប់សិស្សម្នាក់ៗ
         const sem1Months = ['វិច្ឆិកា', 'ធ្នូ', 'មករា', 'កុម្ភៈ', 'មីនា', 'មេសា'];
         const sem2Months = ['ឧសភា', 'មិថុនា', 'កក្កដា', 'សីហា', 'កញ្ញា', 'តុលា'];
 
@@ -916,7 +911,6 @@
           const sId = String(st.student_id || st.id);
           const myScores = (scData || []).filter(r => String(r.student_id) === sId);
 
-          // ករណីមានកំណត់ទុកស្រាប់ក្នុង Period 'ប្រចាំឆ្នាំ'
           const yrRec = myScores.find(r => r.period === 'ប្រចាំឆ្នាំ');
           if (yrRec && Number(yrRec.average) > 0) {
             return {
@@ -931,7 +925,6 @@
             };
           }
 
-          // ករណីគណនាស្វ័យប្រវត្តិតាមរូបមន្ត៖ (ឆមាសទី១ + ឆមាសទី២) / ២
           let s1Sum = 0, s1Count = 0, s2Sum = 0, s2Count = 0;
           sem1Months.forEach(m => {
             const r = myScores.find(sc => sc.score_type === 'monthly' && sc.period === m);
@@ -967,7 +960,6 @@
           };
         });
 
-        // ឃ. តម្រៀបរកសិស្សពូកែលេខ ១ ដល់ ៥ (Top 5)
         studentRanks.sort((a, b) => Number(b.avg) - Number(a.avg));
         const validStudents = studentRanks.filter(s => Number(s.avg) > 0);
 
