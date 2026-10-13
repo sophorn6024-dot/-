@@ -83,6 +83,59 @@
     .f-moul { font-family: 'Khmer OS Muol Light', 'Moul', cursive; font-weight: normal; }
     .f-bold { font-weight: 700; }
 
+    /* ================= 🔒 AUTH DENIED WRAPPER ================= */
+    #authDeniedWrap {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+      padding: 30px 20px;
+      background: var(--bg);
+    }
+    .auth-card {
+      background: var(--surface-card);
+      border: 1.5px solid var(--border);
+      border-radius: 24px;
+      padding: 36px 28px;
+      max-width: 440px;
+      width: 100%;
+      box-shadow: var(--card-shadow);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .auth-icon {
+      width: 68px;
+      height: 68px;
+      border-radius: 20px;
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      margin-bottom: 16px;
+    }
+    .auth-card h2 { font-size: 17px; margin-bottom: 8px; color: #ef4444; }
+    .auth-card p { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 22px; }
+    .btn-login-redirect {
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      color: #ffffff;
+      padding: 10px 24px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 13.5px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
+      transition: all 0.2s;
+    }
+    .btn-login-redirect:hover { transform: translateY(-2px); }
+
     /* ================= LANDING CARDS ================= */
     #landingPage {
       max-width: 860px;
@@ -99,12 +152,15 @@
     .landing-header p { font-size: 13px; color: var(--text-muted); }
     .assigned-class-badge {
       background: var(--surface-elevated);
-      border: 1px solid var(--border);
+      border: 1.5px solid var(--border);
       padding: 6px 14px;
       border-radius: 20px;
-      font-size: 12px;
+      font-size: 12.5px;
       font-weight: 700;
       color: var(--primary);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .cards-wrapper {
@@ -214,6 +270,21 @@
       flex-wrap: wrap;
     }
 
+    /* 🌟 ផ្លាកថ្នាក់របស់គ្រូ (ពេលជាគ្រូ Dropdown នឹងត្រូវលាក់) */
+    .teacher-class-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      color: #ffffff;
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 12px;
+      box-shadow: 0 3px 10px rgba(2, 132, 199, 0.25);
+      user-select: none;
+    }
+
     .pill-select {
       border: 1.5px solid var(--border);
       border-radius: 20px;
@@ -226,13 +297,6 @@
       cursor: pointer;
       outline: none;
       transition: all 0.15s;
-    }
-    .pill-select:disabled {
-      opacity: 0.8;
-      cursor: not-allowed;
-      background: var(--surface);
-      border-color: var(--primary);
-      color: var(--primary);
     }
 
     .search-input-wrap {
@@ -573,7 +637,7 @@
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
       }
-      #landingPage, #mainForm, .viewer-top-bar { display: none !important; }
+      #authDeniedWrap, #landingPage, #mainForm, .viewer-top-bar { display: none !important; }
       #scoreReportModal {
         display: block !important;
         position: static !important;
@@ -598,6 +662,18 @@
 </head>
 <body>
 
+  <!-- ══════════════ 🔒 0. AUTH DENIED WRAPPER (ពេលមិនទាន់ LOGIN) ══════════════ -->
+  <div id="authDeniedWrap">
+    <div class="auth-card">
+      <div class="auth-icon">🔒</div>
+      <h2 class="f-moul">សូមចូលប្រើប្រាស់ជាមុនសិន!</h2>
+      <p>លោកអ្នកមិនទាន់បាន Login ចូលក្នុងប្រព័ន្ធនៅឡើយទេ។ សូម Login គណនីរបស់អ្នកដើម្បីមើល ឬកត់ត្រាពិន្ទុសិស្ស។</p>
+      <a href="login.html" class="btn-login-redirect">
+        <span>🔑</span> <span>ទៅកាន់ទំព័រ Login</span>
+      </a>
+    </div>
+  </div>
+
   <!-- ══════════════ 1. LANDING PAGE ══════════════ -->
   <div id="landingPage">
     <div class="landing-header">
@@ -606,7 +682,7 @@
         <p>បញ្ចូលពិន្ទុសិស្សប្រចាំខែ និងឆមាស (Supabase)</p>
       </div>
       <div class="assigned-class-badge" id="landingClassBadge">
-        ថ្នាក់ទី...
+        <span>🏫</span> <span id="landingClassBadgeTxt">ថ្នាក់ទី...</span>
       </div>
     </div>
 
@@ -650,9 +726,18 @@
         <div class="tb-left">
           <button class="action-btn btn-back" onclick="goBackLanding()">⬅ ត្រឡប់</button>
           
-          <select id="classSelect" onchange="loadStudents()" class="pill-select" title="ជ្រើសរើសថ្នាក់">
-            <option value="">កំពុងទាញយកថ្នាក់...</option>
-          </select>
+          <!-- 🌟 បង្ហាញ Dropdown តែពេល Admin ប៉ុណ្ណោះ -->
+          <div id="adminClassBox" style="display:none;">
+            <select id="classSelect" onchange="loadStudents()" class="pill-select" title="ជ្រើសរើសថ្នាក់">
+              <option value="">កំពុងទាញយកថ្នាក់...</option>
+            </select>
+          </div>
+
+          <!-- 🌟 ផ្លាកថ្នាក់របស់គ្រូ (ពេលជាគ្រូ Dropdown នឹងត្រូវលាក់) -->
+          <div id="teacherClassBadge" class="teacher-class-badge" style="display:none;">
+            <span>🏫</span>
+            <span id="teacherClassText">ថ្នាក់ទី...</span>
+          </div>
 
           <select id="monthSelect" onchange="loadStudents()" class="pill-select">
             <option value="មករា">មករា</option>
@@ -711,7 +796,7 @@
   </div>
 
   <!-- =========================================================
-       ⚙️ JAVASCRIPT : SUPABASE SCORE ENGINE
+       ⚙️ JAVASCRIPT : SUPABASE AUTH GUARD & SCORE ENGINE
   ========================================================= -->
   <script>
     /* 1. SUPABASE CLIENT CONFIG */
@@ -719,13 +804,25 @@
     const SUPABASE_ANON_KEY = "sb_publishable_AHDcUJbuMAfhaocyfm2X7w_O9s06wML";
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    /* 2. READ SESSION */
+    /* 2. READ SESSION & AUTH GUARD */
     function readSession() {
       try { return JSON.parse(localStorage.getItem('krou_supabase_user') || 'null'); } catch(e) { return null; }
     }
     const CURRENT_USER = readSession();
+
+    function checkAuthentication() {
+      if (!CURRENT_USER || !CURRENT_USER.username) {
+        document.getElementById('landingPage').style.display = 'none';
+        document.getElementById('mainForm').style.display = 'none';
+        document.getElementById('authDeniedWrap').style.display = 'flex';
+        return false;
+      }
+      document.getElementById('authDeniedWrap').style.display = 'none';
+      return true;
+    }
+
     var USER_ROLE    = CURRENT_USER?.role || "teacher";
-    var USER_CLASS   = CURRENT_USER?.assigned_classes || "";
+    var USER_CLASS   = CURRENT_USER?.assigned_classes || CURRENT_USER?.assigned_class || "";
     var TEACHER_NAME = CURRENT_USER?.teacher_name || "";
     var IS_ADMIN     = String(USER_ROLE).toLowerCase().trim() === 'admin';
 
@@ -854,6 +951,8 @@
     }
 
     window.onload = function() {
+      if (!checkAuthentication()) return;
+
       var curMonth = KHMER_MONTHS[new Date().getMonth()];
       var mSel = document.getElementById('monthSelect');
       if (mSel) mSel.value = curMonth;
@@ -861,13 +960,14 @@
       var bTxt = document.getElementById('monthlyBadgeText');
       if (bTxt) bTxt.textContent = curMonth + ' · ស្រង់ពិន្ទុ';
 
-      var lBadge = document.getElementById('landingClassBadge');
+      // 👉 បង្ហាញតែថ្នាក់ដែលគ្រូទទួលបន្ទុកលើ Landing Page
+      var lBadge = document.getElementById('landingClassBadgeTxt');
       if (lBadge) {
         if (IS_ADMIN) {
           lBadge.textContent = 'គ្រប់គ្រងគ្រប់ថ្នាក់ (Admin)';
         } else {
-          var cName = cleanGrade(USER_CLASS) || 'ទូទៅ';
-          lBadge.textContent = 'ថ្នាក់ទី ' + cName;
+          var cName = cleanGrade(USER_CLASS);
+          lBadge.textContent = cName ? ('ថ្នាក់ទី ' + cName) : 'មិនទាន់កំណត់ថ្នាក់';
         }
       }
 
@@ -907,6 +1007,7 @@
     }
 
     function openScoreForm(type) {
+      if (!checkAuthentication()) return;
       scoreType = type;
       document.getElementById('landingPage').style.display = 'none';
       var mf = document.getElementById('mainForm');
@@ -949,28 +1050,39 @@
     }
 
     /* =========================================================
-       🏫 LOAD CLASS LIST (SUPABASE)
+       🏫 LOAD CLASS LIST (ចាក់សោរបង្ហាញតែថ្នាក់ដែលគ្រូកាន់)
     ========================================================= */
     async function loadClassList() {
       var sel = document.getElementById('classSelect');
-      sel.innerHTML = '<option value="">កំពុងទាញយកថ្នាក់...</option>';
       var cleanUserClass = cleanGrade(USER_CLASS);
 
-      if (!IS_ADMIN && cleanUserClass !== '') {
-        sel.innerHTML = '';
-        var opt = document.createElement('option');
-        opt.value = cleanUserClass;
-        opt.textContent = 'ថ្នាក់ទី ' + cleanUserClass;
-        sel.appendChild(opt);
-        sel.value = cleanUserClass;
-        sel.disabled = true;
-        loadStudents();
+      // 👉 បើជាគ្រូបង្រៀន (មិនមែន Admin)៖ លាក់ Dropdown ចោល ហើយបង្ហាញតែផ្លាកថ្នាក់របស់គាត់ប៉ុណ្ណោះ!
+      if (!IS_ADMIN) {
+        document.getElementById('adminClassBox').style.display = 'none';
+        var badge = document.getElementById('teacherClassBadge');
+        var text = document.getElementById('teacherClassText');
+
+        if (cleanUserClass) {
+          text.innerText = 'ថ្នាក់ទី ' + cleanUserClass;
+          badge.style.display = 'inline-flex';
+          
+          sel.innerHTML = '<option value="' + cleanUserClass + '">ថ្នាក់ទី ' + cleanUserClass + '</option>';
+          sel.value = cleanUserClass;
+          loadStudents();
+        } else {
+          badge.style.display = 'inline-flex';
+          text.innerText = 'មិនទាន់កំណត់ថ្នាក់';
+          document.getElementById('tableArea').innerHTML = '<div style="text-align:center; padding: 50px; color:#f59e0b; font-weight:bold;">⚠️ គណនីរបស់អ្នកមិនទាន់មានថ្នាក់ទទួលបន្ទុកនៅឡើយទេ។ សូមទាក់ទង Admin។</div>';
+        }
         return;
       }
 
-      sel.disabled = false;
-      var classes = [];
+      // 👉 បើជា Admin៖ ទើបបង្ហាញ Dropdown ជ្រើសរើសគ្រប់ថ្នាក់បាន
+      document.getElementById('teacherClassBadge').style.display = 'none';
+      document.getElementById('adminClassBox').style.display = 'inline-block';
+      sel.innerHTML = '<option value="">កំពុងទាញយកថ្នាក់...</option>';
 
+      var classes = [];
       try {
         const { data, error } = await sb.from('students').select('grade');
         if (!error && data) {
@@ -981,7 +1093,7 @@
       }
 
       if (!classes.length) {
-        classes = cleanUserClass ? [cleanUserClass] : ['១', '២', '៣', '៤(ក)', '៤(ខ)', '៥', '៦'];
+        classes = ['១', '២', '៣', '៤(ក)', '៤(ខ)', '៥', '៦'];
       }
 
       sel.innerHTML = '';
@@ -1044,7 +1156,6 @@
       document.getElementById('tableArea').innerHTML = '<div style="text-align:center; padding: 50px; color:var(--text-muted);">⚡ កំពុងទាញយកទិន្នន័យ...</div>';
 
       try {
-        // ក. ទាញយកសិស្សពី table: students
         const { data: stList, error: stErr } = await sb
           .from('students')
           .select('id, student_id, student_name, gender, grade, dropout_semester')
@@ -1062,18 +1173,17 @@
           .filter(s => {
             var drop = String(s.dropout_semester || '').trim();
             if (isSem2 && (drop.includes('ឆមាស១') || drop.includes('ឆមាសទី១') || drop === '១')) {
-              return false; // 🚫 លាក់សិស្សបោះបង់ឆមាសទី១
+              return false;
             }
             return true;
           })
-          .map((s, idx) => ({
+          .map((s) => ({
             id: String(s.student_id || s.id),
             name: s.student_name || 'គ្មានឈ្មោះ',
             sex: s.gender || 'ប្រុស',
             grade: s.grade
           }));
 
-        // ខ. ទាញយកពិន្ទុពី table: scores
         const { data: scList, error: scErr } = await sb
           .from('scores')
           .select('*')
@@ -1088,7 +1198,6 @@
           savedScoresData[String(row.student_id)] = row.scores || {};
         });
 
-        // គ. ទាញយកវត្តមាន
         await loadAttendanceData(curPure, period);
         renderTable();
       } catch(err) {
