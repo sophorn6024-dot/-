@@ -16,6 +16,33 @@
   <!-- ⚡ Supabase JS Client (v2) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+  <!-- 🎨 ចាប់យក THEME ភ្លាមៗតាំងពីចាប់ផ្តើម LOAD (កុំឱ្យភ្លឹបភ្លែត) -->
+  <script>
+    (function() {
+      function getInitTheme() {
+        try {
+          var urlTh = new URLSearchParams(window.location.search).get('theme');
+          if (urlTh) return urlTh;
+        } catch(e) {}
+        try {
+          if (window.parent && window.parent !== window && window.parent.document) {
+            var pTh = window.parent.document.documentElement.getAttribute('data-theme')
+                   || window.parent.document.body.getAttribute('data-theme');
+            if (pTh) return pTh;
+          }
+        } catch(e) {}
+        try {
+          var ls = localStorage.getItem('krou_theme_manual') 
+                || localStorage.getItem('theme') 
+                || localStorage.getItem('krou_theme');
+          if (ls) return ls;
+        } catch(e) {}
+        return 'dark';
+      }
+      document.documentElement.setAttribute('data-theme', getInitTheme());
+    })();
+  </script>
+
   <style>
     :root, [data-theme="light"] {
       --primary: #2563eb;
@@ -63,7 +90,7 @@
       background: var(--bg); color: var(--text); font-size: 13px; line-height: 1.45;
       min-height: 100%; height: auto !important; overflow-x: hidden; overflow-y: visible !important;
       -webkit-overflow-scrolling: touch; padding: 14px 16px 140px;
-      transition: background 0.2s ease, color 0.2s ease;
+      transition: background 0.18s ease, color 0.18s ease;
     }
     .f-moul { font-family: 'Khmer OS Muol Light', 'Moul', cursive !important; font-weight: normal; }
 
@@ -613,6 +640,90 @@
        ⚙️ ផ្នែក JavaScript : SUPABASE AUTH GUARD & ATTENDANCE ENGINE
   ========================================================= -->
   <script>
+    /* =========================================================
+       🎨 REAL-TIME THEME SYNCHRONIZATION ENGINE
+    ========================================================= */
+    var lastAppliedTheme = '';
+
+    function detectTheme() {
+      // 1. ពិនិត្យតាម URL Parameter
+      try {
+        var urlTh = new URLSearchParams(window.location.search).get('theme');
+        if (urlTh) return urlTh;
+      } catch(e) {}
+
+      // 2. ពិនិត្យផ្ទាល់លើផ្ទាំងមេ (Parent Shell)
+      try {
+        if (window.parent && window.parent !== window && window.parent.document) {
+          var pTh = window.parent.document.documentElement.getAttribute('data-theme')
+                 || window.parent.document.body.getAttribute('data-theme');
+          if (pTh) return pTh;
+        }
+      } catch(e) {}
+
+      // 3. ពិនិត្យក្នុង localStorage
+      try {
+        var ls = localStorage.getItem('krou_theme_manual')
+              || localStorage.getItem('theme')
+              || localStorage.getItem('krou_theme');
+        if (ls) return ls;
+      } catch(e) {}
+
+      return 'dark';
+    }
+
+    function applyTheme(th) {
+      th = th || detectTheme();
+      if (th !== lastAppliedTheme) {
+        lastAppliedTheme = th;
+        document.documentElement.setAttribute('data-theme', th);
+      }
+    }
+
+    // ១. ដំណើរការភ្លាមៗពេល Script ចាប់ផ្តើម
+    applyTheme();
+
+    // ២. ចាប់យកសញ្ញា postMessage ពេលផ្ទាំងមេបាញ់ដំណឹងមក (Real-time)
+    window.addEventListener('message', function(e) {
+      if (!e.data) return;
+      var th = null;
+      if (typeof e.data === 'string') {
+        if (e.data === 'dark' || e.data === 'light') th = e.data;
+        else {
+          try {
+            var p = JSON.parse(e.data);
+            th = p.theme || (p.type === 'THEME_CHANGE' ? p.theme : null);
+          } catch(err) {}
+        }
+      } else if (typeof e.data === 'object') {
+        th = e.data.theme || (e.data.type === 'THEME_CHANGE' ? e.data.theme : null);
+      }
+      if (th) applyTheme(th);
+    });
+
+    // ៣. ចាប់យកពេល localStorage ប្រែប្រួល
+    window.addEventListener('storage', function(e) {
+      if (e.key === 'krou_theme_manual' || e.key === 'theme') {
+        if (e.newValue) applyTheme(e.newValue);
+      }
+    });
+
+    // ៤. តាមដានផ្ទាំងមេ (MutationObserver) ពេល Same-Origin
+    try {
+      if (window.parent && window.parent !== window && window.parent.document) {
+        var observer = new MutationObserver(function() {
+          var pTh = window.parent.document.documentElement.getAttribute('data-theme');
+          if (pTh) applyTheme(pTh);
+        });
+        observer.observe(window.parent.document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+      }
+    } catch(e) {}
+
+    // ៥. ត្រួតពិនិត្យជាប្រចាំរៀងរាល់ 150ms (ធានាប្តូរតាមភ្លាមៗ ១០០% មិនខកខាន)
+    setInterval(function() {
+      applyTheme();
+    }, 150);
+
     /* 1. SUPABASE CLIENT CONFIG */
     const SUPABASE_URL = "https://nggnuobnrxiqjtcwlvwk.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_AHDcUJbuMAfhaocyfm2X7w_O9s06wML";
@@ -678,18 +789,10 @@
       setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 1800);
     }
 
-    function syncThemeWithParent() {
-      var pTheme = (window.parent && window.parent.document && window.parent.document.documentElement.getAttribute('data-theme'))
-        || localStorage.getItem('krou_theme_manual') || 'light';
-      document.documentElement.setAttribute('data-theme', pTheme);
-    }
-
     /* 3. LIFECYCLE INITIALIZATION */
     window.onload = async function() {
-      // 🌟 ១. ត្រួតពិនិត្យ Auth Guard ជាមុនសិន
       if (!checkAuthentication()) return;
 
-      syncThemeWithParent();
       updateDateUI();
 
       var curMonthName = KHMER_MONTHS[selectedDate.getMonth()];
@@ -707,7 +810,6 @@
       var container = document.getElementById('studentListContainer');
       var userCls = cleanGrade(USER_CLASS);
 
-      // 👉 បើជាគ្រូធម្មតា (មិនមែន Admin)៖ លាក់ Dropdown បង្ហាញតែផ្លាកថ្នាក់របស់គាត់
       if (!IS_ADMIN) {
         document.getElementById('adminClassBox').style.display = 'none';
         var badge = document.getElementById('teacherClassBadge');
@@ -728,7 +830,6 @@
           return;
         }
       } else {
-        // 👉 បើជា Admin៖ បង្ហាញ Dropdown
         document.getElementById('teacherClassBadge').style.display = 'none';
         document.getElementById('adminClassBox').style.display = 'inline-block';
       }
@@ -797,7 +898,6 @@
       if (!currentClassName) return;
       var curPure = cleanGrade(currentClassName);
 
-      // 👉 បង្កើត Unique ID ដោយឡែកពីគ្នា កុំឱ្យជាន់គ្នានាំឱ្យដូរវត្តមានម្នាក់ទៅប្តូរទាំងអស់
       var usedIds = new Set();
       rawStudentsData = allStudentsCache
         .filter(s => cleanGrade(s.grade) === curPure)
@@ -1005,7 +1105,7 @@
       }
     }
 
-    /* 6. HOLIDAYS MANAGEMENT (TABLE: school_holidays) */
+    /* 6. HOLIDAYS MANAGEMENT */
     async function loadSchoolHolidays() {
       var yr = selectedDate.getFullYear();
       try {
@@ -1122,7 +1222,7 @@
       container.innerHTML = html;
     }
 
-    /* 7. CALENDAR & TAB LOGIC (SYNC MONTH) */
+    /* 7. CALENDAR & TAB LOGIC */
     function switchNavTab(tab) {
       document.getElementById('btnTabDaily').classList.toggle('active', tab === 'daily');
       document.getElementById('btnTabReports').classList.toggle('active', tab === 'reports');
@@ -1231,7 +1331,7 @@
       html2pdf().from(element).set(opt).save();
     }
 
-    /* 8. REPORTS GENERATION (MONTHLY & YEARLY) */
+    /* 8. REPORTS GENERATION */
     async function renderMonthlyPrintReport() {
       var mName = document.getElementById('rptMonthSelect').value;
       var currentYear = selectedDate.getFullYear();
