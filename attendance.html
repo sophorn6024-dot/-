@@ -3,10 +3,10 @@
 <head>
   <base target="_top">
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
   <title>ស្រង់វត្តមានសិស្ស</title>
   
-  <!-- 🔤 Google Fonts Khmer -->
+  <!-- 🔤 Google Fonts Khmer (Battambang & Moul ដើម) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;600;700;800&family=Moul&display=swap" rel="stylesheet">
@@ -15,33 +15,6 @@
 
   <!-- ⚡ Supabase JS Client (v2) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <!-- 🎨 ចាប់យក THEME ភ្លាមៗតាំងពីចាប់ផ្តើម LOAD (កុំឱ្យភ្លឹបភ្លែត) -->
-  <script>
-    (function() {
-      function getInitTheme() {
-        try {
-          var urlTh = new URLSearchParams(window.location.search).get('theme');
-          if (urlTh) return urlTh;
-        } catch(e) {}
-        try {
-          if (window.parent && window.parent !== window && window.parent.document) {
-            var pTh = window.parent.document.documentElement.getAttribute('data-theme')
-                   || window.parent.document.body.getAttribute('data-theme');
-            if (pTh) return pTh;
-          }
-        } catch(e) {}
-        try {
-          var ls = localStorage.getItem('krou_theme_manual') 
-                || localStorage.getItem('theme') 
-                || localStorage.getItem('krou_theme');
-          if (ls) return ls;
-        } catch(e) {}
-        return 'dark';
-      }
-      document.documentElement.setAttribute('data-theme', getInitTheme());
-    })();
-  </script>
 
   <style>
     :root, [data-theme="light"] {
@@ -90,7 +63,7 @@
       background: var(--bg); color: var(--text); font-size: 13px; line-height: 1.45;
       min-height: 100%; height: auto !important; overflow-x: hidden; overflow-y: visible !important;
       -webkit-overflow-scrolling: touch; padding: 14px 16px 140px;
-      transition: background 0.18s ease, color 0.18s ease;
+      transition: background .25s, color .25s;
     }
     .f-moul { font-family: 'Khmer OS Muol Light', 'Moul', cursive !important; font-weight: normal; }
 
@@ -105,7 +78,7 @@
       padding: 30px 20px;
     }
     .auth-card {
-      background: var(--surface);
+      background: var(--surface-card);
       border: 1.5px solid var(--border);
       border-radius: 24px;
       padding: 40px 28px;
@@ -120,18 +93,18 @@
       width: 68px;
       height: 68px;
       border-radius: 20px;
-      background: rgba(239, 68, 68, 0.15);
-      color: #ef4444;
+      background: rgba(220, 38, 38, 0.15);
+      color: #dc2626;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 32px;
       margin-bottom: 16px;
     }
-    .auth-card h2 { font-size: 18px; margin-bottom: 8px; color: #ef4444; font-weight: 700; }
+    .auth-card h2 { font-size: 18px; margin-bottom: 8px; color: #dc2626; font-weight: 700; }
     .auth-card p { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 24px; }
     .btn-login-redirect {
-      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      background: linear-gradient(135deg, #0284c7, #7c3aed);
       color: #ffffff;
       padding: 10px 24px;
       border-radius: 12px;
@@ -141,7 +114,7 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
       transition: all 0.2s;
       cursor: pointer;
       border: none;
@@ -362,11 +335,11 @@
 
 <body>
 
-  <!-- ══════════════ 🔒 0. AUTH DENIED WRAPPER (ពេលមិនទាន់ LOGIN) ══════════════ -->
-  <div id="authDeniedWrap">
+  <!-- ══════════════ 🔒 0. AUTH DENIED WRAPPER ══════════════ -->
+  <div id="authDeniedWrap" class="auth-wrapper">
     <div class="auth-card">
       <div class="auth-icon">🔒</div>
-      <h2 class="f-moul">សូមចូលប្រើប្រាស់ជាមុនសិន!</h2>
+      <h2>សូមចូលប្រើប្រាស់ជាមុនសិន!</h2>
       <p>លោកអ្នកមិនទាន់បាន Login ចូលក្នុងប្រព័ន្ធនៅឡើយទេ។ សូម Login គណនីរបស់អ្នកដើម្បីមើល ឬស្រង់វត្តមានសិស្ស។</p>
       <a href="index.html" target="_top" class="btn-login-redirect" onclick="goToIndex(event)">
         <span>🔑</span> <span>ទៅកាន់ទំព័រដើម (Login)</span>
@@ -436,7 +409,7 @@
         </div>
 
         <!-- 🌟 ផ្លាកថ្នាក់របស់គ្រូ (ពេលជាគ្រូ Dropdown នឹងត្រូវលាក់) -->
-        <div id="teacherClassBadge" class="class-select-pill" style="display:none; background:linear-gradient(135deg, #2563eb, #7c3aed); color:#fff; border-color:transparent;">
+        <div id="teacherClassBadge" class="class-select-pill" style="display:none; background:linear-gradient(135deg, #0284c7, #7c3aed); color:#fff; border-color:transparent;">
           <span>🏫</span>
           <span id="teacherClassText">ថ្នាក់ទី...</span>
         </div>
@@ -637,114 +610,23 @@
   </div> <!-- END #mainPageContent -->
 
   <!-- =========================================================
-       ⚙️ ផ្នែក JavaScript : SUPABASE AUTH GUARD & ATTENDANCE ENGINE
+       ⚙️ JAVASCRIPT : SUPABASE AUTH GUARD & ATTENDANCE ENGINE
   ========================================================= -->
   <script>
     /* =========================================================
-       🎨 REAL-TIME THEME SYNCHRONIZATION ENGINE
+       1. SUPABASE CONFIG
     ========================================================= */
-    var lastAppliedTheme = '';
-
-    function detectTheme() {
-      // 1. ពិនិត្យតាម URL Parameter
-      try {
-        var urlTh = new URLSearchParams(window.location.search).get('theme');
-        if (urlTh) return urlTh;
-      } catch(e) {}
-
-      // 2. ពិនិត្យផ្ទាល់លើផ្ទាំងមេ (Parent Shell)
-      try {
-        if (window.parent && window.parent !== window && window.parent.document) {
-          var pTh = window.parent.document.documentElement.getAttribute('data-theme')
-                 || window.parent.document.body.getAttribute('data-theme');
-          if (pTh) return pTh;
-        }
-      } catch(e) {}
-
-      // 3. ពិនិត្យក្នុង localStorage
-      try {
-        var ls = localStorage.getItem('krou_theme_manual')
-              || localStorage.getItem('theme')
-              || localStorage.getItem('krou_theme');
-        if (ls) return ls;
-      } catch(e) {}
-
-      return 'dark';
-    }
-
-    function applyTheme(th) {
-      th = th || detectTheme();
-      if (th !== lastAppliedTheme) {
-        lastAppliedTheme = th;
-        document.documentElement.setAttribute('data-theme', th);
-      }
-    }
-
-    // ១. ដំណើរការភ្លាមៗពេល Script ចាប់ផ្តើម
-    applyTheme();
-
-    // ២. ចាប់យកសញ្ញា postMessage ពេលផ្ទាំងមេបាញ់ដំណឹងមក (Real-time)
-    window.addEventListener('message', function(e) {
-      if (!e.data) return;
-      var th = null;
-      if (typeof e.data === 'string') {
-        if (e.data === 'dark' || e.data === 'light') th = e.data;
-        else {
-          try {
-            var p = JSON.parse(e.data);
-            th = p.theme || (p.type === 'THEME_CHANGE' ? p.theme : null);
-          } catch(err) {}
-        }
-      } else if (typeof e.data === 'object') {
-        th = e.data.theme || (e.data.type === 'THEME_CHANGE' ? e.data.theme : null);
-      }
-      if (th) applyTheme(th);
-    });
-
-    // ៣. ចាប់យកពេល localStorage ប្រែប្រួល
-    window.addEventListener('storage', function(e) {
-      if (e.key === 'krou_theme_manual' || e.key === 'theme') {
-        if (e.newValue) applyTheme(e.newValue);
-      }
-    });
-
-    // ៤. តាមដានផ្ទាំងមេ (MutationObserver) ពេល Same-Origin
-    try {
-      if (window.parent && window.parent !== window && window.parent.document) {
-        var observer = new MutationObserver(function() {
-          var pTh = window.parent.document.documentElement.getAttribute('data-theme');
-          if (pTh) applyTheme(pTh);
-        });
-        observer.observe(window.parent.document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-      }
-    } catch(e) {}
-
-    // ៥. ត្រួតពិនិត្យជាប្រចាំរៀងរាល់ 150ms (ធានាប្តូរតាមភ្លាមៗ ១០០% មិនខកខាន)
-    setInterval(function() {
-      applyTheme();
-    }, 150);
-
-    /* 1. SUPABASE CLIENT CONFIG */
     const SUPABASE_URL = "https://nggnuobnrxiqjtcwlvwk.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_AHDcUJbuMAfhaocyfm2X7w_O9s06wML";
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    /* 2. READ SESSION & AUTH GUARD */
+    /* =========================================================
+       2. SESSION & AUTH GUARD
+    ========================================================= */
     function readSession() {
       try { return JSON.parse(localStorage.getItem('krou_supabase_user') || 'null'); } catch (e) { return null; }
     }
     const CURRENT_USER = readSession();
-
-    function checkAuthentication() {
-      if (!CURRENT_USER || !CURRENT_USER.username) {
-        document.getElementById('mainPageContent').style.display = 'none';
-        document.getElementById('authDeniedWrap').style.display = 'flex';
-        return false;
-      }
-      document.getElementById('authDeniedWrap').style.display = 'none';
-      document.getElementById('mainPageContent').style.display = 'block';
-      return true;
-    }
 
     function goToIndex(e) {
       if (e) e.preventDefault();
@@ -762,6 +644,17 @@
     var USER_CLASS   = CURRENT_USER?.assigned_classes || CURRENT_USER?.assigned_class || "";
     var TEACHER_NAME = CURRENT_USER?.teacher_name || "";
     var IS_ADMIN     = String(USER_ROLE).toLowerCase().trim() === 'admin';
+
+    /* =========================================================
+       3. THEME (យកគំរូតាមទំព័រគ្រប់គ្រងគ្រូបង្រៀន ១០០%)
+    ========================================================= */
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme || 'dark');
+    }
+    applyTheme(new URLSearchParams(location.search).get('theme') || localStorage.getItem('krou_theme_manual') || 'dark');
+    window.addEventListener('message', e => {
+      if (e.data && (e.data.type === 'THEME_CHANGE' || e.data.theme)) applyTheme(e.data.theme || e.data);
+    });
 
     var KHMER_MONTHS = ["មករា","កុម្ភៈ","មីនា","មេសា","ឧសភា","មិថុនា","កក្កដា","សីហា","កញ្ញា","តុលា","វិច្ឆិកា","ធ្នូ"];
     var WEEKDAYS_KH  = ["អា","ច","អ","ព","ព្រ","សុ","ស"];
@@ -789,9 +682,18 @@
       setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 1800);
     }
 
-    /* 3. LIFECYCLE INITIALIZATION */
-    window.onload = async function() {
-      if (!checkAuthentication()) return;
+    /* =========================================================
+       4. INIT
+    ========================================================= */
+    async function initPage() {
+      if (!CURRENT_USER || !CURRENT_USER.username) {
+        document.getElementById('mainPageContent').style.display = 'none';
+        document.getElementById('authDeniedWrap').style.display = 'flex';
+        return;
+      }
+
+      document.getElementById('authDeniedWrap').style.display = 'none';
+      document.getElementById('mainPageContent').style.display = 'block';
 
       updateDateUI();
 
@@ -802,9 +704,9 @@
       await loadSchoolHolidays();
       renderHolidayConfigSection();
       await loadAllStudentsAndClasses();
-    };
+    }
 
-    /* 4. ទាញយកសិស្ស និងចាក់សោថ្នាក់គ្រូ */
+    /* 5. ទាញយកសិស្ស និងចាក់សោថ្នាក់គ្រូ */
     async function loadAllStudentsAndClasses() {
       var sel = document.getElementById('classSelect');
       var container = document.getElementById('studentListContainer');
@@ -893,7 +795,7 @@
       loadDailyAttendanceData();
     }
 
-    /* 5. ទាញយកវត្តមានប្រចាំថ្ងៃ */
+    /* 6. ទាញយកវត្តមានប្រចាំថ្ងៃ */
     async function loadDailyAttendanceData() {
       if (!currentClassName) return;
       var curPure = cleanGrade(currentClassName);
@@ -1081,7 +983,7 @@
       var y = selectedDate.getFullYear();
       var m = selectedDate.getMonth();
       var d = selectedDate.getDate();
-      var isoDate = `${y}-${String(m+1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+      var isoDate = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
       var curPure = cleanGrade(currentClassName);
 
       var records = rawStudentsData.map(function(s) {
@@ -1105,7 +1007,7 @@
       }
     }
 
-    /* 6. HOLIDAYS MANAGEMENT */
+    /* 7. HOLIDAYS MANAGEMENT */
     async function loadSchoolHolidays() {
       var yr = selectedDate.getFullYear();
       try {
@@ -1222,7 +1124,7 @@
       container.innerHTML = html;
     }
 
-    /* 7. CALENDAR & TAB LOGIC */
+    /* 8. CALENDAR & TAB LOGIC */
     function switchNavTab(tab) {
       document.getElementById('btnTabDaily').classList.toggle('active', tab === 'daily');
       document.getElementById('btnTabReports').classList.toggle('active', tab === 'reports');
@@ -1310,7 +1212,7 @@
     function openReportView(type) {
       var paper = document.getElementById('printableReportPaper');
       document.getElementById('reportViewerModal').style.display = 'block';
-      paper.innerHTML = '<div style="text-align:center; padding:50px; color:#64748b;"><i class="fa-solid fa-spinner fa-spin fa-2x" style="color:var(--primary);"></i><p style="margin-top:10px;">កំពុងរៀបចំរបាយការណ៍...</p></div>';
+      paper.innerHTML = '<div style="text-align:center; padding:50px; color:var(--text-muted);"><i class="fa-solid fa-spinner fa-spin fa-2x" style="color:var(--primary);"></i><p style="margin-top:10px;">កំពុងរៀបចំរបាយការណ៍...</p></div>';
 
       if (type === 'monthly') renderMonthlyPrintReport();
       else renderYearlyPrintReport();
@@ -1331,7 +1233,7 @@
       html2pdf().from(element).set(opt).save();
     }
 
-    /* 8. REPORTS GENERATION */
+    /* 9. REPORTS GENERATION */
     async function renderMonthlyPrintReport() {
       var mName = document.getElementById('rptMonthSelect').value;
       var currentYear = selectedDate.getFullYear();
@@ -1430,7 +1332,7 @@
 
           rowsHtml += `
             <tr>
-              <td>${idx + 1}</td>
+              <td>${toKhmerNum(idx + 1)}</td>
               <td style="text-align:left; padding-left:4px; font-weight:bold;">${s.name}</td>
               <td>${s.sex || 'ប្រុស'}</td>
               ${dayCells}
@@ -1540,7 +1442,7 @@
         `;
         document.getElementById('printableReportPaper').innerHTML = html;
       } catch (err) {
-        document.getElementById('printableReportPaper').innerHTML = `<div style="color:#dc2626; text-align:center; padding:30px;">⚠️ មិនអាចរៀបចំរបាយការណ៍បានទេ៖ ${err.message || err}</div>`;
+        document.getElementById('printableReportPaper').innerHTML = `<div style="color:var(--danger); text-align:center; padding:30px;">⚠️ មិនអាចរៀបចំរបាយការណ៍បានទេ៖ ${err.message || err}</div>`;
       }
     }
 
@@ -1594,27 +1496,27 @@
             s1C += (rec.c || 0); s1A += (rec.a || 0);
             s1Cells += `<td>${rec.c || ''}</td><td>${rec.a || ''}</td>`;
           });
-          s1Cells += `<td style="font-weight:bold;">${s1C}</td><td style="font-weight:bold; color:#dc2626;">${s1A}</td>`;
+          s1Cells += `<td style="font-weight:bold;">${s1C}</td><td style="font-weight:bold; color:var(--danger);">${s1A}</td>`;
 
           sem2Months.forEach(function(m) {
             var rec = (mData[m] && mData[m][s.id]) ? mData[m][s.id] : { c: 0, a: 0 };
             s2C += (rec.c || 0); s2A += (rec.a || 0);
             s2Cells += `<td>${rec.c || ''}</td><td>${rec.a || ''}</td>`;
           });
-          s2Cells += `<td style="font-weight:bold;">${s2C}</td><td style="font-weight:bold; color:#dc2626;">${s2A}</td>`;
+          s2Cells += `<td style="font-weight:bold;">${s2C}</td><td style="font-weight:bold; color:var(--danger);">${s2A}</td>`;
 
           var totC = s1C + s2C, totA = s1A + s2A;
 
           rowsHtml += `
             <tr>
-              <td>${idx + 1}</td>
+              <td>${toKhmerNum(idx + 1)}</td>
               <td>${s.id}</td>
               <td style="text-align:left; padding-left:4px; font-weight:bold; white-space:nowrap;">${s.name}</td>
               <td>${s.sex || 'ប្រុស'}</td>
               ${s1Cells}
               ${s2Cells}
               <td style="font-weight:bold;">${totC}</td>
-              <td style="font-weight:bold; color:#dc2626;">${totA}</td>
+              <td style="font-weight:bold; color:var(--danger);">${totA}</td>
               <td style="font-weight:bold;">${totC + totA}</td>
             </tr>
           `;
@@ -1671,9 +1573,11 @@
         `;
         document.getElementById('printableReportPaper').innerHTML = html;
       } catch (err) {
-        document.getElementById('printableReportPaper').innerHTML = `<div style="color:#dc2626; text-align:center; padding:30px;">⚠️ មិនអាចរៀបចំរបាយការណ៍ប្រចាំឆ្នាំបានទេ៖ ${err.message || err}</div>`;
+        document.getElementById('printableReportPaper').innerHTML = `<div style="color:var(--danger); text-align:center; padding:30px;">⚠️ មិនអាចរៀបចំរបាយការណ៍ប្រចាំឆ្នាំបានទេ៖ ${err.message || err}</div>`;
       }
     }
+
+    window.addEventListener('DOMContentLoaded', initPage);
   </script>
 </body>
 </html>
