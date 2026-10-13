@@ -17,7 +17,7 @@
 
   <style>
     /* =========================================================
-       🎨 DYNAMIC THEME SYSTEM (LIGHT & DARK MODE)
+       🎨 DYNAMIC THEME SYSTEM (LIGHT & DARK MODE ដូចគំរូ)
     ========================================================= */
     :root {
       --app-bg: #f8fafc;
@@ -31,6 +31,9 @@
       --input-focus: #0284c7;
       --ctrl-group-bg: #f1f5f9;
       --shadow-sm: 0 4px 16px rgba(15, 23, 42, 0.06);
+      --primary: #0284c7;
+      --amber: #d97706;
+      --danger: #dc2626;
     }
 
     [data-theme="dark"] {
@@ -45,6 +48,9 @@
       --input-focus: #38bdf8;
       --ctrl-group-bg: #0e1a2d;
       --shadow-sm: 0 8px 24px rgba(0, 0, 0, 0.45);
+      --primary: #38bdf8;
+      --amber: #fbbf24;
+      --danger: #f87171;
     }
 
     @page { size: A4 portrait; margin: 8mm 10mm; }
@@ -293,11 +299,8 @@
         gap: 6px;
         margin-bottom: 10px;
       }
-      .toolbar-row {
-        gap: 6px;
-      }
+      .toolbar-row { gap: 6px; }
 
-      /* 🌟 បង្រួម Controls ជា Grid ២ ជួរ x ២ ក្រឡា (តូចល្មម មិនខាតកន្លែង) */
       .toolbar-filters-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -332,7 +335,6 @@
       }
       .toolbar-label i { font-size: 10px; }
 
-      /* 🌟 ជួរសកម្មភាព (Zoom + Buttons) រៀបចំជា ១ ជួរស្របគ្នា */
       .toolbar-actions-row {
         display: flex;
         align-items: center;
@@ -673,7 +675,7 @@
       </div>
     </div>
 
-    <!-- ជួរទី ២ ៖ ប៊ូតុងសកម្មភាព និង Zoom (១ ជួរស្របគ្នាយ៉ាងស្អាតលើ Mobile) -->
+    <!-- ជួរទី ២ ៖ ប៊ូតុងសកម្មភាព និង Zoom -->
     <div class="toolbar-row">
       <div class="toolbar-actions-row">
         
@@ -699,7 +701,7 @@
 
   </div>
 
-  <!-- ══════════════ 🔒 AUTH DENIED WRAPPER (ពេលមិនទាន់ LOGIN) ══════════════ -->
+  <!-- ══════════════ 🔒 AUTH DENIED WRAPPER ══════════════ -->
   <div class="auth-wrapper" id="authDeniedWrap">
     <div class="auth-card">
       <div class="auth-icon">🔒</div>
@@ -784,7 +786,7 @@
   </div>
 
   <!-- =========================================================
-       ⚙️ JAVASCRIPT ENGINE (SUPABASE + AUTH + RESPONSIVE)
+       ⚙️ JAVASCRIPT ENGINE
   ========================================================= -->
   <script>
     /* 1. SUPABASE CONFIG */
@@ -826,12 +828,32 @@
     var TEACHER_NAME = CURRENT_USER?.teacher_name || "";
     var IS_ADMIN     = String(USER_ROLE).toLowerCase().trim() === 'admin';
 
-    /* 3. THEME (យកគំរូតាមទំព័រគ្រប់គ្រងគ្រូបង្រៀន) */
-    function applyTheme(theme) { document.documentElement.setAttribute('data-theme', theme || 'dark'); }
+    /* =========================================================
+       3. មុខងារ DARK / LIGHT (ដូចគំរូគ្រប់គ្រងគ្រូបង្រៀន ១០០%)
+    ========================================================= */
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme || 'dark');
+    }
     applyTheme(new URLSearchParams(location.search).get('theme') || localStorage.getItem('krou_theme_manual') || 'dark');
     window.addEventListener('message', e => {
       if (e.data && (e.data.type === 'THEME_CHANGE' || e.data.theme)) applyTheme(e.data.theme || e.data);
     });
+
+    // បន្ថែមការស្តាប់ពេល localStorage ប្រែប្រួល ឬ Parent ប្តូរ
+    window.addEventListener('storage', e => {
+      if (e.key === 'krou_theme_manual') applyTheme(e.newValue);
+    });
+    setInterval(function() {
+      try {
+        var pTh = window.parent?.document?.documentElement?.getAttribute('data-theme');
+        var lTh = localStorage.getItem('krou_theme_manual');
+        var t = pTh || lTh;
+        if (t && document.documentElement.getAttribute('data-theme') !== t) applyTheme(t);
+      } catch(e) {
+        var lTh2 = localStorage.getItem('krou_theme_manual');
+        if (lTh2 && document.documentElement.getAttribute('data-theme') !== lTh2) applyTheme(lTh2);
+      }
+    }, 200);
 
     var khmerDigits = ['០','១','២','៣','៤','៥','៦','៧','៨','៩'];
     var khmerMonths = ['មករា','កុម្ភៈ','មីនា','មេសា','ឧសភា','មិថុនា','កក្កដា','សីហា','កញ្ញា','តុលា','វិច្ឆិកា','ធ្នូ'];
@@ -870,7 +892,7 @@
       setZoom(targetScale, btnEl);
     }
 
-    // ── DRAGGABLE TEACHER NAME (TRANSLATE SYSTEM) ──
+    // ── DRAGGABLE TEACHER NAME ──
     var TEACHER_POS_KEY = 'rosterTeacherTranslate_V2';
     var curX = 0, curY = 0;
 
@@ -977,7 +999,6 @@
       initDraggableTeacherName();
       await initClassesAndRoster();
 
-      // Auto Fit Zoom on Mobile Screen
       if (window.innerWidth <= 768) {
         setFitZoom(document.getElementById('btnZoomFit'));
       }
@@ -1092,7 +1113,7 @@
 
         if (currentSemester === 'ឆមាសទី២') {
           if (drop.semester === 'ឆមាសទី១') {
-            return false; // 🚫 លាក់សិស្សបោះបង់ឆមាសទី១
+            return false;
           }
           return true;
         }
