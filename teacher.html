@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="km" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>គ្រប់គ្រងគ្រូបង្រៀន - សាលាបឋមសិក្សាកំពង់ល្ពៅ</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- ⚡ Supabase JS Client (v2) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root {
+      --bg-app: #f8fafc; --surface: #ffffff; --surface-elevated: #f1f5f9; --surface-card: #ffffff;
+      --border: #e2e8f0; --border-subtle: #cbd5e1; --text-main: #0f172a; --text-muted: #64748b;
+      --input-bg: #ffffff; --input-border: #cbd5e1; --input-focus: #0284c7;
+      --primary: #0284c7; --navy-2: #1e3a8a;
+      --card-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
+      --danger: #dc2626; --danger-bg: #fef2f2; --green: #16a34a; --green-bg: #f0fdf4;
+      --amber: #d97706; --amber-bg: #fef3c7;
+    }
+    [data-theme="dark"] {
+      --bg-app: #090e17; --surface: #0f172a; --surface-elevated: #162642; --surface-card: #111e33;
+      --border: #1e293b; --border-subtle: #233f66; --text-main: #f8fafc; --text-muted: #94a3b8;
+      --input-bg: #162642; --input-border: #233f66; --input-focus: #38bdf8;
+      --primary: #38bdf8; --navy-2: #38bdf8;
+      --card-shadow: 0 8px 25px rgba(0, 0, 0, 0.45);
+      --danger: #f87171; --danger-bg: rgba(239, 68, 68, 0.15); --green: #34d399; --green-bg: rgba(16, 185, 129, 0.15);
+      --amber: #fbbf24; --amber-bg: rgba(245, 158, 11, 0.15);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Kantumruy Pro', sans-serif; }
+    html, body { background: var(--bg-app); color: var(--text-main); transition: background .25s, color .25s; min-height: 100vh; }
+    body { padding: 22px 24px 60px; }
+
+    .page-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; gap: 15px; flex-wrap: wrap; }
+    .page-title { display: flex; align-items: center; gap: 14px; }
+    .page-title-icon {
+      width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center;
+      font-size: 24px; background: linear-gradient(135deg, #0284c7, #7c3aed); color: #fff;
+      box-shadow: 0 8px 20px rgba(2, 132, 199, 0.25);
+    }
+    .page-head h2 { font-size: 18px; color: var(--navy-2); }
+    .page-head p { font-size: 12.5px; color: var(--text-muted); margin-top: 3px; }
+
+    .add-btn {
+      background: linear-gradient(135deg, #0284c7, #7c3aed); color: #fff; border: none; padding: 10px 18px;
+      border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px;
+      box-shadow: 0 6px 18px rgba(2, 132, 199, 0.3); transition: all .2s; user-select: none;
+    }
+    .add-btn:hover { transform: translateY(-2px); }
+    .add-btn:active { transform: scale(0.97); }
+
+    .search-bar { margin-bottom: 16px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .search-wrap { position: relative; width: 100%; max-width: 360px; }
+    .search-wrap span { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 14px; }
+    .search-bar input {
+      width: 100%; padding: 10px 14px 10px 40px; border-radius: 12px; border: 1.5px solid var(--border);
+      font-size: 13px; outline: none; background: var(--surface-card); color: var(--text-main); transition: all .2s;
+    }
+    .search-bar input:focus { border-color: var(--input-focus); box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15); }
+    .count-pill { font-size: 12px; font-weight: 700; padding: 5px 14px; border-radius: 20px; background: rgba(99,102,241,.15); color: #818cf8; }
+
+    .table-panel {
+      background: var(--surface-card); border-radius: 18px; border: 1px solid var(--border);
+      box-shadow: var(--card-shadow); overflow: hidden; overflow-x: auto;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    thead th {
+      background: linear-gradient(90deg, #1e3a8a, #4338ca); color: #fff; text-align: center;
+      padding: 13px 10px; font-weight: 700; white-space: nowrap;
+    }
+    tbody td { padding: 11px 10px; border-bottom: 1px solid var(--border); text-align: center; white-space: nowrap; color: var(--text-main); }
+    tbody tr { transition: background .15s; }
+    tbody tr:hover { background: var(--surface-elevated); }
+    tbody tr:last-child td { border-bottom: none; }
+    .name-cell { font-weight: 700; text-align: left !important; }
+    .empty-row td { color: var(--text-muted); padding: 40px 0; font-weight: 600; }
+
+    .avatar-thumb, .avatar-fallback { width: 36px; height: 36px; border-radius: 50%; }
+    .avatar-thumb { object-fit: cover; display: inline-block; background: var(--surface-elevated); border: 1px solid var(--border); }
+    .avatar-fallback {
+      display: inline-flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, #0284c7, #7c3aed); color: #fff; font-weight: 700; font-size: 13px;
+    }
+
+    .badge-user { background: var(--green-bg); color: var(--green); font-weight: 700; padding: 4px 10px; border-radius: 20px; font-size: 11.5px; }
+    .badge-role { font-weight: 700; padding: 4px 12px; border-radius: 20px; font-size: 11.5px; }
+    .badge-role.admin { background: var(--amber-bg); color: var(--amber); }
+    .badge-role.teacher { background: rgba(2, 132, 199, 0.15); color: #0284c7; }
+    [data-theme="dark"] .badge-role.teacher { color: #38bdf8; }
+
+    .row-actions { display: flex; gap: 6px; justify-content: center; }
+    .icon-btn {
+      width: 32px; height: 32px; border-radius: 9px; border: 1px solid transparent; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; font-size: 13px; transition: all .18s;
+    }
+    .icon-btn:hover { transform: translateY(-2px); }
+    .icon-btn.edit { background: rgba(2,132,199,.12); color: #0284c7; border-color: rgba(2,132,199,.25); }
+    .icon-btn.del { background: var(--danger-bg); color: var(--danger); border-color: rgba(239,68,68,.3); }
+
+    /* MODAL */
+    .modal-backdrop {
+      display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(8px);
+      z-index: 1000; align-items: center; justify-content: center; padding: 16px;
+    }
+    .modal-backdrop.show { display: flex; animation: fadeBackdrop .2s ease both; }
+    @keyframes fadeBackdrop { from { opacity: 0; } to { opacity: 1; } }
+    .modal-card {
+      background: var(--surface-card); border-radius: 22px; width: 680px; max-width: 100%; max-height: 94vh;
+      overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 30px 80px rgba(0,0,0,.45);
+      border: 1px solid var(--border); animation: modalIn .26s cubic-bezier(.2,.8,.2,1) both;
+    }
+    @keyframes modalIn { from { opacity: 0; transform: translateY(18px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    .modal-header { position: relative; padding: 18px 22px; background: linear-gradient(135deg, #0284c7, #4f46e5, #7c3aed); color: #fff; }
+    .modal-header-inner { display: flex; align-items: center; gap: 13px; }
+    .modal-header-icon {
+      width: 46px; height: 46px; border-radius: 13px; background: rgba(255,255,255,.18);
+      border: 1px solid rgba(255,255,255,.25); display: flex; align-items: center; justify-content: center; font-size: 22px;
+    }
+    .modal-header h3 { font-size: 16px; font-weight: 700; margin-bottom: 3px; }
+    .modal-header p { font-size: 12px; color: rgba(255,255,255,.85); }
+    .modal-close {
+      position: absolute; right: 15px; top: 15px; width: 32px; height: 32px; border-radius: 9px; border: none; cursor: pointer;
+      background: rgba(255,255,255,.16); color: #fff; font-size: 18px; display: flex; align-items: center; justify-content: center;
+    }
+    .modal-close:hover { background: rgba(255,255,255,.3); }
+    .modal-body { padding: 20px 22px 10px; overflow-y: auto; }
+
+    .photo-section {
+      display: flex; align-items: center; gap: 17px; padding: 14px; border: 1px solid var(--border);
+      border-radius: 16px; background: var(--surface-elevated); margin-bottom: 20px;
+    }
+    .photo-box { position: relative; width: 76px; height: 76px; flex-shrink: 0; }
+    .photo-preview {
+      width: 76px; height: 76px; border-radius: 16px; object-fit: cover; background: var(--surface);
+      border: 2px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,.15); display: none;
+    }
+    .photo-placeholder {
+      width: 76px; height: 76px; border-radius: 16px; background: var(--surface); border: 1.5px dashed var(--border-subtle);
+      display: flex; align-items: center; justify-content: center; flex-direction: column; color: var(--text-muted); gap: 3px;
+    }
+    .photo-upload-label {
+      display: inline-flex; align-items: center; gap: 6px; background: rgba(2,132,199,.12); color: #0284c7;
+      border: 1px solid rgba(2,132,199,.25); padding: 6px 12px; border-radius: 8px; font-size: 11.5px; font-weight: 700; cursor: pointer;
+    }
+    .photo-upload-label:hover { background: rgba(2,132,199,.2); }
+    #fPhoto { display: none; }
+
+    .form-section { margin-bottom: 20px; }
+    .section-title { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+    .section-title-icon {
+      width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      font-size: 14px; background: rgba(2,132,199,.15); color: #0284c7;
+    }
+    .section-title h4 { font-size: 13px; font-weight: 700; color: var(--text-main); }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; }
+    .field.full { grid-column: 1 / -1; }
+    .field label { display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 700; margin-bottom: 5px; color: var(--text-muted); }
+    .required { color: var(--danger); }
+    .input-wrap { position: relative; }
+    .input-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 13px; color: var(--text-muted); pointer-events: none; }
+    .field input, .field select {
+      width: 100%; height: 40px; padding: 8px 12px 8px 36px; border-radius: 10px; border: 1.5px solid var(--input-border);
+      font-size: 13px; outline: none; background: var(--input-bg); color: var(--text-main); transition: all .2s;
+    }
+    .field input:focus, .field select:focus { border-color: var(--input-focus); box-shadow: 0 0 0 3px rgba(2,132,199,.15); }
+    .password-toggle {
+      position: absolute; right: 8px; top: 50%; transform: translateY(-50%); border: none; background: transparent;
+      cursor: pointer; color: var(--text-muted); font-size: 14px; padding: 6px;
+    }
+    .role-box { padding: 14px; border-radius: 14px; border: 1px solid var(--border); background: var(--surface-elevated); }
+
+    .modal-footer {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 15px 22px;
+      border-top: 1px solid var(--border); background: var(--surface-card);
+    }
+    .footer-actions { display: flex; gap: 8px; }
+    .btn { padding: 8px 18px; border-radius: 10px; font-size: 12.5px; font-weight: 700; cursor: pointer; border: none; transition: all .2s; }
+    .btn.cancel { background: var(--surface-elevated); color: var(--text-main); border: 1px solid var(--border); }
+    .btn.cancel:hover { background: var(--border); }
+    .btn.save { background: linear-gradient(135deg, #0284c7, #7c3aed); color: #fff; box-shadow: 0 4px 14px rgba(2,132,199,.3); }
+    .btn.save:hover { transform: translateY(-1px); }
+    .btn:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+
+    .toast {
+      position: fixed; bottom: 24px; right: 24px; background: #0f172a; color: #fff; padding: 12px 20px; border-radius: 12px;
+      font-size: 13px; font-weight: 700; box-shadow: 0 10px 30px rgba(0,0,0,.3); opacity: 0; pointer-events: none;
+      transition: all .25s; transform: translateY(10px); z-index: 2000; max-width: calc(100vw - 48px);
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.err { background: #dc2626; }
+
+    .denied-wrap { display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 80px 20px; color: var(--text-muted); }
+    .denied-wrap .di { font-size: 48px; margin-bottom: 14px; }
+    .denied-wrap h3 { color: var(--navy-2); font-size: 16px; margin-bottom: 6px; }
+
+    @media (max-width: 700px) {
+      body { padding: 14px 12px 40px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .modal-card { width: 100%; border-radius: 18px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="denied-wrap" id="deniedWrap">
+    <div class="di">🔒</div>
+    <h3>អ្នកគ្មានសិទ្ធិចូលមើលទំព័រនេះ</h3>
+    <p>ទំព័រគ្រប់គ្រងគ្រូបង្រៀនអនុញ្ញាតតែអ្នកគ្រប់គ្រង (Admin) ប៉ុណ្ណោះ។</p>
+  </div>
+
+  <div id="pageBody" style="display:none;">
+    <div class="page-head">
+      <div class="page-title">
+        <div class="page-title-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
+        <div>
+          <h2>គ្រប់គ្រងគ្រូបង្រៀន (Supabase)</h2>
+          <p>គ្រប់គ្រងព័ត៌មានគ្រូ តួនាទី ថ្នាក់ទទួលបន្ទុក និងគណនីចូលប្រើប្រាស់</p>
+        </div>
+      </div>
+      <button class="add-btn" onclick="openModal()">
+        <i class="fa-solid fa-user-plus"></i><span>បន្ថែមគ្រូថ្មី</span>
+      </button>
+    </div>
+
+    <div class="search-bar">
+      <div class="search-wrap">
+        <span><i class="fa-solid fa-magnifying-glass"></i></span>
+        <input type="text" id="searchInput" placeholder="ស្វែងរកតាមឈ្មោះ ឬអត្តលេខ..." oninput="renderTable()">
+      </div>
+      <div class="count-pill" id="countPill">សរុប 0</div>
+    </div>
+
+    <div class="table-panel">
+      <table>
+        <thead>
+          <tr>
+            <th>ល.រ</th><th>រូបថត</th><th>អត្តលេខ</th><th>ឈ្មោះគ្រូ</th><th>ភេទ</th><th>លេខទូរសព្ទ</th>
+            <th>ថ្ងៃខែឆ្នាំកំណើត</th><th>ទីកន្លែងបច្ចុប្បន្ន</th><th>Username</th><th>តួនាទី</th>
+            <th>ថ្នាក់ទទួលបន្ទុក</th><th>សកម្មភាព</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <tr class="empty-row"><td colspan="12"><i class="fa-solid fa-spinner fa-spin"></i> កំពុងទាញយកទិន្នន័យ...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ADD / EDIT MODAL -->
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-header-inner">
+          <div class="modal-header-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
+          <div>
+            <h3 id="modalTitle">បន្ថែមគ្រូថ្មី</h3>
+            <p id="modalSubtitle">បំពេញព័ត៌មានខាងក្រោម ដើម្បីបង្កើតគណនីគ្រូថ្មី</p>
+          </div>
+        </div>
+        <button type="button" class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <form id="teacherForm" onsubmit="return saveTeacher(event)">
+          <div class="photo-section">
+            <div class="photo-box">
+              <div class="photo-placeholder" id="photoPlaceholder">
+                <i class="fa-solid fa-camera" style="font-size:22px;"></i>
+                <span style="font-size:10px;">រូបថត</span>
+              </div>
+              <img class="photo-preview" id="photoPreview" src="" alt="" onerror="this.style.display='none'">
+            </div>
+            <div style="flex:1;">
+              <strong style="font-size:13px; color:var(--text-main);">រូបថតគ្រូ</strong>
+              <p style="font-size:11px; color:var(--text-muted); margin:3px 0 8px;">រូបថតនឹងត្រូវបង្រួមដោយស្វ័យប្រវត្តិ មុនរក្សាទុក។</p>
+              <label class="photo-upload-label" for="fPhoto"><i class="fa-solid fa-image"></i> ជ្រើសរើសរូបថត</label>
+              <input type="file" id="fPhoto" accept="image/*" onchange="onPhotoPicked(event)">
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="section-title">
+              <div class="section-title-icon"><i class="fa-solid fa-id-card"></i></div>
+              <h4>ព័ត៌មានផ្ទាល់ខ្លួន</h4>
+            </div>
+            <div class="form-grid">
+              <div class="field">
+                <label>អត្តលេខ <span class="required">*</span></label>
+                <div class="input-wrap"><span class="input-icon"><i class="fa-solid fa-hashtag"></i></span>
+                  <input type="text" id="fCode" placeholder="ឧ. T001" required></div>
+              </div>
+              <div class="field">
+                <label>ឈ្មោះគ្រូ <span class="required">*</span></label>
+                <div class="input-wrap"><span class="input-icon"><i class="fa-solid fa-user"></i></span>
+                  <input type="text" id="fName" placeholder="បញ្ចូលឈ្មោះគ្រូ" required></div>
+              </div>
+              <div class="field">
+                <label>ភេទ <span class="required">*</span></label>
+                <div class="input-wrap"><span class="input-icon"><i class="fa-solid fa-venus-mars"></i></span>
+                  <select id="fSex"><option value="ប្រុស">ប្រុស</option><option value="ស្រី">ស្រី</option></select></div>
+              </div>
+              <div class="field">
+                <label>លេខទូរសព្ទ <span class="required">*</span></label>
+                <div class="input-wrap"><span class="input-icon"><i class="fa-solid fa-phone"></i></span>
+                  <input type="text" id="fPhone" placeholder="ឧ. 012 345 678" required></div>
+              </div>
+              <div class="field">
+                <label>ថ្ងៃខែឆ្នាំកំណើត <span class="required">*</span></label>
+                <div class="input-wrap"><span class="input-icon"><i class="fa-solid fa-calendar"></i></span>
+                  <input type="date" id="fDob" required></div>
+              </div>
+              <div class="field">
+                <label>ទីកន្លែងបច្ចុប្បន្ន <span class="required">*</span></label>
+                <div class="input-wrap"><span class="input-icon"><i class="fa-solid fa-location-dot"></i></span>
+                  <input type="text" id="fAddress" placeholder="ភូមិ, ឃុំ, ស្រុក, ខេត្ត" required></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="section-title">
+              <div class="section-title-icon"><i class="fa-solid fa-shield-halved"></i></div>
+              <h4>គណនីចូលប្រើប្រាស់</h4>
+            </div>
+            <div class="form-grid">
+              <div class="field">
+                <label>Username <span class="required">*</span></label>
+                <div class="input-wrap"><span class="input-icon"><i class="fa-solid fa-user-lock"></i></span>
+                  <input type="text" id="fUsername" placeholder="ឧ. teacher01" autocomplete="off" required></div>
+              </div>
+              <div class="field">
+                <label>Password <span class="required" id="passwordRequired">*</span></label>
+                <div class="input-wrap"><span class="input-icon"><i class="fa-solid fa-key"></i></span>
+                  <input type="password" id="fPassword" placeholder="បញ្ចូល Password" autocomplete="new-password">
+                  <button type="button" class="password-toggle" onclick="togglePassword()"><i class="fa-solid fa-eye" id="passEyeIcon"></i></button>
+                </div>
+                <small id="passHint" style="color:var(--text-muted); font-size:10px;">ប្រើ Password ដែលពិបាកទាយ។</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="section-title">
+              <div class="section-title-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+              <h4>តួនាទី និងថ្នាក់ទទួលបន្ទុក</h4>
+            </div>
+            <div class="role-box">
+              <div class="form-grid">
+                <div class="field">
+                  <label>តួនាទី <span class="required">*</span></label>
+                  <div class="input-wrap"><span class="input-icon"><i class="fa-solid fa-user-gear"></i></span>
+                    <select id="fRole" onchange="onRoleChange()">
+                      <option value="teacher">គ្រូបង្រៀន (មើលបានតែថ្នាក់ខ្លួន)</option>
+                      <option value="admin">អ្នកគ្រប់គ្រង (Admin — មើលបានគ្រប់ថ្នាក់)</option>
+                    </select></div>
+                </div>
+                <div class="field" id="assignedClassWrap">
+                  <label>ថ្នាក់ទទួលបន្ទុក <span class="required">*</span></label>
+                  <div class="input-wrap"><span class="input-icon"><i class="fa-solid fa-school"></i></span>
+                    <select id="fAssignedClass"></select></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <span id="footerModeText" style="font-size:11px; color:var(--text-muted); font-weight:600;">➕ កំពុងបង្កើតគណនីគ្រូថ្មី</span>
+        <div class="footer-actions">
+          <button type="button" class="btn cancel" onclick="closeModal()">បោះបង់</button>
+          <button type="submit" form="teacherForm" class="btn save" id="saveBtn">💾 រក្សាទុក</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    /* =========================================================
+       1. SUPABASE CONFIG
+    ========================================================= */
+    const SUPABASE_URL = "https://nggnuobnrxiqjtcwlvwk.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_AHDcUJbuMAfhaocyfm2X7w_O9s06wML";
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const USERS_TABLE = 'users';
+
+    // ជួរឈរដែលទាញមកបង្ហាញ (មិនទាញ password មកទេ)
+    const LIST_COLUMNS = 'id,teacher_id,teacher_name,gender,phone,dob,address,username,role,assigned_classes,photo_url';
+
+    // ថ្នាក់ទាំងអស់ (សម្រាប់ជ្រើសថ្នាក់ទទួលបន្ទុក)
+    const ALL_CLASSES = ['១', '២', '៣', '៤(ក)', '៤(ខ)', '៥', '៦'];
+
+    /* Session ពី Login (ដូចទំព័រព័ត៌មានសិស្ស) */
+    function readSession() {
+      try { return JSON.parse(localStorage.getItem('krou_supabase_user') || 'null'); } catch (e) { return null; }
+    }
+    const CURRENT_USER = readSession();
+    const IS_ADMIN = String(CURRENT_USER?.role || '').toLowerCase().trim() === 'admin';
+
+    let teachers = [];
+    let editingId = null;
+    let pickedPhotoBase64 = null;
+
+    /* =========================================================
+       2. THEME
+    ========================================================= */
+    function applyTheme(theme) { document.documentElement.setAttribute('data-theme', theme || 'dark'); }
+    applyTheme(new URLSearchParams(location.search).get('theme') || localStorage.getItem('krou_theme_manual') || 'dark');
+    window.addEventListener('message', e => {
+      if (e.data && (e.data.type === 'THEME_CHANGE' || e.data.theme)) applyTheme(e.data.theme || e.data);
+    });
+
+    /* =========================================================
+       3. HELPERS
+    ========================================================= */
+    function escapeHtml(s) {
+      if (s === undefined || s === null) return '';
+      return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+    }
+    function safeUrl(u) { u = String(u || '').trim(); return /^(https:\/\/|data:image\/)/.test(u) ? u : ''; }
+    function normGrade(g) { return String(g ?? '').replace(/^ថ្នាក់ទី\s*/, '').trim(); }
+
+    const khmerDigits = ['០','១','២','៣','៤','៥','៦','៧','៨','៩'];
+    function toKhmerNum(n) { return String(n).replace(/\d/g, d => khmerDigits[d]); }
+
+    let toastTimer;
+    function showToast(msg, isErr) {
+      const t = document.getElementById('toast');
+      t.innerText = msg;
+      t.classList.toggle('err', !!isErr);
+      t.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    // បង្រួមរូបថត (អតិបរមា 300px, JPEG) មុនរក្សាទុកក្នុង Supabase
+    function resizeImage(file, maxSize) {
+      maxSize = maxSize || 300;
+      return new Promise((resolve, reject) => {
+        const fr = new FileReader();
+        fr.onload = e => {
+          const img = new Image();
+          img.onload = () => {
+            const r = Math.min(1, maxSize / Math.max(img.width, img.height));
+            const c = document.createElement('canvas');
+            c.width = Math.round(img.width * r);
+            c.height = Math.round(img.height * r);
+            c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+            resolve(c.toDataURL('image/jpeg', 0.8));
+          };
+          img.onerror = reject;
+          img.src = e.target.result;
+        };
+        fr.onerror = reject;
+        fr.readAsDataURL(file);
+      });
+    }
+
+    /* =========================================================
+       4. INIT
+    ========================================================= */
+    function initPage() {
+      if (!IS_ADMIN) {
+        document.getElementById('pageBody').style.display = 'none';
+        document.getElementById('deniedWrap').style.display = 'flex';
+        return;
+      }
+      document.getElementById('pageBody').style.display = 'block';
+      document.getElementById('deniedWrap').style.display = 'none';
+      fillClassOptions();
+      loadTeachers();
+    }
+
+    function fillClassOptions() {
+      const sel = document.getElementById('fAssignedClass');
+      sel.innerHTML = ALL_CLASSES.map(c => `<option value="${escapeHtml(c)}">ថ្នាក់ទី ${escapeHtml(c)}</option>`).join('');
+    }
+
+    /* =========================================================
+       5. READ
+    ========================================================= */
+    async function loadTeachers() {
+      const body = document.getElementById('tableBody');
+      body.innerHTML = `<tr class="empty-row"><td colspan="12"><i class="fa-solid fa-spinner fa-spin"></i> កំពុងទាញយកទិន្នន័យ...</td></tr>`;
+      try {
+        const { data, error } = await sb.from(USERS_TABLE).select(LIST_COLUMNS).order('id', { ascending: true });
+        if (error) throw error;
+        teachers = data || [];
+        renderTable();
+      } catch (err) {
+        body.innerHTML = `<tr class="empty-row"><td colspan="12" style="color:var(--danger);">❌ មានបញ្ហាក្នុងការទាញយកទិន្នន័យ៖ ${escapeHtml(err.message || err)}</td></tr>`;
+      }
+    }
+
+    function renderTable() {
+      const q = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+      const filtered = teachers.filter(t => {
+        if (!q) return true;
+        return String(t.teacher_name || '').toLowerCase().includes(q) || String(t.teacher_id || '').toLowerCase().includes(q);
+      });
+
+      document.getElementById('countPill').innerText = `សរុប ${filtered.length}`;
+      const body = document.getElementById('tableBody');
+
+      if (!filtered.length) {
+        body.innerHTML = `<tr class="empty-row"><td colspan="12">មិនមានទិន្នន័យគ្រូបង្រៀនឡើយ</td></tr>`;
+        return;
+      }
+
+      body.innerHTML = filtered.map((t, i) => {
+        const isAdmin = String(t.role).toLowerCase() === 'admin';
+        const initial = escapeHtml(String(t.teacher_name || '?').charAt(0));
+        const photo = safeUrl(t.photo_url);
+        const photoCell = photo
+          ? `<img class="avatar-thumb" src="${escapeHtml(photo)}" alt="" onerror="this.outerHTML='<span class=&quot;avatar-fallback&quot;>${initial}</span>'">`
+          : `<span class="avatar-fallback">${initial}</span>`;
+
+        const cls = normGrade(t.assigned_classes);
+        const assignedCls = isAdmin ? 'គ្រប់ថ្នាក់' : (cls ? 'ថ្នាក់ទី ' + escapeHtml(cls) : '—');
+
+        return `
+          <tr>
+            <td>${toKhmerNum(i + 1)}</td>
+            <td>${photoCell}</td>
+            <td><strong>${escapeHtml(t.teacher_id)}</strong></td>
+            <td class="name-cell">${escapeHtml(t.teacher_name)}</td>
+            <td>${escapeHtml(t.gender || 'ប្រុស')}</td>
+            <td>${escapeHtml(t.phone)}</td>
+            <td>${escapeHtml(t.dob)}</td>
+            <td>${escapeHtml(t.address)}</td>
+            <td><span class="badge-user">${escapeHtml(t.username)}</span></td>
+            <td><span class="badge-role ${isAdmin ? 'admin' : 'teacher'}">${isAdmin ? 'Admin' : 'គ្រូ'}</span></td>
+            <td>${assignedCls}</td>
+            <td>
+              <div class="row-actions">
+                <button class="icon-btn edit" title="កែប្រែ" onclick="editTeacher(${Number(t.id)})"><i class="fa-solid fa-pen"></i></button>
+                <button class="icon-btn del" title="លុប" onclick="deleteTeacherRow(${Number(t.id)})"><i class="fa-solid fa-trash"></i></button>
+              </div>
+            </td>
+          </tr>`;
+      }).join('');
+    }
+
+    /* =========================================================
+       6. MODAL
+    ========================================================= */
+    function onRoleChange() {
+      const role = document.getElementById('fRole').value;
+      document.getElementById('assignedClassWrap').style.display = role === 'admin' ? 'none' : 'block';
+    }
+
+    async function onPhotoPicked(ev) {
+      const file = ev.target.files[0];
+      if (!file) return;
+      if (!file.type.startsWith('image/')) {
+        showToast('❌ សូមជ្រើសរើសឯកសាររូបភាព', true);
+        ev.target.value = '';
+        return;
+      }
+      try {
+        pickedPhotoBase64 = await resizeImage(file, 300);
+        const preview = document.getElementById('photoPreview');
+        preview.src = pickedPhotoBase64;
+        preview.style.display = 'block';
+        document.getElementById('photoPlaceholder').style.display = 'none';
+      } catch (e) {
+        showToast('❌ មិនអាចអានរូបភាពបាន', true);
+      }
+    }
+
+    function openModal() {
+      editingId = null;
+      pickedPhotoBase64 = null;
+      document.getElementById('modalTitle').innerText = 'បន្ថែមគ្រូថ្មី';
+      document.getElementById('modalSubtitle').innerText = 'បំពេញព័ត៌មានខាងក្រោម ដើម្បីបង្កើតគណនីគ្រូថ្មី';
+      document.getElementById('footerModeText').innerText = '➕ កំពុងបង្កើតគណនីគ្រូថ្មី';
+      document.getElementById('teacherForm').reset();
+      document.getElementById('fPassword').required = true;
+      document.getElementById('passwordRequired').style.display = 'inline';
+      document.getElementById('passHint').innerText = 'ប្រើ Password ដែលពិបាកទាយ និងមិនគួរចែករំលែក។';
+      document.getElementById('photoPreview').style.display = 'none';
+      document.getElementById('photoPlaceholder').style.display = 'flex';
+      document.getElementById('fRole').value = 'teacher';
+      onRoleChange();
+      document.getElementById('modalBackdrop').classList.add('show');
+    }
+
+    function editTeacher(id) {
+      const t = teachers.find(x => Number(x.id) === Number(id));
+      if (!t) return;
+      editingId = t.id;
+      pickedPhotoBase64 = null;
+
+      document.getElementById('modalTitle').innerText = 'កែប្រែព័ត៌មានគ្រូ';
+      document.getElementById('modalSubtitle').innerText = 'កែប្រែព័ត៌មានរបស់គ្រូ ហើយចុចរក្សាទុក';
+      document.getElementById('footerModeText').innerText = '✏️ កំពុងកែប្រែព័ត៌មានគ្រូ';
+
+      document.getElementById('fCode').value = t.teacher_id || '';
+      document.getElementById('fName').value = t.teacher_name || '';
+      document.getElementById('fSex').value = String(t.gender || '').includes('ស្រី') ? 'ស្រី' : 'ប្រុស';
+      document.getElementById('fPhone').value = t.phone || '';
+      document.getElementById('fDob').value = t.dob || '';
+      document.getElementById('fAddress').value = t.address || '';
+      document.getElementById('fUsername').value = t.username || '';
+      document.getElementById('fPassword').value = '';
+      document.getElementById('fPassword').required = false;
+      document.getElementById('passwordRequired').style.display = 'none';
+      document.getElementById('passHint').innerText = 'ទុកទទេ ប្រសិនបើមិនចង់ប្តូរ Password។';
+
+      document.getElementById('fRole').value = String(t.role).toLowerCase() === 'admin' ? 'admin' : 'teacher';
+      onRoleChange();
+      const cls = normGrade(t.assigned_classes);
+      if (cls && ALL_CLASSES.includes(cls)) document.getElementById('fAssignedClass').value = cls;
+
+      const preview = document.getElementById('photoPreview');
+      const placeholder = document.getElementById('photoPlaceholder');
+      const photo = safeUrl(t.photo_url);
+      if (photo) {
+        preview.src = photo;
+        preview.style.display = 'block';
+        placeholder.style.display = 'none';
+      } else {
+        preview.style.display = 'none';
+        placeholder.style.display = 'flex';
+      }
+      document.getElementById('fPhoto').value = '';
+      document.getElementById('modalBackdrop').classList.add('show');
+    }
+
+    function closeModal() { document.getElementById('modalBackdrop').classList.remove('show'); }
+
+    function togglePassword() {
+      const input = document.getElementById('fPassword');
+      const icon = document.getElementById('passEyeIcon');
+      if (input.type === 'password') { input.type = 'text'; icon.className = 'fa-solid fa-eye-slash'; }
+      else { input.type = 'password'; icon.className = 'fa-solid fa-eye'; }
+    }
+
+    /* =========================================================
+       7. CREATE / UPDATE
+    ========================================================= */
+    // ពិនិត្យថា អត្តលេខ ឬ Username មិនស្ទួន
+    async function isDuplicate(column, value) {
+      let q = sb.from(USERS_TABLE).select('id').eq(column, value);
+      if (editingId !== null) q = q.neq('id', editingId);
+      const { data, error } = await q.limit(1);
+      if (error) throw error;
+      return !!(data && data.length);
+    }
+
+    async function saveTeacher(ev) {
+      ev.preventDefault();
+
+      const role = document.getElementById('fRole').value;
+      const payload = {
+        teacher_id: document.getElementById('fCode').value.trim(),
+        teacher_name: document.getElementById('fName').value.trim(),
+        gender: document.getElementById('fSex').value,
+        phone: document.getElementById('fPhone').value.trim(),
+        dob: document.getElementById('fDob').value || null,
+        address: document.getElementById('fAddress').value.trim(),
+        username: document.getElementById('fUsername').value.trim(),
+        role: role,
+        assigned_classes: role === 'admin' ? '' : document.getElementById('fAssignedClass').value,
+        updated_at: new Date().toISOString()
+      };
+      const password = document.getElementById('fPassword').value;
+
+      if (editingId === null && !password) {
+        showToast('⚠️ សូមបញ្ចូល Password', true);
+        return false;
+      }
+      if (password) payload.password = password;
+      if (pickedPhotoBase64) payload.photo_url = pickedPhotoBase64;
+
+      const saveBtn = document.getElementById('saveBtn');
+      saveBtn.disabled = true;
+      saveBtn.innerText = '⏳ កំពុងរក្សា...';
+
+      try {
+        if (await isDuplicate('teacher_id', payload.teacher_id)) {
+          showToast('⚠️ អត្តលេខនេះមានរួចហើយ', true);
+          return false;
+        }
+        if (await isDuplicate('username', payload.username)) {
+          showToast('⚠️ Username នេះមានគេប្រើរួចហើយ', true);
+          return false;
+        }
+
+        if (editingId !== null) {
+          const { error } = await sb.from(USERS_TABLE).update(payload).eq('id', editingId);
+          if (error) throw error;
+        } else {
+          const { error } = await sb.from(USERS_TABLE).insert([payload]);
+          if (error) throw error;
+        }
+
+        closeModal();
+        showToast('✅ បានរក្សាទុកព័ត៌មានគ្រូជោគជ័យ!');
+        loadTeachers();
+      } catch (err) {
+        showToast('❌ មានបញ្ហា៖ ' + (err.message || err), true);
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.innerText = '💾 រក្សាទុក';
+      }
+      return false;
+    }
+
+    /* =========================================================
+       8. DELETE
+    ========================================================= */
+    async function deleteTeacherRow(id) {
+      const t = teachers.find(x => Number(x.id) === Number(id));
+      if (!t) return;
+
+      if (CURRENT_USER && (String(CURRENT_USER.id) === String(t.id) || (CURRENT_USER.username && CURRENT_USER.username === t.username))) {
+        showToast('⚠️ មិនអាចលុបគណនីដែលកំពុងប្រើប្រាស់បានទេ', true);
+        return;
+      }
+      if (!confirm('តើអ្នកពិតជាចង់លុបគ្រូ "' + (t.teacher_name || '') + '" មែនទេ?')) return;
+
+      try {
+        const { error } = await sb.from(USERS_TABLE).delete().eq('id', t.id);
+        if (error) throw error;
+        showToast('🗑️ បានលុបព័ត៌មានគ្រូរួចរាល់!');
+        loadTeachers();
+      } catch (err) {
+        showToast('❌ មានបញ្ហា៖ ' + (err.message || err), true);
+      }
+    }
+
+    document.getElementById('modalBackdrop').addEventListener('click', function (e) { if (e.target === this) closeModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+    window.addEventListener('DOMContentLoaded', initPage);
+  </script>
+</body>
+</html>
