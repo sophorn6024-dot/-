@@ -84,7 +84,7 @@
     }
 
     /* =========================================================
-       🎛️ NEW SLEEK TOOLBAR (CONTROL PANEL)
+       🎛️ SLEEK TOOLBAR (CONTROL PANEL)
     ========================================================= */
     .control-panel {
       position: sticky; top: 0; z-index: 1000; background: var(--tb-bg); backdrop-filter: blur(14px);
@@ -168,9 +168,9 @@
     table.data-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 8px; table-layout: fixed; background: #ffffff !important; }
     table.data-table th, table.data-table td {
       border: 1px solid #000 !important; padding: 6px 3px; text-align: center; vertical-align: middle;
-      line-height: 1.35; overflow-wrap: break-word; background: #ffffff !important; color: #000000 !important;
+      line-height: 1.35; overflow-wrap: break-word; background: #ffffff !important; color: #000000;
     }
-    table.data-table th { background-color: #f1f5f9 !important; font-size: 11px; padding: 7px 2px; font-weight: 700; }
+    table.data-table th { background-color: #f1f5f9 !important; font-size: 11px; padding: 7px 2px; font-weight: 700; color: #000000 !important; }
     table.data-table td.col-name { text-align: left; padding-left: 8px; font-weight: 600; font-size: 12.5px; white-space: nowrap; }
 
     .rank-layout { display: none; width: 100%; }
@@ -217,7 +217,14 @@
       .period-type-btn, .layout-btn, .zoom-btn { flex: 1; text-align: center; }
     }
 
+    /* =========================================================
+       🖨️ PRINT RULES (ធានាឱ្យចេញពណ៌ពេលបោះពុម្ព ១០០%)
+    ========================================================= */
     @media print {
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
       .no-print { display: none !important; }
       body { padding: 0 !important; background: white !important; }
       #printPage { zoom: 1 !important; transform: none !important; padding: 0 !important; margin: 0 !important; box-shadow: none !important; }
@@ -227,7 +234,18 @@
       table.data-table tbody { display: table-row-group; }
       .school-info { font-size: 11.5pt !important; top: 25px !important; }
       .nation-info .khmer-moul { font-size: 13pt !important; }
+      
       .summary-boxes { gap: 10pt !important; border-top: 1px solid #000 !important; }
+      .summary-box-left, .summary-box-right {
+        border: 1.5px dashed #16a34a !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .summary-box-left span, .summary-box-right span {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
       .inline-input { border: none !important; background: transparent !important; }
       .teacher-name-display { border: none !important; background: transparent !important; }
     }
@@ -248,12 +266,11 @@
   </div>
 
   <!-- =========================================================
-       🎛️ NEW PREMIUM TOOLBAR DESIGN
+       🎛️ PREMIUM TOOLBAR
   ========================================================= -->
   <div class="no-print control-panel" id="controlPanel" style="display:none;">
     <div class="control-row">
       <div class="cp-group">
-        <!-- ថ្នាក់ -->
         <div id="adminClassBox" style="display:none;">
           <div class="panel-pill-box">
             <span class="toolbar-label"><i class="fa-solid fa-graduation-cap" style="color:#0284c7;"></i> ថ្នាក់៖</span>
@@ -294,7 +311,6 @@
       </div>
     </div>
 
-    <!-- ជួរទី ២៖ Period Switcher -->
     <div class="control-row" style="background:var(--ctrl-group-bg); padding:6px 12px; border-radius:12px; border:1px solid var(--tb-border);">
       <div class="cp-group" style="width:100%;">
         <span class="toolbar-label"><i class="fa-solid fa-calendar-days" style="color:#0284c7;"></i> ប្រភេទពិន្ទុ៖</span>
@@ -354,7 +370,7 @@
       <span id="txtTitleHeader" class="khmer-moul" style="font-size:14px; margin-top:3px; display:inline-block;">ចំណាត់ថ្នាក់</span>
     </div>
 
-    <!-- Layout 1: ជួរឈរតែមួយ -->
+    <!-- Layout 1 -->
     <div id="rankLayout1" class="rank-layout active">
       <table class="data-table">
         <thead>
@@ -376,7 +392,7 @@
       </table>
     </div>
 
-    <!-- Layout 2: បែងចែកជា ២ ជួរឈរ -->
+    <!-- Layout 2 -->
     <div id="rankLayout2" class="rank-layout">
       <div class="rank-two-columns">
         <table class="data-table">
@@ -430,7 +446,7 @@
   </div>
 
   <!-- =========================================================
-       ⚙️ JAVASCRIPT ENGINE (SUPABASE INTEGRATED)
+       ⚙️ JAVASCRIPT ENGINE
   ========================================================= -->
   <script>
     /* 1. SUPABASE CLIENT CONFIG */
@@ -487,7 +503,6 @@
     applyTheme(localStorage.getItem('krou_theme_manual') || 'dark');
     window.addEventListener('message', e => { if (e.data && (e.data.type === 'THEME_CHANGE' || e.data.theme)) applyTheme(e.data.theme || e.data); });
 
-    // ── ZOOM FUNCTIONS ──
     function setZoom(scale, btnEl) {
       const el = document.getElementById('printPage');
       if (el) el.style.zoom = scale;
@@ -495,7 +510,6 @@
       if (btnEl) btnEl.classList.add('active');
     }
 
-    // ── DRAGGABLE TEACHER NAME ──
     const TEACHER_POS_KEY = 'rankTeacherTranslate_v2';
     let curX = 0, curY = 0;
 
@@ -594,7 +608,7 @@
       return titles[period] || ("ចំណាត់ថ្នាក់ប្រចាំខែ " + period);
     }
 
-    /* ── GRADE UTILITIES ── */
+    /* ── GRADE UTILITIES WITH OFFICIAL COLORS ── */
     function getGradeCodeFromAverage(avg) {
       const val = Number(avg);
       if (!Number.isFinite(val) || val <= 0) return 'F';
@@ -609,10 +623,9 @@
       return { A:'ល្អប្រសើរ', B:'ល្អណាស់', C:'ល្អ', D:'បង្គួរ', E:'មធ្យម', F:'ខ្សោយ' }[code] || 'ខ្សោយ';
     }
     function getGradeColor(code) {
-      return { A:'#0070C0', B:'#16a34a', C:'#b45309', D:'#7030A0', E:'#0891b2', F:'#dc2626' }[code] || '#000';
+      return { A:'#0070c0', B:'#16a34a', C:'#b45309', D:'#7030a0', E:'#0891b2', F:'#dc2626' }[code] || '#000000';
     }
 
-    /* ── BOOTSTRAP INITIALIZATION ── */
     window.addEventListener('DOMContentLoaded', async () => {
       if (!checkAuthentication()) return;
 
@@ -633,7 +646,6 @@
       await initClassesDropdown();
     });
 
-    /* ── LOAD CLASSES FROM SUPABASE ── */
     async function initClassesDropdown() {
       const adminBox = document.getElementById('adminClassBox');
       const teacherBadge = document.getElementById('teacherClassBadge');
@@ -675,9 +687,7 @@
       }
     }
 
-    /* =========================================================
-       📊 MAIN DATA FETCHER & RANKING ENGINE (SUPABASE)
-    ========================================================= */
+    /* ── LOAD RANK DATA ── */
     async function loadRankData() {
       const selectedClass = document.getElementById('classSelect').value || cleanGrade(USER_CLASS);
       const selectedPeriod = getSelectedPeriod();
@@ -699,7 +709,6 @@
       document.getElementById('rankBody').innerHTML = '<tr><td colspan="9" style="padding:20px; color:#0284c7;"><i class="fa-solid fa-spinner fa-spin"></i> កំពុងទាញយកទិន្នន័យ...</td></tr>';
 
       try {
-        // 1. Fetch Students in class
         const { data: stList, error: stErr } = await sb
           .from('students')
           .select('id, student_id, student_name, gender, grade, dropout_semester')
@@ -707,7 +716,6 @@
 
         if (stErr) throw stErr;
 
-        // Filter active students (remove dropouts appropriately)
         const isSem2 = (selectedPeriod === 'ឆមាសទី២' || selectedPeriod === 'ប្រចាំឆមាសទី២' || ['ឧសភា','មិថុនា','កក្កដា','សីហា','កញ្ញា','តុលា'].includes(selectedPeriod));
         const students = (stList || [])
           .filter(s => cleanGrade(s.grade) === curPure)
@@ -723,12 +731,9 @@
         }
 
         const studentIds = students.map(s => String(s.student_id || s.id));
-
-        // 2. Compute Scores based on Period Type
         let rankResults = [];
 
         if (selectedPeriod === 'ប្រចាំឆមាសទី១' || selectedPeriod === 'ប្រចាំឆមាសទី២') {
-          // Cumulative Semester
           const semMonths = selectedPeriod === 'ប្រចាំឆមាសទី១'
             ? ['វិច្ឆិកា', 'ធ្នូ', 'មករា', 'កុម្ភៈ', 'មីនា', 'មេសា']
             : ['ឧសភា', 'មិថុនា', 'កក្កដា', 'សីហា', 'កញ្ញា', 'តុលា'];
@@ -744,7 +749,6 @@
             const sId = String(s.student_id || s.id);
             const myScores = (scoresData || []).filter(sc => String(sc.student_id) === sId);
             
-            // Gather averages from monthly records + 1 exam record
             let sumAvgs = 0, countAvgs = 0;
             semMonths.forEach(m => {
               const row = myScores.find(sc => sc.score_type === 'monthly' && sc.period === m);
@@ -770,7 +774,6 @@
           });
 
         } else if (selectedPeriod === 'ប្រចាំឆ្នាំ') {
-          // Cumulative Yearly: (Sem 1 + Sem 2) / 2
           const { data: scoresData } = await sb
             .from('scores')
             .select('student_id, score_type, period, average')
@@ -781,7 +784,6 @@
             const sId = String(s.student_id || s.id);
             const myScores = (scoresData || []).filter(sc => String(sc.student_id) === sId);
 
-            // Compute Sem 1 & Sem 2 averages
             const sem1Months = ['វិច្ឆិកា', 'ធ្នូ', 'មករា', 'កុម្ភៈ', 'មីនា', 'មេសា'];
             const sem2Months = ['ឧសភា', 'មិថុនា', 'កក្កដា', 'សីហា', 'កញ្ញា', 'តុលា'];
 
@@ -818,7 +820,6 @@
           });
 
         } else {
-          // Standard Single Period (Month or Semester Exam)
           const targetType = selectedPeriod.includes('ឆមាស') ? 'semester' : 'monthly';
           const { data: scoresData } = await sb
             .from('scores')
@@ -844,7 +845,6 @@
           });
         }
 
-        // 3. Sort by Average DESC & Compute Official Ranks
         rankResults.sort((a, b) => Number(b.avg) - Number(a.avg));
 
         let currentRank = 0, prevAvg = null;
@@ -868,7 +868,6 @@
       }
     }
 
-    /* ── TABLE RENDERERS ── */
     function getRankTableHeader() {
       return `<tr>
         <th style="width:6%;">ល.រ</th>
@@ -887,6 +886,7 @@
       return '<tr class="blank-row"><td>&nbsp;</td><td>&nbsp;</td><td class="col-name">&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
     }
 
+    /* 🌟 បង្កើតជួរដេកដោយភ្ជាប់ពណ៌ជាក់លាក់ទៅតាមនិទ្ទេស និងលទ្ធផល (ធានាថាចេញពណ៌ទាំងពេលបោះពុម្ព) */
     function makeRankRow(s) {
       const avg = Number(s.avg);
       const gradeCode = getGradeCodeFromAverage(avg);
@@ -894,6 +894,7 @@
       const gradeColor = getGradeColor(gradeCode);
       const result = Number.isFinite(avg) && avg >= 5 ? 'ជាប់' : (avg > 0 ? 'ធ្លាក់' : '');
       const resultColor = result === 'ជាប់' ? '#16a34a' : '#dc2626';
+      const rankColor = Number(s.rank) <= 3 && s.rank !== '' ? '#dc2626' : '#000000';
 
       return `<tr>
         <td>${toKhmerNum(s.displayNo ?? s.rank ?? '')}</td>
@@ -902,9 +903,9 @@
         <td>${s.sex ?? 'ប្រុស'}</td>
         <td>${s.total ?? ''}</td>
         <td>${avg > 0 ? avg.toFixed(2) : ''}</td>
-        <td style="font-weight:bold; color:${Number(s.rank) <= 3 && s.rank !== '' ? '#dc2626' : '#000'};">${s.rank ? toKhmerNum(s.rank) : ''}</td>
-        <td style="font-weight:bold; color:${avg > 0 ? gradeColor : 'transparent'};">${avg > 0 ? `${gradeName} (${gradeCode})` : ''}</td>
-        <td style="font-weight:bold; color:${resultColor};">${result}</td>
+        <td style="font-weight:bold; color:${rankColor} !important;">${s.rank ? toKhmerNum(s.rank) : ''}</td>
+        <td style="font-weight:bold; color:${avg > 0 ? gradeColor : 'inherit'} !important;">${avg > 0 ? `${gradeName} (${gradeCode})` : ''}</td>
+        <td style="font-weight:bold; color:${resultColor} !important;">${result}</td>
       </tr>`;
     }
 
@@ -936,7 +937,6 @@
 
       tbody.innerHTML = data.map((s, idx) => makeRankRow(Object.assign({}, s, { displayNo: idx + 1 }))).join('');
 
-      // Layout 2 (Split two columns)
       const splitAt = Math.ceil(data.length / 2);
       const leftData = data.slice(0, splitAt);
       const rightData = data.slice(splitAt);
@@ -954,7 +954,6 @@
       document.getElementById('rankBodyLeft').innerHTML = leftRowsHtml;
       document.getElementById('rankBodyRight').innerHTML = rightRowsHtml;
 
-      // Summary Stats
       const totalRated = passCount + failCount;
       document.getElementById('stPass').textContent = passCount;
       document.getElementById('stPassFemale').textContent = passFemale;
@@ -969,9 +968,11 @@
         document.getElementById('f' + g).textContent = females[g];
         document.getElementById('p' + g).textContent = percent;
         const color = getGradeColor(g);
-        document.getElementById('c' + g).style.color = color;
-        document.getElementById('f' + g).style.color = color;
-        document.getElementById('p' + g).style.color = color;
+        
+        // កំណត់ពណ៌ទៅកាន់ Span ក្នុង Summary Box ដោយដាក់ !important
+        document.getElementById('c' + g).style.setProperty('color', color, 'important');
+        document.getElementById('f' + g).style.setProperty('color', color, 'important');
+        document.getElementById('p' + g).style.setProperty('color', color, 'important');
       });
     }
 
