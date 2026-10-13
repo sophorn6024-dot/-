@@ -392,7 +392,9 @@
       width: 90px; height: 100px; border-radius: 18px; border: 2.5px solid var(--border);
       background: #0284c7; overflow: hidden; display: flex; align-items: center; justify-content: center;
       color: white; font-size: 38px; font-weight: 800; flex-shrink: 0; box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+      cursor: pointer; transition: transform 0.15s, box-shadow 0.15s;
     }
+    .profile-avatar-box:hover { transform: scale(1.05); box-shadow: 0 6px 18px rgba(2,132,199,0.35); }
     .profile-avatar-box img { width: 100%; height: 100%; object-fit: cover; }
     .profile-hero-name { font-size: 24px; font-weight: 900; color: #0284c7; margin-bottom: 8px; }
     .profile-badges-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
@@ -1031,7 +1033,7 @@
 
       <div class="profile-scroll-body">
         <div class="profile-hero-card">
-          <div class="profile-avatar-box" id="profileAvatarBox">
+          <div class="profile-avatar-box" id="profileAvatarBox" onclick="closeProfileModal(); openEditModal(currentProfileSubIdx);" title="ចុចដើម្បីកែប្រែព័ត៌មាន">
             <span id="profileAvatarInitial">ក</span>
           </div>
           <div>
@@ -1155,7 +1157,7 @@
   </div>
 
   <!-- =========================================================
-       ⚙️ JAVASCRIPT: SUPABASE ENGINE WITH DUPLICATE ID CHECK
+       ⚙️ JAVASCRIPT: SUPABASE ENGINE
   ========================================================= -->
   <script>
     /* 1. SUPABASE CLIENT CONFIG */
@@ -1465,7 +1467,6 @@
         return;
       }
 
-      // 👉 ពិនិត្យអត្តលេខស្ទួន
       if (await isStudentIdDuplicate(s.id, s.db_id, s._uid)) {
         document.getElementById('syncStatusText').innerText = "⚠️ អត្តលេខស្ទួន";
         showToast(`⚠️ អត្តលេខ «${s.id}» មានរួចហើយ! មិនអាចរក្សាទុកបានទេ`, true);
@@ -1503,7 +1504,6 @@
         return;
       }
 
-      // 👉 ពិនិត្យអត្តលេខស្ទួន
       if (await isStudentIdDuplicate(s.id, s.db_id, s._uid)) {
         s._err = s._err || {};
         s._err.id = true;
@@ -1548,7 +1548,6 @@
         }
 
         const cleanId = String(s.id).trim().toLowerCase();
-        // ពិនិត្យស្ទួនក្នុងចំណោម Draft និងក្នុង Database
         if (seenIds.has(cleanId) || await isStudentIdDuplicate(s.id, s.db_id, s._uid)) {
           s._err = s._err || {};
           s._err.id = true;
@@ -1684,7 +1683,7 @@
       if (!s.isDraft) triggerAutoSave(realIdx);
     }
 
-    /* 6. TABLE RENDER */
+    /* 6. TABLE RENDER (ចុចលើរូបថត = បើកផ្ទាំងកែប្រែព័ត៌មាន) */
     function applyFilterAndRender() {
       const q = document.getElementById('searchInput').value.toLowerCase().trim();
 
@@ -1756,7 +1755,8 @@
           <tr data-index="${realIdx}">
             <td class="sticky-col-1">${col1Content}</td>
             <td class="col-photo">
-              <div class="table-photo-box" onclick="openProfileModal(${realIdx})">
+              <!-- 👉 ចុចលើរូបថត = បើកផ្ទាំងកែប្រែព័ត៌មាន (Edit Modal) -->
+              <div class="table-photo-box" onclick="openEditModal(${realIdx})" title="ចុចដើម្បីកែប្រែព័ត៌មានសិស្ស">
                 ${photoUrl ? `<img src="${esc(photoUrl)}">` : esc(initialBadge)}
               </div>
             </td>
@@ -2061,7 +2061,6 @@
 
       const newId = document.getElementById('modalStudentId').value.trim();
 
-      // 👉 ពិនិត្យអត្តលេខស្ទួន
       if (await isStudentIdDuplicate(newId, s.db_id, s._uid)) {
         showToast(`⚠️ អត្តលេខ «${newId}» មានក្នុងប្រព័ន្ធរួចហើយ! សូមបញ្ចូលអត្តលេខផ្សេង`, true);
         return;
@@ -2163,14 +2162,12 @@
 
       const importIds = pendingImportStudents.map(p => String(p.student_id).trim()).filter(Boolean);
 
-      // ពិនិត្យស្ទួនក្នុងចំណោម Import ខ្លួនឯង
       const duplicateInImport = importIds.filter((item, index) => importIds.indexOf(item) !== index);
       if (duplicateInImport.length > 0) {
         alert(`⚠️ ក្នុងបញ្ជីដែលនាំចូលមានអត្តលេខស្ទួនគ្នា៖\n${[...new Set(duplicateInImport)].join(', ')}`);
         return;
       }
 
-      // ពិនិត្យស្ទួនជាមួយ Database
       if (importIds.length > 0) {
         try {
           const { data: existing, error: checkErr } = await sb
@@ -2249,7 +2246,6 @@
             return;
           }
 
-          // ពិនិត្យស្ទួនក្នុង file Excel
           const duplicateInExcel = excelIds.filter((item, index) => excelIds.indexOf(item) !== index);
           if (duplicateInExcel.length > 0) {
             alert(`⚠️ ក្នុង File Excel មានអត្តលេខស្ទួនគ្នា៖\n${[...new Set(duplicateInExcel)].join(', ')}`);
@@ -2257,7 +2253,6 @@
             return;
           }
 
-          // ពិនិត្យស្ទួនជាមួយ Database
           if (excelIds.length > 0) {
             const { data: existing, error: checkErr } = await sb
               .from(STUDENTS_TABLE)
