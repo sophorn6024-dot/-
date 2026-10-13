@@ -361,10 +361,11 @@
                       <option value="admin">អ្នកគ្រប់គ្រង (Admin — មើលបានគ្រប់ថ្នាក់)</option>
                     </select></div>
                 </div>
+                <!-- ថ្នាក់ទទួលបន្ទុក៖ ប្តូរមកជា Text Input សម្រាប់វាយដោយផ្ទាល់ -->
                 <div class="field" id="assignedClassWrap">
                   <label>ថ្នាក់ទទួលបន្ទុក <span class="required">*</span></label>
                   <div class="input-wrap"><span class="input-icon"><i class="fa-solid fa-school"></i></span>
-                    <select id="fAssignedClass"></select></div>
+                    <input type="text" id="fAssignedClass" placeholder="ឧ. ទី១, ៤(ក), ៥..." required></div>
                 </div>
               </div>
             </div>
@@ -396,9 +397,6 @@
     // ជួរឈរដែលទាញមកបង្ហាញ (មិនទាញ password មកទេ)
     const LIST_COLUMNS = 'id,teacher_id,teacher_name,gender,phone,dob,address,username,role,assigned_classes,photo_url';
 
-    // ថ្នាក់ទាំងអស់ (សម្រាប់ជ្រើសថ្នាក់ទទួលបន្ទុក)
-    const ALL_CLASSES = ['១', '២', '៣', '៤(ក)', '៤(ខ)', '៥', '៦'];
-
     /* Session ពី Login (ដូចទំព័រព័ត៌មានសិស្ស) */
     function readSession() {
       try { return JSON.parse(localStorage.getItem('krou_supabase_user') || 'null'); } catch (e) { return null; }
@@ -427,7 +425,6 @@
       return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
     }
     function safeUrl(u) { u = String(u || '').trim(); return /^(https:\/\/|data:image\/)/.test(u) ? u : ''; }
-    function normGrade(g) { return String(g ?? '').replace(/^ថ្នាក់ទី\s*/, '').trim(); }
 
     const khmerDigits = ['០','១','២','៣','៤','៥','៦','៧','៨','៩'];
     function toKhmerNum(n) { return String(n).replace(/\d/g, d => khmerDigits[d]); }
@@ -476,13 +473,7 @@
       }
       document.getElementById('pageBody').style.display = 'block';
       document.getElementById('deniedWrap').style.display = 'none';
-      fillClassOptions();
       loadTeachers();
-    }
-
-    function fillClassOptions() {
-      const sel = document.getElementById('fAssignedClass');
-      sel.innerHTML = ALL_CLASSES.map(c => `<option value="${escapeHtml(c)}">ថ្នាក់ទី ${escapeHtml(c)}</option>`).join('');
     }
 
     /* =========================================================
@@ -524,8 +515,9 @@
           ? `<img class="avatar-thumb" src="${escapeHtml(photo)}" alt="" onerror="this.outerHTML='<span class=&quot;avatar-fallback&quot;>${initial}</span>'">`
           : `<span class="avatar-fallback">${initial}</span>`;
 
-        const cls = normGrade(t.assigned_classes);
-        const assignedCls = isAdmin ? 'គ្រប់ថ្នាក់' : (cls ? 'ថ្នាក់ទី ' + escapeHtml(cls) : '—');
+        // បង្ហាញថ្នាក់ទទួលបន្ទុកតាមអ្វីដែលបានវាយ
+        const rawCls = String(t.assigned_classes || '').trim();
+        const assignedCls = isAdmin ? 'គ្រប់ថ្នាក់' : (rawCls ? (rawCls.startsWith('ថ្នាក់') ? escapeHtml(rawCls) : 'ថ្នាក់ទី ' + escapeHtml(rawCls)) : '—');
 
         return `
           <tr>
@@ -555,7 +547,15 @@
     ========================================================= */
     function onRoleChange() {
       const role = document.getElementById('fRole').value;
-      document.getElementById('assignedClassWrap').style.display = role === 'admin' ? 'none' : 'block';
+      const wrap = document.getElementById('assignedClassWrap');
+      const input = document.getElementById('fAssignedClass');
+      if (role === 'admin') {
+        wrap.style.display = 'none';
+        input.required = false;
+      } else {
+        wrap.style.display = 'block';
+        input.required = true;
+      }
     }
 
     async function onPhotoPicked(ev) {
@@ -584,6 +584,7 @@
       document.getElementById('modalSubtitle').innerText = 'បំពេញព័ត៌មានខាងក្រោម ដើម្បីបង្កើតគណនីគ្រូថ្មី';
       document.getElementById('footerModeText').innerText = '➕ កំពុងបង្កើតគណនីគ្រូថ្មី';
       document.getElementById('teacherForm').reset();
+      document.getElementById('fAssignedClass').value = '';
       document.getElementById('fPassword').required = true;
       document.getElementById('passwordRequired').style.display = 'inline';
       document.getElementById('passHint').innerText = 'ប្រើ Password ដែលពិបាកទាយ និងមិនគួរចែករំលែក។';
@@ -618,8 +619,7 @@
 
       document.getElementById('fRole').value = String(t.role).toLowerCase() === 'admin' ? 'admin' : 'teacher';
       onRoleChange();
-      const cls = normGrade(t.assigned_classes);
-      if (cls && ALL_CLASSES.includes(cls)) document.getElementById('fAssignedClass').value = cls;
+      document.getElementById('fAssignedClass').value = t.assigned_classes || '';
 
       const preview = document.getElementById('photoPreview');
       const placeholder = document.getElementById('photoPlaceholder');
@@ -648,7 +648,6 @@
     /* =========================================================
        7. CREATE / UPDATE
     ========================================================= */
-    // ពិនិត្យថា អត្តលេខ ឬ Username មិនស្ទួន
     async function isDuplicate(column, value) {
       let q = sb.from(USERS_TABLE).select('id').eq(column, value);
       if (editingId !== null) q = q.neq('id', editingId);
@@ -670,7 +669,7 @@
         address: document.getElementById('fAddress').value.trim(),
         username: document.getElementById('fUsername').value.trim(),
         role: role,
-        assigned_classes: role === 'admin' ? '' : document.getElementById('fAssignedClass').value,
+        assigned_classes: role === 'admin' ? '' : document.getElementById('fAssignedClass').value.trim(),
         updated_at: new Date().toISOString()
       };
       const password = document.getElementById('fPassword').value;
