@@ -294,7 +294,7 @@
       <div style="position: relative;">
         <button class="date-trigger-btn" id="btnDateDisplay" onclick="toggleCalendarPopup()">
           <i class="fa-regular fa-calendar" style="color:var(--primary);"></i>
-          <span id="txtDisplayDate">1 កញ្ញា 2026</span>
+          <span id="txtDisplayDate">...</span>
         </button>
 
         <div class="calendar-popup" id="calPopup">
@@ -304,17 +304,17 @@
               <option value="2">មីនា</option><option value="3">មេសា</option>
               <option value="4">ឧសភា</option><option value="5">មិថុនា</option>
               <option value="6">កក្កដា</option><option value="7">សីហា</option>
-              <option value="8" selected>កញ្ញា</option><option value="9">តុលា</option>
+              <option value="8">កញ្ញា</option><option value="9">តុលា</option>
               <option value="10">វិច្ឆិកា</option><option value="11">ធ្នូ</option>
             </select>
             <select id="calYearSelect" onchange="renderCalendarDays()">
               <option value="2025">2025</option>
-              <option value="2026" selected>2026</option>
+              <option value="2026">2026</option>
               <option value="2027">2027</option>
             </select>
           </div>
 
-          <div class="cal-month-title" id="calMonthYearTitle">កញ្ញា 2026</div>
+          <div class="cal-month-title" id="calMonthYearTitle">...</div>
 
           <div class="cal-weekdays">
             <span>អា</span><span>ច</span><span>អ</span><span>ព</span><span>ព្រ</span><span>សុ</span><span>ស</span>
@@ -343,7 +343,7 @@
       <div class="daily-sidebar-card">
         <div style="font-size:12px; color:var(--text-muted);">
           <div>កាលបរិច្ឆេទជ្រើសរើស៖</div>
-          <div style="font-size:15px; font-weight:700; color:var(--text); margin-top:2px;" id="lblSelectedDateIso">2026-09-01</div>
+          <div style="font-size:15px; font-weight:700; color:var(--text); margin-top:2px;" id="lblSelectedDateIso">...</div>
         </div>
 
         <div class="gender-summary-box">
@@ -427,12 +427,13 @@
           </div>
         </div>
 
+        <!-- បញ្ជីរើសខែ នឹងត្រូវចាប់យកខែបច្ចុប្បន្នដោយស្វ័យប្រវត្តិពី JavaScript -->
         <select id="rptMonthSelect" class="class-select-pill" onchange="renderHolidayConfigSection()">
           <option value="មករា">មករា</option><option value="កុម្ភៈ">កុម្ភៈ</option>
           <option value="មីនា">មីនា</option><option value="មេសា">មេសា</option>
           <option value="ឧសភា">ឧសភា</option><option value="មិថុនា">មិថុនា</option>
           <option value="កក្កដា">កក្កដា</option><option value="សីហា">សីហា</option>
-          <option value="កញ្ញា" selected>កញ្ញា</option><option value="តុលា">តុលា</option>
+          <option value="កញ្ញា">កញ្ញា</option><option value="តុលា">តុលា</option>
           <option value="វិច្ឆិកា">វិច្ឆិកា</option><option value="ធ្នូ">ធ្នូ</option>
         </select>
       </div>
@@ -450,7 +451,7 @@
             </button>
 
             <div class="calendar-popup" id="holidayCalPopup" style="top:46px;">
-              <div class="cal-month-title" id="holidayCalTitle">កញ្ញា 2026</div>
+              <div class="cal-month-title" id="holidayCalTitle">...</div>
               <div class="cal-weekdays">
                 <span>អា</span><span>ច</span><span>អ</span><span>ព</span><span>ព្រ</span><span>សុ</span><span>ស</span>
               </div>
@@ -529,7 +530,7 @@
   </div>
 
   <!-- =========================================================
-       ⚙️ ផ្នែក JavaScript : SUPABASE FULL INTEGRATION
+       ⚙️ ផ្នែក JavaScript : SUPABASE FULL ENGINE & SYNC MONTH
   ========================================================= -->
   <script>
     /* 1. SUPABASE CLIENT CONFIG */
@@ -582,6 +583,12 @@
     window.onload = async function() {
       syncThemeWithParent();
       updateDateUI();
+
+      // 👉 កំណត់ខែបច្ចុប្បន្នទៅក្នុងប្រអប់រើសខែនៃរបាយការណ៍ដោយស្វ័យប្រវត្តិ
+      var curMonthName = KHMER_MONTHS[selectedDate.getMonth()];
+      var rptSel = document.getElementById('rptMonthSelect');
+      if (rptSel) rptSel.value = curMonthName;
+
       await loadSchoolHolidays();
       renderHolidayConfigSection();
       await loadAllStudentsAndClasses();
@@ -656,7 +663,7 @@
       if (!currentClassName) return;
       var curPure = cleanGrade(currentClassName);
 
-      // ចម្រាញ់យកសិស្សតាមថ្នាក់ដែលបានរើស
+      // ចម្រាញ់សិស្សតាមថ្នាក់ដែលបានរើស
       rawStudentsData = allStudentsCache
         .filter(s => cleanGrade(s.grade) === curPure)
         .map(s => ({
@@ -967,13 +974,21 @@
       container.innerHTML = html;
     }
 
-    /* 7. CALENDAR & TAB LOGIC */
+    /* 7. CALENDAR & TAB LOGIC (SYNC MONTH AUTOMATICALLY) */
     function switchNavTab(tab) {
       document.getElementById('btnTabDaily').classList.toggle('active', tab === 'daily');
       document.getElementById('btnTabReports').classList.toggle('active', tab === 'reports');
       document.getElementById('tabDailyView').style.display = (tab === 'daily') ? 'block' : 'none';
       document.getElementById('tabReportsMenu').style.display = (tab === 'reports') ? 'block' : 'none';
-      if(tab === 'reports') renderHolidayConfigSection();
+
+      if(tab === 'reports') {
+        // 👉 Sync ខែដែលកំពុងកត់ត្រាវត្តមាន ទៅកាន់របាយការណ៍ស្វ័យប្រវត្តិ
+        var rptSel = document.getElementById('rptMonthSelect');
+        if (rptSel) {
+          rptSel.value = KHMER_MONTHS[selectedDate.getMonth()];
+        }
+        renderHolidayConfigSection();
+      }
     }
 
     function updateDateUI() {
@@ -1016,6 +1031,11 @@
       selectedDate = new Date(y, m, d);
       updateDateUI();
       toggleCalendarPopup();
+
+      // 👉 Sync ខែទៅកាន់របាយការណ៍
+      var rptSel = document.getElementById('rptMonthSelect');
+      if (rptSel) rptSel.value = KHMER_MONTHS[m];
+
       loadDailyAttendanceData();
     }
 
@@ -1023,6 +1043,11 @@
       selectedDate = new Date();
       updateDateUI();
       toggleCalendarPopup();
+
+      // 👉 Sync ខែទៅកាន់របាយការណ៍
+      var rptSel = document.getElementById('rptMonthSelect');
+      if (rptSel) rptSel.value = KHMER_MONTHS[selectedDate.getMonth()];
+
       loadDailyAttendanceData();
     }
 
