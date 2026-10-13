@@ -99,7 +99,7 @@
     .pill-select-class {
       background: var(--surface-elevated); border: 1.5px solid var(--border); border-radius: 22px;
       height: 38px; padding: 0 14px; font-size: 12.5px; font-weight: 700; color: var(--text);
-      outline: none; cursor: pointer; transition: all 0.2s;
+      outline: none; cursor: pointer; transition: all 0.2s; width: 100%;
     }
     .pill-select-class:focus { border-color: var(--primary); }
 
@@ -150,6 +150,17 @@
       transition: all 0.15s; user-select: none;
     }
     .chip-btn:hover { border-color: var(--primary); }
+    .chip-btn.locked {
+      border-color: #f59e0b; color: #f59e0b; background: rgba(245, 158, 11, 0.12);
+    }
+
+    /* 🔒 Lock hint banner */
+    .lock-hint {
+      display: none; align-items: center; gap: 8px; margin-bottom: 10px;
+      background: rgba(245, 158, 11, 0.12); border: 1.5px solid rgba(245, 158, 11, 0.35);
+      color: #f59e0b; border-radius: 12px; padding: 8px 14px; font-size: 12.5px; font-weight: 700;
+    }
+    .lock-hint.show { display: flex; }
 
     .bottom-toolbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; position: relative; }
     .btn-action {
@@ -258,6 +269,11 @@
     .table-input:focus { border-color: #0284c7; box-shadow: 0 0 0 2px rgba(2,132,199,0.2); }
     .table-input[readonly] { opacity: 0.75; cursor: not-allowed; }
     .input-left { text-align: left; }
+
+    /* 🔒 Locked table look */
+    .table-container.is-locked .table-input,
+    .table-container.is-locked .gender-pill,
+    .table-container.is-locked .date-picker-trigger { cursor: not-allowed; opacity: 0.8; }
 
     .table-photo-box {
       width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid var(--border);
@@ -769,9 +785,15 @@
         <span>⚡</span> <span id="syncStatusText">Supabase Connected</span>
       </div>
 
-      <div class="chip-btn" onclick="toggleLockTable()">
-        <span id="lockIcon">🔒</span> <span id="lockText">ចាក់សោ</span>
+      <div class="chip-btn" id="lockBtn" onclick="toggleLockTable()" title="ចុចដើម្បីចាក់សោតារាង (ការពារកុំឱ្យកែប្រែដោយចៃដន្យ)">
+        <span id="lockIcon">🔓</span> <span id="lockText">ចាក់សោ</span>
       </div>
+    </div>
+
+    <!-- 🔒 សារប្រាប់ពេលចាក់សោ -->
+    <div class="lock-hint" id="lockHint">
+      <span>🔒</span>
+      <span>តារាងកំពុងចាក់សោ — សូមចុចប៊ូតុង «ដោះសោ» ដើម្បីកែប្រែ ឬបន្ថែមទិន្នន័យ។</span>
     </div>
 
     <div class="bottom-toolbar">
@@ -792,7 +814,7 @@
         <span>⊞</span> <span>ជួរឈរ</span>
       </button>
 
-      <div class="column-dropdown" id="columnDropdown">
+      <div class="column-dropdown" id="columnDropdown" onclick="event.stopPropagation()">
         <div class="dropdown-title">ជ្រើសជួរឈរ</div>
         <label class="col-option"><input type="checkbox" checked onchange="toggleColumn('col-photo', this.checked)"> រូបថត</label>
         <label class="col-option"><input type="checkbox" checked onchange="toggleColumn('col-id', this.checked)"> អត្តលេខ</label>
@@ -835,14 +857,16 @@
           <th class="col-info" style="width: 50px;">អាយុ</th>
           <th class="col-info" style="width: 90px;">ថ្នាក់</th>
           <th class="col-info" style="width: 105px;">ទូរស័ព្ទ</th>
-          <th class="th-sub-pob col-pob" style="width: 105px;">ខេត្ត/ក្រុង</th>
-          <th class="th-sub-pob col-pob" style="width: 105px;">ស្រុក/ខណ្ឌ</th>
-          <th class="th-sub-pob col-pob" style="width: 105px;">ឃុំ/សង្កាត់</th>
+          <!-- ទីកន្លែងកំណើត: ភូមិ → ឃុំ → ស្រុក → ខេត្ត -->
           <th class="th-sub-pob col-pob" style="width: 95px;">ភូមិ</th>
-          <th class="th-sub-addr col-address" style="width: 105px;">ខេត្ត/ក្រុង</th>
-          <th class="th-sub-addr col-address" style="width: 105px;">ស្រុក/ខណ្ឌ</th>
-          <th class="th-sub-addr col-address" style="width: 105px;">ឃុំ/សង្កាត់</th>
+          <th class="th-sub-pob col-pob" style="width: 105px;">ឃុំ/សង្កាត់</th>
+          <th class="th-sub-pob col-pob" style="width: 105px;">ស្រុក/ខណ្ឌ</th>
+          <th class="th-sub-pob col-pob" style="width: 105px;">ខេត្ត/ក្រុង</th>
+          <!-- អាសយដ្ឋានបច្ចុប្បន្ន: ភូមិ → ឃុំ → ស្រុក → ខេត្ត -->
           <th class="th-sub-addr col-address" style="width: 95px;">ភូមិ</th>
+          <th class="th-sub-addr col-address" style="width: 105px;">ឃុំ/សង្កាត់</th>
+          <th class="th-sub-addr col-address" style="width: 105px;">ស្រុក/ខណ្ឌ</th>
+          <th class="th-sub-addr col-address" style="width: 105px;">ខេត្ត/ក្រុង</th>
           <th class="th-sub-parent col-parent" style="width: 130px;">ឈ្មោះឪពុក</th>
           <th class="th-sub-parent col-parent" style="width: 110px;">មុខរបរឪពុក</th>
           <th class="th-sub-parent col-parent" style="width: 130px;">ឈ្មោះម្តាយ</th>
@@ -911,7 +935,7 @@
             <div class="step-number-circle">1</div>
             <div class="step-info">
               <div class="step-title">ទាញយកគំរូ រួចបំពេញឈ្មោះសិស្ស</div>
-              <div class="step-sub">ត្រូវបំពេញ អត្តលេខ, គោត្តនាម, នាម, ភេទ ។</div>
+              <div class="step-sub">ត្រូវបំពេញ អត្តលេខ, គោត្តនាម, នាម, ភេទ ។ ទីកន្លែងកំណើត/អាសយដ្ឋាន សូមវាយតាមលំដាប់៖ ភូមិ, ឃុំ, ស្រុក, ខេត្ត ។</div>
               <button class="btn-download-tmpl" onclick="downloadExcelTemplate()">
                 <span>📥</span> <span>ទាញយកគំរូ Excel</span>
               </button>
@@ -961,7 +985,7 @@
   </div>
 
   <!-- 📅 KHMER CALENDAR POPUP MODAL -->
-  <div class="khmer-cal-popup" id="khmerCalPopup">
+  <div class="khmer-cal-popup" id="khmerCalPopup" onclick="event.stopPropagation()">
     <div class="cal-header-controls">
       <select class="cal-select" id="calMonthSelect" onchange="onCalMonthYearChange()"></select>
       <select class="cal-select" id="calYearSelect" onchange="onCalMonthYearChange()"></select>
@@ -1105,8 +1129,8 @@
               <div class="form-group"><label>ទូរស័ព្ទ</label><input type="tel" class="modal-input" id="modalPhone"></div>
               <div class="form-group"><label>ស្ថានភាព (Semester ឈប់រៀន)</label><input type="text" class="modal-input" id="modalDropout" placeholder="ទុកទទេបើកំពុងរៀន"></div>
             </div>
-            <div class="form-group" style="margin-bottom:12px;"><label>ទីកន្លែងកំណើត</label><input type="text" class="modal-input" id="modalPob"></div>
-            <div class="form-group"><label>អាសយដ្ឋានបច្ចុប្បន្ន</label><input type="text" class="modal-input" id="modalAddress"></div>
+            <div class="form-group" style="margin-bottom:12px;"><label>ទីកន្លែងកំណើត (ភូមិ, ឃុំ, ស្រុក, ខេត្ត)</label><input type="text" class="modal-input" id="modalPob" placeholder="ភូមិ, ឃុំ, ស្រុក, ខេត្ត"></div>
+            <div class="form-group"><label>អាសយដ្ឋានបច្ចុប្បន្ន (ភូមិ, ឃុំ, ស្រុក, ខេត្ត)</label><input type="text" class="modal-input" id="modalAddress" placeholder="ភូមិ, ឃុំ, ស្រុក, ខេត្ត"></div>
           </div>
         </div>
 
@@ -1133,7 +1157,7 @@
   </div>
 
   <!-- =========================================================
-       ⚙️ JAVASCRIPT: SUPABASE ENGINE (ពេញលេញ ១០០%)
+       ⚙️ JAVASCRIPT: SUPABASE ENGINE
   ========================================================= -->
   <script>
     /* 1. SUPABASE CLIENT CONFIG */
@@ -1149,9 +1173,14 @@
     const USER_CLASS = CURRENT_USER?.assigned_classes || "";
     const IS_ADMIN = String(USER_ROLE).toLowerCase().trim() === 'admin';
 
-    let currentSelectedClass = USER_CLASS ? String(USER_CLASS).replace(/^ថ្នាក់ទី\s*/, '').trim() : '';
-    let availableClassesList = ['១', '២', '៣', '៤(ក)', '៤(ខ)', '៥', '៦'];
+    // បញ្ជីថ្នាក់ទាំងអស់ (ប្រើសម្រាប់ជ្រើសរើសក្នុងផ្ទាំងកែប្រែ + លំដាប់តម្រៀប)
+    const ALL_CLASSES = ['១', '២', '៣', '៤(ក)', '៤(ខ)', '៥', '៦'];
+    // ថ្នាក់ដែលមានទិន្នន័យពិតប្រាកដ (ប្រើសម្រាប់ Filter)
+    let classesWithData = [];
+
+    let currentSelectedClass = USER_CLASS ? normGrade(USER_CLASS) : '';
     let studentsList = [];
+    let visibleList = [];          // បញ្ជីដែលកំពុងបង្ហាញក្នុងតារាង (សម្រាប់ Export)
     let activeRowIndex = null;
     let uploadTargetIndex = null;
     let isTableLocked = false;
@@ -1183,6 +1212,11 @@
     function safeUrl(u) { u = String(u || '').trim(); return /^(https:\/\/|data:image\/)/.test(u) ? u : ''; }
     function escParts(p) { const o = {}; for (const k in p) o[k] = esc(p[k]); return o; }
 
+    /* ថ្នាក់៖ "ថ្នាក់ទី១" / "ថ្នាក់ទី ១" / "១"  →  "១" */
+    function normGrade(g) {
+      return String(g ?? '').replace(/^ថ្នាក់ទី\s*/, '').trim();
+    }
+
     function normalizeGenderFront(v) {
       const g = String(v ?? '').trim().toLowerCase();
       if (!g) return '';
@@ -1205,6 +1239,130 @@
       return { ok: msgs.length === 0, err: err, msg: msgs.length ? ('សូមបំពេញ៖ ' + msgs.join(', ')) : '' };
     }
 
+    /* =========================================================
+       🔒 LOCK SYSTEM
+    ========================================================= */
+    let lastLockToast = 0;
+
+    function showLockMessage() {
+      const now = Date.now();
+      if (now - lastLockToast < 1500) return;
+      lastLockToast = now;
+      showToast('🔒 តារាងកំពុងចាក់សោ — សូមចុច «ដោះសោ» ជាមុនសិន ដើម្បីកែប្រែ!', true);
+    }
+
+    // ត្រឡប់ true បើកំពុងចាក់សោ (ហើយបង្ហាញសារ)
+    function guardLocked() {
+      if (isTableLocked) { showLockMessage(); return true; }
+      return false;
+    }
+
+    function updateLockUI() {
+      const btn = document.getElementById('lockBtn');
+      document.getElementById('lockIcon').innerText = isTableLocked ? '🔒' : '🔓';
+      document.getElementById('lockText').innerText = isTableLocked ? 'ដោះសោ' : 'ចាក់សោ';
+      btn.classList.toggle('locked', isTableLocked);
+      btn.title = isTableLocked
+        ? 'តារាងកំពុងចាក់សោ — ចុចដើម្បីដោះសោ ហើយកែប្រែបាន'
+        : 'ចុចដើម្បីចាក់សោតារាង (ការពារកុំឱ្យកែប្រែដោយចៃដន្យ)';
+      document.getElementById('lockHint').classList.toggle('show', isTableLocked);
+      document.getElementById('tableContainer').classList.toggle('is-locked', isTableLocked);
+    }
+
+    function applyLockState() {
+      document.querySelectorAll('#tableBody input').forEach(el => { el.readOnly = isTableLocked; });
+      document.querySelectorAll('#tableBody select').forEach(el => {
+        el.style.pointerEvents = isTableLocked ? 'none' : '';
+        el.tabIndex = isTableLocked ? -1 : 0;
+      });
+      updateLockUI();
+    }
+
+    function toggleLockTable() {
+      isTableLocked = !isTableLocked;
+      if (isTableLocked) hideBottomNavBar();
+      else if (studentsList.some(s => s.isDraft)) showBottomNavBar();
+      applyLockState();
+      if (isTableLocked) {
+        showToast('🔒 បានចាក់សោ — ដោះសោដើម្បីកែប្រែព័ត៌មាន');
+      } else {
+        showToast('🔓 បានដោះសោ — អ្នកអាចកែប្រែព័ត៌មានបានហើយ');
+      }
+    }
+
+    // ចាប់ការចុចលើក្រឡាកែប្រែ ពេលកំពុងចាក់សោ
+    function installLockInterceptors() {
+      const tbody = document.getElementById('tableBody');
+      const handler = (e) => {
+        if (!isTableLocked) return;
+        if (e.target.closest('.table-photo-box, .action-icons')) return;
+        const td = e.target.closest('td');
+        if (!td) return;
+        if (td.querySelector('input, select, .date-picker-trigger, .btn-save-row-now, .btn-cancel-draft')) {
+          e.preventDefault();
+          e.stopPropagation();
+          showLockMessage();
+        }
+      };
+      tbody.addEventListener('mousedown', handler, true);
+      tbody.addEventListener('click', handler, true);
+      tbody.addEventListener('touchstart', handler, { capture: true, passive: false });
+    }
+
+    /* =========================================================
+       🏫 CLASSES WITH DATA (បង្ហាញតែថ្នាក់ដែលមានទិន្នន័យ)
+    ========================================================= */
+    function classSortKey(c) {
+      const i = ALL_CLASSES.indexOf(c);
+      return i === -1 ? 999 : i;
+    }
+
+    async function loadClassesWithData() {
+      if (!IS_ADMIN) return;
+      try {
+        const counts = {};
+        const step = 1000;
+        let from = 0;
+        while (true) {
+          const { data, error } = await sb.from(STUDENTS_TABLE).select('grade').range(from, from + step - 1);
+          if (error) throw error;
+          (data || []).forEach(r => {
+            const g = normGrade(r.grade);
+            if (g) counts[g] = (counts[g] || 0) + 1;
+          });
+          if (!data || data.length < step) break;
+          from += step;
+        }
+        classesWithData = Object.keys(counts)
+          .sort((a, b) => classSortKey(a) - classSortKey(b) || a.localeCompare(b, 'km'))
+          .map(c => ({ name: c, count: counts[c] }));
+      } catch (err) {
+        console.error('loadClassesWithData:', err);
+      }
+      buildClassFilter();
+    }
+
+    function buildClassFilter() {
+      if (!IS_ADMIN) return;
+      const box = document.getElementById('classFilterContainer');
+
+      // បើថ្នាក់ដែលបានជ្រើស លែងមានទិន្នន័យ → ត្រឡប់ទៅ "គ្រប់ថ្នាក់"
+      if (currentSelectedClass && !classesWithData.some(c => c.name === currentSelectedClass)) {
+        currentSelectedClass = '';
+      }
+
+      box.innerHTML = `
+        <select class="pill-select-class" id="classFilterSelect" onchange="onClassFilterChange(this.value)">
+          <option value="">គ្រប់ថ្នាក់ទាំងអស់</option>
+          ${classesWithData.map(c => `<option value="${esc(c.name)}" ${c.name === currentSelectedClass ? 'selected' : ''}>ថ្នាក់ទី ${esc(c.name)} (${c.count})</option>`).join('')}
+        </select>`;
+    }
+
+    function onClassFilterChange(val) {
+      currentSelectedClass = val;
+      loadStudentsFromSupabase();
+    }
+
     /* 2. READ DATA FROM SUPABASE */
     async function loadStudentsFromSupabase() {
       const tbody = document.getElementById('tableBody');
@@ -1213,7 +1371,12 @@
       try {
         let query = sb.from(STUDENTS_TABLE).select('*');
         if (currentSelectedClass) {
-          query = query.or(`grade.eq.${currentSelectedClass},grade.eq.ថ្នាក់ទី${currentSelectedClass}`);
+          // ប្រើ .in() ដើម្បីគាំទ្រថ្នាក់ដែលមានវង់ក្រចក ដូចជា ៤(ក) ៤(ខ)
+          query = query.in('grade', [
+            currentSelectedClass,
+            `ថ្នាក់ទី${currentSelectedClass}`,
+            `ថ្នាក់ទី ${currentSelectedClass}`
+          ]);
         }
 
         const { data, error } = await query.order('id', { ascending: true });
@@ -1225,7 +1388,7 @@
           name: String(row.student_name || '').trim(),
           sex: normalizeGenderFront(row.gender),
           dob: row.dob || '',
-          grade: row.grade || getDefaultGrade(),
+          grade: normGrade(row.grade) ? `ថ្នាក់ទី${normGrade(row.grade)}` : getDefaultGrade(),
           phone: row.phone || '',
           pob: row.pob || '',
           address: row.address || '',
@@ -1241,6 +1404,7 @@
 
         applyFilterAndRender();
         document.getElementById('syncStatusText').innerText = "⚡ Supabase Connected";
+        loadClassesWithData();
       } catch (err) {
         console.error(err);
         tbody.innerHTML = `<tr><td colspan="22" class="status-row" style="color:#ef4444;">⚠️ កំហុស៖ ${esc(err.message)}</td></tr>`;
@@ -1305,6 +1469,7 @@
     }
 
     async function saveDraftRow(realIdx) {
+      if (guardLocked()) return;
       const s = studentsList[realIdx];
       if (!s) return;
       syncDraftFromDom(realIdx);
@@ -1327,12 +1492,14 @@
         applyFilterAndRender();
         showToast(`🎉 បានរក្សាទុកសិស្ស «${s.name}» ជោគជ័យ!`);
         if (!studentsList.some(x => x.isDraft)) hideBottomNavBar();
+        loadClassesWithData();
       } catch (err) {
         alert("❌ ការរក្សាទុកបរាជ័យ៖ " + err.message);
       }
     }
 
     async function saveAllDraftRows() {
+      if (guardLocked()) return;
       const drafts = studentsList.filter(s => s.isDraft);
       if (!drafts.length) return;
 
@@ -1361,6 +1528,7 @@
     }
 
     async function deleteCurrentRow() {
+      if (guardLocked()) return;
       if (activeRowIndex === null) return;
       const s = studentsList[activeRowIndex];
       if (!s) return;
@@ -1374,9 +1542,11 @@
       studentsList.splice(activeRowIndex, 1);
       applyFilterAndRender();
       showToast("បានលុបទិន្នន័យរួចរាល់!");
+      loadClassesWithData();
     }
 
-    /* 5. ADDRESS HELPERS */
+    /* 5. ADDRESS HELPERS
+       ទម្រង់រក្សាទុក៖ ភូមិ, ឃុំ, ស្រុក, ខេត្ត  (ភូមិនៅមុខ) */
     function cleanDuplicateAddress(str) {
       if (!str) return '';
       const parts = str.split(',').map(s => s.trim()).filter(Boolean);
@@ -1386,7 +1556,7 @@
     function parseAddressParts(addrStr) {
       if (!addrStr) return { village: '', commune: '', district: '', province: '' };
       const parts = addrStr.split(',').map(p => p.trim()).filter(Boolean);
-      if (parts.length === 4) return { village: parts[0], commune: parts[1], district: parts[2], province: parts[3] };
+      if (parts.length >= 4) return { village: parts[0], commune: parts[1], district: parts[2], province: parts[3] };
       if (parts.length === 3) return { village: '', commune: parts[0], district: parts[1], province: parts[2] };
       if (parts.length === 2) return { village: '', commune: '', district: parts[0], province: parts[1] };
       return { village: '', commune: '', district: '', province: parts[0] || '' };
@@ -1408,7 +1578,7 @@
 
       s.id = data.id || '';
       s.name = `${data.lastName || ''} ${data.firstName || ''}`.trim();
-      s.sex = data.sex || s.sex || 'ប្រុស';
+      s.sex = data.sex || s.sex || '';
       s.grade = data.grade || s.grade || getDefaultGrade();
       s.phone = data.phone || '';
       s.pob = joinAddressParts(data.pob_village, data.pob_commune, data.pob_district, data.pob_province);
@@ -1420,6 +1590,7 @@
     }
 
     function syncRowInput(input, realIdx) {
+      if (isTableLocked) { showLockMessage(); return; }
       const s = studentsList[realIdx];
       if (!s) return;
       const field = input.dataset.field;
@@ -1481,6 +1652,7 @@
         return true;
       });
 
+      visibleList = filtered.filter(s => !s.isDraft);
       renderTable(filtered);
     }
 
@@ -1538,8 +1710,8 @@
                 ${photoUrl ? `<img src="${esc(photoUrl)}">` : esc(initialBadge)}
               </div>
             </td>
-            <td class="col-id"><input type="text" class="table-input ${showMissing && !s.id ? 'cell-missing' : ''}" value="${esc(s.id)}" data-field="id" oninput="syncRowInput(this, ${realIdx})" placeholder="អត្តលេខ *"></td>
-            <td class="sticky-col-2"><input type="text" class="table-input input-left ${showMissing && !lastName ? 'cell-missing' : ''}" value="${esc(lastName)}" data-field="lastName" style="font-weight:700;" oninput="syncRowInput(this, ${realIdx})" placeholder="គោត្តនាម *"></td>
+            <td class="col-id"><input type="text" class="table-input ${(showMissing && !s.id) || errs.id ? 'cell-missing' : ''}" value="${esc(s.id)}" data-field="id" oninput="syncRowInput(this, ${realIdx})" placeholder="អត្តលេខ *"></td>
+            <td class="sticky-col-2"><input type="text" class="table-input input-left ${(showMissing && !lastName) || errs.name ? 'cell-missing' : ''}" value="${esc(lastName)}" data-field="lastName" style="font-weight:700;" oninput="syncRowInput(this, ${realIdx})" placeholder="គោត្តនាម *"></td>
             <td class="sticky-col-3"><input type="text" class="table-input input-left" value="${esc(firstName)}" data-field="firstName" style="font-weight:700;" oninput="syncRowInput(this, ${realIdx})" placeholder="នាម"></td>
             <td class="col-gender">
               <select class="gender-pill ${genderClass}" data-field="sex" onchange="syncRowInput(this, ${realIdx})">${genderOptions}</select>
@@ -1553,14 +1725,19 @@
             <td class="col-info"><span class="age-text" style="font-weight:700;">${age}</span></td>
             <td class="col-info"><input type="text" class="table-input" value="${esc(s.grade)}" data-field="grade" oninput="syncRowInput(this, ${realIdx})"></td>
             <td class="col-info"><input type="tel" class="table-input ${showMissing && !s.phone ? 'cell-missing' : ''}" value="${esc(s.phone)}" data-field="phone" oninput="syncRowInput(this, ${realIdx})"></td>
-            <td class="col-pob"><input type="text" class="table-input" value="${pob.province}" data-field="pob_province" oninput="syncRowInput(this, ${realIdx})" placeholder="ខេត្ត"></td>
-            <td class="col-pob"><input type="text" class="table-input" value="${pob.district}" data-field="pob_district" oninput="syncRowInput(this, ${realIdx})" placeholder="ស្រុក"></td>
-            <td class="col-pob"><input type="text" class="table-input" value="${pob.commune}" data-field="pob_commune" oninput="syncRowInput(this, ${realIdx})" placeholder="ឃុំ"></td>
+
+            <!-- ទីកន្លែងកំណើត: ភូមិ → ឃុំ → ស្រុក → ខេត្ត -->
             <td class="col-pob"><input type="text" class="table-input" value="${pob.village}" data-field="pob_village" oninput="syncRowInput(this, ${realIdx})" placeholder="ភូមិ"></td>
-            <td class="col-address"><input type="text" class="table-input" value="${addr.province}" data-field="addr_province" oninput="syncRowInput(this, ${realIdx})" placeholder="ខេត្ត"></td>
-            <td class="col-address"><input type="text" class="table-input" value="${addr.district}" data-field="addr_district" oninput="syncRowInput(this, ${realIdx})" placeholder="ស្រុក"></td>
-            <td class="col-address"><input type="text" class="table-input" value="${addr.commune}" data-field="addr_commune" oninput="syncRowInput(this, ${realIdx})" placeholder="ឃុំ"></td>
+            <td class="col-pob"><input type="text" class="table-input" value="${pob.commune}" data-field="pob_commune" oninput="syncRowInput(this, ${realIdx})" placeholder="ឃុំ"></td>
+            <td class="col-pob"><input type="text" class="table-input" value="${pob.district}" data-field="pob_district" oninput="syncRowInput(this, ${realIdx})" placeholder="ស្រុក"></td>
+            <td class="col-pob"><input type="text" class="table-input" value="${pob.province}" data-field="pob_province" oninput="syncRowInput(this, ${realIdx})" placeholder="ខេត្ត"></td>
+
+            <!-- អាសយដ្ឋានបច្ចុប្បន្ន: ភូមិ → ឃុំ → ស្រុក → ខេត្ត -->
             <td class="col-address"><input type="text" class="table-input" value="${addr.village}" data-field="addr_village" oninput="syncRowInput(this, ${realIdx})" placeholder="ភូមិ"></td>
+            <td class="col-address"><input type="text" class="table-input" value="${addr.commune}" data-field="addr_commune" oninput="syncRowInput(this, ${realIdx})" placeholder="ឃុំ"></td>
+            <td class="col-address"><input type="text" class="table-input" value="${addr.district}" data-field="addr_district" oninput="syncRowInput(this, ${realIdx})" placeholder="ស្រុក"></td>
+            <td class="col-address"><input type="text" class="table-input" value="${addr.province}" data-field="addr_province" oninput="syncRowInput(this, ${realIdx})" placeholder="ខេត្ត"></td>
+
             <td class="col-parent"><input type="text" class="table-input input-left" value="${esc(s.father)}" data-field="father" oninput="syncRowInput(this, ${realIdx})" placeholder="ឈ្មោះឪពុក"></td>
             <td class="col-parent"><input type="text" class="table-input input-left" value="${esc(s.fatherJob)}" data-field="fatherJob" oninput="syncRowInput(this, ${realIdx})" placeholder="មុខរបរ"></td>
             <td class="col-parent"><input type="text" class="table-input input-left" value="${esc(s.mother)}" data-field="mother" oninput="syncRowInput(this, ${realIdx})" placeholder="ឈ្មោះម្តាយ"></td>
@@ -1572,6 +1749,7 @@
 
       tbody.innerHTML = rowsHtml;
       updateCounters(list.length, femaleCount);
+      applyLockState();
     }
 
     function updateCounters(total, female) {
@@ -1581,6 +1759,7 @@
     }
 
     function addNewRow() {
+      if (guardLocked()) return;
       studentsList.push({
         db_id: null,
         isDraft: true,
@@ -1605,6 +1784,7 @@
     }
 
     function cancelDraftRow(realIdx) {
+      if (guardLocked()) return;
       studentsList.splice(realIdx, 1);
       applyFilterAndRender();
       if (!studentsList.some(x => x.isDraft)) hideBottomNavBar();
@@ -1685,14 +1865,15 @@
       const popup = document.getElementById('khmerCalPopup');
       popup.style.display = 'block';
       const rect = targetEl.getBoundingClientRect();
-      popup.style.top = `${Math.min(window.innerHeight - 340, rect.bottom + 6)}px`;
-      popup.style.left = `${Math.min(window.innerWidth - 320, rect.left)}px`;
+      popup.style.top = `${Math.max(8, Math.min(window.innerHeight - 340, rect.bottom + 6))}px`;
+      popup.style.left = `${Math.max(8, Math.min(window.innerWidth - 320, rect.left))}px`;
     }
 
     function closeKhmerCalendar() { document.getElementById('khmerCalPopup').style.display = 'none'; }
 
     function openKhmerCalendarForTable(e, realIdx) {
       e.stopPropagation();
+      if (guardLocked()) return;
       const s = studentsList[realIdx];
       openKhmerCalendarAtElement(e.currentTarget, s.dob, (selectedDate) => {
         s.dob = selectedDate;
@@ -1707,7 +1888,7 @@
         document.getElementById('modalDobText').innerText = selectedDate;
         document.getElementById('modalDobText').dataset.rawDate = selectedDate;
         const age = calculateAge(selectedDate);
-        document.getElementById('modalAgeDisplay').innerText = age ? `អាយុ: ${age} ឆ្នាំ` : 'អាយុ: -';
+        document.getElementById('modalAgeDisplay').innerText = age !== '' ? `អាយុ: ${age} ឆ្នាំ` : 'អាយុ: -';
       });
     }
 
@@ -1739,23 +1920,30 @@
     function closeProfileModal() { document.getElementById('profileModalOverlay').style.display = 'none'; }
     function openProfileModalFromMenu() { if (activeRowIndex !== null) openProfileModal(activeRowIndex); }
 
+    function onProfileClassChange() { /* ថ្នាក់ត្រូវបានកំណត់ដោយតារាងបច្ចុប្បន្ន */ }
+
     function renderProfileModalContent() {
       const s = studentsList[currentProfileSubIdx];
       if (!s) return;
+
+      const clsSel = document.getElementById('profileClassSelect');
+      clsSel.innerHTML = `<option>${esc(currentSelectedClass ? 'ថ្នាក់ទី ' + currentSelectedClass : 'គ្រប់ថ្នាក់')}</option>`;
+      clsSel.disabled = true;
 
       const stSel = document.getElementById('profileStudentSelect');
       stSel.innerHTML = studentsList.map((st, idx) => `<option value="${idx}" ${idx === currentProfileSubIdx ? 'selected' : ''}>${idx + 1}. ${esc(st.name || 'គ្មានឈ្មោះ')}</option>`).join('');
 
       document.getElementById('profileHeroName').innerText = s.name || 'គ្មានឈ្មោះ';
       document.getElementById('profileIdBadge').innerText = `អត្តលេខ: ${s.id || '-'}`;
-      document.getElementById('profileGradeBadge').innerText = `ថ្នាក់ទី: ${s.grade || '-'}`;
+      document.getElementById('profileGradeBadge').innerText = `ថ្នាក់ទី: ${normGrade(s.grade) || '-'}`;
       document.getElementById('profileGenderBadge').innerText = `ភេទ: ${s.sex || '-'}`;
 
       const box = document.getElementById('profileAvatarBox');
-      box.innerHTML = s.photoUrl ? `<img src="${esc(s.photoUrl)}">` : `<span>${(s.name || 'ក').charAt(0)}</span>`;
+      const pUrl = safeUrl(s.photoUrl);
+      box.innerHTML = pUrl ? `<img src="${esc(pUrl)}">` : `<span>${esc((s.name || 'ក').charAt(0))}</span>`;
 
       document.getElementById('profileDobValue').innerText = s.dob || '-';
-      document.getElementById('profileAgeValue').innerText = calculateAge(s.dob) ? `${calculateAge(s.dob)} ឆ្នាំ` : '-';
+      document.getElementById('profileAgeValue').innerText = calculateAge(s.dob) !== '' ? `${calculateAge(s.dob)} ឆ្នាំ` : '-';
       document.getElementById('profilePhoneValue').innerText = s.phone || '-';
       document.getElementById('profilePobValue').innerText = s.pob || '-';
       document.getElementById('profileAddressValue').innerText = s.address || '-';
@@ -1771,29 +1959,35 @@
     }
 
     function navProfileStudent(dir) {
+      if (!studentsList.length) return;
       currentProfileSubIdx = (currentProfileSubIdx + dir + studentsList.length) % studentsList.length;
       renderProfileModalContent();
     }
 
     /* 9. EDIT MODAL */
     function openEditModal(realIdx) {
+      if (guardLocked()) return;
       activeRowIndex = realIdx;
       const s = studentsList[realIdx];
       if (!s) return;
+      modalPhotoBase64 = null;
 
       const parts = (s.name || '').split(/\s+/);
+      document.getElementById('modalHeaderSub').innerText = s.name || 'ឈ្មោះសិស្ស';
+      document.getElementById('modalProfileNameText').innerText = s.name || 'ឈ្មោះសិស្ស';
       document.getElementById('modalLastName').value = parts[0] || '';
       document.getElementById('modalFirstName').value = parts.slice(1).join(' ') || '';
       document.getElementById('modalStudentId').value = s.id || '';
 
       const gradeSel = document.getElementById('modalGrade');
-      gradeSel.innerHTML = availableClassesList.map(c => `<option value="ថ្នាក់ទី${c}">ថ្នាក់ទី ${c}</option>`).join('');
+      gradeSel.innerHTML = ALL_CLASSES.map(c => `<option value="ថ្នាក់ទី${c}">ថ្នាក់ទី ${c}</option>`).join('');
       gradeSel.value = s.grade || getDefaultGrade();
 
-      document.getElementById('modalGender').value = s.sex || 'ប្រុស';
+      document.getElementById('modalGender').value = s.sex || '';
       document.getElementById('modalDobText').innerText = s.dob || 'ជ្រើសថ្ងៃ';
       document.getElementById('modalDobText').dataset.rawDate = s.dob || '';
-      document.getElementById('modalAgeDisplay').innerText = `អាយុ: ${calculateAge(s.dob) || '-'}`;
+      const ageNow = calculateAge(s.dob);
+      document.getElementById('modalAgeDisplay').innerText = `អាយុ: ${ageNow !== '' ? ageNow : '-'}`;
       document.getElementById('modalPhone').value = s.phone || '';
       document.getElementById('modalDropout').value = s.dropoutSemester || '';
       document.getElementById('modalPob').value = s.pob || '';
@@ -1804,7 +1998,8 @@
       document.getElementById('modalMotherJob').value = s.motherJob || '';
 
       const box = document.getElementById('modalAvatarBox');
-      box.innerHTML = s.photoUrl ? `<img src="${esc(s.photoUrl)}">` : `<span>${(s.name || 'ក').charAt(0)}</span>`;
+      const pUrl = safeUrl(s.photoUrl);
+      box.innerHTML = pUrl ? `<img src="${esc(pUrl)}">` : `<span>${esc((s.name || 'ក').charAt(0))}</span>`;
 
       document.getElementById('editModalOverlay').style.display = 'flex';
     }
@@ -1813,6 +2008,7 @@
     function openEditModalFromMenu() { if (activeRowIndex !== null) openEditModal(activeRowIndex); }
 
     async function saveModalChanges() {
+      if (guardLocked()) return;
       const s = studentsList[activeRowIndex];
       if (!s) return;
 
@@ -1831,6 +2027,9 @@
       s.motherJob = document.getElementById('modalMotherJob').value.trim();
       if (modalPhotoBase64) s.photoUrl = modalPhotoBase64;
 
+      const v = validateStudent(s);
+      if (!v.ok) { showToast("⚠️ " + v.msg, true); return; }
+
       const payload = buildSupabasePayload(s);
       try {
         if (s.db_id) {
@@ -1844,6 +2043,7 @@
         applyFilterAndRender();
         closeEditModal();
         showToast("🎉 បានកែប្រែព័ត៌មានសិស្សជោគជ័យ!");
+        loadClassesWithData();
       } catch (err) {
         alert("❌ កំហុស៖ " + err.message);
       }
@@ -1860,8 +2060,14 @@
       reader.readAsDataURL(file);
     }
 
+    function onRowPhotoFileSelected(input) { /* ទុកសម្រាប់ពង្រីកនាពេលអនាគត */ input.value = ''; }
+
     /* 10. IMPORT (EXCEL + PASTE) */
-    function openImportModal() { document.getElementById('importModalOverlay').style.display = 'flex'; }
+    function openImportModal() {
+      if (guardLocked()) return;
+      document.getElementById('importClassTag').innerText = currentSelectedClass ? `ថ្នាក់ទី ${currentSelectedClass}` : 'ថ្នាក់ទី១ (លំនាំដើម)';
+      document.getElementById('importModalOverlay').style.display = 'flex';
+    }
     function closeImportModal() { document.getElementById('importModalOverlay').style.display = 'none'; }
     function switchImportTab(t) {
       activeImportTab = t;
@@ -1873,7 +2079,7 @@
 
     function onPasteTextInput() {
       const txt = document.getElementById('pasteInputText').value.trim();
-      const lines = txt.split('\n');
+      const lines = txt ? txt.split('\n') : [];
       pendingImportStudents = [];
 
       lines.forEach(line => {
@@ -1897,12 +2103,16 @@
     }
 
     async function submitImportStudents() {
+      if (guardLocked()) return;
       if (!pendingImportStudents.length) return;
       try {
         const { error } = await sb.from(STUDENTS_TABLE).insert(pendingImportStudents);
         if (error) throw error;
         showToast(`🎉 បាននាំចូលសិស្ស ${pendingImportStudents.length} នាក់ជោគជ័យ!`);
         closeImportModal();
+        document.getElementById('pasteInputText').value = '';
+        pendingImportStudents = [];
+        onPasteTextInput();
         loadStudentsFromSupabase();
       } catch(err) {
         alert("❌ បរាជ័យក្នុងការនាំចូល៖ " + err.message);
@@ -1911,8 +2121,8 @@
 
     function downloadExcelTemplate() {
       const ws = XLSX.utils.aoa_to_sheet([
-        ["អត្តលេខ", "គោត្តនាម", "នាម", "ភេទ", "ថ្ងៃកំណើត", "ទូរស័ព្ទ", "ទីកន្លែងកំណើត", "អាសយដ្ឋាន", "ឪពុក", "ម្តាយ"],
-        ["001", "សុខ", "សំបូរ", "ប្រុស", "2015-02-14", "012345678", "ភ្នំពេញ", "ភ្នំពេញ", "សុខ ម៉ៅ", "គង់ ស៊ីថា"]
+        ["អត្តលេខ", "គោត្តនាម", "នាម", "ភេទ", "ថ្ងៃកំណើត", "ទូរស័ព្ទ", "ទីកន្លែងកំណើត (ភូមិ, ឃុំ, ស្រុក, ខេត្ត)", "អាសយដ្ឋាន (ភូមិ, ឃុំ, ស្រុក, ខេត្ត)", "ឪពុក", "ម្តាយ"],
+        ["001", "សុខ", "សំបូរ", "ប្រុស", "2015-02-14", "012345678", "ភូមិក្រុង, សង្កាត់ស្វាយដង្គំ, សៀមរាប, សៀមរាប", "ភូមិក្រុង, សង្កាត់ស្វាយដង្គំ, សៀមរាប, សៀមរាប", "សុខ ម៉ៅ", "គង់ ស៊ីថា"]
       ]);
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, "គំរូ");
@@ -1920,6 +2130,7 @@
     }
 
     function onExcelFileSelected(input) {
+      if (guardLocked()) { input.value = ''; return; }
       const file = input.files[0];
       if (!file) return;
       const reader = new FileReader();
@@ -1935,7 +2146,7 @@
               student_id: String(r[0] || '').trim(),
               student_name: `${r[1] || ''} ${r[2] || ''}`.trim(),
               gender: normalizeGenderFront(r[3]) || 'ប្រុស',
-              dob: r[4] ? formatToInputDate(r[4]) : null,
+              dob: r[4] ? formatToInputDate(r[4]) || null : null,
               phone: r[5] ? String(r[5]) : null,
               pob: r[6] || null,
               address: r[7] || null,
@@ -1950,8 +2161,11 @@
             showToast(`🎉 នាំចូលបាន ${rows.length} នាក់ជោគជ័យ!`);
             closeImportModal();
             loadStudentsFromSupabase();
+          } else {
+            showToast("⚠️ រកមិនឃើញទិន្នន័យក្នុង File ទេ", true);
           }
         } catch(err) { alert("កំហុស Excel: " + err.message); }
+        input.value = '';
       };
       reader.readAsArrayBuffer(file);
     }
@@ -1971,10 +2185,10 @@
       const list = studentsList.filter(s => getMissingFields(s).length > 0 && !s.isDraft);
       const container = document.getElementById('missingListContainer');
       document.getElementById('missingModalSub').innerText = `រកឃើញសិស្សខ្វះទិន្នន័យ ${list.length} នាក់`;
-      container.innerHTML = list.map((s, idx) => `
+      container.innerHTML = list.map((s) => `
         <div class="missing-card">
           <div>
-            <b>${esc(s.name || 'គ្មានឈ្មោះ')}</b> (${s.id || 'គ្មានអត្តលេខ'})
+            <b>${esc(s.name || 'គ្មានឈ្មោះ')}</b> (${esc(s.id) || 'គ្មានអត្តលេខ'})
             <div style="margin-top:4px;">${getMissingFields(s).map(f => `<span class="missing-tag-pill">ខ្វះ${f}</span>`).join(' ')}</div>
           </div>
           <button class="btn-action btn-add" style="height:30px;" onclick="closeMissingModal(); openEditModal(${studentsList.indexOf(s)})">✏️ បំពេញ</button>
@@ -1992,17 +2206,22 @@
       applyFilterAndRender();
     }
 
-    /* 12. EXPORT, SORT, LOCK, KEYBOARD */
+    /* 12. EXPORT, SORT, KEYBOARD */
+    // ទាញយកតែសិស្សដែលកំពុងបង្ហាញក្នុងតារាង (ត្រូវតាមថ្នាក់ + ស្ថានភាព + ការស្វែងរក)
     function exportStudentsToExcel() {
-      if (!studentsList.length) return alert("គ្មានទិន្នន័យ!");
-      const headers = ["ល.រ", "អត្តលេខ", "ឈ្មោះសិស្ស", "ភេទ", "ថ្ងៃកំណើត", "ថ្នាក់", "លេខទូរស័ព្ទ", "ទីកន្លែងកំណើត", "អាសយដ្ឋាន", "ឪពុក", "ម្តាយ"];
-      const rows = studentsList.map((s, i) => [
-        i + 1, s.id, s.name, s.sex, s.dob, s.grade, s.phone, s.pob, s.address, s.father, s.mother
+      const exportList = visibleList.filter(s => !s.isDraft);
+      if (!exportList.length) return alert("គ្មានទិន្នន័យសម្រាប់ទាញយក!");
+
+      const headers = ["ល.រ", "អត្តលេខ", "ឈ្មោះសិស្ស", "ភេទ", "ថ្ងៃកំណើត", "ថ្នាក់", "លេខទូរស័ព្ទ", "ទីកន្លែងកំណើត (ភូមិ, ឃុំ, ស្រុក, ខេត្ត)", "អាសយដ្ឋាន (ភូមិ, ឃុំ, ស្រុក, ខេត្ត)", "ឪពុក", "មុខរបរឪពុក", "ម្តាយ", "មុខរបរម្តាយ"];
+      const rows = exportList.map((s, i) => [
+        i + 1, s.id, s.name, s.sex, formatToInputDate(s.dob), s.grade, s.phone, s.pob, s.address, s.father, s.fatherJob, s.mother, s.motherJob
       ]);
       const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, "បញ្ជីសិស្ស");
-      XLSX.writeFile(wb, `បញ្ជីសិស្ស_${currentSelectedClass || 'សរុប'}.xlsx`);
+      const label = currentSelectedClass ? `ថ្នាក់ទី${currentSelectedClass}` : 'គ្រប់ថ្នាក់';
+      XLSX.writeFile(wb, `បញ្ជីសិស្ស_${label}.xlsx`);
+      showToast(`📊 បានទាញយកសិស្ស ${exportList.length} នាក់ (${label})`);
     }
 
     function sortStudentsAlphabetical() {
@@ -2013,13 +2232,6 @@
       });
       document.getElementById('sortBtnText').innerText = sortDirectionAsc ? 'តម្រៀបតាមត្រកូល (ក-អ)' : 'តម្រៀបតាមត្រកូល (អ-ក)';
       applyFilterAndRender();
-    }
-
-    function toggleLockTable() {
-      isTableLocked = !isTableLocked;
-      document.querySelectorAll('#tableBody input, #tableBody select').forEach(el => el.disabled = isTableLocked);
-      document.getElementById('lockIcon').innerText = isTableLocked ? '🔓' : '🔒';
-      document.getElementById('lockText').innerText = isTableLocked ? 'ដោះសោ' : 'ចាក់សោ';
     }
 
     function toggleColumnMenu(e) {
@@ -2038,10 +2250,10 @@
       const m = document.getElementById('actionMenu');
       m.style.display = 'block';
       m.style.top = `${Math.min(window.innerHeight - 150, e.clientY + 5)}px`;
-      m.style.left = `${Math.min(window.innerWidth - 200, e.clientX - 100)}px`;
+      m.style.left = `${Math.max(8, Math.min(window.innerWidth - 200, e.clientX - 100))}px`;
     }
 
-    function showBottomNavBar() { document.getElementById('bottomNavBar').classList.add('visible'); }
+    function showBottomNavBar() { if (!isTableLocked) document.getElementById('bottomNavBar').classList.add('visible'); }
     function hideBottomNavBar() { document.getElementById('bottomNavBar').classList.remove('visible'); }
 
     function navigateTable(dir) {
@@ -2051,12 +2263,19 @@
       if (!tr) return;
       if (dir === 'down') tr.nextElementSibling?.querySelector(`[data-field="${el.dataset.field}"]`)?.focus();
       if (dir === 'up') tr.previousElementSibling?.querySelector(`[data-field="${el.dataset.field}"]`)?.focus();
+      if (dir === 'right' || dir === 'left') {
+        const inputs = Array.from(tr.querySelectorAll('[data-field]'));
+        const i = inputs.indexOf(el);
+        const next = inputs[dir === 'right' ? i + 1 : i - 1];
+        next?.focus();
+      }
     }
 
     document.addEventListener('click', () => {
       document.getElementById('actionMenu').style.display = 'none';
       document.getElementById('columnDropdown').style.display = 'none';
       document.getElementById('statusDropdownMenu').classList.remove('show');
+      closeKhmerCalendar();
     });
 
     function handleSearch() {
@@ -2081,17 +2300,19 @@
     /* 13. BOOTSTRAP */
     window.addEventListener('DOMContentLoaded', () => {
       initKhmerCalendarComponent();
+      installLockInterceptors();
+      updateLockUI();
       document.getElementById('roleBadge').innerText = IS_ADMIN ? 'អ្នកគ្រប់គ្រង (Admin)' : `ថ្នាក់ទី ${currentSelectedClass || 'ទូទៅ'}`;
 
       const filterBox = document.getElementById('classFilterContainer');
       if (IS_ADMIN) {
+        // បង្ហាញ "គ្រប់ថ្នាក់" សិន រង់ចាំទិន្នន័យថ្នាក់ពិតពី Supabase
         filterBox.innerHTML = `
-          <select class="pill-select-class" onchange="currentSelectedClass=this.value; loadStudentsFromSupabase();">
+          <select class="pill-select-class" id="classFilterSelect" onchange="onClassFilterChange(this.value)">
             <option value="">គ្រប់ថ្នាក់ទាំងអស់</option>
-            ${availableClassesList.map(c => `<option value="${c}">ថ្នាក់ទី ${c}</option>`).join('')}
           </select>`;
       } else {
-        filterBox.innerHTML = `<div class="teacher-class-pill">🏫 ថ្នាក់ទី ${currentSelectedClass || 'មិនទាន់កំណត់'}</div>`;
+        filterBox.innerHTML = `<div class="teacher-class-pill">🏫 ថ្នាក់ទី ${esc(currentSelectedClass) || 'មិនទាន់កំណត់'}</div>`;
       }
 
       loadStudentsFromSupabase();
