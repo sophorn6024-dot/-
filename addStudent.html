@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="km" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>ព័ត៌មានសិស្ស</title>
+
+  <!-- 🔤 Google Fonts Battambang -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+  <!-- 📊 SheetJS Library (សម្រាប់ Import & Export Excel) -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+  <!-- ⚡ Supabase JS Client (v2) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root {
+      --primary: #0284c7;
+      --primary-dark: #0369a1;
+      --bg: #edf6fc;
+      --surface: #ffffff;
+      --surface-elevated: #f8fafc;
+      --border: #cbd5e1;
+      --border-subtle: #e2e8f0;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --card-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+      --bg-sticky: #ffffff;
+      --bg-header-sticky: #f8fafc;
+      --cal-selected-bg: #f1f5f9;
+      --cal-selected-text: #0f172a;
+    }
+
+    [data-theme="dark"] {
+      --bg: #090e17;
+      --surface: #0f172a;
+      --surface-elevated: #162642;
+      --border: #1a2f4d;
+      --border-subtle: #233f66;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --card-shadow: 0 8px 25px rgba(0, 0, 0, 0.45);
+      --bg-sticky: #0f172a;
+      --bg-header-sticky: #162642;
+      --cal-selected-bg: #1e293b;
+      --cal-selected-text: #f8fafc;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Khmer OS Battambang', 'Battambang', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-size: 13px;
+      padding: 10px 12px 60px;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    .top-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px; gap: 8px;
+    }
+    .nav-left { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .page-title {
+      font-size: 16px; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 6px;
+    }
+    .badge-pill {
+      font-size: 12px; font-weight: 700; padding: 3px 12px; border-radius: 20px;
+    }
+    .badge-total { background: rgba(99, 102, 241, 0.15); color: #818cf8; }
+    .badge-female { background: rgba(236, 72, 153, 0.15); color: #f472b6; }
+    .badge-male { background: rgba(2, 132, 199, 0.15); color: #38bdf8; }
+
+    /* 🎛️ CONTROLS & TOOLBAR */
+    .control-card {
+      background: var(--surface); border-radius: 18px; border: 1.5px solid var(--border);
+      box-shadow: var(--card-shadow); padding: 12px 14px; margin-bottom: 12px;
+    }
+    .top-controls {
+      display: grid; grid-template-columns: 160px 180px 1fr auto auto; gap: 10px; align-items: center; margin-bottom: 10px;
+    }
+
+    .pill-select-class {
+      background: var(--surface-elevated); border: 1.5px solid var(--border); border-radius: 22px;
+      height: 38px; padding: 0 14px; font-size: 12.5px; font-weight: 700; color: var(--text);
+      outline: none; cursor: pointer; transition: all 0.2s;
+    }
+    .pill-select-class:focus { border-color: var(--primary); }
+
+    .teacher-class-pill {
+      background: rgba(2, 132, 199, 0.12); border: 1.5px solid rgba(2, 132, 199, 0.3); border-radius: 22px;
+      height: 38px; padding: 0 14px; font-size: 12.5px; font-weight: 700; color: var(--primary);
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap;
+    }
+
+    .status-dropdown-wrapper { position: relative; width: 100%; }
+    .status-dropdown-btn {
+      background: var(--surface-elevated); border: 1.5px solid var(--border); border-radius: 22px;
+      height: 38px; padding: 0 16px; font-size: 12.5px; font-weight: 700; color: var(--text);
+      display: flex; align-items: center; justify-content: space-between; cursor: pointer;
+      user-select: none; transition: border-color 0.15s;
+    }
+    .status-dropdown-btn:hover { border-color: var(--primary); }
+
+    .status-dropdown-menu {
+      display: none; position: absolute; top: 46px; left: 0; width: 200px;
+      background: var(--surface); border: 1.5px solid var(--border); border-radius: 18px;
+      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.25); padding: 8px; z-index: 1000;
+      animation: fadeIn 0.15s ease-out;
+    }
+    .status-dropdown-menu.show { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+
+    .status-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 9px 12px; border-radius: 12px; font-size: 12.5px; font-weight: 700;
+      color: var(--text); cursor: pointer; transition: all 0.15s;
+    }
+    .status-item:hover { background: var(--surface-elevated); }
+    .status-item.active { background: rgba(2, 132, 199, 0.15); color: var(--primary); }
+    .status-item .check-mark { display: none; font-size: 14px; font-weight: bold; color: var(--primary); }
+    .status-item.active .check-mark { display: inline-block; }
+
+    .search-box {
+      background: var(--surface-elevated); border: 1.5px solid var(--border); border-radius: 22px;
+      height: 38px; padding: 0 14px; font-size: 13px; display: flex; align-items: center;
+    }
+    .search-box input { border: none; background: transparent; outline: none; width: 100%; margin-left: 6px; font-size: 13px; color: var(--text); }
+
+    .chip-btn {
+      background: var(--surface-elevated); border: 1.5px solid var(--border); border-radius: 22px;
+      height: 38px; padding: 0 16px; display: flex; align-items: center; gap: 6px;
+      cursor: pointer; font-size: 12.5px; font-weight: 700; color: var(--text); white-space: nowrap;
+      transition: all 0.15s; user-select: none;
+    }
+    .chip-btn:hover { border-color: var(--primary); }
+
+    .bottom-toolbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; position: relative; }
+    .btn-action {
+      height: 36px; padding: 0 14px; border-radius: 8px; border: none; font-size: 12.5px;
+      font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px;
+      transition: all 0.15s;
+    }
+    .btn-action:active { transform: scale(0.97); }
+    .btn-add { background: #0284c7; color: white; }
+    .btn-import-roster { background: #4f46e5; color: white; }
+    .btn-sort { background: rgba(124, 58, 237, 0.15); color: #a78bfa; border: 1.5px solid rgba(124, 58, 237, 0.3); }
+    .btn-sort.active { background: #7c3aed; color: white; }
+    .btn-columns { background: rgba(2, 132, 199, 0.15); color: #38bdf8; border: 1px solid var(--border); }
+    .btn-excel-export { background: #059669; color: white; }
+    .btn-warning {
+      background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1.5px solid rgba(245, 158, 11, 0.3);
+    }
+    .btn-warning.active { background: #f59e0b; color: white; }
+
+    .column-dropdown {
+      display: none; position: absolute; top: 44px; left: 210px; z-index: 1000;
+      background: var(--surface); border-radius: 14px; box-shadow: 0 12px 36px rgba(0,0,0,0.3);
+      border: 1px solid var(--border); width: 220px; padding: 10px;
+    }
+    .col-option {
+      display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 8px;
+      cursor: pointer; font-size: 12.5px; color: var(--text); font-weight: 700;
+    }
+    .col-option:hover { background: var(--surface-elevated); }
+
+    /* =========================================================
+       📊 TABLE CONTAINER & STICKY SCROLL
+    ========================================================= */
+    .table-container {
+      background: var(--surface); border-radius: 14px; border: 1px solid var(--border);
+      overflow: auto; max-height: calc(100vh - 210px);
+      -webkit-overflow-scrolling: touch; position: relative;
+    }
+    table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 2350px; text-align: center; }
+
+    thead { position: sticky; top: 0; z-index: 50; }
+    thead th {
+      font-size: 12px; font-weight: 700; padding: 6px 4px; border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border); vertical-align: middle; white-space: nowrap;
+    }
+
+    .sticky-col-1 {
+      position: sticky; left: 0px; z-index: 28; background: var(--bg-sticky); width: 48px; min-width: 48px;
+    }
+    .col-photo { width: 55px; min-width: 55px; max-width: 55px; }
+    .col-id { width: 80px; min-width: 80px; max-width: 80px; z-index: 10; }
+    .sticky-col-2 {
+      position: sticky; left: 48px; z-index: 24; background: var(--bg-sticky); width: 85px; min-width: 85px;
+      text-align: left; padding-left: 6px;
+    }
+    .sticky-col-3 {
+      position: sticky; left: 133px; z-index: 24; background: var(--bg-sticky); width: 85px; min-width: 85px;
+      text-align: left; padding-left: 6px;
+      border-right: 2px solid var(--border) !important;
+      box-shadow: 4px 0 10px -2px rgba(0, 0, 0, 0.22);
+    }
+    .sticky-action {
+      position: sticky; right: 0px; z-index: 20; background: var(--bg-sticky); width: 95px; min-width: 95px;
+      border-left: 2px solid var(--border) !important;
+      box-shadow: -4px 0 10px -2px rgba(0, 0, 0, 0.2);
+    }
+
+    thead .sticky-col-1 { z-index: 70; background: var(--bg-header-sticky); }
+    thead .sticky-col-2, thead .sticky-col-3 { z-index: 65; background: var(--bg-header-sticky); }
+    thead th.sticky-action { z-index: 60; background: var(--surface-elevated); color: var(--text); }
+
+    .th-vertical {
+      writing-mode: vertical-rl; transform: rotate(180deg); text-orientation: mixed; white-space: nowrap;
+      height: 70px; line-height: 1; padding: 6px 2px; letter-spacing: 0.5px;
+    }
+
+    .th-academic { background: rgba(168, 85, 247, 0.18); color: #c084fc; font-size: 13.5px; }
+    .th-pob-main { background: rgba(2, 132, 199, 0.18); color: #38bdf8; font-size: 13.5px; }
+    .th-addr-main { background: rgba(37, 99, 235, 0.18); color: #60a5fa; font-size: 13.5px; }
+    .th-sub-pob { background: rgba(2, 132, 199, 0.1); color: #0284c7; }
+    .th-sub-addr { background: rgba(37, 99, 235, 0.1); color: #2563eb; }
+    .th-parent-main { background: rgba(234, 88, 12, 0.18); color: #fb923c; font-size: 13.5px; }
+    .th-sub-parent { background: rgba(234, 88, 12, 0.1); color: #ea580c; }
+
+    tbody tr { height: 48px; }
+    tbody tr:hover td { background-color: rgba(2, 132, 199, 0.08); }
+    tbody td {
+      padding: 3px 5px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      vertical-align: middle; font-size: 12.5px; background: var(--surface); color: var(--text);
+    }
+
+    .table-input {
+      width: 100%; height: 32px; border: 1px solid var(--border); border-radius: 6px;
+      background: var(--surface-elevated); color: var(--text); padding: 0 6px; font-size: 12.5px; outline: none; text-align: center;
+    }
+    .table-input:focus { border-color: #0284c7; box-shadow: 0 0 0 2px rgba(2,132,199,0.2); }
+    .table-input[readonly] { opacity: 0.75; cursor: not-allowed; }
+    .input-left { text-align: left; }
+
+    .table-photo-box {
+      width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid var(--border);
+      margin: 0 auto; display: flex; align-items: center; justify-content: center;
+      background: #c2410c; color: white; font-weight: 700; font-size: 14px;
+      overflow: hidden; cursor: pointer; transition: transform 0.18s;
+    }
+    .table-photo-box img { width: 100%; height: 100%; object-fit: cover; }
+    .table-photo-box:hover { transform: scale(1.18); border-color: var(--primary); }
+
+    .date-picker-trigger {
+      width: 100%; height: 32px; border: 1px solid var(--border); border-radius: 6px;
+      background: var(--surface-elevated); color: var(--text); padding: 0 8px; font-size: 12.5px;
+      display: flex; align-items: center; justify-content: space-between; cursor: pointer;
+    }
+    .cell-missing { border: 1.5px dashed #ef4444 !important; background-color: rgba(239, 68, 68, 0.12) !important; }
+
+    .gender-pill {
+      border-radius: 12px; font-size: 11px; font-weight: 700; padding: 2px 8px;
+      border: 1px solid; outline: none; background: transparent; cursor: pointer;
+    }
+    .gender-f { color: #ec4899; border-color: rgba(236, 72, 153, 0.4); background: rgba(236, 72, 153, 0.12); }
+    .gender-m { color: #0284c7; border-color: rgba(2, 132, 199, 0.4); background: rgba(2, 132, 199, 0.12); }
+    .gender-dash { color: #f59e0b; border-color: rgba(245, 158, 11, 0.4); background: rgba(245, 158, 11, 0.12); }
+
+    .action-icons { display: flex; align-items: center; justify-content: center; gap: 5px; }
+    .btn-circle {
+      width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid var(--border);
+      background: var(--surface-elevated); cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 12px; color: var(--text);
+    }
+    .btn-menu {
+      background: #6366f1; color: white; border: none; border-radius: 7px;
+      width: 26px; height: 26px; font-size: 14px; font-weight: 700; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .action-popup {
+      display: none; position: fixed; z-index: 100005; background: var(--surface); border-radius: 14px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4); border: 1.5px solid var(--border); width: 195px; overflow: hidden;
+    }
+    .action-item {
+      padding: 11px 16px; display: flex; align-items: center; gap: 10px; font-size: 13px; cursor: pointer;
+      color: var(--text); font-weight: 700; transition: background 0.12s;
+    }
+    .action-item:hover { background: var(--surface-elevated); color: var(--primary); }
+    .action-item.delete { color: #ef4444; border-top: 1px solid var(--border); }
+
+    .status-row { text-align: center; padding: 36px 14px; color: var(--text-muted); font-size: 13.5px; font-weight: 700; }
+    .spinner-dark {
+      width: 16px; height: 16px; border: 2px solid rgba(2,132,199,0.2);
+      border-top-color: #0284c7; border-radius: 50%; animation: spin 0.6s linear infinite; display: inline-block;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Modals & Overlays */
+    .profile-modal-overlay, .edit-modal-overlay, .import-modal-overlay, .missing-modal-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(6px); z-index: 100010; align-items: center; justify-content: center; padding: 14px;
+    }
+    .profile-modal-card, .edit-modal-box, .import-modal-card, .missing-modal-box {
+      background: var(--surface); color: var(--text); width: 100%; max-width: 640px;
+      border-radius: 24px; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+      border: 1.5px solid var(--border); overflow: hidden; display: flex; flex-direction: column; max-height: 94vh;
+    }
+    .modal-scroll-body { padding: 18px 22px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
+    .modal-footer { padding: 14px 20px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; }
+    .modal-btn { height: 40px; padding: 0 20px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; border: none; }
+    .modal-btn-cancel { background: var(--surface-elevated); color: var(--text); border: 1.5px solid var(--border); }
+    .modal-btn-save { background: #0284c7; color: white; }
+
+    .toast-notification {
+      position: fixed; top: 18px; right: 18px; background: #16a34a; color: white;
+      padding: 10px 18px; border-radius: 12px; font-size: 13px; font-weight: 700;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2); z-index: 99999; transform: translateY(-50px); opacity: 0; transition: all 0.25s ease;
+    }
+    .toast-notification.show { transform: translateY(0); opacity: 1; }
+  </style>
+</head>
+<body>
+
+  <div id="toastNotification" class="toast-notification"></div>
+  <input type="file" id="rowPhotoFileInput" accept="image/*" style="display:none;" onchange="onRowPhotoFileSelected(this)">
+  <input type="file" id="excelRosterFileInput" accept=".xlsx, .xls" style="display:none;" onchange="onExcelFileSelected(this)">
+
+  <!-- 🌟 HEADER NAVIGATION -->
+  <div class="top-nav">
+    <div class="nav-left">
+      <div class="page-title">
+        <span>🎓</span>
+        <span>ព័ត៌មានសិស្ស (Supabase)</span>
+      </div>
+      <div class="badge-pill badge-total" id="badgeTotal">សរុប 0</div>
+      <div class="badge-pill badge-female" id="badgeFemale">ស្រី 0</div>
+      <div class="badge-pill badge-male" id="badgeMale">ប្រុស 0</div>
+    </div>
+    <div class="nav-right">
+      <div class="badge-pill" id="roleBadge" style="background:var(--surface); border:1px solid var(--border); color:var(--primary); font-weight:700;">
+        ...
+      </div>
+    </div>
+  </div>
+
+  <!-- 🎛️ CONTROL CARD -->
+  <div class="control-card">
+    <div class="top-controls">
+      <div id="classFilterContainer"></div>
+
+      <div class="status-dropdown-wrapper">
+        <div class="status-dropdown-btn" onclick="toggleStatusDropdown(event)">
+          <span id="currentStatusText">កំពុងសិក្សា</span>
+          <span>⌵</span>
+        </div>
+        <div class="status-dropdown-menu" id="statusDropdownMenu">
+          <div class="status-item active" onclick="selectStatusFilter('កំពុងសិក្សា', this)"><span>កំពុងសិក្សា</span><span class="check-mark">✓</span></div>
+          <div class="status-item" onclick="selectStatusFilter('ឈប់រៀន', this)"><span>ឈប់រៀន</span><span class="check-mark">✓</span></div>
+          <div class="status-item" onclick="selectStatusFilter('ស្ថានភាពទាំងអស់', this)"><span>ស្ថានភាពទាំងអស់</span><span class="check-mark">✓</span></div>
+        </div>
+      </div>
+
+      <div class="search-box">
+        <span>🔍</span>
+        <input type="text" id="searchInput" placeholder="ស្វែងរកតាមឈ្មោះ ឬអត្តលេខ..." oninput="handleSearch()">
+      </div>
+
+      <div class="chip-btn" id="syncStatus" onclick="refreshDataForce()" title="ចុចដើម្បី Refresh ទិន្នន័យ">
+        <span>⚡</span> <span id="syncStatusText">Supabase Connected</span>
+      </div>
+    </div>
+
+    <div class="bottom-toolbar">
+      <button class="btn-action btn-add" onclick="addNewRow()">
+        <span>➕</span> <span>បន្ថែមជួរថ្មី</span>
+      </button>
+
+      <button class="btn-action btn-import-roster" onclick="openImportModal()">
+        <span>📥</span> <span>បញ្ចូលបញ្ជីសិស្ស</span>
+      </button>
+
+      <button class="btn-action btn-sort" id="sortBtn" onclick="sortStudentsAlphabetical()">
+        <span>⇅</span> <span id="sortBtnText">តម្រៀបតាមត្រកូល (ក-អ)</span>
+      </button>
+
+      <button class="btn-action btn-excel-export" onclick="exportStudentsToExcel()">
+        <span>📊</span> <span>ទាញយក Excel</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 📊 MULTI-LEVEL SPREADSHEET TABLE -->
+  <div class="table-container" id="tableContainer">
+    <table id="studentsTable">
+      <thead>
+        <tr>
+          <th rowspan="2" class="sticky-col-1"><div class="th-vertical">ល.រ</div></th>
+          <th rowspan="2" class="col-photo"><div class="th-vertical">រូបថត</div></th>
+          <th rowspan="2" class="col-id"><div class="th-vertical">អត្តលេខ *</div></th>
+          <th rowspan="2" class="sticky-col-2"><div class="th-vertical">គោត្តនាម *</div></th>
+          <th rowspan="2" class="sticky-col-3"><div class="th-vertical">នាម</div></th>
+          <th rowspan="2" class="col-gender" style="width: 60px;"><div class="th-vertical">ភេទ *</div></th>
+          <th colspan="4" class="th-academic col-info">ព័ត៌មានសិស្ស</th>
+          <th colspan="2" class="th-pob-main col-pob">ទីកន្លែងកំណើត និងអាសយដ្ឋាន</th>
+          <th colspan="4" class="th-parent-main col-parent">ព័ត៌មានឪពុកម្តាយ</th>
+          <th rowspan="2" class="sticky-action">សកម្មភាព</th>
+        </tr>
+        <tr>
+          <th class="col-info" style="width: 130px;">ថ្ងៃកំណើត</th>
+          <th class="col-info" style="width: 50px;">អាយុ</th>
+          <th class="col-info" style="width: 90px;">ថ្នាក់</th>
+          <th class="col-info" style="width: 105px;">ទូរស័ព្ទ</th>
+          <th class="th-sub-pob col-pob" style="width: 180px;">ទីកន្លែងកំណើត</th>
+          <th class="th-sub-addr col-address" style="width: 180px;">អាសយដ្ឋានបច្ចុប្បន្ន</th>
+          <th class="th-sub-parent col-parent" style="width: 130px;">ឈ្មោះឪពុក</th>
+          <th class="th-sub-parent col-parent" style="width: 110px;">មុខរបរឪពុក</th>
+          <th class="th-sub-parent col-parent" style="width: 130px;">ឈ្មោះម្តាយ</th>
+          <th class="th-sub-parent col-parent" style="width: 110px;">មុខរបរម្តាយ</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody">
+        <tr><td colspan="17" class="status-row"><span class="spinner-dark"></span> កំពុងទាញទិន្នន័យពី Supabase...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 💬 POPUP ACTION MENU -->
+  <div class="action-popup" id="actionMenu">
+    <div class="action-item" onclick="triggerRowPhotoUpload(activeRowIndex)"><span>📷</span> ប្តូររូបថត</div>
+    <div class="action-item delete" onclick="deleteCurrentRow()"><span>🗑️</span> លុបទិន្នន័យ</div>
+  </div>
+
+  <!-- 📥 ផ្ទាំង IMPORT ROSTER MODAL -->
+  <div class="import-modal-overlay" id="importModalOverlay">
+    <div class="import-modal-card">
+      <div style="padding:16px 20px; font-weight:700; font-size:16px; border-bottom:1px solid var(--border);">📥 បញ្ចូលបញ្ជីសិស្សតាម Excel</div>
+      <div style="padding:20px; display:flex; flex-direction:column; gap:12px;">
+        <button class="modal-btn modal-btn-save" onclick="downloadExcelTemplate()">📥 ទាញយកគំរូ Excel</button>
+        <button class="modal-btn modal-btn-cancel" onclick="document.getElementById('excelRosterFileInput').click()">📁 ជ្រើសរើសឯកសារ Excel (.xlsx)</button>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-btn modal-btn-cancel" onclick="closeImportModal()">បិទ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       ⚙️ JAVASCRIPT: SUPABASE ENGINE
+  ========================================================= -->
+  <script>
+    /* 1. SUPABASE CONFIGURATION */
+    const SUPABASE_URL = "https://nggnuobnrxiqjtcwlvwk.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_AHDcUJbuMAfhaocyfm2X7w_O9s06wML";
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const STUDENTS_TABLE = 'students';
+
+    // Session & User Info
+    const CURRENT_USER = JSON.parse(localStorage.getItem('krou_supabase_user') || 'null');
+    const USER_ROLE = CURRENT_USER?.role || "teacher";
+    const USER_CLASS = CURRENT_USER?.assigned_classes || "";
+    const IS_ADMIN = String(USER_ROLE).toLowerCase().trim() === 'admin';
+
+    let currentSelectedClass = USER_CLASS ? String(USER_CLASS).replace(/^ថ្នាក់ទី\s*/, '').trim() : '';
+    let availableClassesList = ['១', '២', '៣', '៤(ក)', '៤(ខ)', '៥', '៦'];
+    let studentsList = [];
+    let activeRowIndex = null;
+    let uploadTargetIndex = null;
+    let currentStatusFilter = 'កំពុងសិក្សា';
+    let sortDirectionAsc = false;
+
+    function applyTheme(th) { document.documentElement.setAttribute('data-theme', th); }
+    applyTheme(localStorage.getItem('krou_theme_manual') || 'dark');
+    window.addEventListener('message', e => { if (e.data?.type === 'THEME_CHANGE') applyTheme(e.data.theme); });
+
+    function showToast(msg, isError) {
+      const toast = document.getElementById('toastNotification');
+      toast.innerText = msg;
+      toast.style.background = isError ? '#dc2626' : '#16a34a';
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    function esc(v) { return String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+    function formatToInputDate(dateVal) {
+      if (!dateVal) return '';
+      const d = new Date(dateVal);
+      if (!isNaN(d.getTime())) {
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      }
+      return '';
+    }
+
+    function calculateAge(dobStr) {
+      if (!dobStr) return '';
+      const b = new Date(dobStr);
+      if (isNaN(b.getTime())) return '';
+      const now = new Date();
+      let age = now.getFullYear() - b.getFullYear();
+      if (now.getMonth() < b.getMonth() || (now.getMonth() === b.getMonth() && now.getDate() < b.getDate())) age--;
+      return age >= 0 ? age : '';
+    }
+
+    /* 2. FETCH DATA FROM SUPABASE */
+    async function loadStudentsFromSupabase() {
+      const tbody = document.getElementById('tableBody');
+      tbody.innerHTML = `<tr><td colspan="17" class="status-row"><span class="spinner-dark"></span> កំពុងទាញទិន្នន័យ...</td></tr>`;
+
+      try {
+        let query = sb.from(STUDENTS_TABLE).select('*');
+        if (!IS_ADMIN && currentSelectedClass) {
+          query = query.or(`grade.eq.${currentSelectedClass},grade.eq.ថ្នាក់ទី${currentSelectedClass}`);
+        } else if (currentSelectedClass) {
+          query = query.or(`grade.eq.${currentSelectedClass},grade.eq.ថ្នាក់ទី${currentSelectedClass}`);
+        }
+
+        const { data, error } = await query.order('id', { ascending: true });
+        if (error) throw error;
+
+        studentsList = (data || []).map(row => ({
+          db_id: row.id,
+          id: row.student_id || '',
+          name: row.student_name || '',
+          sex: row.gender || '',
+          dob: row.dob || '',
+          grade: row.grade || (currentSelectedClass ? `ថ្នាក់ទី${currentSelectedClass}` : ''),
+          phone: row.phone || '',
+          pob: row.pob || '',
+          address: row.address || '',
+          father: row.father_name || '',
+          fatherJob: row.father_job || '',
+          mother: row.mother_name || '',
+          motherJob: row.mother_job || '',
+          photoUrl: row.photo_url || '',
+          dropoutSemester: row.dropout_semester || '',
+          isDraft: false
+        }));
+
+        applyFilterAndRender();
+        document.getElementById('syncStatusText').innerText = "⚡ ភ្ជាប់ Supabase ជោគជ័យ";
+      } catch (err) {
+        console.error("Supabase Error:", err);
+        tbody.innerHTML = `<tr><td colspan="17" class="status-row" style="color:#ef4444;">⚠️ កំហុស៖ ${esc(err.message)}</td></tr>`;
+      }
+    }
+
+    function refreshDataForce() { loadStudentsFromSupabase(); }
+
+    /* 3. AUTO-SAVE / UPDATE TO SUPABASE */
+    async function saveStudentRow(realIdx) {
+      const s = studentsList[realIdx];
+      if (!s) return;
+
+      const payload = {
+        student_id: s.id.trim(),
+        student_name: s.name.trim(),
+        gender: s.sex || 'ប្រុស',
+        dob: s.dob ? s.dob : null,
+        grade: s.grade || `ថ្នាក់ទី${currentSelectedClass}`,
+        phone: s.phone || null,
+        pob: s.pob || null,
+        address: s.address || null,
+        father_name: s.father || null,
+        father_job: s.fatherJob || null,
+        mother_name: s.mother || null,
+        mother_job: s.motherJob || null,
+        photo_url: s.photoUrl || null,
+        dropout_semester: s.dropoutSemester || null,
+        updated_at: new Date().toISOString()
+      };
+
+      try {
+        if (s.isDraft || !s.db_id) {
+          // INSERT
+          const { data, error } = await sb.from(STUDENTS_TABLE).insert([payload]).select().single();
+          if (error) throw error;
+          s.db_id = data.id;
+          s.isDraft = false;
+          showToast(`បានរក្សាទុកសិស្ស «${s.name}» ជោគជ័យ!`);
+        } else {
+          // UPDATE
+          const { error } = await sb.from(STUDENTS_TABLE).update(payload).eq('id', s.db_id);
+          if (error) throw error;
+        }
+        applyFilterAndRender();
+      } catch (err) {
+        alert("❌ មិនអាចរក្សាទុកបានទេ៖ " + err.message);
+      }
+    }
+
+    function syncRowInput(input, realIdx) {
+      const s = studentsList[realIdx];
+      if (!s) return;
+      const field = input.dataset.field;
+      const val = input.value.trim();
+
+      if (field === 'id') s.id = val;
+      if (field === 'lastName' || field === 'firstName') {
+        const tr = input.closest('tr');
+        const l = tr.querySelector('input[data-field="lastName"]').value.trim();
+        const f = tr.querySelector('input[data-field="firstName"]').value.trim();
+        s.name = `${l} ${f}`.trim();
+      }
+      if (field === 'sex') s.sex = val;
+      if (field === 'dob') s.dob = val;
+      if (field === 'grade') s.grade = val;
+      if (field === 'phone') s.phone = val;
+      if (field === 'pob') s.pob = val;
+      if (field === 'address') s.address = val;
+      if (field === 'father') s.father = val;
+      if (field === 'fatherJob') s.fatherJob = val;
+      if (field === 'mother') s.mother = val;
+      if (field === 'motherJob') s.motherJob = val;
+
+      if (!s.isDraft && field !== 'id') {
+        saveStudentRow(realIdx);
+      }
+    }
+
+    function addNewRow() {
+      studentsList.push({
+        db_id: null,
+        isDraft: true,
+        id: '',
+        name: '',
+        sex: 'ប្រុស',
+        dob: '',
+        grade: currentSelectedClass ? `ថ្នាក់ទី${currentSelectedClass}` : 'ថ្នាក់ទី១',
+        phone: '', pob: '', address: '',
+        father: '', fatherJob: '', mother: '', motherJob: '',
+        photoUrl: '', dropoutSemester: ''
+      });
+      applyFilterAndRender();
+      setTimeout(() => {
+        const tr = document.querySelector(`#tableBody tr[data-index="${studentsList.length - 1}"]`);
+        tr?.querySelector('input[data-field="id"]')?.focus();
+      }, 50);
+    }
+
+    async function deleteCurrentRow() {
+      if (activeRowIndex === null) return;
+      const s = studentsList[activeRowIndex];
+      if (!s) return;
+      if (!confirm(`តើអ្នកពិតជាចង់លុបសិស្ស «${s.name || s.id}» ពី Supabase មែនទេ?`)) return;
+
+      if (s.db_id) {
+        const { error } = await sb.from(STUDENTS_TABLE).delete().eq('id', s.db_id);
+        if (error) { alert("❌ លុបមិនបាន៖ " + error.message); return; }
+      }
+
+      studentsList.splice(activeRowIndex, 1);
+      applyFilterAndRender();
+      showToast("បានលុបទិន្នន័យជោគជ័យ!");
+    }
+
+    /* 4. RENDER TABLE */
+    function applyFilterAndRender() {
+      const q = document.getElementById('searchInput').value.toLowerCase().trim();
+      const filtered = studentsList.filter(s => {
+        if (s.isDraft) return true;
+        const matchSearch = !q || s.name.toLowerCase().includes(q) || String(s.id).toLowerCase().includes(q);
+        if (!matchSearch) return false;
+        if (currentStatusFilter === 'កំពុងសិក្សា' && s.dropoutSemester) return false;
+        if (currentStatusFilter === 'ឈប់រៀន' && !s.dropoutSemester) return false;
+        return true;
+      });
+
+      renderTable(filtered);
+    }
+
+    function renderTable(list) {
+      const tbody = document.getElementById('tableBody');
+      if (!list.length) {
+        tbody.innerHTML = `<tr><td colspan="17" class="status-row">គ្មានទិន្នន័យសិស្សឡើយ! ចុច «➕ បន្ថែមជួរថ្មី» ដើម្បីបញ្ចូល។</td></tr>`;
+        updateCounters(0, 0);
+        return;
+      }
+
+      let femaleCount = 0;
+      const rowsHtml = list.map((s, i) => {
+        const realIdx = studentsList.indexOf(s);
+        const isF = s.sex === 'ស្រី';
+        if (isF) femaleCount++;
+
+        const parts = (s.name || '').split(/\s+/);
+        const lName = parts[0] || '';
+        const fName = parts.slice(1).join(' ') || '';
+        const initial = fName ? fName.charAt(0) : (lName ? lName.charAt(0) : 'ក');
+        const age = calculateAge(s.dob);
+
+        let actionContent = s.isDraft 
+          ? `<button class="btn-action btn-add" style="height:28px;" onclick="saveStudentRow(${realIdx})">💾 រក្សាទុក</button>`
+          : `<div class="action-icons"><button class="btn-menu" onclick="openActionMenu(event, ${realIdx})">⋮</button></div>`;
+
+        return `
+          <tr data-index="${realIdx}">
+            <td class="sticky-col-1">${i + 1}</td>
+            <td class="col-photo">
+              <div class="table-photo-box" onclick="triggerRowPhotoUpload(${realIdx})">
+                ${s.photoUrl ? `<img src="${esc(s.photoUrl)}">` : esc(initial)}
+              </div>
+            </td>
+            <td class="col-id"><input type="text" class="table-input" value="${esc(s.id)}" data-field="id" onchange="syncRowInput(this, ${realIdx}); saveStudentRow(${realIdx});"></td>
+            <td class="sticky-col-2"><input type="text" class="table-input input-left" value="${esc(lName)}" data-field="lastName" onchange="syncRowInput(this, ${realIdx}); saveStudentRow(${realIdx});"></td>
+            <td class="sticky-col-3"><input type="text" class="table-input input-left" value="${esc(fName)}" data-field="firstName" onchange="syncRowInput(this, ${realIdx}); saveStudentRow(${realIdx});"></td>
+            <td class="col-gender">
+              <select class="gender-pill ${isF ? 'gender-f' : 'gender-m'}" data-field="sex" onchange="syncRowInput(this, ${realIdx}); saveStudentRow(${realIdx});">
+                <option value="ស្រី" ${isF ? 'selected' : ''}>ស្រី</option>
+                <option value="ប្រុស" ${!isF ? 'selected' : ''}>ប្រុស</option>
+              </select>
+            </td>
+            <td class="col-info"><input type="date" class="table-input" value="${s.dob || ''}" data-field="dob" onchange="syncRowInput(this, ${realIdx}); saveStudentRow(${realIdx});"></td>
+            <td class="col-info"><span style="font-weight:700;">${age}</span></td>
+            <td class="col-info"><input type="text" class="table-input" value="${esc(s.grade)}" data-field="grade" onchange="syncRowInput(this, ${realIdx}); saveStudentRow(${realIdx});"></td>
+            <td class="col-info"><input type="tel" class="table-input" value="${esc(s.phone)}" data-field="phone" onchange="syncRowInput(this, ${realIdx}); saveStudentRow(${realIdx});"></td>
+            <td class="col-pob"><input type="text" class="table-input" value="${esc(s.pob)}" data-field="pob" onchange="syncRowInput(this, ${realIdx}); saveStudentRow(${realIdx});"></td>
+            <td class="col-address"><input type="text" class="table-input" value="${esc(s.address)}" data-field="address" onchange="syncRowInput(this, ${realIdx}); saveStudentRow(${realIdx});"></td>
+            <td class="col-parent"><input type="text" class="table-input" value="${esc(s.father)}" data-field="father" onchange="syncRowInput(this, ${realIdx}); saveStudentRow(${realIdx});"></td>
+            <td class="col-parent"><input type="text" class="table-input" value="${esc(s.fatherJob)}" data-field="fatherJob" onchange="syncRowInput(this, ${realIdx}); saveStudentRow(${realIdx});"></td>
+            <td class="col-parent"><input type="text" class="table-input" value="${esc(s.mother)}" data-field="mother" onchange="syncRowInput(this, ${realIdx}); saveStudentRow(${realIdx});"></td>
+            <td class="col-parent"><input type="text" class="table-input" value="${esc(s.motherJob)}" data-field="motherJob" onchange="syncRowInput(this, ${realIdx}); saveStudentRow(${realIdx});"></td>
+            <td class="sticky-action">${actionContent}</td>
+          </tr>
+        `;
+      }).join('');
+
+      tbody.innerHTML = rowsHtml;
+      updateCounters(list.length, femaleCount);
+    }
+
+    function updateCounters(t, f) {
+      document.getElementById('badgeTotal').innerText = `សរុប ${t}`;
+      document.getElementById('badgeFemale').innerText = `ស្រី ${f}`;
+      document.getElementById('badgeMale').innerText = `ប្រុស ${t - f}`;
+    }
+
+    function handleSearch() { applyFilterAndRender(); }
+    function toggleStatusDropdown(e) {
+      e.stopPropagation();
+      document.getElementById('statusDropdownMenu').classList.toggle('show');
+    }
+    function selectStatusFilter(st, el) {
+      currentStatusFilter = st;
+      document.getElementById('currentStatusText').innerText = st;
+      document.querySelectorAll('.status-item').forEach(i => i.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('statusDropdownMenu').classList.remove('show');
+      applyFilterAndRender();
+    }
+
+    /* 5. EXPORT & SORT */
+    function exportStudentsToExcel() {
+      if (!studentsList.length) return alert("គ្មានទិន្នន័យសម្រាប់ទាញយកជា Excel ទេ!");
+      const headers = ["ល.រ", "អត្តលេខ", "ឈ្មោះសិស្ស", "ភេទ", "ថ្ងៃកំណើត", "ថ្នាក់", "លេខទូរស័ព្ទ", "ទីកន្លែងកំណើត", "អាសយដ្ឋាន", "ឪពុក", "ម្តាយ"];
+      const rows = studentsList.map((s, idx) => [
+        idx + 1, s.id, s.name, s.sex, s.dob, s.grade, s.phone, s.pob, s.address, s.father, s.mother
+      ]);
+      const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "បញ្ជីសិស្ស");
+      XLSX.writeFile(wb, `បញ្ជីសិស្ស_${currentSelectedClass || 'សរុប'}.xlsx`);
+    }
+
+    function sortStudentsAlphabetical() {
+      sortDirectionAsc = !sortDirectionAsc;
+      studentsList.sort((a, b) => {
+        const cmp = (a.name || '').localeCompare(b.name || '', 'km');
+        return sortDirectionAsc ? cmp : -cmp;
+      });
+      applyFilterAndRender();
+    }
+
+    function openActionMenu(e, idx) {
+      e.stopPropagation();
+      activeRowIndex = idx;
+      const menu = document.getElementById('actionMenu');
+      menu.style.display = 'block';
+      menu.style.top = `${e.clientY + 5}px`;
+      menu.style.left = `${e.clientX - 100}px`;
+    }
+
+    function triggerRowPhotoUpload(idx) {
+      uploadTargetIndex = idx;
+      document.getElementById('rowPhotoFileInput').click();
+    }
+
+    function onRowPhotoFileSelected(input) {
+      const file = input.files[0];
+      if (!file || uploadTargetIndex === null) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        studentsList[uploadTargetIndex].photoUrl = e.target.result;
+        saveStudentRow(uploadTargetIndex);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    /* 6. IMPORT MODAL */
+    function openImportModal() { document.getElementById('importModalOverlay').style.display = 'flex'; }
+    function closeImportModal() { document.getElementById('importModalOverlay').style.display = 'none'; }
+    function downloadExcelTemplate() {
+      const ws = XLSX.utils.aoa_to_sheet([
+        ["អត្តលេខ", "ឈ្មោះសិស្ស", "ភេទ", "ថ្ងៃកំណើត", "ទូរស័ព្ទ", "ទីកន្លែងកំណើត", "អាសយដ្ឋាន", "ឈ្មោះឪពុក", "មុខរបរឪពុក", "ឈ្មោះម្តាយ", "មុខរបរម្តាយ"],
+        ["001", "សុខ សំបូរ", "ប្រុស", "2015-02-14", "012345678", "ភ្នំពេញ", "ភ្នំពេញ", "សុខ ម៉ៅ", "កសិករ", "គង់ ស៊ីថា", "លក់ដូរ"]
+      ]);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "គំរូ");
+      XLSX.writeFile(wb, "គំរូនាំចូលសិស្ស.xlsx");
+    }
+
+    async function onExcelFileSelected(input) {
+      const file = input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = async function(e) {
+        try {
+          const wb = XLSX.read(new Uint8Array(e.target.result), { type: 'array' });
+          const json = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1 });
+          const newRows = [];
+          for (let i = 1; i < json.length; i++) {
+            const r = json[i];
+            if (!r || !r[1]) continue;
+            newRows.push({
+              student_id: String(r[0] || '').trim(),
+              student_name: String(r[1] || '').trim(),
+              gender: String(r[2] || '').includes('ស្រី') ? 'ស្រី' : 'ប្រុស',
+              dob: r[3] ? formatToInputDate(r[3]) : null,
+              grade: `ថ្នាក់ទី${currentSelectedClass || '១'}`,
+              phone: r[4] ? String(r[4]) : null,
+              pob: r[5] ? String(r[5]) : null,
+              address: r[6] ? String(r[6]) : null,
+              father_name: r[7] ? String(r[7]) : null,
+              father_job: r[8] ? String(r[8]) : null,
+              mother_name: r[9] ? String(r[9]) : null,
+              mother_job: r[10] ? String(r[10]) : null
+            });
+          }
+
+          if (newRows.length) {
+            const { error } = await sb.from(STUDENTS_TABLE).insert(newRows);
+            if (error) throw error;
+            showToast(`បានបញ្ចូលសិស្ស ${newRows.length} នាក់ជោគជ័យ!`);
+            closeImportModal();
+            loadStudentsFromSupabase();
+          }
+        } catch(err) { alert("កំហុសអាន Excel: " + err.message); }
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    document.addEventListener('click', () => {
+      document.getElementById('actionMenu').style.display = 'none';
+      document.getElementById('statusDropdownMenu').classList.remove('show');
+    });
+
+    /* 7. INITIALIZE */
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('roleBadge').innerText = IS_ADMIN ? 'អ្នកគ្រប់គ្រង (Admin)' : `ថ្នាក់ទី ${currentSelectedClass || 'ទូទៅ'}`;
+      
+      const filterBox = document.getElementById('classFilterContainer');
+      if (IS_ADMIN) {
+        filterBox.innerHTML = `
+          <select class="pill-select-class" id="classSelect" onchange="currentSelectedClass=this.value; loadStudentsFromSupabase();">
+            <option value="">គ្រប់ថ្នាក់ទាំងអស់</option>
+            ${availableClassesList.map(c => `<option value="${c}">ថ្នាក់ទី ${c}</option>`).join('')}
+          </select>`;
+      } else {
+        filterBox.innerHTML = `<div class="teacher-class-pill">🏫 ថ្នាក់ទី ${currentSelectedClass || 'មិនទាន់កំណត់'}</div>`;
+      }
+
+      loadStudentsFromSupabase();
+    });
+  </script>
+</body>
+</html>
