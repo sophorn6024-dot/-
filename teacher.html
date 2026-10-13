@@ -37,6 +37,60 @@
     html, body { background: var(--bg-app); color: var(--text-main); transition: background .25s, color .25s; min-height: 100vh; }
     body { padding: 22px 24px 60px; }
 
+    /* ══════════════ 🔒 AUTH & PERMISSION WRAPPERS ══════════════ */
+    .auth-wrapper {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 80vh;
+      text-align: center;
+      padding: 30px 20px;
+    }
+    .auth-card {
+      background: var(--surface-card);
+      border: 1.5px solid var(--border);
+      border-radius: 24px;
+      padding: 40px 28px;
+      max-width: 440px;
+      width: 100%;
+      box-shadow: var(--card-shadow);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .auth-icon {
+      width: 68px;
+      height: 68px;
+      border-radius: 20px;
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      margin-bottom: 16px;
+    }
+    .auth-card h2 { font-size: 18px; margin-bottom: 8px; color: #ef4444; font-weight: 700; }
+    .auth-card p { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 24px; }
+    .btn-login-redirect {
+      background: linear-gradient(135deg, #0284c7, #7c3aed);
+      color: #ffffff;
+      padding: 10px 24px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 13.5px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-login-redirect:hover { transform: translateY(-2px); }
+
     .page-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; gap: 15px; flex-wrap: wrap; }
     .page-title { display: flex; align-items: center; gap: 14px; }
     .page-title-icon {
@@ -183,7 +237,7 @@
     .btn { padding: 8px 18px; border-radius: 10px; font-size: 12.5px; font-weight: 700; cursor: pointer; border: none; transition: all .2s; }
     .btn.cancel { background: var(--surface-elevated); color: var(--text-main); border: 1px solid var(--border); }
     .btn.cancel:hover { background: var(--border); }
-    .btn.save { background: linear-gradient(135deg, #0284c7, #7c3aed); color: #fff; box-shadow: 0 4px 14px rgba(2,132,199,.3); }
+    .btn.save { background: linear-gradient(135deg, #0284c7, #7c3aed); color: #fff; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3); }
     .btn.save:hover { transform: translateY(-1px); }
     .btn:disabled { opacity: .6; cursor: not-allowed; transform: none; }
 
@@ -195,10 +249,6 @@
     .toast.show { opacity: 1; transform: translateY(0); }
     .toast.err { background: #dc2626; }
 
-    .denied-wrap { display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 80px 20px; color: var(--text-muted); }
-    .denied-wrap .di { font-size: 48px; margin-bottom: 14px; }
-    .denied-wrap h3 { color: var(--navy-2); font-size: 16px; margin-bottom: 6px; }
-
     @media (max-width: 700px) {
       body { padding: 14px 12px 40px; }
       .form-grid { grid-template-columns: 1fr; }
@@ -209,12 +259,31 @@
 
 <body>
 
-  <div class="denied-wrap" id="deniedWrap">
-    <div class="di">🔒</div>
-    <h3>អ្នកគ្មានសិទ្ធិចូលមើលទំព័រនេះ</h3>
-    <p>ទំព័រគ្រប់គ្រងគ្រូបង្រៀនអនុញ្ញាតតែអ្នកគ្រប់គ្រង (Admin) ប៉ុណ្ណោះ។</p>
+  <!-- ══════════════ 🔒 1. AUTH DENIED WRAPPER (ពេលមិនទាន់ LOGIN) ══════════════ -->
+  <div class="auth-wrapper" id="authDeniedWrap">
+    <div class="auth-card">
+      <div class="auth-icon">🔒</div>
+      <h2>សូមចូលប្រើប្រាស់ជាមុនសិន!</h2>
+      <p>លោកអ្នកមិនទាន់បាន Login ចូលក្នុងប្រព័ន្ធនៅឡើយទេ។ សូម Login គណនីរបស់អ្នកជា Admin ដើម្បីគ្រប់គ្រងគ្រូបង្រៀន។</p>
+      <a href="index.html" target="_top" class="btn-login-redirect" onclick="goToIndex(event)">
+        <span>🔑</span> <span>ទៅកាន់ទំព័រដើម (Login)</span>
+      </a>
+    </div>
   </div>
 
+  <!-- ══════════════ 🚫 2. NO PERMISSION WRAPPER (LOGIN ហើយតែជាគ្រូ មិនមែន ADMIN) ══════════════ -->
+  <div class="auth-wrapper" id="deniedWrap">
+    <div class="auth-card">
+      <div class="auth-icon" style="background: rgba(245, 158, 11, 0.15); color: #d97706;">🚫</div>
+      <h2 style="color: #d97706;">អ្នកគ្មានសិទ្ធិចូលមើលទំព័រនេះ</h2>
+      <p>ទំព័រគ្រប់គ្រងគ្រូបង្រៀនអនុញ្ញាតតែអ្នកគ្រប់គ្រង (Admin) ប៉ុណ្ណោះ។ គណនីរបស់អ្នកជាគ្រូបង្រៀនធម្មតា។</p>
+      <a href="index.html" target="_top" class="btn-login-redirect" onclick="goToIndex(event)">
+        <span>🏠</span> <span>ត្រឡប់ទៅទំព័រដើម</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- ══════════════ 🌟 3. MAIN PAGE CONTENT (ADMIN ONLY) ══════════════ -->
   <div id="pageBody" style="display:none;">
     <div class="page-head">
       <div class="page-title">
@@ -361,7 +430,6 @@
                       <option value="admin">អ្នកគ្រប់គ្រង (Admin — មើលបានគ្រប់ថ្នាក់)</option>
                     </select></div>
                 </div>
-                <!-- ថ្នាក់ទទួលបន្ទុក៖ ប្តូរមកជា Text Input សម្រាប់វាយដោយផ្ទាល់ -->
                 <div class="field" id="assignedClassWrap">
                   <label>ថ្នាក់ទទួលបន្ទុក <span class="required">*</span></label>
                   <div class="input-wrap"><span class="input-icon"><i class="fa-solid fa-school"></i></span>
@@ -394,14 +462,28 @@
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     const USERS_TABLE = 'users';
 
-    // ជួរឈរដែលទាញមកបង្ហាញ (មិនទាញ password មកទេ)
     const LIST_COLUMNS = 'id,teacher_id,teacher_name,gender,phone,dob,address,username,role,assigned_classes,photo_url';
 
-    /* Session ពី Login (ដូចទំព័រព័ត៌មានសិស្ស) */
+    /* =========================================================
+       2. SESSION & AUTH GUARD
+    ========================================================= */
     function readSession() {
       try { return JSON.parse(localStorage.getItem('krou_supabase_user') || 'null'); } catch (e) { return null; }
     }
     const CURRENT_USER = readSession();
+
+    function goToIndex(e) {
+      if (e) e.preventDefault();
+      if (window.parent && window.parent !== window) {
+        try {
+          window.parent.postMessage({ type: 'OPEN_LOGIN', action: 'LOGIN' }, '*');
+          window.parent.location.href = 'index.html';
+          return;
+        } catch(err) {}
+      }
+      window.location.href = 'index.html';
+    }
+
     const IS_ADMIN = String(CURRENT_USER?.role || '').toLowerCase().trim() === 'admin';
 
     let teachers = [];
@@ -409,7 +491,7 @@
     let pickedPhotoBase64 = null;
 
     /* =========================================================
-       2. THEME
+       3. THEME
     ========================================================= */
     function applyTheme(theme) { document.documentElement.setAttribute('data-theme', theme || 'dark'); }
     applyTheme(new URLSearchParams(location.search).get('theme') || localStorage.getItem('krou_theme_manual') || 'dark');
@@ -418,7 +500,7 @@
     });
 
     /* =========================================================
-       3. HELPERS
+       4. HELPERS
     ========================================================= */
     function escapeHtml(s) {
       if (s === undefined || s === null) return '';
@@ -439,7 +521,6 @@
       toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
     }
 
-    // បង្រួមរូបថត (អតិបរមា 300px, JPEG) មុនរក្សាទុកក្នុង Supabase
     function resizeImage(file, maxSize) {
       maxSize = maxSize || 300;
       return new Promise((resolve, reject) => {
@@ -463,21 +544,34 @@
     }
 
     /* =========================================================
-       4. INIT
+       5. INIT WITH AUTH & ROLE GUARD
     ========================================================= */
     function initPage() {
+      // 🌟 ១. ករណីមិនទាន់បាន Login
+      if (!CURRENT_USER || !CURRENT_USER.username) {
+        document.getElementById('pageBody').style.display = 'none';
+        document.getElementById('deniedWrap').style.display = 'none';
+        document.getElementById('authDeniedWrap').style.display = 'flex';
+        return;
+      }
+
+      // 🌟 ២. ករណីបាន Login តែជាគ្រូធម្មតា (មិនមែន Admin)
       if (!IS_ADMIN) {
         document.getElementById('pageBody').style.display = 'none';
+        document.getElementById('authDeniedWrap').style.display = 'none';
         document.getElementById('deniedWrap').style.display = 'flex';
         return;
       }
-      document.getElementById('pageBody').style.display = 'block';
+
+      // 🌟 ៣. ករណីជា Admin ត្រឹមត្រូវ
+      document.getElementById('authDeniedWrap').style.display = 'none';
       document.getElementById('deniedWrap').style.display = 'none';
+      document.getElementById('pageBody').style.display = 'block';
       loadTeachers();
     }
 
     /* =========================================================
-       5. READ
+       6. READ
     ========================================================= */
     async function loadTeachers() {
       const body = document.getElementById('tableBody');
@@ -515,7 +609,6 @@
           ? `<img class="avatar-thumb" src="${escapeHtml(photo)}" alt="" onerror="this.outerHTML='<span class=&quot;avatar-fallback&quot;>${initial}</span>'">`
           : `<span class="avatar-fallback">${initial}</span>`;
 
-        // បង្ហាញថ្នាក់ទទួលបន្ទុកតាមអ្វីដែលបានវាយ
         const rawCls = String(t.assigned_classes || '').trim();
         const assignedCls = isAdmin ? 'គ្រប់ថ្នាក់' : (rawCls ? (rawCls.startsWith('ថ្នាក់') ? escapeHtml(rawCls) : 'ថ្នាក់ទី ' + escapeHtml(rawCls)) : '—');
 
@@ -543,7 +636,7 @@
     }
 
     /* =========================================================
-       6. MODAL
+       7. MODAL
     ========================================================= */
     function onRoleChange() {
       const role = document.getElementById('fRole').value;
@@ -646,7 +739,7 @@
     }
 
     /* =========================================================
-       7. CREATE / UPDATE
+       8. CREATE / UPDATE
     ========================================================= */
     async function isDuplicate(column, value) {
       let q = sb.from(USERS_TABLE).select('id').eq(column, value);
@@ -716,7 +809,7 @@
     }
 
     /* =========================================================
-       8. DELETE
+       9. DELETE
     ========================================================= */
     async function deleteTeacherRow(id) {
       const t = teachers.find(x => Number(x.id) === Number(id));
