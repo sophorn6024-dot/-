@@ -381,12 +381,11 @@
       color: #000 !important;
     }
 
-    /* 👉 ឈ្មោះគ្រូ៖ បន្ថែម Margin 40px ទុកកន្លែងស៊ីញ៉េ និងអនុញ្ញាតឱ្យអូសដោយសេរី */
     .teacher-name-display {
       font-family: 'Moul', cursive;
       font-size: 12px;
       color: #000 !important;
-      margin-top: 40px; /* 👈 ចន្លោះទំនេរ 40px សម្រាប់ស៊ីញ៉េ និងបោះត្រា */
+      margin-top: 40px;
       min-height: 24px;
       text-align: center;
       display: inline-block;
@@ -493,7 +492,7 @@
 
   <!-- =========================================================
        🎛️ TOOLBAR (SUPABASE + DROPOUT FILTER)
-  ========================================================= -->
+  ========================================================= */
   <div class="no-print no-print-toolbar">
     <div class="toolbar-row">
       <div class="toolbar-section">
@@ -558,9 +557,9 @@
   <div class="document-container" id="printPage">
 
     <div class="document-header">
+      <!-- 👉 បានដកបន្ទាត់ «ការិយាល័យអប់រំ...» ចេញរួចរាល់ -->
       <div class="school-info">
         <div class="underline" style="font-weight:700;">រដ្ឋបាលស្រុកសំឡូត</div>
-        <div>ការិយាល័យអប់រំ យុវជន និងកីឡានៃរដ្ឋបាលស្រុកសំឡូត</div>
         <div>សាលាបឋមសិក្សា ៖ <b>កំពង់ល្ពៅ</b></div>
       </div>
       <div class="nation-info">
@@ -571,7 +570,6 @@
 
     <div class="ornament">◆</div>
 
-    <!-- ចំណងជើងទម្រង់ស្តង់ដារ (គ្មានពាក្យឆមាសឡើយ) -->
     <div class="roster-title">
       បញ្ជីរាយនាមសិស្សថ្នាក់ទី<input type="text" id="titleClass" class="class-input" value="...">
       ឆ្នាំសិក្សា<input type="text" id="titleYear" class="year-input" value="...">
@@ -909,14 +907,13 @@
 
       var classStudents = allStudentsCache.filter(s => cleanGrade(s.grade) === cls);
 
-      // 👉 ពេលជ្រើស «ឆមាសទី២» សិស្សដែលបោះបង់ក្នុង «ឆមាសទី១» ត្រូវលាក់ចេញទាំងស្រុង
       var displayStudents = classStudents.filter(function(s) {
         var drop = parseDropoutStatus(s);
         if (!drop.isDropped) return true;
 
         if (currentSemester === 'ឆមាសទី២') {
           if (drop.semester === 'ឆមាសទី១') {
-            return false; // 🚫 លាក់សិស្សបោះបង់ឆមាសទី១
+            return false;
           }
           return true;
         }
@@ -937,7 +934,6 @@
         var isMarkedDropped = false;
         var noteText = '';
 
-        // បង្ហាញត្រឹមពាក្យ «បោះបង់» សុទ្ធក្នុងតារាង
         if (currentSemester === 'ឆមាសទី១' && drop.semester === 'ឆមាសទី១') {
           isMarkedDropped = true;
           noteText = 'បោះបង់';
