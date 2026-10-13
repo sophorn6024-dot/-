@@ -857,12 +857,10 @@
           <th class="col-info" style="width: 50px;">អាយុ</th>
           <th class="col-info" style="width: 90px;">ថ្នាក់</th>
           <th class="col-info" style="width: 105px;">ទូរស័ព្ទ</th>
-          <!-- ទីកន្លែងកំណើត: ភូមិ → ឃុំ → ស្រុក → ខេត្ត -->
           <th class="th-sub-pob col-pob" style="width: 95px;">ភូមិ</th>
           <th class="th-sub-pob col-pob" style="width: 105px;">ឃុំ/សង្កាត់</th>
           <th class="th-sub-pob col-pob" style="width: 105px;">ស្រុក/ខណ្ឌ</th>
           <th class="th-sub-pob col-pob" style="width: 105px;">ខេត្ត/ក្រុង</th>
-          <!-- អាសយដ្ឋានបច្ចុប្បន្ន: ភូមិ → ឃុំ → ស្រុក → ខេត្ត -->
           <th class="th-sub-addr col-address" style="width: 95px;">ភូមិ</th>
           <th class="th-sub-addr col-address" style="width: 105px;">ឃុំ/សង្កាត់</th>
           <th class="th-sub-addr col-address" style="width: 105px;">ស្រុក/ខណ្ឌ</th>
@@ -1157,7 +1155,7 @@
   </div>
 
   <!-- =========================================================
-       ⚙️ JAVASCRIPT: SUPABASE ENGINE
+       ⚙️ JAVASCRIPT: SUPABASE ENGINE WITH DUPLICATE ID CHECK
   ========================================================= -->
   <script>
     /* 1. SUPABASE CLIENT CONFIG */
@@ -1173,14 +1171,12 @@
     const USER_CLASS = CURRENT_USER?.assigned_classes || "";
     const IS_ADMIN = String(USER_ROLE).toLowerCase().trim() === 'admin';
 
-    // បញ្ជីថ្នាក់ទាំងអស់ (ប្រើសម្រាប់ជ្រើសរើសក្នុងផ្ទាំងកែប្រែ + លំដាប់តម្រៀប)
     const ALL_CLASSES = ['១', '២', '៣', '៤(ក)', '៤(ខ)', '៥', '៦'];
-    // ថ្នាក់ដែលមានទិន្នន័យពិតប្រាកដ (ប្រើសម្រាប់ Filter)
     let classesWithData = [];
 
     let currentSelectedClass = USER_CLASS ? normGrade(USER_CLASS) : '';
     let studentsList = [];
-    let visibleList = [];          // បញ្ជីដែលកំពុងបង្ហាញក្នុងតារាង (សម្រាប់ Export)
+    let visibleList = [];
     let activeRowIndex = null;
     let uploadTargetIndex = null;
     let isTableLocked = false;
@@ -1205,14 +1201,13 @@
       toast.innerText = msg;
       toast.style.background = isError ? '#dc2626' : '#16a34a';
       toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 3200);
+      setTimeout(() => toast.classList.remove('show'), 3500);
     }
 
     function esc(v) { return String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
     function safeUrl(u) { u = String(u || '').trim(); return /^(https:\/\/|data:image\/)/.test(u) ? u : ''; }
     function escParts(p) { const o = {}; for (const k in p) o[k] = esc(p[k]); return o; }
 
-    /* ថ្នាក់៖ "ថ្នាក់ទី១" / "ថ្នាក់ទី ១" / "១"  →  "១" */
     function normGrade(g) {
       return String(g ?? '').replace(/^ថ្នាក់ទី\s*/, '').trim();
     }
@@ -1231,6 +1226,31 @@
       return currentSelectedClass ? `ថ្នាក់ទី${currentSelectedClass}` : 'ថ្នាក់ទី១';
     }
 
+    /* 🔍 មុខងារពិនិត្យអត្តលេខស្ទួន (Local + Database Check) */
+    async function isStudentIdDuplicate(studentId, excludeDbId = null, excludeUid = null) {
+      const cleanId = String(studentId || '').trim();
+      if (!cleanId) return false;
+
+      // ១. ពិនិត្យក្នុងបញ្ជីសិស្សនៅលើទំព័រ (Local check)
+      const localDup = studentsList.some(other => {
+        if (excludeDbId && other.db_id === excludeDbId) return false;
+        if (excludeUid && other._uid === excludeUid) return false;
+        return other.id && String(other.id).trim().toLowerCase() === cleanId.toLowerCase();
+      });
+      if (localDup) return true;
+
+      // ២. ពិនិត្យក្នុង Supabase Database
+      try {
+        let q = sb.from(STUDENTS_TABLE).select('id').eq('student_id', cleanId);
+        if (excludeDbId) q = q.neq('id', excludeDbId);
+        const { data, error } = await q.limit(1);
+        if (!error && data && data.length > 0) return true;
+      } catch (err) {
+        console.error('Error checking duplicate ID:', err);
+      }
+      return false;
+    }
+
     function validateStudent(s) {
       const err = {}, msgs = [];
       if (!String(s.id ?? '').trim()) { err.id = true; msgs.push('អត្តលេខ'); }
@@ -1243,7 +1263,6 @@
        🔒 LOCK SYSTEM
     ========================================================= */
     let lastLockToast = 0;
-
     function showLockMessage() {
       const now = Date.now();
       if (now - lastLockToast < 1500) return;
@@ -1251,7 +1270,6 @@
       showToast('🔒 តារាងកំពុងចាក់សោ — សូមចុច «ដោះសោ» ជាមុនសិន ដើម្បីកែប្រែ!', true);
     }
 
-    // ត្រឡប់ true បើកំពុងចាក់សោ (ហើយបង្ហាញសារ)
     function guardLocked() {
       if (isTableLocked) { showLockMessage(); return true; }
       return false;
@@ -1290,7 +1308,6 @@
       }
     }
 
-    // ចាប់ការចុចលើក្រឡាកែប្រែ ពេលកំពុងចាក់សោ
     function installLockInterceptors() {
       const tbody = document.getElementById('tableBody');
       const handler = (e) => {
@@ -1310,7 +1327,7 @@
     }
 
     /* =========================================================
-       🏫 CLASSES WITH DATA (បង្ហាញតែថ្នាក់ដែលមានទិន្នន័យ)
+       🏫 CLASSES WITH DATA
     ========================================================= */
     function classSortKey(c) {
       const i = ALL_CLASSES.indexOf(c);
@@ -1345,8 +1362,6 @@
     function buildClassFilter() {
       if (!IS_ADMIN) return;
       const box = document.getElementById('classFilterContainer');
-
-      // បើថ្នាក់ដែលបានជ្រើស លែងមានទិន្នន័យ → ត្រឡប់ទៅ "គ្រប់ថ្នាក់"
       if (currentSelectedClass && !classesWithData.some(c => c.name === currentSelectedClass)) {
         currentSelectedClass = '';
       }
@@ -1371,7 +1386,6 @@
       try {
         let query = sb.from(STUDENTS_TABLE).select('*');
         if (currentSelectedClass) {
-          // ប្រើ .in() ដើម្បីគាំទ្រថ្នាក់ដែលមានវង់ក្រចក ដូចជា ៤(ក) ៤(ខ)
           query = query.in('grade', [
             currentSelectedClass,
             `ថ្នាក់ទី${currentSelectedClass}`,
@@ -1434,7 +1448,7 @@
       };
     }
 
-    /* 4. CRUD OPERATIONS WITH SUPABASE */
+    /* 4. CRUD OPERATIONS WITH DUPLICATE CHECK */
     function triggerAutoSave(realIdx) {
       const s = studentsList[realIdx];
       if (!s || s.isDraft) return;
@@ -1448,6 +1462,13 @@
       const v = validateStudent(s);
       if (!v.ok) {
         showToast("⚠️ មិនទាន់រក្សាទុក៖ " + v.msg, true);
+        return;
+      }
+
+      // 👉 ពិនិត្យអត្តលេខស្ទួន
+      if (await isStudentIdDuplicate(s.id, s.db_id, s._uid)) {
+        document.getElementById('syncStatusText').innerText = "⚠️ អត្តលេខស្ទួន";
+        showToast(`⚠️ អត្តលេខ «${s.id}» មានរួចហើយ! មិនអាចរក្សាទុកបានទេ`, true);
         return;
       }
 
@@ -1482,6 +1503,15 @@
         return;
       }
 
+      // 👉 ពិនិត្យអត្តលេខស្ទួន
+      if (await isStudentIdDuplicate(s.id, s.db_id, s._uid)) {
+        s._err = s._err || {};
+        s._err.id = true;
+        applyFilterAndRender();
+        showToast(`⚠️ អត្តលេខ «${s.id}» មានក្នុងប្រព័ន្ធរួចហើយ! សូមប្តូរអត្តលេខថ្មី`, true);
+        return;
+      }
+
       const payload = buildSupabasePayload(s);
       try {
         const { data, error } = await sb.from(STUDENTS_TABLE).insert([payload]).select().single();
@@ -1505,14 +1535,28 @@
 
       studentsList.forEach((s, idx) => { if (s.isDraft) syncDraftFromDom(idx); });
 
+      const seenIds = new Set();
       const payloads = [];
+
       for (const s of drafts) {
         const v = validateStudent(s);
         if (!v.ok) {
+          s._err = v.err;
           showToast("⚠️ " + v.msg + " (ជួរពណ៌ក្រហម)", true);
           applyFilterAndRender();
           return;
         }
+
+        const cleanId = String(s.id).trim().toLowerCase();
+        // ពិនិត្យស្ទួនក្នុងចំណោម Draft និងក្នុង Database
+        if (seenIds.has(cleanId) || await isStudentIdDuplicate(s.id, s.db_id, s._uid)) {
+          s._err = s._err || {};
+          s._err.id = true;
+          showToast(`⚠️ អត្តលេខ «${s.id}» ស្ទួនគ្នា! សូមពិនិត្យឡើងវិញ`, true);
+          applyFilterAndRender();
+          return;
+        }
+        seenIds.add(cleanId);
         payloads.push(buildSupabasePayload(s));
       }
 
@@ -1545,8 +1589,7 @@
       loadClassesWithData();
     }
 
-    /* 5. ADDRESS HELPERS
-       ទម្រង់រក្សាទុក៖ ភូមិ, ឃុំ, ស្រុក, ខេត្ត  (ភូមិនៅមុខ) */
+    /* 5. ADDRESS HELPERS */
     function cleanDuplicateAddress(str) {
       if (!str) return '';
       const parts = str.split(',').map(s => s.trim()).filter(Boolean);
@@ -1596,14 +1639,21 @@
       const field = input.dataset.field;
       const val = input.value.trim();
 
-      if (field === 'id') s.id = val;
+      if (field === 'id') {
+        s.id = val;
+        if (s._err && s._err.id) s._err.id = false;
+      }
       if (field === 'lastName' || field === 'firstName') {
         const tr = input.closest('tr');
         const l = tr.querySelector('input[data-field="lastName"]').value.trim();
         const f = tr.querySelector('input[data-field="firstName"]').value.trim();
         s.name = `${l} ${f}`.trim();
+        if (s._err && s._err.name) s._err.name = false;
       }
-      if (field === 'sex') s.sex = val;
+      if (field === 'sex') {
+        s.sex = val;
+        if (s._err && s._err.sex) s._err.sex = false;
+      }
       if (field === 'grade') s.grade = val;
       if (field === 'phone') s.phone = val;
       if (field === 'father') s.father = val;
@@ -1726,13 +1776,11 @@
             <td class="col-info"><input type="text" class="table-input" value="${esc(s.grade)}" data-field="grade" oninput="syncRowInput(this, ${realIdx})"></td>
             <td class="col-info"><input type="tel" class="table-input ${showMissing && !s.phone ? 'cell-missing' : ''}" value="${esc(s.phone)}" data-field="phone" oninput="syncRowInput(this, ${realIdx})"></td>
 
-            <!-- ទីកន្លែងកំណើត: ភូមិ → ឃុំ → ស្រុក → ខេត្ត -->
             <td class="col-pob"><input type="text" class="table-input" value="${pob.village}" data-field="pob_village" oninput="syncRowInput(this, ${realIdx})" placeholder="ភូមិ"></td>
             <td class="col-pob"><input type="text" class="table-input" value="${pob.commune}" data-field="pob_commune" oninput="syncRowInput(this, ${realIdx})" placeholder="ឃុំ"></td>
             <td class="col-pob"><input type="text" class="table-input" value="${pob.district}" data-field="pob_district" oninput="syncRowInput(this, ${realIdx})" placeholder="ស្រុក"></td>
             <td class="col-pob"><input type="text" class="table-input" value="${pob.province}" data-field="pob_province" oninput="syncRowInput(this, ${realIdx})" placeholder="ខេត្ត"></td>
 
-            <!-- អាសយដ្ឋានបច្ចុប្បន្ន: ភូមិ → ឃុំ → ស្រុក → ខេត្ត -->
             <td class="col-address"><input type="text" class="table-input" value="${addr.village}" data-field="addr_village" oninput="syncRowInput(this, ${realIdx})" placeholder="ភូមិ"></td>
             <td class="col-address"><input type="text" class="table-input" value="${addr.commune}" data-field="addr_commune" oninput="syncRowInput(this, ${realIdx})" placeholder="ឃុំ"></td>
             <td class="col-address"><input type="text" class="table-input" value="${addr.district}" data-field="addr_district" oninput="syncRowInput(this, ${realIdx})" placeholder="ស្រុក"></td>
@@ -1919,8 +1967,7 @@
 
     function closeProfileModal() { document.getElementById('profileModalOverlay').style.display = 'none'; }
     function openProfileModalFromMenu() { if (activeRowIndex !== null) openProfileModal(activeRowIndex); }
-
-    function onProfileClassChange() { /* ថ្នាក់ត្រូវបានកំណត់ដោយតារាងបច្ចុប្បន្ន */ }
+    function onProfileClassChange() {}
 
     function renderProfileModalContent() {
       const s = studentsList[currentProfileSubIdx];
@@ -1964,7 +2011,7 @@
       renderProfileModalContent();
     }
 
-    /* 9. EDIT MODAL */
+    /* 9. EDIT MODAL WITH DUPLICATE CHECK */
     function openEditModal(realIdx) {
       if (guardLocked()) return;
       activeRowIndex = realIdx;
@@ -2012,8 +2059,16 @@
       const s = studentsList[activeRowIndex];
       if (!s) return;
 
+      const newId = document.getElementById('modalStudentId').value.trim();
+
+      // 👉 ពិនិត្យអត្តលេខស្ទួន
+      if (await isStudentIdDuplicate(newId, s.db_id, s._uid)) {
+        showToast(`⚠️ អត្តលេខ «${newId}» មានក្នុងប្រព័ន្ធរួចហើយ! សូមបញ្ចូលអត្តលេខផ្សេង`, true);
+        return;
+      }
+
       s.name = `${document.getElementById('modalLastName').value.trim()} ${document.getElementById('modalFirstName').value.trim()}`.trim();
-      s.id = document.getElementById('modalStudentId').value.trim();
+      s.id = newId;
       s.grade = document.getElementById('modalGrade').value;
       s.sex = document.getElementById('modalGender').value;
       s.dob = document.getElementById('modalDobText').dataset.rawDate || null;
@@ -2060,9 +2115,9 @@
       reader.readAsDataURL(file);
     }
 
-    function onRowPhotoFileSelected(input) { /* ទុកសម្រាប់ពង្រីកនាពេលអនាគត */ input.value = ''; }
+    function onRowPhotoFileSelected(input) { input.value = ''; }
 
-    /* 10. IMPORT (EXCEL + PASTE) */
+    /* 10. IMPORT (EXCEL + PASTE) WITH DUPLICATE CHECK */
     function openImportModal() {
       if (guardLocked()) return;
       document.getElementById('importClassTag').innerText = currentSelectedClass ? `ថ្នាក់ទី ${currentSelectedClass}` : 'ថ្នាក់ទី១ (លំនាំដើម)';
@@ -2105,6 +2160,34 @@
     async function submitImportStudents() {
       if (guardLocked()) return;
       if (!pendingImportStudents.length) return;
+
+      const importIds = pendingImportStudents.map(p => String(p.student_id).trim()).filter(Boolean);
+
+      // ពិនិត្យស្ទួនក្នុងចំណោម Import ខ្លួនឯង
+      const duplicateInImport = importIds.filter((item, index) => importIds.indexOf(item) !== index);
+      if (duplicateInImport.length > 0) {
+        alert(`⚠️ ក្នុងបញ្ជីដែលនាំចូលមានអត្តលេខស្ទួនគ្នា៖\n${[...new Set(duplicateInImport)].join(', ')}`);
+        return;
+      }
+
+      // ពិនិត្យស្ទួនជាមួយ Database
+      if (importIds.length > 0) {
+        try {
+          const { data: existing, error: checkErr } = await sb
+            .from(STUDENTS_TABLE)
+            .select('student_id')
+            .in('student_id', importIds);
+
+          if (!checkErr && existing && existing.length > 0) {
+            const dupList = existing.map(e => e.student_id).join(', ');
+            alert(`⚠️ មិនអាចនាំចូលបានទេ ព្រោះអត្តលេខទាំងនេះមានក្នុងប្រព័ន្ធរួចហើយ៖\n${dupList}`);
+            return;
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      }
+
       try {
         const { error } = await sb.from(STUDENTS_TABLE).insert(pendingImportStudents);
         if (error) throw error;
@@ -2139,11 +2222,15 @@
           const wb = XLSX.read(new Uint8Array(e.target.result), { type: 'array' });
           const json = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1 });
           const rows = [];
+          const excelIds = [];
+
           for (let i = 1; i < json.length; i++) {
             const r = json[i];
             if (!r || !r[1]) continue;
+            const sId = String(r[0] || '').trim();
+            if (sId) excelIds.push(sId);
             rows.push({
-              student_id: String(r[0] || '').trim(),
+              student_id: sId,
               student_name: `${r[1] || ''} ${r[2] || ''}`.trim(),
               gender: normalizeGenderFront(r[3]) || 'ប្រុស',
               dob: r[4] ? formatToInputDate(r[4]) || null : null,
@@ -2155,15 +2242,41 @@
               grade: getDefaultGrade()
             });
           }
-          if (rows.length) {
-            const { error } = await sb.from(STUDENTS_TABLE).insert(rows);
-            if (error) throw error;
-            showToast(`🎉 នាំចូលបាន ${rows.length} នាក់ជោគជ័យ!`);
-            closeImportModal();
-            loadStudentsFromSupabase();
-          } else {
+
+          if (!rows.length) {
             showToast("⚠️ រកមិនឃើញទិន្នន័យក្នុង File ទេ", true);
+            input.value = '';
+            return;
           }
+
+          // ពិនិត្យស្ទួនក្នុង file Excel
+          const duplicateInExcel = excelIds.filter((item, index) => excelIds.indexOf(item) !== index);
+          if (duplicateInExcel.length > 0) {
+            alert(`⚠️ ក្នុង File Excel មានអត្តលេខស្ទួនគ្នា៖\n${[...new Set(duplicateInExcel)].join(', ')}`);
+            input.value = '';
+            return;
+          }
+
+          // ពិនិត្យស្ទួនជាមួយ Database
+          if (excelIds.length > 0) {
+            const { data: existing, error: checkErr } = await sb
+              .from(STUDENTS_TABLE)
+              .select('student_id')
+              .in('student_id', excelIds);
+
+            if (!checkErr && existing && existing.length > 0) {
+              const dupList = existing.map(x => x.student_id).join(', ');
+              alert(`⚠️ មិនអាចនាំចូលបានទេ ព្រោះអត្តលេខទាំងនេះមានក្នុងប្រព័ន្ធរួចហើយ៖\n${dupList}`);
+              input.value = '';
+              return;
+            }
+          }
+
+          const { error } = await sb.from(STUDENTS_TABLE).insert(rows);
+          if (error) throw error;
+          showToast(`🎉 នាំចូលបាន ${rows.length} នាក់ជោគជ័យ!`);
+          closeImportModal();
+          loadStudentsFromSupabase();
         } catch(err) { alert("កំហុស Excel: " + err.message); }
         input.value = '';
       };
@@ -2207,7 +2320,6 @@
     }
 
     /* 12. EXPORT, SORT, KEYBOARD */
-    // ទាញយកតែសិស្សដែលកំពុងបង្ហាញក្នុងតារាង (ត្រូវតាមថ្នាក់ + ស្ថានភាព + ការស្វែងរក)
     function exportStudentsToExcel() {
       const exportList = visibleList.filter(s => !s.isDraft);
       if (!exportList.length) return alert("គ្មានទិន្នន័យសម្រាប់ទាញយក!");
@@ -2306,7 +2418,6 @@
 
       const filterBox = document.getElementById('classFilterContainer');
       if (IS_ADMIN) {
-        // បង្ហាញ "គ្រប់ថ្នាក់" សិន រង់ចាំទិន្នន័យថ្នាក់ពិតពី Supabase
         filterBox.innerHTML = `
           <select class="pill-select-class" id="classFilterSelect" onchange="onClassFilterChange(this.value)">
             <option value="">គ្រប់ថ្នាក់ទាំងអស់</option>
