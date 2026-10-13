@@ -1,0 +1,1756 @@
+<!DOCTYPE html>
+<html lang="km" data-theme="dark">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ប្រព័ន្ធស្រង់ពិន្ទុ</title>
+  
+  <!-- 🔤 Google Fonts Khmer -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;600;700;900&family=Moul&display=swap" rel="stylesheet">
+  
+  <!-- 📊 Excel & PDF Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <!-- ⚡ Supabase JS Client (v2) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    /* =========================================================
+       🎨 THEME VARIABLES & DESIGN SYSTEM
+    ========================================================= */
+    :root {
+      --primary: #0284c7;
+      --primary-dark: #0369a1;
+      --navy: #132d56;
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-card: #ffffff;
+      --surface-elevated: #f1f5f9;
+      --border: #cbd5e1;
+      --border-subtle: #e2e8f0;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --card-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
+      
+      --khmer-bg: #dbeafe; --khmer-txt: #1e40af; --khmer-col: #eff6ff; --khmer-brd: #93c5fd;
+      --math-bg: #ede9fe; --math-txt: #5b21b6; --math-col: #f5f3ff; --math-brd: #c4b5fd;
+      --sci-bg: #dcfce7; --sci-txt: #15803d; --sci-col: #dcfce7; --sci-brd: #86efac;
+      --soc-bg: #fef3c7; --soc-txt: #b45309; --soc-col: #fef3c7; --soc-brd: #fde68a;
+      --art-bg: #ffe4e6; --art-txt: #be123c; --art-col: #fff1f2; --art-brd: #fecdd3;
+      --for-bg: #cffafe; --for-txt: #0e7490; --for-col: #cffafe; --for-brd: #a5f3fc;
+      --res-bg: #e0e7ff; --res-txt: #3730a3;
+    }
+
+    [data-theme="dark"] {
+      --bg: #090e17;
+      --surface: #0f172a;
+      --surface-card: #111e33;
+      --surface-elevated: #162642;
+      --border: #1a2f4d;
+      --border-subtle: #233f66;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --card-shadow: 0 8px 25px rgba(0, 0, 0, 0.45);
+
+      --khmer-bg: #1e3a8a; --khmer-txt: #bfdbfe; --khmer-col: #172554; --khmer-brd: #1d4ed8;
+      --math-bg: #4c1d95; --math-txt: #ddd6fe; --math-col: #2e1065; --math-brd: #6d28d9;
+      --sci-bg: #14532d; --sci-txt: #bbf7d0; --sci-col: #052e16; --sci-brd: #16a34a;
+      --soc-bg: #78350f; --soc-txt: #fde68a; --soc-col: #451a03; --soc-brd: #d97706;
+      --art-bg: #881337; --art-txt: #fecdd3; --art-col: #4c0519; --art-brd: #e11d48;
+      --for-bg: #164e63; --for-txt: #a5f3fc; --for-col: #083344; --for-brd: #0891b2;
+      --res-bg: #312e81; --res-txt: #c7d2fe;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Khmer OS Battambang', 'Battambang', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.4;
+      -webkit-tap-highlight-color: transparent;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    .f-moul { font-family: 'Khmer OS Muol Light', 'Moul', cursive; font-weight: normal; }
+    .f-bold { font-weight: 700; }
+
+    /* ================= LANDING CARDS ================= */
+    #landingPage {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 30px 20px;
+      height: 100%;
+      overflow-y: auto;
+      animation: fadeIn 0.25s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    .landing-header { margin-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-end; }
+    .landing-header h1 { font-size: 22px; color: var(--primary); margin-bottom: 4px; }
+    .landing-header p { font-size: 13px; color: var(--text-muted); }
+    .assigned-class-badge {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .cards-wrapper {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .score-card {
+      background: var(--surface-card);
+      border-radius: 18px;
+      padding: 20px;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      box-shadow: var(--card-shadow);
+      transition: all 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 150px;
+    }
+    .score-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(2, 132, 199, 0.15);
+      border-color: var(--primary);
+    }
+    .score-card.monthly { border-left: 5px solid #0284c7; }
+    .score-card.semester { border-left: 5px solid #7c3aed; }
+    
+    .card-top { display: flex; align-items: flex-start; gap: 14px; }
+    .card-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .card-icon.m { background: rgba(2, 132, 199, 0.15); color: #0284c7; }
+    .card-icon.s { background: rgba(124, 58, 237, 0.15); color: #7c3aed; }
+    
+    .card-info h2 { font-size: 15px; margin-bottom: 3px; }
+    .card-info p { font-size: 11.5px; color: var(--text-muted); }
+    
+    .card-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 14px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--border);
+    }
+    .card-badge {
+      font-size: 11px;
+      font-weight: bold;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: var(--surface-elevated);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .card-arrow { font-size: 15px; color: var(--text-muted); transition: transform 0.2s; }
+    .score-card:hover .card-arrow { transform: translateX(3px); color: var(--primary); }
+
+    /* ================= MAIN FORM CONTAINER ================= */
+    #mainForm {
+      display: none;
+      width: 100%;
+      height: 100%;
+      padding: 8px 10px 10px;
+      flex-direction: column;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .table-container-card {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      background: var(--surface);
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      box-shadow: var(--card-shadow);
+      overflow: hidden;
+    }
+
+    .top-toolbar {
+      flex-shrink: 0;
+      background: var(--surface);
+      padding: 8px 12px;
+      border-bottom: 1.5px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      z-index: 50;
+    }
+    .tb-left, .tb-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .pill-select {
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: bold;
+      background: var(--surface-elevated);
+      color: var(--text);
+      font-family: inherit;
+      cursor: pointer;
+      outline: none;
+      transition: all 0.15s;
+    }
+    .pill-select:disabled {
+      opacity: 0.8;
+      cursor: not-allowed;
+      background: var(--surface);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .search-input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      padding: 4px 10px;
+      background: var(--surface-elevated);
+      min-width: 140px;
+    }
+    .search-input-wrap input {
+      border: none;
+      background: transparent;
+      outline: none;
+      font-size: 11.5px;
+      font-family: inherit;
+      color: var(--text);
+      width: 100%;
+    }
+
+    .action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 11.5px;
+      font-weight: bold;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+    .action-btn:hover { background: var(--surface-elevated); border-color: var(--primary); }
+    .action-btn.btn-save { background: #16a34a; border-color: #15803d; color: #fff; }
+    .action-btn.btn-save:hover { background: #15803d; }
+    .action-btn.btn-report { background: #0284c7; border-color: #0369a1; color: #fff; }
+    .action-btn.btn-report:hover { background: #0369a1; }
+    .action-btn.btn-back { background: var(--surface-elevated); color: var(--text); }
+
+    .autosave-pill {
+      font-size: 11px;
+      font-weight: bold;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: var(--surface-elevated);
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      border: 1px solid var(--border);
+    }
+    .autosave-pill.saving { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border-color: rgba(245, 158, 11, 0.3); }
+    .autosave-pill.saved { background: rgba(22, 163, 74, 0.15); color: #16a34a; border-color: rgba(22, 163, 74, 0.3); }
+    .autosave-pill.error { background: rgba(239, 68, 68, 0.15); color: #ef4444; border-color: rgba(239, 68, 68, 0.3); }
+
+    /* ================= TABLE SCROLL ENGINE ================= */
+    .table-scroll-wrap {
+      flex: 1;
+      min-height: 0;
+      width: 100%;
+      overflow: auto !important;
+      position: relative;
+      background: var(--surface);
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-x pan-y !important;
+    }
+
+    .table-scroll-wrap::-webkit-scrollbar { width: 8px; height: 8px; }
+    .table-scroll-wrap::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    .table-scroll-wrap::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+    .modern-score-table {
+      width: max-content;
+      min-width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+      text-align: center;
+      border: 1px solid var(--border);
+      touch-action: pan-x pan-y !important;
+    }
+
+    .modern-score-table th, .modern-score-table td {
+      border: 1px solid var(--border);
+      padding: 3px 2px;
+      height: 38px;
+      vertical-align: middle;
+      white-space: nowrap;
+      touch-action: pan-x pan-y !important;
+    }
+
+    .stk {
+      position: sticky !important;
+      background: var(--surface) !important;
+      color: var(--text);
+      z-index: 20;
+      touch-action: pan-x pan-y !important;
+    }
+    .stk-1 { left: 0; min-width: 42px; max-width: 42px; }
+    .stk-2 { left: 42px; min-width: 80px; max-width: 80px; text-align: left; padding-left: 6px; }
+    .stk-3 { left: 122px; min-width: 90px; max-width: 90px; text-align: left; padding-left: 6px; font-weight: bold; }
+    .stk-4 { left: 212px; min-width: 50px; max-width: 50px; box-shadow: 3px 0 6px -2px rgba(0,0,0,0.15); }
+
+    .modern-score-table thead th.stk { z-index: 40; background: var(--surface-elevated) !important; }
+
+    .th-group-kh { background: var(--khmer-bg); color: var(--khmer-txt); }
+    .th-group-ma { background: var(--math-bg); color: var(--math-txt); }
+    .th-group-sc { background: var(--sci-bg); color: var(--sci-txt); }
+    .th-group-so { background: var(--soc-bg); color: var(--soc-txt); }
+    .th-group-ar { background: var(--art-bg); color: var(--art-txt); }
+    .th-group-fo { background: var(--for-bg); color: var(--for-txt); }
+    .th-group-res { background: var(--res-bg); color: var(--res-txt); }
+
+    .th-vertical-cell {
+      height: 120px !important;
+      max-height: 120px;
+      vertical-align: middle !important;
+      text-align: center;
+      padding: 3px 1px !important;
+      position: relative;
+    }
+
+    .th-vertical-wrap {
+      display: inline-block;
+      white-space: nowrap;
+      transform: rotate(-90deg);
+      font-size: 11px;
+      font-weight: bold;
+      letter-spacing: 0.3px;
+      margin: 0 auto;
+      line-height: 1;
+    }
+
+    .th-sub-kh { background: var(--khmer-col); color: var(--khmer-txt); }
+    .th-sub-ma { background: var(--math-col); color: var(--math-txt); }
+    .th-sub-sc { background: var(--sci-col); color: var(--sci-txt); }
+    .th-sub-so { background: var(--soc-col); color: var(--soc-txt); }
+    .th-sub-ar { background: var(--art-col); color: var(--art-txt); }
+    .th-sub-fo { background: var(--for-col); color: var(--for-txt); }
+    .th-sub-res { background: var(--surface-elevated); color: var(--res-txt); }
+
+    .coef-row {
+      background: var(--surface-elevated);
+      font-size: 11px;
+      font-weight: bold;
+      color: var(--text-muted);
+      height: 32px;
+    }
+    .coef-tag { display: inline-block; padding: 1px 5px; border-radius: 4px; font-weight: bold; }
+    .coef-zero { color: var(--text-muted); opacity: 0.6; }
+    .coef-active { color: #0284c7; font-weight: bold; }
+
+    .score-box {
+      width: 44px;
+      height: 30px;
+      text-align: center;
+      border-radius: 8px;
+      border: 1.5px solid var(--border);
+      font-size: 13.5px;
+      font-weight: bold;
+      font-family: inherit;
+      outline: none;
+      transition: all 0.15s ease;
+      background: var(--surface);
+      color: var(--text);
+      touch-action: manipulation;
+    }
+    .score-box:focus {
+      border-color: #0284c7 !important;
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2);
+      background: var(--surface-elevated) !important;
+    }
+    
+    .box-kh { border-color: var(--khmer-brd); }
+    .box-ma { border-color: var(--math-brd); }
+    .box-sc { border-color: var(--sci-brd); }
+    .box-so { border-color: var(--soc-brd); }
+    .box-ar { border-color: var(--art-brd); }
+    .box-fo { border-color: var(--for-brd); }
+
+    .score-box.filled {
+      background: rgba(245, 158, 11, 0.12);
+      border-color: #f59e0b;
+      color: #d97706;
+    }
+    [data-theme="dark"] .score-box.filled { color: #fbbf24; }
+
+    .col-res-tot   { min-width: 75px !important; font-size: 13px; color: var(--text-muted); }
+    .col-res-avg   { min-width: 75px !important; font-size: 13.5px; font-weight: bold; color: var(--text); }
+    .col-res-rank  { min-width: 75px !important; font-size: 13.5px; font-weight: bold; color: #dc2626; }
+    .col-res-grade { min-width: 85px !important; }
+    .col-res-note  { min-width: 75px !important; font-size: 12.5px; }
+    .col-res-abs   { min-width: 65px !important; font-size: 12.5px; color: #dc2626; font-weight: bold; }
+    
+    .badge-grade {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 11.5px;
+      white-space: nowrap;
+    }
+    .grade-a { background: rgba(22, 163, 74, 0.15); color: #16a34a; }
+    .grade-b { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+    .grade-c { background: rgba(2, 132, 199, 0.15); color: #0284c7; }
+    .grade-d { background: rgba(217, 119, 6, 0.15); color: #d97706; }
+    .grade-e { background: rgba(234, 88, 12, 0.15); color: #ea580c; }
+    .grade-f { background: rgba(220, 38, 38, 0.15); color: #dc2626; }
+
+    .status-pass { color: #16a34a; font-weight: bold; }
+    .status-fail { color: #dc2626; font-weight: bold; }
+
+    .dr:hover { background-color: var(--surface-elevated); }
+    .dr:hover .stk { background-color: var(--surface-elevated) !important; }
+    .focused-row { background-color: rgba(2, 132, 199, 0.08) !important; }
+    .focused-row .stk { background-color: rgba(2, 132, 199, 0.08) !important; }
+
+    .table-footer-buffer {
+      height: 80px !important;
+      background: var(--surface-elevated);
+      color: var(--text-muted);
+      font-weight: 700;
+      font-size: 12px;
+      border: 1px solid var(--border);
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    /* ================= REPORT VIEWER ================= */
+    #scoreReportModal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(9, 14, 23, 0.85);
+      backdrop-filter: blur(6px);
+      z-index: 3000;
+      overflow-y: auto;
+      padding: 14px 14px 40px;
+    }
+    .viewer-top-bar {
+      position: sticky;
+      top: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 16px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+    }
+    .report-paper-container {
+      background: #ffffff;
+      width: 297mm;
+      max-width: 100%;
+      min-height: 210mm;
+      margin: 0 auto;
+      padding: 10mm 12mm;
+      border-radius: 6px;
+      box-shadow: 0 10px 35px rgba(0,0,0,0.6);
+      color: #0f172a;
+      font-size: 11px;
+    }
+    .rpt-header-banner { text-align: center; color: #000; margin-bottom: 10px; }
+    
+    .print-report-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10px;
+      text-align: center;
+      border: 1px solid #1e293b;
+      margin: 6px 0;
+    }
+    .print-report-table th, .print-report-table td {
+      border: 1px solid #1e293b;
+      padding: 3px 1px;
+      vertical-align: middle;
+    }
+    .print-report-table thead th {
+      background: #f8fafc;
+      font-weight: bold;
+    }
+    .th-rpt-group { background: #e0f2fe !important; color: #1e3a8a; }
+    
+    .th-rpt-vert-box {
+      width: 26px;
+      height: 110px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      overflow: visible;
+    }
+    .th-rpt-vert {
+      display: inline-block;
+      white-space: nowrap;
+      transform: rotate(-90deg);
+      font-size: 10px;
+      font-weight: bold;
+      color: #1e3a8a;
+      line-height: 1;
+    }
+
+    .clean-lunar-input {
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: bold;
+      color: #1e3a8a;
+      border: none !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      padding: 0 !important;
+      text-align: center;
+      width: 100%;
+      max-width: 480px;
+      outline: none;
+      margin: 0 auto;
+      display: block;
+    }
+
+    @page { size: A4 landscape; margin: 5mm 6mm; }
+    @media print {
+      html, body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        overflow: visible !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      #landingPage, #mainForm, .viewer-top-bar { display: none !important; }
+      #scoreReportModal {
+        display: block !important;
+        position: static !important;
+        background: #ffffff !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        inset: auto !important;
+        overflow: visible !important;
+        width: 100% !important;
+      }
+      .report-paper-container {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════ 1. LANDING PAGE ══════════════ -->
+  <div id="landingPage">
+    <div class="landing-header">
+      <div>
+        <h1 class="f-moul">ស្រង់ពិន្ទុ</h1>
+        <p>បញ្ចូលពិន្ទុសិស្សប្រចាំខែ និងឆមាស (Supabase)</p>
+      </div>
+      <div class="assigned-class-badge" id="landingClassBadge">
+        ថ្នាក់ទី...
+      </div>
+    </div>
+
+    <div class="cards-wrapper">
+      <div class="score-card monthly" onclick="openScoreForm('monthly')">
+        <div class="card-top">
+          <div class="card-icon m">📋</div>
+          <div class="card-info">
+            <h2 class="f-moul" style="color: #0284c7;">ស្រង់ពិន្ទុខែ</h2>
+            <p>ពិន្ទុប្រចាំខែតាមមុខវិជ្ជា</p>
+          </div>
+        </div>
+        <div class="card-bottom">
+          <span class="card-badge" id="monthlyBadgeText">ខែបច្ចុប្បន្ន</span>
+          <span class="card-arrow">➔</span>
+        </div>
+      </div>
+
+      <div class="score-card semester" onclick="openScoreForm('semester')">
+        <div class="card-top">
+          <div class="card-icon s">📝</div>
+          <div class="card-info">
+            <h2 class="f-moul" style="color: #7c3aed;">ស្រង់ពិន្ទុឆមាស</h2>
+            <p>ពិន្ទុប្រឡងឆមាសទី១ និងទី២</p>
+          </div>
+        </div>
+        <div class="card-bottom">
+          <span class="card-badge">ឆមាសទី ១ / ២</span>
+          <span class="card-arrow">➔</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ 2. MAIN SCORE TABLE ══════════════ -->
+  <div id="mainForm">
+    <div class="table-container-card">
+      
+      <!-- Top Action Toolbar -->
+      <div class="top-toolbar">
+        <div class="tb-left">
+          <button class="action-btn btn-back" onclick="goBackLanding()">⬅ ត្រឡប់</button>
+          
+          <select id="classSelect" onchange="loadStudents()" class="pill-select" title="ជ្រើសរើសថ្នាក់">
+            <option value="">កំពុងទាញយកថ្នាក់...</option>
+          </select>
+
+          <select id="monthSelect" onchange="loadStudents()" class="pill-select">
+            <option value="មករា">មករា</option>
+            <option value="កុម្ភៈ">កុម្ភៈ</option>
+            <option value="មីនា">មីនា</option>
+            <option value="មេសា">មេសា</option>
+            <option value="ឧសភា">ឧសភា</option>
+            <option value="មិថុនា">មិថុនា</option>
+            <option value="កក្កដា">កក្កដា</option>
+            <option value="សីហា">សីហា</option>
+            <option value="កញ្ញា">កញ្ញា</option>
+            <option value="តុលា">តុលា</option>
+            <option value="វិច្ឆិកា">វិច្ឆិកា</option>
+            <option value="ធ្នូ">ធ្នូ</option>
+          </select>
+
+          <select id="semesterSelect" onchange="loadStudents()" class="pill-select" style="display:none;">
+            <option value="ឆមាសទី១" selected>ឆមាសទី ១</option>
+            <option value="ឆមាសទី២">ឆមាសទី ២</option>
+          </select>
+
+          <div class="search-input-wrap">
+            <span>🔍</span>
+            <input type="text" id="searchBox" placeholder="ស្វែងរកសិស្ស..." oninput="renderTable()">
+          </div>
+        </div>
+
+        <div class="tb-right">
+          <span id="autoSaveStatus" class="autosave-pill saved">✓ រួចរាល់</span>
+          <button class="action-btn btn-report" onclick="openScoreReportModal()">📋 របាយការណ៍ពិន្ទុ</button>
+          <button class="action-btn" onclick="toggleLock()" id="btnLock">🔓 ដោះសោ</button>
+          <button class="action-btn btn-save" id="btnSave" onclick="saveScores()">💾 រក្សាទុក</button>
+          <button class="action-btn" onclick="exportToExcel()">📥 Excel</button>
+        </div>
+      </div>
+
+      <!-- Table Scroll Area -->
+      <div id="tableArea" class="table-scroll-wrap">
+        <div style="text-align:center; padding: 50px; color:var(--text-muted);">កំពុងដំណើរការទិន្នន័យ...</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════ 3. SCORE REPORT VIEWER MODAL ══════════════ -->
+  <div id="scoreReportModal">
+    <div class="viewer-top-bar">
+      <button class="action-btn btn-back" onclick="closeScoreReportModal()">⬅ ត្រឡប់</button>
+      <div style="display:flex; gap:8px;">
+        <button class="action-btn" style="background:#0284c7; color:#fff; border-color:#0369a1;" onclick="downloadScorePDF()">📄 ទាញយក PDF</button>
+        <button class="action-btn" style="background:#16a34a; color:#fff; border-color:#15803d;" onclick="exportToExcel()">📥 Excel</button>
+        <button class="action-btn" style="background:#7c3aed; color:#fff; border-color:#6d28d9;" onclick="window.print()">🖨️ បោះពុម្ព</button>
+      </div>
+    </div>
+    <div class="report-paper-container" id="printableScorePaper"></div>
+  </div>
+
+  <!-- =========================================================
+       ⚙️ JAVASCRIPT : SUPABASE SCORE ENGINE
+  ========================================================= -->
+  <script>
+    /* 1. SUPABASE CLIENT CONFIG */
+    const SUPABASE_URL = "https://nggnuobnrxiqjtcwlvwk.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_AHDcUJbuMAfhaocyfm2X7w_O9s06wML";
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    /* 2. READ SESSION */
+    function readSession() {
+      try { return JSON.parse(localStorage.getItem('krou_supabase_user') || 'null'); } catch(e) { return null; }
+    }
+    const CURRENT_USER = readSession();
+    var USER_ROLE    = CURRENT_USER?.role || "teacher";
+    var USER_CLASS   = CURRENT_USER?.assigned_classes || "";
+    var TEACHER_NAME = CURRENT_USER?.teacher_name || "";
+    var IS_ADMIN     = String(USER_ROLE).toLowerCase().trim() === 'admin';
+
+    var KHMER_MONTHS = ['មករា','កុម្ភៈ','មីនា','មេសា','ឧសភា','មិថុនា','កក្កដា','សីហា','កញ្ញា','តុលា','វិច្ឆិកា','ធ្នូ'];
+    var KHMER_DIGITS = ['០','១','២','៣','៤','៥','៦','៧','៨','៩'];
+    function toKhmerNum(n) { return String(n).replace(/\d/g, d => KHMER_DIGITS[d]); }
+    function cleanGrade(g) { return String(g || '').replace(/^ថ្នាក់ទី\s*/, '').trim(); }
+
+    /* 🎨 THEME SYNC */
+    function applyTheme(th) {
+      document.documentElement.setAttribute('data-theme', th || 'dark');
+    }
+    applyTheme(localStorage.getItem('krou_theme_manual') || 'dark');
+    window.addEventListener('message', function(ev) {
+      if (ev.data && ev.data.type === 'THEME_CHANGE') applyTheme(ev.data.theme);
+    });
+
+    var MONTHLY_GROUPS = [
+      {
+        label: 'ភាសាខ្មែរ', grp: 'kh',
+        cols: [
+          { key: 'kh_listen', label: 'សមត្ថភាពស្ដាប់' },
+          { key: 'kh_write',  label: 'សមត្ថភាពសរសេរ' },
+          { key: 'kh_read',   label: 'សមត្ថភាពអាន' },
+          { key: 'kh_speak',  label: 'សមត្ថភាពនិយាយ' }
+        ]
+      },
+      {
+        label: 'គណិតវិទ្យា', grp: 'ma',
+        cols: [
+          { key: 'm_num',     label: 'ចំនួន' },
+          { key: 'm_measure', label: 'រង្វាស់រង្វាល់' },
+          { key: 'm_geo',     label: 'ធរណីមាត្រ' },
+          { key: 'm_algebra', label: 'ពីជគណិត' },
+          { key: 'm_stat',    label: 'ស្ថិតិ' }
+        ]
+      },
+      {
+        label: 'វិទ្យាសាស្ត្រ', grp: 'sc',
+        cols: [ { key: 'science', label: 'វិទ្យាសាស្ត្រ' } ]
+      },
+      {
+        label: 'សិក្សាសង្គម', grp: 'so',
+        cols: [ { key: 'social', label: 'សិក្សាសង្គម' } ]
+      },
+      {
+        label: 'អប់រំកាយសុខភាព សិល្បៈ', grp: 'ar',
+        cols: [
+          { key: 'a_craft',  label: 'គេហវិទ្យា-អប់រំសិល្បៈ' },
+          { key: 'a_pe',     label: 'អប់រំកាយ-កីឡា' },
+          { key: 'a_health', label: 'សុខភាព-អនាម័យ' },
+          { key: 'a_env',    label: 'អប់រំបំណិនជីវិត' }
+        ]
+      },
+      {
+        label: 'ភាសាបរទេស', grp: 'fo',
+        cols: [ { key: 'foreign', label: 'ភាសាបរទេស' } ]
+      }
+    ];
+
+    var SEMESTER_GROUPS = [
+      {
+        label: 'ភាសាខ្មែរ', grp: 'kh',
+        cols: [
+          { key: 'read',      label: 'អំណាន' },
+          { key: 'listen',    label: 'ស្ដាប់ និងនិយាយ' },
+          { key: 'dictation', label: 'សរសេរតាមអាន' },
+          { key: 'essay',     label: 'តែងសេចក្ដី' }
+        ]
+      },
+      {
+        label: 'គណិតវិទ្យា', grp: 'ma',
+        cols: [ { key: 'math', label: 'គណិតវិទ្យា' } ]
+      },
+      {
+        label: 'វិទ្យាសាស្ត្រ', grp: 'sc',
+        cols: [ { key: 'science', label: 'វិទ្យាសាស្ត្រ' } ]
+      },
+      {
+        label: 'សិក្សាសង្គម', grp: 'so',
+        cols: [ { key: 'social', label: 'សិក្សាសង្គម' } ]
+      },
+      {
+        label: 'អប់រំកាយសុខភាព សិល្បៈ', grp: 'ar',
+        cols: [
+          { key: 'homeArts', label: 'គេហវិទ្យា-អប់រំសិល្បៈ' },
+          { key: 'pe',       label: 'អប់រំកាយ-សុខភាព' },
+          { key: 'ethics',   label: 'អប់រំបំណិនជីវិត' }
+        ]
+      },
+      {
+        label: 'ភាសាបរទេស', grp: 'fo',
+        cols: [ { key: 'foreign', label: 'ភាសាបរទេស' } ]
+      }
+    ];
+
+    var RES_COLS = [
+      { key: '_total', label: 'ពិន្ទុសរុប',   cls: 'col-res-tot' },
+      { key: '_avg',   label: 'មធ្យមភាគ',     cls: 'col-res-avg' },
+      { key: '_rank',  label: 'ចំណាត់ថ្នាក់', cls: 'col-res-rank' },
+      { key: '_grade', label: 'និទ្ទេស',       cls: 'col-res-grade' },
+      { key: '_note',  label: 'លទ្ធផល',       cls: 'col-res-note' },
+      { key: '_abs',   label: 'អវត្តមាន',     cls: 'col-res-abs' }
+    ];
+
+    var scoreType = 'monthly';
+    var isLocked = false;
+    var displayedStudents = [];
+    var savedScoresData = {};
+    var coefState = {};
+    var studentAbsenceData = {};
+    var autoSaveTimer = null;
+    var isAutoSaving = false;
+
+    function groups() { return scoreType === 'monthly' ? MONTHLY_GROUPS : SEMESTER_GROUPS; }
+    function allKeys() { return groups().flatMap(g => g.cols.map(c => c.key)); }
+    function getSelectedPeriod() {
+      return scoreType === 'monthly' ? document.getElementById('monthSelect').value : document.getElementById('semesterSelect').value;
+    }
+
+    function setAutoSaveStatus(text, statusClass) {
+      var el = document.getElementById('autoSaveStatus');
+      if (!el) return;
+      el.textContent = text;
+      el.className = 'autosave-pill ' + (statusClass || '');
+    }
+
+    window.onload = function() {
+      var curMonth = KHMER_MONTHS[new Date().getMonth()];
+      var mSel = document.getElementById('monthSelect');
+      if (mSel) mSel.value = curMonth;
+
+      var bTxt = document.getElementById('monthlyBadgeText');
+      if (bTxt) bTxt.textContent = curMonth + ' · ស្រង់ពិន្ទុ';
+
+      var lBadge = document.getElementById('landingClassBadge');
+      if (lBadge) {
+        if (IS_ADMIN) {
+          lBadge.textContent = 'គ្រប់គ្រងគ្រប់ថ្នាក់ (Admin)';
+        } else {
+          var cName = cleanGrade(USER_CLASS) || 'ទូទៅ';
+          lBadge.textContent = 'ថ្នាក់ទី ' + cName;
+        }
+      }
+
+      setupArrowKeys();
+      attachNativeTouchScroller(document.getElementById('tableArea'));
+    };
+
+    function attachNativeTouchScroller(container) {
+      if (!container || container._hasTouchListener) return;
+      container._hasTouchListener = true;
+      var startY = 0, startX = 0, sTop = 0, sLeft = 0, isDragging = false;
+
+      container.addEventListener('touchstart', function(e) {
+        if (e.touches.length !== 1) return;
+        startY = e.touches[0].clientY;
+        startX = e.touches[0].clientX;
+        sTop = container.scrollTop;
+        sLeft = container.scrollLeft;
+        isDragging = true;
+      }, { passive: true });
+
+      container.addEventListener('touchmove', function(e) {
+        if (!isDragging || e.touches.length !== 1) return;
+        var deltaY = startY - e.touches[0].clientY;
+        var deltaX = startX - e.touches[0].clientX;
+        if (Math.abs(deltaY) > 5 || Math.abs(deltaX) > 5) {
+          container.scrollTop = sTop + deltaY;
+          container.scrollLeft = sLeft + deltaX;
+          if (document.activeElement && document.activeElement.tagName === 'INPUT') {
+            document.activeElement.blur();
+          }
+        }
+      }, { passive: true });
+
+      container.addEventListener('touchend', function() { isDragging = false; }, { passive: true });
+      container.addEventListener('touchcancel', function() { isDragging = false; }, { passive: true });
+    }
+
+    function openScoreForm(type) {
+      scoreType = type;
+      document.getElementById('landingPage').style.display = 'none';
+      var mf = document.getElementById('mainForm');
+      mf.style.display = 'flex';
+
+      var mSel = document.getElementById('monthSelect');
+      var sSel = document.getElementById('semesterSelect');
+
+      if (type === 'monthly') {
+        mSel.style.display = 'inline-block';
+        sSel.style.display = 'none';
+      } else {
+        mSel.style.display = 'none';
+        sSel.style.display = 'inline-block';
+      }
+
+      initCoefState();
+      loadClassList();
+    }
+
+    function goBackLanding() {
+      document.getElementById('mainForm').style.display = 'none';
+      document.getElementById('landingPage').style.display = 'block';
+    }
+
+    function initCoefState() {
+      coefState = {};
+      allKeys().forEach(k => { coefState[k] = 1; });
+    }
+
+    function toggleLock() {
+      isLocked = !isLocked;
+      var btn = document.getElementById('btnLock');
+      btn.textContent = isLocked ? '🔒 ចាក់សោ' : '🔓 ដោះសោ';
+      btn.style.background = isLocked ? 'rgba(239, 68, 68, 0.15)' : 'var(--surface)';
+      btn.style.color = isLocked ? '#ef4444' : 'var(--text)';
+      document.querySelectorAll('.score-box').forEach(el => {
+        el.disabled = isLocked;
+      });
+    }
+
+    /* =========================================================
+       🏫 LOAD CLASS LIST (SUPABASE)
+    ========================================================= */
+    async function loadClassList() {
+      var sel = document.getElementById('classSelect');
+      sel.innerHTML = '<option value="">កំពុងទាញយកថ្នាក់...</option>';
+      var cleanUserClass = cleanGrade(USER_CLASS);
+
+      if (!IS_ADMIN && cleanUserClass !== '') {
+        sel.innerHTML = '';
+        var opt = document.createElement('option');
+        opt.value = cleanUserClass;
+        opt.textContent = 'ថ្នាក់ទី ' + cleanUserClass;
+        sel.appendChild(opt);
+        sel.value = cleanUserClass;
+        sel.disabled = true;
+        loadStudents();
+        return;
+      }
+
+      sel.disabled = false;
+      var classes = [];
+
+      try {
+        const { data, error } = await sb.from('students').select('grade');
+        if (!error && data) {
+          classes = [...new Set(data.map(d => cleanGrade(d.grade)).filter(Boolean))];
+        }
+      } catch (err) {
+        console.warn("Class list fetch notice:", err);
+      }
+
+      if (!classes.length) {
+        classes = cleanUserClass ? [cleanUserClass] : ['១', '២', '៣', '៤(ក)', '៤(ខ)', '៥', '៦'];
+      }
+
+      sel.innerHTML = '';
+      classes.forEach(function(c) {
+        var o = document.createElement('option');
+        o.value = c;
+        o.textContent = 'ថ្នាក់ទី ' + c;
+        sel.appendChild(o);
+      });
+
+      if (cleanUserClass && Array.from(sel.options).some(o => o.value === cleanUserClass)) {
+        sel.value = cleanUserClass;
+      } else if (sel.options.length > 0) {
+        sel.selectedIndex = 0;
+      }
+
+      loadStudents();
+    }
+
+    /* 3. LOAD ATTENDANCE ABSENCES (SUPABASE) */
+    async function loadAttendanceData(cls, period) {
+      studentAbsenceData = {};
+      try {
+        var curYear = new Date().getFullYear();
+        let query = sb.from('attendance')
+          .select('student_id, attendance_date, status')
+          .eq('assigned_class', cls)
+          .in('status', ['C', 'A']);
+
+        if (scoreType === 'monthly') {
+          var mIdx = KHMER_MONTHS.indexOf(period);
+          if (mIdx !== -1) {
+            var firstDate = `${curYear}-${String(mIdx + 1).padStart(2, '0')}-01`;
+            var lastDay = new Date(curYear, mIdx + 1, 0).getDate();
+            var lastDate = `${curYear}-${String(mIdx + 1).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
+            query = query.gte('attendance_date', firstDate).lte('attendance_date', lastDate);
+          }
+        }
+
+        const { data: attList, error: attErr } = await query;
+        if (!attErr && attList) {
+          attList.forEach(r => {
+            var sid = String(r.student_id);
+            studentAbsenceData[sid] = (studentAbsenceData[sid] || 0) + 1;
+          });
+        }
+      } catch(e) {
+        console.warn("Attendance load notice:", e);
+      }
+    }
+
+    /* 4. LOAD STUDENTS & SCORES (SUPABASE) */
+    async function loadStudents() {
+      var cls = document.getElementById('classSelect').value;
+      var period = getSelectedPeriod();
+      if (!cls) return;
+
+      var curPure = cleanGrade(cls);
+      setAutoSaveStatus('✓ រួចរាល់', 'saved');
+      document.getElementById('tableArea').innerHTML = '<div style="text-align:center; padding: 50px; color:var(--text-muted);">⚡ កំពុងទាញយកទិន្នន័យ...</div>';
+
+      try {
+        // ក. ទាញយកសិស្សពី table: students
+        const { data: stList, error: stErr } = await sb
+          .from('students')
+          .select('id, student_id, student_name, gender, grade, dropout_semester')
+          .order('id', { ascending: true });
+
+        if (stErr) throw stErr;
+
+        var classStudents = (stList || []).filter(s => cleanGrade(s.grade) === curPure);
+
+        // ត្រងសិស្សបោះបង់តាមឆមាស
+        var sem2Months = ['ឧសភា', 'មិថុនា', 'កក្កដា', 'សីហា', 'កញ្ញា', 'តុលា'];
+        var isSem2 = (period === 'ឆមាសទី២' || sem2Months.includes(period));
+
+        displayedStudents = classStudents
+          .filter(s => {
+            var drop = String(s.dropout_semester || '').trim();
+            if (isSem2 && (drop.includes('ឆមាស១') || drop.includes('ឆមាសទី១') || drop === '១')) {
+              return false; // 🚫 លាក់សិស្សបោះបង់ឆមាសទី១
+            }
+            return true;
+          })
+          .map((s, idx) => ({
+            id: String(s.student_id || s.id),
+            name: s.student_name || 'គ្មានឈ្មោះ',
+            sex: s.gender || 'ប្រុស',
+            grade: s.grade
+          }));
+
+        // ខ. ទាញយកពិន្ទុពី table: scores
+        const { data: scList, error: scErr } = await sb
+          .from('scores')
+          .select('*')
+          .eq('assigned_class', curPure)
+          .eq('score_type', scoreType)
+          .eq('period', period);
+
+        if (scErr) console.warn("Score query warning:", scErr);
+
+        savedScoresData = {};
+        (scList || []).forEach(row => {
+          savedScoresData[String(row.student_id)] = row.scores || {};
+        });
+
+        // គ. ទាញយកវត្តមាន
+        await loadAttendanceData(curPure, period);
+        renderTable();
+      } catch(err) {
+        document.getElementById('tableArea').innerHTML = '<div style="text-align:center; padding: 50px; color:#ef4444;">❌ កំហុសក្នុងការទាញយកទិន្នន័យ៖ ' + err.message + '</div>';
+      }
+    }
+
+    function cleanScore(input) {
+      var v = String(input.value || '').replace(/,/g, '.').replace(/[^0-9.]/g, '');
+      var firstDot = v.indexOf('.');
+      if (firstDot !== -1) {
+        v = v.slice(0, firstDot + 1) + v.slice(firstDot + 1).replace(/\./g, '');
+      }
+      input.value = v;
+      if (v !== '' && v !== '.') input.classList.add('filled');
+      else input.classList.remove('filled');
+    }
+
+    function validateScore(input) {
+      cleanScore(input);
+      var v = parseFloat(input.value);
+      if (isNaN(v)) {
+        input.value = '';
+        input.classList.remove('filled');
+      } else {
+        if (v < 0) v = 0;
+        if (v > 10) v = 10;
+        input.value = String(v);
+        input.classList.add('filled');
+      }
+      var sid = input.getAttribute('data-sid');
+      var key = input.getAttribute('data-key');
+      if (sid && key) syncScore(sid, key, input.value);
+    }
+
+    function syncScore(sid, key, val) {
+      if (!savedScoresData[sid]) savedScoresData[sid] = {};
+      if (val === '' || val === '.') delete savedScoresData[sid][key];
+      else savedScoresData[sid][key] = val;
+      updateRowTotals(sid);
+      updateAutoCoef();
+      scheduleAutoSave();
+    }
+
+    function updateAutoCoef() {
+      var keys = allKeys();
+      var activeCount = 0;
+      keys.forEach(k => {
+        var has = displayedStudents.some(s => {
+          var v = parseFloat((savedScoresData[s.id] || {})[k]);
+          return !isNaN(v);
+        });
+        var el = document.getElementById('ac-' + k);
+        if (el) {
+          el.textContent = has ? '×1' : '×0';
+          el.className = 'coef-tag ' + (has ? 'coef-active' : 'coef-zero');
+        }
+        if (has) activeCount++;
+      });
+      var totCoefEl = document.getElementById('totalCoefCount');
+      if (totCoefEl) totCoefEl.textContent = activeCount;
+    }
+
+    function calcTotal(sid) {
+      var keys = allKeys(), tot = 0;
+      keys.forEach(k => {
+        var v = parseFloat((savedScoresData[sid] || {})[k]);
+        if (!isNaN(v)) tot += v;
+      });
+      return tot;
+    }
+
+    function calcAvg(sid) {
+      var keys = allKeys(), tot = 0, count = 0;
+      keys.forEach(k => {
+        var v = parseFloat((savedScoresData[sid] || {})[k]);
+        if (!isNaN(v)) { tot += v; count++; }
+      });
+      return count > 0 ? tot / count : 0;
+    }
+
+    function getGradeBadge(avg) {
+      if (avg >= 9) return { g: 'ល្អប្រសើរ', c: 'grade-a' };
+      if (avg >= 8) return { g: 'ល្អណាស់',  c: 'grade-b' };
+      if (avg >= 7) return { g: 'ល្អ',       c: 'grade-c' };
+      if (avg >= 6) return { g: 'បង្គួរ',     c: 'grade-d' };
+      if (avg >= 5) return { g: 'មធ្យម',    c: 'grade-e' };
+      return { g: 'ខ្សោយ',   c: 'grade-f' };
+    }
+
+    function computeRanks() {
+      var list = displayedStudents.map(s => ({ id: s.id, avg: calcAvg(s.id) }));
+      list.sort((a, b) => b.avg - a.avg);
+      var ranks = {}, prev = null, pr = 0;
+      list.forEach((item, i) => {
+        if (item.avg === prev) {
+          ranks[item.id] = pr;
+        } else {
+          ranks[item.id] = i + 1;
+          pr = i + 1;
+          prev = item.avg;
+        }
+      });
+      return ranks;
+    }
+
+    function updateRowTotals(sid) {
+      var tot = calcTotal(sid);
+      var avg = calcAvg(sid);
+      
+      var tEl = document.getElementById('rt-' + sid);
+      if (tEl) tEl.textContent = tot > 0 ? tot.toFixed(2) : '—';
+
+      var aEl = document.getElementById('ra-' + sid);
+      if (aEl) aEl.textContent = avg > 0 ? avg.toFixed(2) : '—';
+
+      var gEl = document.getElementById('rg-' + sid);
+      if (gEl) {
+        if (avg > 0) {
+          var gr = getGradeBadge(avg);
+          gEl.innerHTML = '<span class="badge-grade ' + gr.c + '">' + gr.g + '</span>';
+        } else {
+          gEl.textContent = '—';
+        }
+      }
+
+      var nEl = document.getElementById('rn-' + sid);
+      if (nEl) {
+        if (avg > 0) {
+          nEl.innerHTML = avg >= 5 ? '<span class="status-pass">ជាប់</span>' : '<span class="status-fail">ធ្លាក់</span>';
+        } else {
+          nEl.textContent = '—';
+        }
+      }
+
+      var ranks = computeRanks();
+      displayedStudents.forEach(s => {
+        var rEl = document.getElementById('rr-' + s.id);
+        if (rEl) {
+          var aVal = calcAvg(s.id);
+          rEl.textContent = aVal > 0 ? (ranks[s.id] || '') : '—';
+        }
+      });
+    }
+
+    function renderTable() {
+      var area = document.getElementById('tableArea');
+      var grps = groups();
+      var keys = allKeys();
+      var q = (document.getElementById('searchBox').value || '').trim();
+      var list = displayedStudents.slice();
+
+      if (q) {
+        list = list.filter(s => (s.name || '').includes(q) || (s.id || '').includes(q));
+      }
+
+      var ranks = computeRanks();
+      var totalCols = 4 + keys.length + RES_COLS.length;
+
+      var h = '<table class="modern-score-table"><thead>';
+
+      h += '<tr>'
+        +  '<th class="stk stk-1" rowspan="2">ល.រ</th>'
+        +  '<th class="stk stk-2" rowspan="2">គោត្តនាម</th>'
+        +  '<th class="stk stk-3" rowspan="2">នាម</th>'
+        +  '<th class="stk stk-4" rowspan="2">ភេទ</th>';
+      
+      grps.forEach(g => {
+        if (g.cols.length > 1) {
+          h += '<th class="th-group-' + g.grp + ' f-bold" colspan="' + g.cols.length + '" style="font-size:13px; height:34px;">' + g.label + '</th>';
+        } else {
+          h += '<th class="th-group-' + g.grp + ' th-vertical-cell" rowspan="2"><div class="th-vertical-wrap">' + g.cols[0].label + '</div></th>';
+        }
+      });
+
+      h += '<th class="th-group-res f-bold" colspan="' + RES_COLS.length + '" style="font-size:13px; height:34px;">' + (scoreType === 'monthly' ? 'លទ្ធផលខែ' : 'លទ្ធផលឆមាស') + '</th>'
+        +  '</tr>';
+
+      h += '<tr>';
+      grps.forEach(g => {
+        if (g.cols.length > 1) {
+          g.cols.forEach(c => {
+            h += '<th class="th-sub-' + g.grp + ' th-vertical-cell"><div class="th-vertical-wrap">' + c.label + '</div></th>';
+          });
+        }
+      });
+      RES_COLS.forEach(c => {
+        h += '<th class="th-sub-res th-vertical-cell ' + c.cls + '"><div class="th-vertical-wrap">' + c.label + '</div></th>';
+      });
+      h += '</tr>';
+
+      h += '<tr class="coef-row">'
+        +  '<td colspan="4" class="stk stk-1" style="text-align:right; padding-right:10px; font-weight:bold;">មេគុណតាមមុខវិជ្ជា</td>';
+
+      grps.forEach(g => {
+        g.cols.forEach(c => {
+          h += '<td class="th-sub-' + g.grp + '"><span class="coef-tag coef-zero" id="ac-' + c.key + '">×0</span></td>';
+        });
+      });
+
+      h += '<td class="col-res-tot" style="color:#0284c7; font-weight:bold;" id="totalCoefCount">0</td>'
+        +  '<td colspan="' + (RES_COLS.length - 1) + '"></td>'
+        +  '</tr>';
+
+      h += '</thead><tbody>';
+
+      if (!list.length) {
+        h += '<tr><td colspan="' + totalCols + '" style="padding:30px; color:#ef4444;">⚠️ មិនមានទិន្នន័យសិស្សឡើយ</td></tr>';
+      } else {
+        list.forEach((s, idx) => {
+          var sc = savedScoresData[s.id] || {};
+          var isF = s.sex === 'ស្រី' || s.sex === 'F';
+          
+          var parts = (s.name || '').trim().split(/\s+/);
+          var lastName = parts.length > 1 ? parts[0] : '';
+          var firstName = parts.length > 1 ? parts.slice(1).join(' ') : parts[0];
+
+          var avg = calcAvg(s.id);
+          var tot = calcTotal(s.id);
+          var gr = getGradeBadge(avg);
+          var absVal = (studentAbsenceData[s.id] !== undefined && studentAbsenceData[s.id] > 0) ? studentAbsenceData[s.id] : '—';
+
+          h += '<tr class="dr" data-id="' + s.id + '">'
+            +  '<td class="stk stk-1" style="color:var(--text-muted);">' + (idx + 1) + '</td>'
+            +  '<td class="stk stk-2">' + lastName + '</td>'
+            +  '<td class="stk stk-3">' + firstName + '</td>'
+            +  '<td class="stk stk-4" style="font-weight:bold; color:' + (isF ? '#ec4899' : 'var(--text)') + ';">' + (isF ? 'ស្រី' : 'ប្រុស') + '</td>';
+
+          grps.forEach(g => {
+            g.cols.forEach(c => {
+              var val = sc[c.key] !== undefined ? sc[c.key] : '';
+              var isFilled = val !== '' && val !== '.';
+              h += '<td>'
+                +  '<input type="text" inputmode="decimal" autocomplete="off" value="' + val + '"'
+                +  ' data-sid="' + s.id + '" data-key="' + c.key + '"'
+                +  ' class="score-box box-' + g.grp + (isFilled ? ' filled' : '') + '"'
+                +  (isLocked ? ' disabled' : '')
+                +  ' oninput="cleanScore(this);syncScore(\'' + s.id + '\',\'' + c.key + '\',this.value)"'
+                +  ' onblur="validateScore(this)">'
+                +  '</td>';
+            });
+          });
+
+          h += '<td class="col-res-tot" id="rt-' + s.id + '">' + (tot > 0 ? tot.toFixed(2) : '—') + '</td>'
+            +  '<td class="col-res-avg" id="ra-' + s.id + '">' + (avg > 0 ? avg.toFixed(2) : '—') + '</td>'
+            +  '<td class="col-res-rank" id="rr-' + s.id + '">' + (avg > 0 ? (ranks[s.id] || '') : '—') + '</td>'
+            +  '<td class="col-res-grade" id="rg-' + s.id + '">' + (avg > 0 ? '<span class="badge-grade ' + gr.c + '">' + gr.g + '</span>' : '—') + '</td>'
+            +  '<td class="col-res-note" id="rn-' + s.id + '">' + (avg > 0 ? (avg >= 5 ? '<span class="status-pass">ជាប់</span>' : '<span class="status-fail">ធ្លាក់</span>') : '—') + '</td>'
+            +  '<td class="col-res-abs" id="rabs-' + s.id + '">' + absVal + '</td>'
+            +  '</tr>';
+        });
+      }
+
+      h += '</tbody>';
+
+      if (list.length > 0) {
+        h += `<tfoot>
+          <tr>
+            <td colspan="${totalCols}" class="table-footer-buffer">
+              ✨ បញ្ជីសិស្សសរុប ${toKhmerNum(list.length)} នាក់ (បានរមូរដល់បាតក្រោមបង្អស់)
+            </td>
+          </tr>
+        </tfoot>`;
+      }
+
+      h += '</table>';
+      area.innerHTML = h;
+      updateAutoCoef();
+      attachNativeTouchScroller(area);
+    }
+
+    function setupArrowKeys() {
+      document.addEventListener('keydown', function(e) {
+        if (isLocked) return;
+        var active = document.activeElement;
+        if (!active || !active.classList.contains('score-box')) return;
+        var row = active.closest('tr');
+        var cell = active.closest('td');
+        if (!row || !cell) return;
+        var cells = Array.from(row.querySelectorAll('td'));
+        var rows = Array.from(row.closest('tbody').querySelectorAll('tr.dr'));
+        var ci = cells.indexOf(cell), ri = rows.indexOf(row);
+        var myInputs = Array.from(row.querySelectorAll('.score-box'));
+        var mp = myInputs.indexOf(active);
+        var target = null;
+        if (e.key === 'ArrowRight') {
+          for (var c = ci + 1; c < cells.length; c++) {
+            var i = cells[c].querySelector('.score-box');
+            if (i) { target = i; break; }
+          }
+        } else if (e.key === 'ArrowLeft') {
+          for (var c = ci - 1; c >= 0; c--) {
+            var i = cells[c].querySelector('.score-box');
+            if (i) { target = i; break; }
+          }
+        } else if (e.key === 'ArrowDown' || e.key === 'Enter') {
+          if (ri + 1 < rows.length) {
+            var ni = rows[ri + 1].querySelectorAll('.score-box');
+            target = ni[mp] || ni[0];
+          }
+        } else if (e.key === 'ArrowUp') {
+          if (ri - 1 >= 0) {
+            var pi = rows[ri - 1].querySelectorAll('.score-box');
+            target = pi[mp] || pi[0];
+          }
+        }
+        if (target) {
+          e.preventDefault();
+          target.focus();
+          target.select();
+          document.querySelectorAll('.focused-row').forEach(r => r.classList.remove('focused-row'));
+          target.closest('tr').classList.add('focused-row');
+        }
+      });
+
+      document.addEventListener('focusin', function(e) {
+        if (e.target.classList && e.target.classList.contains('score-box')) {
+          document.querySelectorAll('.focused-row').forEach(r => r.classList.remove('focused-row'));
+          if (e.target.closest('tr')) e.target.closest('tr').classList.add('focused-row');
+        }
+      });
+    }
+
+    function scheduleAutoSave() {
+      clearTimeout(autoSaveTimer);
+      setAutoSaveStatus('⏳ កំពុងរង់ចាំ...', 'saving');
+      autoSaveTimer = setTimeout(function() {
+        autoSaveNow();
+      }, 1200);
+    }
+
+    /* 5. SAVE SCORES DIRECTLY TO SUPABASE */
+    async function autoSaveNow() {
+      if (isLocked) return;
+      var cls = document.getElementById('classSelect').value;
+      if (!cls || !displayedStudents.length) return;
+      if (isAutoSaving) return;
+
+      isAutoSaving = true;
+      setAutoSaveStatus('⏳ កំពុងរក្សាទុក...', 'saving');
+
+      try {
+        var curPure = cleanGrade(cls);
+        var period = getSelectedPeriod();
+        var ranks = computeRanks();
+
+        var records = displayedStudents.map(s => {
+          var sid = String(s.id);
+          var sc = savedScoresData[sid] || {};
+          var tot = calcTotal(sid);
+          var avg = calcAvg(sid);
+          var gr = getGradeBadge(avg);
+          return {
+            student_id: sid,
+            assigned_class: curPure,
+            score_type: scoreType,
+            period: period,
+            scores: sc,
+            total: tot > 0 ? parseFloat(tot.toFixed(2)) : 0,
+            average: avg > 0 ? parseFloat(avg.toFixed(2)) : 0,
+            rank: ranks[sid] || null,
+            grade_label: avg > 0 ? gr.g : null,
+            result: avg >= 5 ? 'ជាប់' : (tot > 0 ? 'ធ្លាក់' : null),
+            updated_at: new Date().toISOString()
+          };
+        });
+
+        const { error } = await sb.from('scores').upsert(records, {
+          onConflict: 'student_id,score_type,period'
+        });
+
+        if (error) throw error;
+        isAutoSaving = false;
+        setAutoSaveStatus('✓ បានរក្សាទុក', 'saved');
+      } catch(err) {
+        isAutoSaving = false;
+        setAutoSaveStatus('⚠ រក្សាមិនបាន', 'error');
+        console.warn('Auto-save error:', err);
+      }
+    }
+
+    async function saveScores() {
+      if (isLocked) { alert('🔒 ពិន្ទុត្រូវបានចាក់សោ!'); return; }
+      var cls = document.getElementById('classSelect').value;
+      if (!cls) { alert('សូមជ្រើសរើសថ្នាក់!'); return; }
+      
+      var btn = document.getElementById('btnSave');
+      btn.textContent = '⏳ កំពុងរក្សា...';
+      btn.disabled = true;
+      setAutoSaveStatus('⏳ កំពុងរក្សាទុក...', 'saving');
+
+      try {
+        var curPure = cleanGrade(cls);
+        var period = getSelectedPeriod();
+        var ranks = computeRanks();
+
+        var records = displayedStudents.map(s => {
+          var sid = String(s.id);
+          var sc = savedScoresData[sid] || {};
+          var tot = calcTotal(sid);
+          var avg = calcAvg(sid);
+          var gr = getGradeBadge(avg);
+          return {
+            student_id: sid,
+            assigned_class: curPure,
+            score_type: scoreType,
+            period: period,
+            scores: sc,
+            total: tot > 0 ? parseFloat(tot.toFixed(2)) : 0,
+            average: avg > 0 ? parseFloat(avg.toFixed(2)) : 0,
+            rank: ranks[sid] || null,
+            grade_label: avg > 0 ? gr.g : null,
+            result: avg >= 5 ? 'ជាប់' : (tot > 0 ? 'ធ្លាក់' : null),
+            updated_at: new Date().toISOString()
+          };
+        });
+
+        const { error } = await sb.from('scores').upsert(records, {
+          onConflict: 'student_id,score_type,period'
+        });
+
+        if (error) throw error;
+        btn.textContent = '💾 រក្សាទុក';
+        btn.disabled = false;
+        setAutoSaveStatus('✓ បានរក្សាទុក', 'saved');
+        alert('✓ រក្សាទុកទិន្នន័យពិន្ទុទៅ Supabase បានជោគជ័យ!');
+      } catch(err) {
+        btn.textContent = '💾 រក្សាទុក';
+        btn.disabled = false;
+        setAutoSaveStatus('⚠ រក្សាមិនបាន', 'error');
+        alert('❌ កំហុស៖ ' + err.message);
+      }
+    }
+
+    /* ================= REPORT GENERATION & PRINT ================= */
+    function openScoreReportModal() {
+      var cls = document.getElementById('classSelect').value;
+      if (!cls || !displayedStudents.length) {
+        alert('សូមជ្រើសរើសថ្នាក់ដែលមានទិន្នន័យសិស្សសិន!');
+        return;
+      }
+      document.getElementById('scoreReportModal').style.display = 'block';
+      renderScorePrintReport();
+    }
+
+    function closeScoreReportModal() {
+      document.getElementById('scoreReportModal').style.display = 'none';
+    }
+
+    function downloadScorePDF() {
+      var element = document.getElementById('printableScorePaper');
+      var cls = document.getElementById('classSelect').value;
+      var period = getSelectedPeriod();
+      var opt = {
+        margin:       [4, 6, 4, 6],
+        filename:     'Score_Report_' + cls + '_' + period + '.pdf',
+        image:        { type: 'jpeg', quality: 1.0 },
+        html2canvas:  { scale: 3, useCORS: true, letterRendering: true, scrollY: 0, scrollX: 0 },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape', compress: true }
+      };
+      html2pdf().set(opt).from(element).save();
+    }
+
+    function renderScorePrintReport() {
+      var cls = document.getElementById('classSelect').value;
+      var period = getSelectedPeriod();
+      var grps = groups();
+      var ranks = computeRanks();
+
+      var currentYear = new Date().getFullYear();
+      var d = new Date();
+      var defaultLunar = `ថ្ងៃអាទិត្យ ២រោច ខែស្រាពណ៍ ឆ្នាំមមែ អដ្ឋស័ក ពុទ្ធសករាជ ២៥៧០`;
+      var defaultSolar = `ថ្ងៃទី${toKhmerNum(d.getDate())} ខែ${period.includes('ឆមាស') ? 'សីហា' : period} ឆ្នាំ${toKhmerNum(currentYear)}`;
+
+      var titleText = (scoreType === 'monthly') ? `តារាងស្រង់ពិន្ទុ ខែ ${period}` : `តារាងស្រង់ពិន្ទុ ${period}`;
+
+      var theadHtml = '';
+      if (scoreType === 'monthly') {
+        theadHtml += '<tr>'
+          +  '<th rowspan="2" style="width:28px;">ល.រ</th>'
+          +  '<th rowspan="2" style="width:130px;">គោត្តនាម នាម</th>'
+          +  '<th rowspan="2" style="width:34px;">ភេទ</th>';
+        
+        grps.forEach(g => {
+          if (g.cols.length > 1) {
+            theadHtml += '<th class="th-rpt-group" colspan="' + g.cols.length + '" style="font-size:11px; font-weight:bold;">' + g.label + '</th>';
+          } else {
+            theadHtml += '<th class="th-rpt-group" rowspan="2" style="width:28px;"><div class="th-rpt-vert-box"><span class="th-rpt-vert">' + g.cols[0].label + '</span></div></th>';
+          }
+        });
+
+        theadHtml += '<th class="th-rpt-group" colspan="5" style="font-size:11px; font-weight:bold;">លទ្ធផល</th>'
+          +  '<th class="th-rpt-group" rowspan="2" style="width:28px;"><div class="th-rpt-vert-box"><span class="th-rpt-vert">អវត្តមាន</span></div></th>'
+          +  '</tr><tr>';
+
+        grps.forEach(g => {
+          if (g.cols.length > 1) {
+            g.cols.forEach(c => {
+              theadHtml += '<th style="width:28px;"><div class="th-rpt-vert-box"><span class="th-rpt-vert">' + c.label + '</span></div></th>';
+            });
+          }
+        });
+
+        theadHtml += '<th style="width:38px;">ពិ.ស</th>'
+          +  '<th style="width:38px;">មធ្យម</th>'
+          +  '<th style="width:38px;">ចំ.ថ្នាក់</th>'
+          +  '<th style="width:42px;">និទ្ទេស</th>'
+          +  '<th style="width:40px;">លទ្ធផល</th>'
+          +  '</tr>';
+      } else {
+        theadHtml += '<tr>'
+          +  '<th rowspan="2" style="width:28px;">ល.រ</th>'
+          +  '<th rowspan="2" style="width:130px;">គោត្តនាម នាម</th>'
+          +  '<th rowspan="2" style="width:34px;">ភេទ</th>';
+        
+        grps.forEach(g => {
+          g.cols.forEach(c => {
+            theadHtml += '<th rowspan="2" style="width:28px;"><div class="th-rpt-vert-box"><span class="th-rpt-vert">' + c.label + '</span></div></th>';
+          });
+        });
+
+        theadHtml += '<th class="th-rpt-group" colspan="5" style="font-size:11px; font-weight:bold;">លទ្ធផល</th>'
+          +  '<th class="th-rpt-group" rowspan="2" style="width:28px;"><div class="th-rpt-vert-box"><span class="th-rpt-vert">អវត្តមាន</span></div></th>'
+          +  '</tr><tr>'
+          +  '<th style="width:38px;">ពិ.ស</th>'
+          +  '<th style="width:38px;">មធ្យម</th>'
+          +  '<th style="width:38px;">ចំ.ថ្នាក់</th>'
+          +  '<th style="width:42px;">និទ្ទេស</th>'
+          +  '<th style="width:40px;">លទ្ធផល</th>'
+          +  '</tr>';
+      }
+
+      var rowsHtml = '';
+      var totalStudents = displayedStudents.length;
+      var femaleCount = 0;
+      var passCount = 0;
+      var gradeCounts = { 'ល្អប្រសើរ': 0, 'ល្អណាស់': 0, 'ល្អ': 0, 'បង្គួរ': 0, 'មធ្យម': 0, 'ខ្សោយ': 0 };
+
+      displayedStudents.forEach((s, idx) => {
+        var sc = savedScoresData[s.id] || {};
+        var isF = s.sex === 'ស្រី' || s.sex === 'F';
+        if (isF) femaleCount++;
+
+        var tot = calcTotal(s.id);
+        var avg = calcAvg(s.id);
+        var gr = getGradeBadge(avg);
+        var absVal = (studentAbsenceData[s.id] !== undefined && studentAbsenceData[s.id] > 0) ? studentAbsenceData[s.id] : '';
+
+        if (avg > 0) {
+          gradeCounts[gr.g]++;
+          if (avg >= 5) passCount++;
+        }
+
+        var subjectCells = '';
+        grps.forEach(g => {
+          g.cols.forEach(c => {
+            var val = sc[c.key] !== undefined ? sc[c.key] : '';
+            var num = parseFloat(val);
+            var displayVal = isNaN(num) ? '' : num;
+            subjectCells += `<td>${displayVal}</td>`;
+          });
+        });
+
+        rowsHtml += `
+          <tr>
+            <td>${idx + 1}</td>
+            <td style="text-align:left; padding-left:6px; font-weight:bold; white-space:nowrap;">${s.name}</td>
+            <td>${isF ? 'ស្រី' : 'ប្រុស'}</td>
+            ${subjectCells}
+            <td style="font-weight:bold;">${tot > 0 ? tot.toFixed(2) : ''}</td>
+            <td style="font-weight:bold;">${avg > 0 ? avg.toFixed(2) : ''}</td>
+            <td style="font-weight:bold; color:#dc2626;">${avg > 0 ? (ranks[s.id] || '') : ''}</td>
+            <td>${avg > 0 ? gr.g : ''}</td>
+            <td style="font-weight:bold; color:${avg >= 5 ? '#16a34a' : '#dc2626'};">${avg > 0 ? (avg >= 5 ? 'ជាប់' : 'ធ្លាក់') : ''}</td>
+            <td style="font-weight:bold; color:#b91c1c;">${absVal}</td>
+          </tr>
+        `;
+      });
+
+      var maleCount = totalStudents - femaleCount;
+      var failCount = totalStudents - passCount;
+
+      var html = `
+        <div class="rpt-header-banner">
+          <div class="f-moul" style="font-size:15px; margin-bottom:2px;">ព្រះរាជាណាចក្រកម្ពុជា</div>
+          <div class="f-moul" style="font-size:13.5px; margin-bottom:3px;">ជាតិ សាសនា ព្រះមហាក្សត្រ</div>
+          <div style="font-size:11px; letter-spacing:3px; color:#334155;">─────── ❖ ───────</div>
+          
+          <div class="f-moul" style="font-size:16px; margin-top:8px; margin-bottom:2px;">${titleText}</div>
+          <div style="font-size:12px; font-weight:bold;">ឆ្នាំសិក្សា ២០២៦-២០២៧</div>
+        </div>
+
+        <div style="text-align:left; font-weight:bold; font-size:11px; margin-bottom:6px; line-height:1.35;">
+          <div>សាលាបឋមសិក្សាកំពង់ល្ពៅ</div>
+          <div>ថ្នាក់ទី ${cls}</div>
+        </div>
+
+        <table class="print-report-table">
+          <thead>${theadHtml}</thead>
+          <tbody>${rowsHtml}</tbody>
+        </table>
+
+        <div style="text-align:left; font-size:10px; color:#1e293b; margin-top:6px; line-height:1.45;">
+          <div>បញ្ជីបញ្ចូលក្នុង${scoreType === 'monthly' ? 'ខែ' : 'ឆមាស'}នេះចំនួន <strong>${totalStudents} នាក់</strong> ក្នុងនោះសិស្សស្រី <strong>${femaleCount} នាក់</strong> ប្រុស <strong>${maleCount} នាក់</strong></div>
+          <div style="color:#64748b;">ស្ថិតិនិទ្ទេស ៖ ល្អប្រសើរ (${gradeCounts['ល្អប្រសើរ']}) • ល្អណាស់ (${gradeCounts['ល្អណាស់']}) • ល្អ (${gradeCounts['ល្អ']}) • បង្គួរ (${gradeCounts['បង្គួរ']}) • មធ្យម (${gradeCounts['មធ្យម']}) • ខ្សោយ (${gradeCounts['ខ្សោយ']}) | ជាប់ ៖ <strong>${passCount} នាក់</strong> • ធ្លាក់ ៖ <strong>${failCount} នាក់</strong></div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-top:20px; padding:0 30px;">
+          <div style="display:inline-flex; flex-direction:column; align-items:center; text-align:center; min-width:200px; margin-top:25px;">
+            <div class="f-moul" style="font-size:12.5px; color:#1e3a8a;">បានឃើញ និងឯកភាព</div>
+            <div class="f-bold" style="font-size:12.5px; color:#1e3a8a; margin-top:4px;">នាយកសាលា</div>
+          </div>
+
+          <div style="display:inline-flex; flex-direction:column; align-items:center; text-align:center; min-width:300px;">
+            <input type="text" class="clean-lunar-input" value="${defaultLunar}" title="ចុចដើម្បីកែប្រែថ្ងៃខែចន្ទគតិ">
+            <div style="font-size:12px; color:#1e3a8a; margin-top:3px;">${defaultSolar}</div>
+            <div class="f-moul" style="font-size:12.5px; color:#1e3a8a; margin-top:5px;">គ្រូបន្ទុកថ្នាក់</div>
+            <div class="f-bold" style="font-size:13.5px; color:#1e3a8a; margin-top:36px;">${TEACHER_NAME || ''}</div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('printableScorePaper').innerHTML = html;
+    }
+
+    function exportToExcel() {
+      if (!displayedStudents.length) { alert('ពុំមានទិន្នន័យ!'); return; }
+      var grps = groups();
+      var keys = allKeys();
+      var labels = grps.flatMap(g => g.cols.map(c => c.label));
+      var header = ['ល.រ','អត្តលេខ','ឈ្មោះ','ភេទ'].concat(labels, ['ពិន្ទុសរុប','មធ្យមភាគ','ចំណាត់ថ្នាក់','និទ្ទេស','លទ្ធផល','អវត្តមាន']);
+      var ranks = computeRanks();
+      var rows = [header];
+
+      displayedStudents.forEach((s, idx) => {
+        var sc = savedScoresData[s.id] || {};
+        var row = [idx + 1, s.id || '', s.name || '', s.sex || ''];
+        keys.forEach(k => {
+          var v = parseFloat(sc[k]);
+          row.push(isNaN(v) ? '' : v);
+        });
+        var tot = calcTotal(s.id);
+        var avg = calcAvg(s.id);
+        var gr = getGradeBadge(avg);
+        var absVal = (studentAbsenceData[s.id] !== undefined && studentAbsenceData[s.id] > 0) ? studentAbsenceData[s.id] : '';
+        row.push(
+          tot > 0 ? tot.toFixed(2) : '',
+          avg > 0 ? avg.toFixed(2) : '',
+          ranks[s.id] || '',
+          gr.g,
+          avg >= 5 ? 'ជាប់' : 'ធ្លាក់',
+          absVal
+        );
+        rows.push(row);
+      });
+
+      var ws = XLSX.utils.aoa_to_sheet(rows);
+      var wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'ពិន្ទុ');
+      var cls = document.getElementById('classSelect').value;
+      XLSX.writeFile(wb, 'ពិន្ទុ_ថ្នាក់ទី' + cls + '_' + getSelectedPeriod() + '.xlsx');
+    }
+  </script>
+</body>
+</html>
