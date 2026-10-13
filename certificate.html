@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="km" data-theme="dark">
+
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>បណ្ណសរសើរសិស្ស (ប្រចាំឆ្នាំ លេខ១ ដល់ ៥)</title>
+
+  <!-- 🔤 Google Fonts Khmer & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Moul&family=Siemreap&family=Kantumruy+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- ⚡ Supabase JS Client (v2) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    /* =====================================================
+       🌟 ភ្ជាប់ពុម្ពអក្សរ TACTEING ពិតប្រាកដ
+    ===================================================== */
+    @font-face {
+      font-family: 'Tacteing';
+      src: local('Tacteing'),
+           local('Khmer OS Tacteing'),
+           local('Tacteing Regular'),
+           local('Tacteing-Regular'),
+           url('https://cdn.jsdelivr.net/gh/SOMONSOUM/Latex-Project@master/pptexam/Tacteing.ttf') format('truetype');
+      font-display: block;
+    }
+
+    /* =========================================================
+       🎨 DYNAMIC THEME SYSTEM (LIGHT & DARK MODE)
+    ========================================================= */
+    :root {
+      --app-bg: #f8fafc;
+      --tb-bg: rgba(255, 255, 255, 0.96);
+      --tb-border: #e2e8f0;
+      --card-panel-bg: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --input-bg: #ffffff;
+      --input-border: #cbd5e1;
+      --input-focus: #0284c7;
+      --ctrl-group-bg: #f1f5f9;
+      --shadow-sm: 0 4px 16px rgba(15, 23, 42, 0.06);
+    }
+
+    [data-theme="dark"] {
+      --app-bg: #090e17;
+      --tb-bg: rgba(15, 23, 42, 0.95);
+      --tb-border: #1e293b;
+      --card-panel-bg: #111e33;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --input-bg: #162642;
+      --input-border: #233f66;
+      --input-focus: #38bdf8;
+      --ctrl-group-bg: #0e1a2d;
+      --shadow-sm: 0 8px 24px rgba(0, 0, 0, 0.45);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      background-color: var(--app-bg);
+      color: var(--text-main);
+      font-family: 'Siemreap', sans-serif;
+      padding: 0 0 60px 0 !important;
+      overflow-x: auto;
+      transition: background 0.25s ease, color 0.25s ease;
+    }
+
+    /* ══════════════ 🔒 AUTH DENIED WRAPPER ══════════════ */
+    .auth-wrapper {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 80vh;
+      text-align: center;
+      padding: 30px 20px;
+    }
+    .auth-card {
+      background: var(--card-panel-bg);
+      border: 1.5px solid var(--tb-border);
+      border-radius: 24px;
+      padding: 40px 28px;
+      max-width: 440px;
+      width: 100%;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .auth-icon {
+      width: 68px;
+      height: 68px;
+      border-radius: 20px;
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      margin-bottom: 16px;
+    }
+    .auth-card h2 { font-size: 18px; margin-bottom: 8px; color: #ef4444; font-weight: 700; }
+    .auth-card p { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 24px; }
+    .btn-login-redirect {
+      background: linear-gradient(135deg, #0284c7, #7c3aed);
+      color: #ffffff;
+      padding: 10px 24px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 13.5px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
+      cursor: pointer;
+      border: none;
+    }
+
+    /* =====================================================
+       🎛️ NEW SINGLE-ROW SLEEK TOOLBAR DESIGN
+    ===================================================== */
+    .no-print-toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      width: 100%;
+      background: var(--tb-bg);
+      backdrop-filter: blur(14px);
+      padding: 7px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      box-shadow: var(--shadow-sm);
+      border-bottom: 1.5px solid var(--tb-border);
+      transition: all 0.25s ease;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      white-space: nowrap;
+    }
+
+    .no-print-toolbar::-webkit-scrollbar { height: 3px; }
+    .no-print-toolbar::-webkit-scrollbar-thumb { background: rgba(2, 132, 199, 0.25); border-radius: 3px; }
+
+    .tb-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .panel-pill-box {
+      background: var(--ctrl-group-bg);
+      border: 1px solid var(--tb-border);
+      border-radius: 9px;
+      padding: 3px 7px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .toolbar-label {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+
+    .form-control {
+      padding: 4px 7px;
+      font-family: 'Kantumruy Pro', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1.5px solid var(--input-border);
+      border-radius: 7px;
+      outline: none;
+      background: var(--input-bg);
+      color: var(--text-main);
+      transition: all 0.2s ease;
+      height: 30px;
+    }
+    .form-control:focus {
+      border-color: var(--input-focus);
+      box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15);
+    }
+
+    .teacher-class-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      color: #ffffff;
+      padding: 3px 10px;
+      border-radius: 9px;
+      font-weight: 700;
+      font-size: 12px;
+      height: 30px;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .btn {
+      padding: 4px 10px;
+      font-family: 'Kantumruy Pro', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+      user-select: none;
+      white-space: nowrap;
+      height: 30px;
+    }
+    .btn:active { transform: scale(0.96); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      color: #fff;
+      box-shadow: 0 2px 7px rgba(37, 99, 235, 0.25);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #fff;
+      box-shadow: 0 2px 7px rgba(16, 185, 129, 0.25);
+    }
+
+    .zoom-btn-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      background: var(--ctrl-group-bg);
+      padding: 2px;
+      border-radius: 8px;
+      border: 1px solid var(--tb-border);
+      height: 30px;
+    }
+    .zoom-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 2px 7px;
+      border-radius: 5px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-family: 'Kantumruy Pro', sans-serif;
+      height: 24px;
+      display: flex;
+      align-items: center;
+    }
+    .zoom-btn:hover { color: var(--text-main); }
+    .zoom-btn.active {
+      background: #0284c7 !important;
+      color: #ffffff !important;
+      box-shadow: 0 1px 5px rgba(2, 132, 199, 0.35);
+    }
+
+    /* ── Tablet & Mobile Responsive Tweaks ── */
+    @media screen and (min-width: 769px) and (max-width: 1180px) {
+      .no-print-toolbar { padding: 8px 16px; gap: 8px; }
+      .form-control, .btn { height: 32px; font-size: 12.5px; }
+    }
+
+    @media screen and (max-width: 768px) {
+      body { padding: 0 0 50px 0 !important; }
+      .no-print-toolbar { padding: 6px 10px; gap: 5px; }
+      .tb-group { gap: 4px; }
+      .form-control { height: 28px; font-size: 11px; padding: 2px 5px; }
+      .btn { height: 28px; padding: 2px 7px; font-size: 11px; gap: 4px; }
+      .zoom-btn-group { height: 28px; }
+      .zoom-btn { height: 22px; padding: 1px 5px; font-size: 10px; }
+    }
+
+    /* =====================================================
+       📜 CERTIFICATES LIST & CANVAS (A4 LANDSCAPE)
+    ===================================================== */
+    .certificate-list {
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+      align-items: center;
+      transition: zoom 0.2s ease;
+      margin-top: 15px;
+      transform-origin: top center;
+    }
+
+    .certificate-container {
+      width: 960px;
+      height: 710px;
+      margin: 0 auto;
+      background-color: #fffdf7 !important;
+      color: #000000 !important;
+      padding: 20px;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      overflow: hidden;
+      page-break-after: always;
+      break-after: page;
+      flex-shrink: 0;
+      border-radius: 4px;
+    }
+
+    .outer-border {
+      border: 4px solid #800000;
+      padding: 5px;
+      height: 100%;
+      position: relative;
+      z-index: 2;
+    }
+
+    .inner-border {
+      border: 2px solid #d4af37;
+      outline: 1px solid #800000;
+      outline-offset: 4px;
+      height: 100%;
+      padding: 22px 35px 18px 35px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      background: radial-gradient(circle, rgba(255, 255, 255, 1) 55%, rgba(253, 248, 235, 1) 100%);
+    }
+
+    .frame-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 1;
+      pointer-events: none;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 100% 100%;
+      display: none;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .frame-overlay.active { display: block; }
+    .certificate-container.has-frame { padding: 130px 55px 70px 55px; }
+
+    .corner-kbach {
+      position: absolute;
+      width: 48px;
+      height: 48px;
+      fill: #d4af37;
+      z-index: 2;
+    }
+
+    .top-left { top: -2px; left: -2px; }
+    .top-right { top: -2px; right: -2px; transform: rotate(90deg); }
+    .bottom-left { bottom: -2px; left: -2px; transform: rotate(-90deg); }
+    .bottom-right { bottom: -2px; right: -2px; transform: rotate(180deg); }
+
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      width: 100%;
+      padding: 0 45px;
+    }
+
+    .header-left {
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      flex-shrink: 0;
+      margin-top: 8px;
+    }
+
+    .header-right { 
+      text-align: center; 
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      flex-shrink: 0;
+      margin-top: -5px;
+    }
+
+    .header-admin-line1, .header-admin-line2 {
+      font-family: 'Moul', serif;
+      color: #002b66;
+      font-size: 13px;
+      line-height: 1.7;
+      margin: 0;
+      white-space: nowrap;
+    }
+
+    .kingdom-line {
+      font-family: 'Moul', serif;
+      color: #800000;
+      font-size: 13px;
+      line-height: 1.7;
+      margin: 0;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .motto-line {
+      font-family: 'Moul', serif;
+      color: #800000;
+      font-size: 12.5px;
+      line-height: 1.7;
+      margin: 0;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .flagRow {
+      color: #d4af37;
+      font-family: 'Tacteing', 'Khmer OS Tacteing', sans-serif;
+      font-size: 40px;
+      line-height: 0.3;
+      margin-top: 8px;
+      user-select: none;
+      display: block;
+      text-align: center;
+    }
+
+    .cert-title-block {
+      margin-top: -10px;
+      text-align: center;
+    }
+
+    .cert-title {
+      font-family: 'Moul', serif;
+      color: #800000;
+      font-size: 32px;
+      margin: 0;
+      letter-spacing: 1px;
+      text-shadow: 1px 1px 0px rgba(212, 175, 55, 0.4);
+    }
+
+    .cert-subtitle-school {
+      font-family: 'Moul', serif;
+      color: #4B0082;
+      font-size: 15px;
+      margin-top: 3px;
+    }
+
+    .cert-body {
+      font-family: 'Siemreap', sans-serif;
+      font-size: 13px;
+      color: #222;
+      line-height: 1.8;
+    }
+
+    .nowrap-group {
+      white-space: nowrap;
+      display: inline-block;
+      margin: 0 1px;
+    }
+
+    .field-highlight {
+      font-family: 'Moul', serif;
+      font-weight: 400;
+      font-size: 14.5px;
+      color: #800000;
+      padding: 0 3px;
+      line-height: 1.6;
+    }
+
+    .student-name {
+      font-family: 'Moul', serif;
+      font-weight: 400;
+      font-size: 15px;
+      color: #800000;
+      display: inline-block;
+      padding: 4px 10px 2px 10px;
+      line-height: 1.6;
+    }
+
+    .student-photo-box {
+      width: 113px;
+      height: 151px;
+      transform: translateY(-8px);
+      flex-shrink: 0;
+      flex-grow: 0;
+      border: 3px solid #d4af37;
+      border-radius: 4px;
+      background-color: #f8f9fa;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    .student-photo-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .footer-section {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+      align-items: center;
+      column-gap: 10px;
+      font-family: 'Siemreap', sans-serif;
+      font-size: 13px;
+    }
+
+    .signature-box {
+      text-align: center;
+      justify-self: center;
+    }
+
+    .signature-title {
+      font-family: 'Moul', serif;
+      font-size: 12px;
+      color: #002b66;
+      margin-top: 4px;
+    }
+
+    .signature-space {
+      height: 62px;
+    }
+
+    /* =====================================================
+       🖨️ PRINT A4 LANDSCAPE (STRICT WHITE BACKGROUND)
+    ===================================================== */
+    @media print {
+      html, body {
+        background: transparent !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        overflow: visible !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      .no-print-toolbar {
+        display: none !important;
+      }
+
+      .certificate-list {
+        gap: 0 !important;
+        zoom: 1 !important;
+        transform: none !important;
+        margin-top: 0 !important;
+      }
+
+      .certificate-container {
+        width: 297mm !important;
+        height: 210mm !important;
+        max-height: 210mm !important;
+        margin: 0 !important;
+        padding: 10mm 15mm !important;
+        box-shadow: none !important;
+        page-break-after: always !important;
+        break-after: page !important;
+        overflow: hidden !important;
+        transform: none !important;
+        border-radius: 0 !important;
+      }
+
+      .certificate-container.has-frame {
+        padding: 38mm 18mm 20mm 18mm !important;
+      }
+
+      .header-row {
+        padding: 0 12mm !important;
+      }
+
+      @page {
+        size: A4 landscape;
+        margin: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ══════════════ 🔒 AUTH DENIED WRAPPER ══════════════ -->
+  <div class="auth-wrapper" id="authDeniedWrap">
+    <div class="auth-card">
+      <div class="auth-icon">🔒</div>
+      <h2>សូមចូលប្រើប្រាស់ជាមុនសិន!</h2>
+      <p>លោកអ្នកមិនទាន់បាន Login ចូលក្នុងប្រព័ន្ធនៅឡើយទេ។ សូម Login គណនីរបស់អ្នកដើម្បីមើលបណ្ណសរសើរសិស្ស។</p>
+      <a href="index.html" target="_top" class="btn-login-redirect" onclick="goToIndex(event)">
+        <span>🔑</span> <span>ទៅកាន់ទំព័រដើម (Login)</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       🎛️ NEW SINGLE-ROW SLEEK TOOLBAR DESIGN
+  ===================================================== -->
+  <div class="no-print-toolbar" id="controlToolbar" style="display:none;">
+    
+    <!-- ផ្នែកខាងឆ្វេង ៖ Filters & Settings -->
+    <div class="tb-group">
+      <!-- ថ្នាក់ -->
+      <div class="panel-pill-box" id="adminClassBox" style="display:none;">
+        <span class="toolbar-label"><i class="fa-solid fa-graduation-cap" style="color:#0284c7;"></i> ថ្នាក់៖</span>
+        <select id="selectClass" class="form-control" onchange="loadTopStudents()">
+          <option value="">កំពុងទាញយក...</option>
+        </select>
+      </div>
+
+      <div id="teacherClassBadge" class="teacher-class-badge" style="display:none;">
+        <i class="fa-solid fa-chalkboard-user"></i>
+        <span id="teacherClassText">ថ្នាក់ទី...</span>
+      </div>
+
+      <!-- ស៊ុម -->
+      <div class="panel-pill-box">
+        <span class="toolbar-label"><i class="fa-solid fa-border-all" style="color:#7c3aed;"></i> ស៊ុម៖</span>
+        <select id="selectFrame" class="form-control" onchange="updateAllFrames()">
+          <option value="">ស៊ុមលំនាំដើម (Kbach)</option>
+          <option value="1">ស៊ុមទី១</option>
+          <option value="2">ស៊ុមទី២</option>
+          <option value="3">ស៊ុមទី៣</option>
+          <option value="4">ស៊ុមទី៤</option>
+          <option value="5">ស៊ុមទី៥</option>
+          <option value="6">ស៊ុមទី៦</option>
+          <option value="7">ស៊ុមទី៧</option>
+          <option value="8">ស៊ុមទី៨</option>
+          <option value="9">ស៊ុមទី៩</option>
+          <option value="10">ស៊ុមទី១០</option>
+          <option value="11">ស៊ុមទី១១</option>
+        </select>
+      </div>
+
+      <!-- សាលា -->
+      <div class="panel-pill-box">
+        <span class="toolbar-label"><i class="fa-solid fa-school" style="color:#10b981;"></i> សាលា៖</span>
+        <input type="text" id="inSchool" class="form-control" value="សាលាបឋមសិក្សាកំពង់ល្ពៅ" style="width:160px;" oninput="updateAllCertText()">
+      </div>
+
+      <!-- ឆ្នាំ -->
+      <div class="panel-pill-box">
+        <span class="toolbar-label"><i class="fa-solid fa-calendar-days" style="color:#f59e0b;"></i> ឆ្នាំសិក្សា៖</span>
+        <input type="text" id="inYear" class="form-control" value="" style="width:115px;" oninput="updateAllCertText()">
+      </div>
+
+      <!-- កាលបរិច្ឆេទ -->
+      <div class="panel-pill-box">
+        <span class="toolbar-label"><i class="fa-solid fa-pen-nib" style="color:#0284c7;"></i> កាលបរិច្ឆេទ៖</span>
+        <input type="text" id="inDate" class="form-control" value="ថ្ងៃព្រហស្បតិ៍ ១៤កើត ខែស្រាពណ៍ ឆ្នាំមមី អដ្ឋស័ក ព.ស ២៥៧០&#10;កំពង់ល្ពៅ ថ្ងៃទី២៧ ខែសីហា ឆ្នាំ២០២៦" style="width:230px;" oninput="updateAllCertText()" title="ចុចដើម្បីកែប្រែកាលបរិច្ឆេទចន្ទគតិ និងសុរិយគតិ">
+      </div>
+    </div>
+
+    <!-- ផ្នែកខាងស្តាំ ៖ Zoom & Actions -->
+    <div class="tb-group">
+      <!-- 🔍 Zoom Buttons (មានប៊ូតុង សម / Fit សម្រាប់ Tablet & Mobile) -->
+      <div class="zoom-btn-group" title="ពង្រីក/បង្រួមទំហំ">
+        <button type="button" class="zoom-btn active" id="zFit" onclick="setFitZoom()">សម</button>
+        <button type="button" class="zoom-btn" id="z75" onclick="setZoom(0.75, 'z75')">75%</button>
+        <button type="button" class="zoom-btn" id="z100" onclick="setZoom(1, 'z100')">100%</button>
+      </div>
+
+      <button class="btn btn-primary" onclick="loadTopStudents()" title="ផ្ទុកទិន្នន័យឡើងវិញ">
+        <i class="fa-solid fa-rotate"></i> <span>ផ្ទុកទិន្នន័យ</span>
+      </button>
+
+      <button class="btn btn-success" onclick="doPrint()" title="បោះពុម្ពបណ្ណសរសើរទាំងអស់">
+        <i class="fa-solid fa-print"></i> <span>បោះពុម្ពទាំងអស់</span>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- =====================================================
+       📜 CERTIFICATES CONTAINER
+  ===================================================== -->
+  <div id="certificateList" class="certificate-list" style="display:none;">
+    <div style="text-align:center; padding:60px 20px; font-size:15px; color:var(--text-muted); font-weight:600;">
+      <i class="fa-solid fa-spinner fa-spin fa-2x" style="color:#0284c7;"></i>
+      <p style="margin-top:12px;">កំពុងទាញយកទិន្នន័យសិស្សពូកែ...</p>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       ⚙️ JAVASCRIPT (SUPABASE INTEGRATED)
+  ===================================================== -->
+  <script>
+    /* 1. SUPABASE CLIENT CONFIG */
+    const SUPABASE_URL = "https://nggnuobnrxiqjtcwlvwk.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_AHDcUJbuMAfhaocyfm2X7w_O9s06wML";
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    /* 2. AUTH GUARD */
+    function readSession() {
+      try { return JSON.parse(localStorage.getItem('krou_supabase_user') || 'null'); } catch(e) { return null; }
+    }
+    const CURRENT_USER = readSession();
+
+    function checkAuthentication() {
+      if (!CURRENT_USER || !CURRENT_USER.username) {
+        document.getElementById('controlToolbar').style.display = 'none';
+        document.getElementById('certificateList').style.display = 'none';
+        document.getElementById('authDeniedWrap').style.display = 'flex';
+        return false;
+      }
+      document.getElementById('authDeniedWrap').style.display = 'none';
+      document.getElementById('controlToolbar').style.display = 'flex';
+      document.getElementById('certificateList').style.display = 'flex';
+      return true;
+    }
+
+    function goToIndex(e) {
+      if (e) e.preventDefault();
+      if (window.parent && window.parent !== window) {
+        try {
+          window.parent.postMessage({ type: 'OPEN_LOGIN', action: 'LOGIN' }, '*');
+          window.parent.location.href = 'index.html';
+          return;
+        } catch(err) {}
+      }
+      window.location.href = 'index.html';
+    }
+
+    const USER_ROLE    = CURRENT_USER?.role || "teacher";
+    const USER_CLASS   = CURRENT_USER?.assigned_classes || CURRENT_USER?.assigned_class || "";
+    const IS_ADMIN     = String(USER_ROLE).toLowerCase().trim() === 'admin';
+
+    const KHMER_DIGITS = ['០','១','២','៣','៤','៥','៦','៧','៨','៩'];
+    function cleanGrade(g) { return String(g || '').replace(/^ថ្នាក់ទី\s*/, '').trim(); }
+    function toKhmerDigits(str) {
+      if (str === null || str === undefined) return '';
+      return String(str).replace(/[0-9]/g, d => KHMER_DIGITS[d]);
+    }
+
+    function applyTheme(theme) { document.documentElement.setAttribute('data-theme', theme || 'dark'); }
+    applyTheme(localStorage.getItem('krou_theme_manual') || 'dark');
+    window.addEventListener('message', e => { if (e.data && (e.data.type === 'THEME_CHANGE' || e.data.theme)) applyTheme(e.data.theme || e.data); });
+
+    const FRAME_IMAGES = {
+      "1": "https://lh3.googleusercontent.com/d/1N57PmjOvX02wM-yGow7sef2DrWoGg8qq",
+      "2": "https://lh3.googleusercontent.com/d/1JssVh9vT0J0Iq3PKK0USsBIwngD-OGv2",
+      "3": "https://lh3.googleusercontent.com/d/1Xf0jwMiDuDa8kyN858mISM0iZLzK06GG",
+      "4": "https://lh3.googleusercontent.com/d/1FrGrRAz6now1IbDnK_umDSNNcIMFT5_J",
+      "5": "https://lh3.googleusercontent.com/d/11hrJOsGUv_X4HAOcrKi6gqfDrCGHjEvK",
+      "6": "https://lh3.googleusercontent.com/d/1Ws58mgtFQLxAne6AUoUaovCeirskyj68",
+      "7": "https://lh3.googleusercontent.com/d/1AiYIycD4gxMcFSd6rPBX2TEW-sDIc6qS",
+      "8": "https://lh3.googleusercontent.com/d/13XXPmD2pTLAgmO_5-RB6TjzKEH0x9ybH",
+      "9": "https://lh3.googleusercontent.com/d/17d-TZq4oTkrjtRp_nzXbKbj4vyfJsQ3N",
+      "10": "https://lh3.googleusercontent.com/d/1NBl8VJXqPRvFCLcu9VYUbFXE98-dT8Y7",
+      "11": "https://lh3.googleusercontent.com/d/1cyb6NhrT93aNXrSrDDelvin3alc46lTH"
+    };
+
+    const NO_PHOTO_SRC = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='150' height='150'><rect width='100%25' height='100%25' fill='%23f0f0f0'/><text x='50%25' y='50%25' font-size='14' text-anchor='middle' fill='%23999' dy='.3em'>NO PHOTO</text></svg>";
+
+    function defaultAcademicYear() {
+      const now = new Date();
+      const y = now.getFullYear();
+      const startYear = now.getMonth() >= 7 ? y : y - 1;
+      return (toKhmerDigits(startYear) + ' - ' + toKhmerDigits(startYear + 1));
+    }
+
+    /* 3. ZOOM & RESPONSIVE FIT (TABLET & MOBILE) */
+    function setZoom(scale, btnId) {
+      const container = document.getElementById('certificateList');
+      if (container) container.style.zoom = scale;
+      ['zFit', 'z75', 'z100'].forEach(id => document.getElementById(id)?.classList.remove('active'));
+      document.getElementById(btnId)?.classList.add('active');
+    }
+
+    function setFitZoom() {
+      const screenW = window.innerWidth;
+      // Target width 960px + margins
+      let scale = (screenW - 24) / 980;
+      if (scale > 1) scale = 1;
+      if (scale < 0.28) scale = 0.28;
+      setZoom(scale, 'zFit');
+    }
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth <= 1100 && document.getElementById('zFit')?.classList.contains('active')) {
+        setFitZoom();
+      }
+    });
+
+    function doPrint() {
+      window.focus();
+      setTimeout(() => {
+        try { window.print(); } catch(e) { window.parent.print(); }
+      }, 100);
+    }
+
+    /* 4. INITIALIZATION */
+    window.addEventListener('DOMContentLoaded', async () => {
+      if (!checkAuthentication()) return;
+
+      document.getElementById('inYear').value = defaultAcademicYear();
+
+      await initClasses();
+
+      if (window.innerWidth <= 1100) {
+        setFitZoom();
+      }
+    });
+
+    async function initClasses() {
+      const adminBox = document.getElementById('adminClassBox');
+      const teacherBadge = document.getElementById('teacherClassBadge');
+      const select = document.getElementById('selectClass');
+      const cleanCls = cleanGrade(USER_CLASS);
+
+      if (!IS_ADMIN) {
+        adminBox.style.display = 'none';
+        if (cleanCls) {
+          document.getElementById('teacherClassText').innerText = 'ថ្នាក់ទី ' + cleanCls;
+          teacherBadge.style.display = 'inline-flex';
+          select.innerHTML = `<option value="${cleanCls}">ថ្នាក់ទី ${cleanCls}</option>`;
+          select.value = cleanCls;
+          loadTopStudents();
+        } else {
+          teacherBadge.style.display = 'inline-flex';
+          document.getElementById('teacherClassText').innerText = 'មិនទាន់កំណត់ថ្នាក់';
+          document.getElementById('certificateList').innerHTML = 
+            '<div style="text-align:center; padding:50px; color:#f59e0b; font-weight:700;">⚠️ គណនីរបស់អ្នកមិនទាន់មានថ្នាក់ទទួលបន្ទុកឡើយ។ សូមទាក់ទង Admin។</div>';
+        }
+        return;
+      }
+
+      teacherBadge.style.display = 'none';
+      adminBox.style.display = 'inline-flex';
+
+      try {
+        const { data, error } = await sb.from('students').select('grade');
+        let classes = [];
+        if (!error && data) {
+          classes = [...new Set(data.map(d => cleanGrade(d.grade)).filter(Boolean))];
+        }
+        if (!classes.length) classes = ['១', '២', '៣', '៤(ក)', '៤(ខ)', '៥', '៦'];
+
+        select.innerHTML = classes.map(c => `<option value="${c}">ថ្នាក់ទី ${c}</option>`).join('');
+        if (cleanCls && classes.includes(cleanCls)) select.value = cleanCls;
+        loadTopStudents();
+      } catch (err) {
+        select.innerHTML = '<option value="">កំហុសទាញយកថ្នាក់</option>';
+      }
+    }
+
+    /* 5. LOAD TOP 5 STUDENTS OF THE ACADEMIC YEAR (SUPABASE) */
+    async function loadTopStudents() {
+      const selectedClass = document.getElementById('selectClass').value || cleanGrade(USER_CLASS);
+      const curPure = cleanGrade(selectedClass);
+      const container = document.getElementById('certificateList');
+
+      if (!curPure) return;
+
+      container.innerHTML = `
+        <div style="text-align:center; padding:60px 20px; font-size:15px; color:var(--text-muted); font-weight:600;">
+          <i class="fa-solid fa-spinner fa-spin fa-2x" style="color:#0284c7;"></i>
+          <p style="margin-top:12px;">កំពុងទាញយកទិន្នន័យសិស្សពូកែលេខ ១ ដល់ ៥ ប្រចាំឆ្នាំ (ថ្នាក់ទី ${curPure})...</p>
+        </div>`;
+
+      try {
+        // ក. ទាញយកសិស្សសកម្មក្នុងថ្នាក់
+        const { data: stList, error: stErr } = await sb
+          .from('students')
+          .select('id, student_id, student_name, gender, dob, grade, photo_url, dropout_semester')
+          .order('id', { ascending: true });
+
+        if (stErr) throw stErr;
+
+        const students = (stList || [])
+          .filter(s => cleanGrade(s.grade) === curPure)
+          .filter(s => {
+            const drop = String(s.dropout_semester || '').trim();
+            if (drop.includes('ឆមាស១') || drop.includes('ឆមាសទី១') || drop === '១') return false;
+            return true;
+          });
+
+        if (!students.length) {
+          container.innerHTML = `<div style="text-align:center; padding:50px; color:var(--text-muted); font-size:15px;">មិនមានទិន្នន័យសិស្សក្នុងថ្នាក់នេះឡើយ</div>`;
+          return;
+        }
+
+        const studentIds = students.map(s => String(s.student_id || s.id));
+
+        // ខ. ទាញយកពិន្ទុពី Table: scores
+        const { data: scData, error: scErr } = await sb
+          .from('scores')
+          .select('student_id, score_type, period, average, rank')
+          .eq('assigned_class', curPure)
+          .in('student_id', studentIds);
+
+        if (scErr) console.warn("Scores fetch warning:", scErr);
+
+        // គ. គណនាមធ្យមភាគប្រចាំឆ្នាំ (Yearly Average) សម្រាប់សិស្សម្នាក់ៗ
+        const sem1Months = ['វិច្ឆិកា', 'ធ្នូ', 'មករា', 'កុម្ភៈ', 'មីនា', 'មេសា'];
+        const sem2Months = ['ឧសភា', 'មិថុនា', 'កក្កដា', 'សីហា', 'កញ្ញា', 'តុលា'];
+
+        const studentRanks = students.map(st => {
+          const sId = String(st.student_id || st.id);
+          const myScores = (scData || []).filter(r => String(r.student_id) === sId);
+
+          // ករណីមានកំណត់ទុកស្រាប់ក្នុង Period 'ប្រចាំឆ្នាំ'
+          const yrRec = myScores.find(r => r.period === 'ប្រចាំឆ្នាំ');
+          if (yrRec && Number(yrRec.average) > 0) {
+            return {
+              id: sId,
+              name: st.student_name,
+              gender: st.gender,
+              dob: st.dob,
+              grade: curPure,
+              photoUrl: st.photo_url,
+              avg: Number(yrRec.average).toFixed(2),
+              rank: yrRec.rank
+            };
+          }
+
+          // ករណីគណនាស្វ័យប្រវត្តិតាមរូបមន្ត៖ (ឆមាសទី១ + ឆមាសទី២) / ២
+          let s1Sum = 0, s1Count = 0, s2Sum = 0, s2Count = 0;
+          sem1Months.forEach(m => {
+            const r = myScores.find(sc => sc.score_type === 'monthly' && sc.period === m);
+            if (r && Number(r.average) > 0) { s1Sum += Number(r.average); s1Count++; }
+          });
+          const e1 = myScores.find(sc => sc.score_type === 'semester' && sc.period === 'ឆមាសទី១');
+          if (e1 && Number(e1.average) > 0) { s1Sum += Number(e1.average); s1Count++; }
+
+          sem2Months.forEach(m => {
+            const r = myScores.find(sc => sc.score_type === 'monthly' && sc.period === m);
+            if (r && Number(r.average) > 0) { s2Sum += Number(r.average); s2Count++; }
+          });
+          const e2 = myScores.find(sc => sc.score_type === 'semester' && sc.period === 'ឆមាសទី២');
+          if (e2 && Number(e2.average) > 0) { s2Sum += Number(e2.average); s2Count++; }
+
+          const avg1 = s1Count > 0 ? (s1Sum / s1Count) : 0;
+          const avg2 = s2Count > 0 ? (s2Sum / s2Count) : 0;
+
+          let yearlyAvg = 0;
+          if (avg1 > 0 && avg2 > 0) yearlyAvg = (avg1 + avg2) / 2;
+          else if (avg1 > 0) yearlyAvg = avg1;
+          else if (avg2 > 0) yearlyAvg = avg2;
+
+          return {
+            id: sId,
+            name: st.student_name,
+            gender: st.gender,
+            dob: st.dob,
+            grade: curPure,
+            photoUrl: st.photo_url,
+            avg: yearlyAvg > 0 ? yearlyAvg.toFixed(2) : 0,
+            rank: null
+          };
+        });
+
+        // ឃ. តម្រៀបរកសិស្សពូកែលេខ ១ ដល់ ៥ (Top 5)
+        studentRanks.sort((a, b) => Number(b.avg) - Number(a.avg));
+        const validStudents = studentRanks.filter(s => Number(s.avg) > 0);
+
+        let curRank = 0, prevA = null;
+        validStudents.forEach((s, idx) => {
+          const v = Number(s.avg);
+          if (v !== prevA) {
+            curRank = idx + 1;
+            prevA = v;
+          }
+          s.rank = curRank;
+        });
+
+        const top5 = validStudents.slice(0, 5);
+        renderAllCertificates(top5, curPure);
+
+      } catch (err) {
+        container.innerHTML = `<div style="text-align:center; padding:50px; color:#ef4444; font-weight:700;">❌ កំហុស៖ ${err.message}</div>`;
+      }
+    }
+
+    /* 6. RENDER CERTIFICATES */
+    function renderAllCertificates(topStudents, selectedClass) {
+      const container = document.getElementById('certificateList');
+
+      if (!topStudents || topStudents.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding:50px; color:var(--text-muted); font-size:15px; font-weight:600;">ពុំទាន់មានទិន្នន័យពិន្ទុសម្រាប់ <strong>ប្រចាំឆ្នាំ</strong> ក្នុងថ្នាក់នេះនៅឡើយទេ!</div>`;
+        return;
+      }
+
+      const schoolInput = document.getElementById('inSchool').value || 'សាលាបឋមសិក្សាកំពង់ល្ពៅ';
+      const yearInput = document.getElementById('inYear').value || defaultAcademicYear();
+      const dateInput = document.getElementById('inDate').value || '';
+
+      let html = '';
+
+      topStudents.forEach((st, idx) => {
+        const sName = st.name || '...............................';
+        const sGender = st.gender || '.........';
+        const sDob = st.dob || '........................................';
+        const sClass = st.grade || selectedClass || '........';
+        const sRank = st.rank !== undefined ? st.rank : (idx + 1);
+        const sAvg = st.avg !== undefined ? st.avg : '';
+        const photoSrc = (st.photoUrl || '').trim() || NO_PHOTO_SRC;
+
+        html += `
+        <div class="certificate-container" id="cert-${idx}">
+          <div class="frame-overlay" id="frameOverlay-${idx}"></div>
+
+          <div class="outer-border">
+            <svg class="corner-kbach top-left" viewBox="0 0 100 100"><path d="M0,0 L100,0 L100,20 L20,20 L20,100 L0,100 Z" /><circle cx="35" cy="35" r="10" /></svg>
+            <svg class="corner-kbach top-right" viewBox="0 0 100 100"><path d="M0,0 L100,0 L100,20 L20,20 L20,100 L0,100 Z" /><circle cx="35" cy="35" r="10" /></svg>
+            <svg class="corner-kbach bottom-left" viewBox="0 0 100 100"><path d="M0,0 L100,0 L100,20 L20,20 L20,100 L0,100 Z" /><circle cx="35" cy="35" r="10" /></svg>
+            <svg class="corner-kbach bottom-right" viewBox="0 0 100 100"><path d="M0,0 L100,0 L100,20 L20,20 L20,100 L0,100 Z" /><circle cx="35" cy="35" r="10" /></svg>
+
+            <div class="inner-border">
+              <!-- HEADER -->
+              <div class="header-row">
+                <div class="header-left">
+                  <div class="header-admin-line1">រដ្ឋបាលស្រុកសំឡូត</div>
+                  <div class="header-admin-line2">សាលារៀន ៖ <span class="cert-out-school">${schoolInput}</span></div>
+                </div>
+                <div class="header-right">
+                  <div class="kingdom-line">ព្រះរាជាណាចក្រកម្ពុជា</div>
+                  <div class="motto-line">ជាតិ សាសនា ព្រះមហាក្សត្រ</div>
+                  <div class="flagRow">3</div>
+                </div>
+              </div>
+
+              <!-- TITLE -->
+              <div class="cert-title-block">
+                <h1 class="cert-title">បណ្ណសរសើរ</h1>
+                <p style="font-family:'Kantumruy Pro'; font-size:12px; color:#555; letter-spacing:2px; margin-top:2px;">CERTIFICATE OF COMMENDATION</p>
+                <div class="cert-subtitle-school">នាយក${schoolInput}</div>
+              </div>
+
+              <!-- BODY -->
+              <div class="cert-body">
+                សូមសរសើរចំពោះសិស្សឈ្មោះ
+                <div class="student-name">${sName}</div>
+                <span class="nowrap-group">ភេទ <span class="field-highlight">${sGender}</span></span>
+                <span class="nowrap-group">កើតថ្ងៃទី <span class="field-highlight">${toKhmerDigits(sDob)}</span></span>
+                <span class="nowrap-group">រៀនថ្នាក់ទី <span class="field-highlight">${toKhmerDigits(sClass)}</span></span>
+                <br>
+                នៃ <span class="field-highlight cert-out-school">${schoolInput}</span> ។ ដែលបានខិតខំសិក្សារៀនសូត្រ
+                <span class="nowrap-group">
+                  ទទួលបានចំណាត់ថ្នាក់លេខ <span class="field-highlight">${toKhmerDigits(sRank)}</span>
+                  មធ្យមភាគ <span class="field-highlight">${toKhmerDigits(sAvg)}</span>
+                </span>
+                <br>
+                <span class="nowrap-group">ក្នុងឆ្នាំសិក្សា <span class="field-highlight cert-out-year">${toKhmerDigits(yearInput)}</span></span> ។
+                <br>
+                បណ្ណសរសើរនេះប្រគល់ជូនសាមីខ្លួនប្រើប្រាស់តាមការដែលអាចប្រើបាន ។
+              </div>
+
+              <!-- FOOTER -->
+              <div class="footer-section">
+                <div class="signature-box">
+                  <span>បានឃើញ និងឯកភាព</span><br>
+                  <div class="signature-title">នាយកសាលា</div>
+                  <div class="signature-space"></div>
+                </div>
+
+                <div class="student-photo-box">
+                  <img src="${photoSrc}" alt="Student Photo" onerror="this.onerror=null; this.src=NO_PHOTO_SRC;">
+                </div>
+
+                <div class="signature-box" style="align-self:start; margin-top:6px;">
+                  <span class="cert-out-date" style="display:inline-block; white-space:pre-line; font-size:12px; line-height:1.5;">${toKhmerDigits(dateInput)}</span><br>
+                  <div class="signature-title">គ្រូបន្ទុកថ្នាក់</div>
+                  <div class="signature-space"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        `;
+      });
+
+      container.innerHTML = html;
+      updateAllFrames();
+    }
+
+    function updateAllCertText() {
+      const schoolVal = document.getElementById('inSchool').value || '...................';
+      const yearVal = toKhmerDigits(document.getElementById('inYear').value || '...................');
+      const dateVal = toKhmerDigits(document.getElementById('inDate').value || '');
+
+      document.querySelectorAll('.cert-out-school').forEach(el => el.innerText = schoolVal);
+      document.querySelectorAll('.cert-subtitle-school').forEach(el => el.innerText = 'នាយក' + schoolVal);
+      document.querySelectorAll('.cert-out-year').forEach(el => el.innerText = yearVal);
+      document.querySelectorAll('.cert-out-date').forEach(el => el.innerText = dateVal);
+    }
+
+    function updateAllFrames() {
+      const val = document.getElementById('selectFrame').value;
+
+      document.querySelectorAll('.certificate-container').forEach(container => {
+        const overlay = container.querySelector('.frame-overlay');
+        const outerBorder = container.querySelector('.outer-border');
+        const innerBorder = container.querySelector('.inner-border');
+        const cornerKbachEls = container.querySelectorAll('.corner-kbach');
+
+        if (val && FRAME_IMAGES[val]) {
+          overlay.style.backgroundImage = "url('" + FRAME_IMAGES[val] + "')";
+          overlay.classList.add('active');
+          container.classList.add('has-frame');
+          outerBorder.style.border = 'none';
+          innerBorder.style.border = 'none';
+          innerBorder.style.outline = 'none';
+          innerBorder.style.background = 'transparent';
+          cornerKbachEls.forEach(el => el.style.display = 'none');
+        } else {
+          overlay.classList.remove('active');
+          overlay.style.backgroundImage = '';
+          container.classList.remove('has-frame');
+          outerBorder.style.border = '';
+          innerBorder.style.border = '';
+          innerBorder.style.outline = '';
+          innerBorder.style.background = '';
+          cornerKbachEls.forEach(el => el.style.display = '');
+        }
+      });
+    }
+  </script>
+</body>
+</html>
