@@ -215,9 +215,15 @@
       background: var(--surface-elevated); border: 1px solid var(--border); border-radius: 15px; padding: 12px 14px; margin-bottom: 8px; transition: all 0.15s ease;
     }
     .student-item-card.has-absent { border-color: rgba(220, 38, 38, 0.4); background: rgba(220, 38, 38, 0.05); }
+    .student-item-card.is-dropped { border-color: rgba(220, 38, 38, 0.6); background: rgba(220, 38, 38, 0.08); }
 
     .st-top-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
     .st-name-title { font-size: 14px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; cursor: pointer; }
+
+    .dropout-badge {
+      font-size: 10px; font-weight: 800; color: #dc2626; background: rgba(220, 38, 38, 0.15);
+      border: 1px solid rgba(220, 38, 38, 0.3); padding: 1px 6px; border-radius: 8px;
+    }
 
     .quick-status-selector {
       display: flex; align-items: center; gap: 4px; background: var(--surface); padding: 3px; border-radius: 10px; border: 1px solid var(--border); flex-shrink: 0;
@@ -646,7 +652,7 @@
     var IS_ADMIN     = String(USER_ROLE).toLowerCase().trim() === 'admin';
 
     /* =========================================================
-       3. THEME (យកគំរូតាមទំព័រគ្រប់គ្រងគ្រូបង្រៀន ១០០%)
+       3. THEME
     ========================================================= */
     function applyTheme(theme) {
       document.documentElement.setAttribute('data-theme', theme || 'dark');
@@ -675,6 +681,31 @@
 
     function toKhmerNum(n) { return String(n).replace(/\d/g, d => KHMER_DIGITS[d]); }
     function cleanGrade(g) { return String(g || '').replace(/^ថ្នាក់ទី\s*/, '').trim(); }
+
+    /* 🌟 អនុគមន៍ពិនិត្យស្ថានភាពបោះបង់ការសិក្សា */
+    function parseDropout(s) {
+      var val = String(s.dropout_semester || s.dropoutSemester || '').trim();
+      if (!val) return { isDropped: false, semester: '' };
+      var norm = val.replace(/\s+/g, '').replace(/1/g, '១').replace(/2/g, '២');
+      if (norm.includes('ឆមាស២') || norm.includes('ឆមាសទី២') || norm === '២') {
+        return { isDropped: true, semester: 'ឆមាសទី២' };
+      }
+      if (norm.includes('ឆមាស១') || norm.includes('ឆមាសទី១') || norm.includes('បោះបង់') || norm === '១') {
+        return { isDropped: true, semester: 'ឆមាសទី១' };
+      }
+      return { isDropped: false, semester: '' };
+    }
+
+    /* 🌟 អនុគមន៍ពិនិត្យឆមាសតាមកាលបរិច្ឆេទ (ខែ ១១ ដល់ ៤ = ឆមាសទី១ | ខែ ៥ ដល់ ១០ = ឆមាសទី២) */
+    function getSemesterByDate(dateObj) {
+      var m = dateObj.getMonth() + 1; // 1-12
+      return [11, 12, 1, 2, 3, 4].includes(m) ? 'ឆមាសទី១' : 'ឆមាសទី២';
+    }
+
+    function getSemesterByMonthName(mName) {
+      var sem1Months = ["វិច្ឆិកា", "ធ្នូ", "មករា", "កុម្ភៈ", "មីនា", "មេសា"];
+      return sem1Months.includes(mName) ? 'ឆមាសទី១' : 'ឆមាសទី២';
+    }
 
     function showSaveToast() {
       var toast = document.getElementById("saveToast");
@@ -706,7 +737,7 @@
       await loadAllStudentsAndClasses();
     }
 
-    /* 5. ទាញយកសិស្ស និងចាក់សោថ្នាក់គ្រូ */
+    /* 5. ទាញយកសិស្ស (រួមទាំង dropout_semester) និងចាក់សោថ្នាក់គ្រូ */
     async function loadAllStudentsAndClasses() {
       var sel = document.getElementById('classSelect');
       var container = document.getElementById('studentListContainer');
@@ -743,9 +774,10 @@
         </div>`;
 
       try {
+        // 🌟 កែតម្រូវ៖ Select យក dropout_semester មកជាមួយ
         const { data: stList, error: stErr } = await sb
           .from('students')
-          .select('id, student_id, student_name, gender, grade')
+          .select('id, student_id, student_name, gender, grade, dropout_semester')
           .order('id', { ascending: true });
 
         if (stErr) throw stErr;
@@ -795,14 +827,23 @@
       loadDailyAttendanceData();
     }
 
-    /* 6. ទាញយកវត្តមានប្រចាំថ្ងៃ */
+    /* 6. ទាញយកវត្តមានប្រចាំថ្ងៃ (ត្រងសិស្សបោះបង់តាមឆមាសនៃកាលបរិច្ឆេទ) */
     async function loadDailyAttendanceData() {
       if (!currentClassName) return;
       var curPure = cleanGrade(currentClassName);
+      var curSem = getSemesterByDate(selectedDate); // ពិនិត្យឆមាសនៃថ្ងៃបច្ចុប្បន្ន
 
       var usedIds = new Set();
       rawStudentsData = allStudentsCache
         .filter(s => cleanGrade(s.grade) === curPure)
+        .filter(s => {
+          var drop = parseDropout(s);
+          // 👉 បើសិនជាថ្ងៃស្រង់វត្តមានស្ថិតក្នុងឆមាសទី២ ហើយសិស្សបោះបង់ក្នុងឆមាសទី១ -> លាក់ចេញទាំងស្រុង
+          if (curSem === 'ឆមាសទី២' && drop.isDropped && drop.semester === 'ឆមាសទី១') {
+            return false;
+          }
+          return true;
+        })
         .map((s, idx) => {
           var baseId = (s.student_id && String(s.student_id).trim()) 
                     || (s.id !== null && s.id !== undefined && String(s.id).trim()) 
@@ -819,6 +860,7 @@
             name: s.student_name || 'គ្មានឈ្មោះ',
             sex: s.gender || 'ប្រុស',
             grade: s.grade,
+            dropout_semester: s.dropout_semester || '',
             days: {}
           };
         });
@@ -858,7 +900,11 @@
         });
 
         rawStudentsData.forEach(s => {
-          if (!dailyAttendanceState[s.id]) dailyAttendanceState[s.id] = 'P';
+          if (!dailyAttendanceState[s.id]) {
+            var drop = parseDropout(s);
+            // ប្រសិនបើសិស្សបោះបង់ក្នុងឆមាសបច្ចុប្បន្ន មិនកំណត់វត្តមាន P ដោយស្វ័យប្រវត្តិទេ
+            dailyAttendanceState[s.id] = drop.isDropped ? 'A' : 'P';
+          }
         });
 
         renderDailyList();
@@ -887,18 +933,22 @@
         var isPresent = (st === 'P');
         var isAbsent = (st === 'A');
         var noteVal = studentNotesMap[s.id] || '';
+        
+        var drop = parseDropout(s);
+        var dropBadgeHtml = drop.isDropped ? `<span class="dropout-badge">បោះបង់ ${drop.semester}</span>` : '';
 
         var noteInputHtml = !isPresent ? `
           <input type="text" class="st-note-input" placeholder="មូលហេតុ / ចំណាំ..." value="${noteVal}" oninput="studentNotesMap['${s.id}']=this.value; triggerDebouncedSave();">
         ` : '';
 
         html += `
-          <div class="student-item-card status-${st} ${isAbsent ? 'has-absent' : ''}" id="stCard_${s.id}">
+          <div class="student-item-card status-${st} ${isAbsent ? 'has-absent' : ''} ${drop.isDropped ? 'is-dropped' : ''}" id="stCard_${s.id}">
             <div class="st-top-row">
               <div class="st-name-title" onclick="openStatusActionSheet('${s.id}', '${s.name}')" title="ចុចដើម្បីបើកផ្ទាំងជ្រើសរើស">
                 <span style="color:var(--text-muted); font-size:12px; width:22px;">${idx + 1}</span>
                 <span>${s.name}</span>
                 <span style="font-size:11px; color:var(--text-muted); font-weight:normal;">(${s.sex || 'ប្រុស'})</span>
+                ${dropBadgeHtml}
               </div>
               
               <div class="quick-status-selector">
@@ -1233,7 +1283,7 @@
       html2pdf().from(element).set(opt).save();
     }
 
-    /* 9. REPORTS GENERATION */
+    /* 9. របាយការណ៍ប្រចាំខែ (កាត់សិស្សបោះបង់ឆមាសទី១ ចេញពីខែនៃឆមាសទី២) */
     async function renderMonthlyPrintReport() {
       var mName = document.getElementById('rptMonthSelect').value;
       var currentYear = selectedDate.getFullYear();
@@ -1245,14 +1295,25 @@
       var monthHolidays = monthlyHolidaysMap[mName] || [];
       var holidayDaysList = monthHolidays.map(h => h.day);
       var curPure = cleanGrade(currentClassName);
+      var curSem = getSemesterByMonthName(mName); // ពិនិត្យឆមាសនៃខែរបាយការណ៍
 
       try {
-        var students = rawStudentsData.map(s => ({
-          id: s.id,
-          name: s.name,
-          sex: s.sex,
-          days: {}
-        }));
+        // 🌟 ត្រងសិស្ស៖ បើសិនជារបាយការណ៍ខែក្នុងឆមាសទី២ លាក់សិស្សបោះបង់ឆមាសទី១
+        var students = rawStudentsData
+          .filter(s => {
+            var drop = parseDropout(s);
+            if (curSem === 'ឆមាសទី២' && drop.isDropped && drop.semester === 'ឆមាសទី១') {
+              return false;
+            }
+            return true;
+          })
+          .map(s => ({
+            id: s.id,
+            name: s.name,
+            sex: s.sex,
+            dropout_semester: s.dropout_semester,
+            days: {}
+          }));
 
         var firstStr = `${currentYear}-${String(mIdx+1).padStart(2,'0')}-01`;
         var lastStr = `${currentYear}-${String(mIdx+1).padStart(2,'0')}-${String(endOfMonthDate.getDate()).padStart(2,'0')}`;
@@ -1301,6 +1362,7 @@
           var studentAbsCount = 0;
           var sexStr = (s.sex || '').toString().trim().toLowerCase();
           var isFemale = (sexStr === 'ស្រី' || sexStr === 'f' || sexStr === 'female');
+          var drop = parseDropout(s);
 
           for (var d = 1; d <= daysCount; d++) {
             var isSun = sundayCols.includes(d);
@@ -1330,10 +1392,12 @@
           totalAllAbs += studentAbsCount;
           if (isFemale) { totalFemalePerm += studentPermCount; totalFemaleAbs += studentAbsCount; }
 
+          var dropTag = drop.isDropped ? ` <span style="font-size:8px; color:#dc2626;">(បោះបង់)</span>` : '';
+
           rowsHtml += `
             <tr>
               <td>${toKhmerNum(idx + 1)}</td>
-              <td style="text-align:left; padding-left:4px; font-weight:bold;">${s.name}</td>
+              <td style="text-align:left; padding-left:4px; font-weight:bold;">${s.name}${dropTag}</td>
               <td>${s.sex || 'ប្រុស'}</td>
               ${dayCells}
               <td style="font-weight:bold;">${studentPermCount > 0 ? studentPermCount : ''}</td>
@@ -1446,6 +1510,7 @@
       }
     }
 
+    /* 10. តារាងសរុបអវត្តមានប្រចាំឆ្នាំ (បង្ហាញសញ្ញាសម្គាល់លើសិស្សបោះបង់) */
     async function renderYearlyPrintReport() {
       var currentYear = selectedDate.getFullYear();
       var endOfYearDate = new Date(currentYear, 8, 0);
@@ -1459,7 +1524,8 @@
         var students = rawStudentsData.map(s => ({
           id: s.id,
           name: s.name,
-          sex: s.sex
+          sex: s.sex,
+          dropout_semester: s.dropout_semester
         }));
 
         const { data: attList } = await sb.from('attendance')
@@ -1488,6 +1554,7 @@
 
         var rowsHtml = '';
         students.forEach(function(s, idx) {
+          var drop = parseDropout(s);
           var s1C = 0, s1A = 0, s2C = 0, s2A = 0;
           var s1Cells = '', s2Cells = '';
 
@@ -1500,18 +1567,23 @@
 
           sem2Months.forEach(function(m) {
             var rec = (mData[m] && mData[m][s.id]) ? mData[m][s.id] : { c: 0, a: 0 };
+            // បើសិនសិស្សបោះបង់ឆមាសទី១ មិនបូកវត្តមានក្នុងឆមាសទី២ ទេ
+            if (drop.isDropped && drop.semester === 'ឆមាសទី១') {
+              rec = { c: 0, a: 0 };
+            }
             s2C += (rec.c || 0); s2A += (rec.a || 0);
             s2Cells += `<td>${rec.c || ''}</td><td>${rec.a || ''}</td>`;
           });
           s2Cells += `<td style="font-weight:bold;">${s2C}</td><td style="font-weight:bold; color:var(--danger);">${s2A}</td>`;
 
           var totC = s1C + s2C, totA = s1A + s2A;
+          var dropNote = drop.isDropped ? ` <span style="font-size:8px; color:#dc2626; font-weight:normal;">(${drop.semester})</span>` : '';
 
           rowsHtml += `
             <tr>
               <td>${toKhmerNum(idx + 1)}</td>
               <td>${s.id}</td>
-              <td style="text-align:left; padding-left:4px; font-weight:bold; white-space:nowrap;">${s.name}</td>
+              <td style="text-align:left; padding-left:4px; font-weight:bold; white-space:nowrap;">${s.name}${dropNote}</td>
               <td>${s.sex || 'ប្រុស'}</td>
               ${s1Cells}
               ${s2Cells}
