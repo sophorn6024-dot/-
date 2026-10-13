@@ -67,16 +67,65 @@
       transition: background-color 0.25s ease, color 0.25s ease;
     }
 
+    /* ══════════════ 🔒 AUTH DENIED WRAPPER ══════════════ */
+    #authDeniedWrap {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 85vh;
+      text-align: center;
+      padding: 30px 20px;
+    }
+    .auth-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 24px;
+      padding: 40px 28px;
+      max-width: 440px;
+      width: 100%;
+      box-shadow: var(--card-shadow);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .auth-icon {
+      width: 68px;
+      height: 68px;
+      border-radius: 20px;
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      margin-bottom: 16px;
+    }
+    .auth-card h2 { font-size: 18px; margin-bottom: 8px; color: #ef4444; font-weight: 700; }
+    .auth-card p { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 24px; }
+    .btn-login-redirect {
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      color: #ffffff;
+      padding: 10px 24px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 13.5px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-login-redirect:hover { transform: translateY(-2px); }
+
     .top-nav {
       display: flex; align-items: center; justify-content: space-between;
       margin-bottom: 12px; gap: 8px;
     }
     .nav-left { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .back-btn {
-      background: var(--surface); border: 1.5px solid var(--border-subtle); width: 32px; height: 32px;
-      border-radius: 50%; display: flex; align-items: center; justify-content: center;
-      cursor: pointer; font-size: 13px; color: var(--text);
-    }
     .page-title {
       font-size: 16px; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 6px;
     }
@@ -154,7 +203,6 @@
       border-color: #f59e0b; color: #f59e0b; background: rgba(245, 158, 11, 0.12);
     }
 
-    /* 🔒 Lock hint banner */
     .lock-hint {
       display: none; align-items: center; gap: 8px; margin-bottom: 10px;
       background: rgba(245, 158, 11, 0.12); border: 1.5px solid rgba(245, 158, 11, 0.35);
@@ -201,7 +249,7 @@
     .col-option:hover { background: var(--surface-elevated); }
 
     /* =========================================================
-       📊 TABLE CONTAINER & STICKY SCROLL ENGINE
+       📊 TABLE CONTAINER
     ========================================================= */
     .table-container {
       background: var(--surface); border-radius: 14px; border: 1px solid var(--border);
@@ -270,7 +318,6 @@
     .table-input[readonly] { opacity: 0.75; cursor: not-allowed; }
     .input-left { text-align: left; }
 
-    /* 🔒 Locked table look */
     .table-container.is-locked .table-input,
     .table-container.is-locked .gender-pill,
     .table-container.is-locked .date-picker-trigger { cursor: not-allowed; opacity: 0.8; }
@@ -322,7 +369,6 @@
       display: flex; align-items: center; justify-content: center;
     }
 
-    /* 🌟 POPUP ACTION MENU */
     .action-popup {
       display: none; position: fixed; z-index: 100005; background: var(--surface); border-radius: 14px;
       box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4); border: 1.5px solid var(--border); width: 195px;
@@ -343,9 +389,7 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* =========================================================
-       🪪 STUDENT BIODATA PROFILE MODAL
-    ========================================================= */
+    /* PROFILE MODAL */
     .profile-modal-overlay {
       display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.65);
       backdrop-filter: blur(6px); z-index: 100010; align-items: center; justify-content: center; padding: 14px;
@@ -383,7 +427,6 @@
     .profile-close-btn:hover { color: #ef4444; border-color: #ef4444; }
 
     .profile-scroll-body { padding: 18px 22px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
-
     .profile-hero-card {
       background: var(--surface-elevated); border: 1.5px solid var(--border); border-radius: 22px;
       padding: 18px 22px; display: flex; align-items: center; gap: 20px;
@@ -402,7 +445,6 @@
       background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
       padding: 3px 12px; font-size: 12px; font-weight: 700; color: var(--text);
     }
-
     .profile-section-card {
       background: var(--surface-elevated); border: 1.5px solid var(--border); border-radius: 20px;
       padding: 16px 20px; display: flex; flex-direction: column; gap: 12px;
@@ -578,7 +620,7 @@
       width: 310px; padding: 18px 16px 14px; animation: calPop 0.16s ease-out;
       user-select: none;
     }
-    @keyframes calPop { from { opacity: 0; transform: scale(0.96) translateY(-6px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+    @keyframes calPop { from { opacity: 0; transform: scale(0.96) translateY(-6px); } to { opacity: 1; transform: scale(1); } }
 
     .cal-header-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
     .cal-select {
@@ -630,15 +672,6 @@
       border-radius: 8px; display: flex; align-items: center; justify-content: center;
       cursor: pointer; font-size: 15px; color: var(--text); font-weight: 700; user-select: none;
     }
-
-    .toast-notification {
-      position: fixed; top: 18px; right: 18px; background: #16a34a; color: white;
-      padding: 10px 18px; border-radius: 12px; font-size: 13px; font-weight: 700;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2); z-index: 99999;
-      transform: translateY(-50px); opacity: 0; pointer-events: none; transition: all 0.25s ease;
-      max-width: calc(100vw - 36px);
-    }
-    .toast-notification.show { transform: translateY(0); opacity: 1; }
 
     /* MODALS */
     .missing-modal-overlay, .edit-modal-overlay {
@@ -733,155 +766,172 @@
   <input type="file" id="rowPhotoFileInput" accept="image/*" style="display:none;" onchange="onRowPhotoFileSelected(this)">
   <input type="file" id="excelRosterFileInput" accept=".xlsx, .xls" style="display:none;" onchange="onExcelFileSelected(this)">
 
-  <!-- 🌟 HEADER NAVIGATION -->
-  <div class="top-nav">
-    <div class="nav-left">
-      <div class="page-title">
-        <span>🎓</span>
-        <span>ព័ត៌មានសិស្ស</span>
-      </div>
-      <div class="badge-pill badge-total" id="badgeTotal">សរុប 0</div>
-      <div class="badge-pill badge-female" id="badgeFemale">ស្រី 0</div>
-      <div class="badge-pill badge-male" id="badgeMale">ប្រុស 0</div>
-    </div>
-    <div class="nav-right">
-      <div class="badge-pill" id="roleBadge" style="background:var(--surface); border:1px solid var(--border); color:var(--primary); font-weight:700;">
-        ...
-      </div>
+  <!-- ══════════════ 🔒 0. AUTH DENIED WRAPPER (ពេលមិនទាន់ LOGIN) ══════════════ -->
+  <div id="authDeniedWrap">
+    <div class="auth-card">
+      <div class="auth-icon">🔒</div>
+      <h2>សូមចូលប្រើប្រាស់ជាមុនសិន!</h2>
+      <p>លោកអ្នកមិនទាន់បាន Login ចូលក្នុងប្រព័ន្ធនៅឡើយទេ។ សូម Login គណនីរបស់អ្នកដើម្បីមើល ឬគ្រប់គ្រងព័ត៌មានសិស្ស។</p>
+      <a href="index.html" target="_top" class="btn-login-redirect" onclick="goToIndex(event)">
+        <span>🔑</span> <span>ទៅកាន់ទំព័រដើម (Login)</span>
+      </a>
     </div>
   </div>
 
-  <!-- 🎛️ CONTROL CARD -->
-  <div class="control-card">
-    <div class="top-controls">
-      <div id="classFilterContainer"></div>
-
-      <div class="status-dropdown-wrapper" id="statusDropdownWrapper">
-        <div class="status-dropdown-btn" onclick="toggleStatusDropdown(event)">
-          <span id="currentStatusText">កំពុងសិក្សា</span>
-          <span id="statusChevronIcon" style="font-size: 11px;">⌵</span>
+  <!-- ══════════════ 🌟 MAIN PAGE CONTENT WRAPPER ══════════════ -->
+  <div id="mainPageContent" style="display:none;">
+    
+    <!-- 🌟 HEADER NAVIGATION -->
+    <div class="top-nav">
+      <div class="nav-left">
+        <div class="page-title">
+          <span>🎓</span>
+          <span>ព័ត៌មានសិស្ស</span>
         </div>
-
-        <div class="status-dropdown-menu" id="statusDropdownMenu">
-          <div class="status-item active" onclick="selectStatusFilter('កំពុងសិក្សា', this)">
-            <span>កំពុងសិក្សា</span>
-            <span class="check-mark">✓</span>
-          </div>
-          <div class="status-item" onclick="selectStatusFilter('ឈប់រៀន', this)">
-            <span>ឈប់រៀន</span>
-            <span class="check-mark">✓</span>
-          </div>
-          <div class="status-item" onclick="selectStatusFilter('ស្ថានភាពទាំងអស់', this)">
-            <span>ស្ថានភាពទាំងអស់</span>
-            <span class="check-mark">✓</span>
-          </div>
+        <div class="badge-pill badge-total" id="badgeTotal">សរុប 0</div>
+        <div class="badge-pill badge-female" id="badgeFemale">ស្រី 0</div>
+        <div class="badge-pill badge-male" id="badgeMale">ប្រុស 0</div>
+      </div>
+      <div class="nav-right">
+        <div class="badge-pill" id="roleBadge" style="background:var(--surface); border:1px solid var(--border); color:var(--primary); font-weight:700;">
+          ...
         </div>
       </div>
+    </div>
 
-      <div class="search-box">
-        <span>🔍</span>
-        <input type="text" id="searchInput" placeholder="ស្វែងរកតាមឈ្មោះ ឬអត្តលេខ..." oninput="handleSearch()">
+    <!-- 🎛️ CONTROL CARD -->
+    <div class="control-card">
+      <div class="top-controls">
+        <div id="classFilterContainer"></div>
+
+        <div class="status-dropdown-wrapper" id="statusDropdownWrapper">
+          <div class="status-dropdown-btn" onclick="toggleStatusDropdown(event)">
+            <span id="currentStatusText">កំពុងសិក្សា</span>
+            <span id="statusChevronIcon" style="font-size: 11px;">⌵</span>
+          </div>
+
+          <div class="status-dropdown-menu" id="statusDropdownMenu">
+            <div class="status-item active" onclick="selectStatusFilter('កំពុងសិក្សា', this)">
+              <span>កំពុងសិក្សា</span>
+              <span class="check-mark">✓</span>
+            </div>
+            <div class="status-item" onclick="selectStatusFilter('ឈប់រៀន', this)">
+              <span>ឈប់រៀន</span>
+              <span class="check-mark">✓</span>
+            </div>
+            <div class="status-item" onclick="selectStatusFilter('ស្ថានភាពទាំងអស់', this)">
+              <span>ស្ថានភាពទាំងអស់</span>
+              <span class="check-mark">✓</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="search-box">
+          <span>🔍</span>
+          <input type="text" id="searchInput" placeholder="ស្វែងរកតាមឈ្មោះ ឬអត្តលេខ..." oninput="handleSearch()">
+        </div>
+
+        <div class="chip-btn" id="syncStatus" onclick="refreshDataForce()" title="ចុចដើម្បី Refresh ទិន្នន័យឡើងវិញ">
+          <span>⚡</span> <span id="syncStatusText">ស្វ័យប្រវត្តិ</span>
+        </div>
+
+        <div class="chip-btn" id="lockBtn" onclick="toggleLockTable()" title="ចុចដើម្បីចាក់សោតារាង (ការពារកុំឱ្យកែប្រែដោយចៃដន្យ)">
+          <span id="lockIcon">🔓</span> <span id="lockText">ចាក់សោ</span>
+        </div>
       </div>
 
-      <div class="chip-btn" id="syncStatus" onclick="refreshDataForce()" title="ចុចដើម្បី Refresh ទិន្នន័យឡើងវិញ">
-        <span>⚡</span> <span id="syncStatusText">ស្វ័យប្រវត្តិ</span>
+      <!-- 🔒 សារប្រាប់ពេលចាក់សោ -->
+      <div class="lock-hint" id="lockHint">
+        <span>🔒</span>
+        <span>តារាងកំពុងចាក់សោ — សូមចុចប៊ូតុង «ដោះសោ» ដើម្បីកែប្រែ ឬបន្ថែមទិន្នន័យ។</span>
       </div>
 
-      <div class="chip-btn" id="lockBtn" onclick="toggleLockTable()" title="ចុចដើម្បីចាក់សោតារាង (ការពារកុំឱ្យកែប្រែដោយចៃដន្យ)">
-        <span id="lockIcon">🔓</span> <span id="lockText">ចាក់សោ</span>
+      <div class="bottom-toolbar">
+        <button class="btn-action btn-add" id="btnAddRow" onclick="addNewRow()">
+          <span>➕</span> <span>បន្ថែមជួរ</span>
+          <span class="count-box" id="newRowCount">1</span>
+        </button>
+
+        <button class="btn-action btn-import-roster" onclick="openImportModal()">
+          <span>📥</span> <span>បញ្ចូលបញ្ជីសិស្ស</span>
+        </button>
+
+        <button class="btn-action btn-sort" id="sortBtn" onclick="sortStudentsAlphabetical()">
+          <span>⇅</span> <span id="sortBtnText">តម្រៀបតាមត្រកូល (ក-អ)</span>
+        </button>
+
+        <button class="btn-action btn-columns" onclick="toggleColumnMenu(event)">
+          <span>⊞</span> <span>ជួរឈរ</span>
+        </button>
+
+        <div class="column-dropdown" id="columnDropdown" onclick="event.stopPropagation()">
+          <div class="dropdown-title">ជ្រើសជួរឈរ</div>
+          <label class="col-option"><input type="checkbox" checked onchange="toggleColumn('col-photo', this.checked)"> រូបថត</label>
+          <label class="col-option"><input type="checkbox" checked onchange="toggleColumn('col-id', this.checked)"> អត្តលេខ</label>
+          <label class="col-option"><input type="checkbox" checked onchange="toggleColumn('col-gender', this.checked)"> ភេទ</label>
+          <label class="col-option"><input type="checkbox" checked onchange="toggleColumn('col-info', this.checked)"> ព័ត៌មានសិស្ស</label>
+          <label class="col-option"><input type="checkbox" checked onchange="toggleColumn('col-pob', this.checked)"> ទីកន្លែងកំណើត</label>
+          <label class="col-option"><input type="checkbox" checked onchange="toggleColumn('col-address', this.checked)"> អាសយដ្ឋានបច្ចុប្បន្ន</label>
+          <label class="col-option"><input type="checkbox" checked onchange="toggleColumn('col-parent', this.checked)"> ឪពុកម្តាយ</label>
+        </div>
+
+        <button class="btn-action btn-excel-export" id="exportExcelBtn" onclick="exportStudentsToExcel()" title="ទាញយកបញ្ជីឈ្មោះសិស្សជា File Excel">
+          <span>📊</span> <span>ទាញយក Excel</span>
+        </button>
+
+        <button class="btn-action btn-warning" id="missingInfoBtn" onclick="handleMissingInfoClick()">
+          <span>⚠️</span> <span id="missingBtnText">ខ្វះព័ត៌មាន</span>
+        </button>
       </div>
     </div>
 
-    <!-- 🔒 សារប្រាប់ពេលចាក់សោ -->
-    <div class="lock-hint" id="lockHint">
-      <span>🔒</span>
-      <span>តារាងកំពុងចាក់សោ — សូមចុចប៊ូតុង «ដោះសោ» ដើម្បីកែប្រែ ឬបន្ថែមទិន្នន័យ។</span>
+    <!-- 📊 MULTI-LEVEL SPREADSHEET TABLE -->
+    <div class="table-container" id="tableContainer">
+      <table id="studentsTable">
+        <thead>
+          <tr>
+            <th rowspan="2" class="sticky-col-1"><div class="th-vertical">ល.រ</div></th>
+            <th rowspan="2" class="col-photo"><div class="th-vertical">រូបថត</div></th>
+            <th rowspan="2" class="col-id"><div class="th-vertical">អត្តលេខ *</div></th>
+            <th rowspan="2" class="sticky-col-2"><div class="th-vertical">គោត្តនាម *</div></th>
+            <th rowspan="2" class="sticky-col-3"><div class="th-vertical">នាម</div></th>
+            <th rowspan="2" class="col-gender" style="width: 60px;"><div class="th-vertical">ភេទ *</div></th>
+            <th colspan="4" class="th-academic col-info">ព័ត៌មានសិស្ស</th>
+            <th colspan="4" class="th-pob-main col-pob">ទីកន្លែងកំណើតសិស្ស</th>
+            <th colspan="4" class="th-addr-main col-address">អាសយដ្ឋានបច្ចុប្បន្នសិស្ស</th>
+            <th colspan="4" class="th-parent-main col-parent">ព័ត៌មានឪពុកម្តាយ</th>
+            <th rowspan="2" class="sticky-action">សកម្មភាព</th>
+          </tr>
+          <tr>
+            <th class="col-info" style="width: 130px;">ថ្ងៃកំណើត</th>
+            <th class="col-info" style="width: 50px;">អាយុ</th>
+            <th class="col-info" style="width: 90px;">ថ្នាក់</th>
+            <th class="col-info" style="width: 105px;">ទូរស័ព្ទ</th>
+            <th class="th-sub-pob col-pob" style="width: 95px;">ភូមិ</th>
+            <th class="th-sub-pob col-pob" style="width: 105px;">ឃុំ/សង្កាត់</th>
+            <th class="th-sub-pob col-pob" style="width: 105px;">ស្រុក/ខណ្ឌ</th>
+            <th class="th-sub-pob col-pob" style="width: 105px;">ខេត្ត/ក្រុង</th>
+            <th class="th-sub-addr col-address" style="width: 95px;">ភូមិ</th>
+            <th class="th-sub-addr col-address" style="width: 105px;">ឃុំ/សង្កាត់</th>
+            <th class="th-sub-addr col-address" style="width: 105px;">ស្រុក/ខណ្ឌ</th>
+            <th class="th-sub-addr col-address" style="width: 105px;">ខេត្ត/ក្រុង</th>
+            <th class="th-sub-parent col-parent" style="width: 130px;">ឈ្មោះឪពុក</th>
+            <th class="th-sub-parent col-parent" style="width: 110px;">មុខរបរឪពុក</th>
+            <th class="th-sub-parent col-parent" style="width: 130px;">ឈ្មោះម្តាយ</th>
+            <th class="th-sub-parent col-parent" style="width: 110px;">មុខរបរម្តាយ</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <tr>
+            <td colspan="22" class="status-row">
+              <span class="spinner-dark"></span> កំពុងទាញទិន្នន័យ
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
-    <div class="bottom-toolbar">
-      <button class="btn-action btn-add" id="btnAddRow" onclick="addNewRow()">
-        <span>➕</span> <span>បន្ថែមជួរ</span>
-        <span class="count-box" id="newRowCount">1</span>
-      </button>
-
-      <button class="btn-action btn-import-roster" onclick="openImportModal()">
-        <span>📥</span> <span>បញ្ចូលបញ្ជីសិស្ស</span>
-      </button>
-
-      <button class="btn-action btn-sort" id="sortBtn" onclick="sortStudentsAlphabetical()">
-        <span>⇅</span> <span id="sortBtnText">តម្រៀបតាមត្រកូល (ក-អ)</span>
-      </button>
-
-      <button class="btn-action btn-columns" onclick="toggleColumnMenu(event)">
-        <span>⊞</span> <span>ជួរឈរ</span>
-      </button>
-
-      <div class="column-dropdown" id="columnDropdown" onclick="event.stopPropagation()">
-        <div class="dropdown-title">ជ្រើសជួរឈរ</div>
-        <label class="col-option"><input type="checkbox" checked onchange="toggleColumn('col-photo', this.checked)"> រូបថត</label>
-        <label class="col-option"><input type="checkbox" checked onchange="toggleColumn('col-id', this.checked)"> អត្តលេខ</label>
-        <label class="col-option"><input type="checkbox" checked onchange="toggleColumn('col-gender', this.checked)"> ភេទ</label>
-        <label class="col-option"><input type="checkbox" checked onchange="toggleColumn('col-info', this.checked)"> ព័ត៌មានសិស្ស</label>
-        <label class="col-option"><input type="checkbox" checked onchange="toggleColumn('col-pob', this.checked)"> ទីកន្លែងកំណើត</label>
-        <label class="col-option"><input type="checkbox" checked onchange="toggleColumn('col-address', this.checked)"> អាសយដ្ឋានបច្ចុប្បន្ន</label>
-        <label class="col-option"><input type="checkbox" checked onchange="toggleColumn('col-parent', this.checked)"> ឪពុកម្តាយ</label>
-      </div>
-
-      <button class="btn-action btn-excel-export" id="exportExcelBtn" onclick="exportStudentsToExcel()" title="ទាញយកបញ្ជីឈ្មោះសិស្សជា File Excel">
-        <span>📊</span> <span>ទាញយក Excel</span>
-      </button>
-
-      <button class="btn-action btn-warning" id="missingInfoBtn" onclick="handleMissingInfoClick()">
-        <span>⚠️</span> <span id="missingBtnText">ខ្វះព័ត៌មាន</span>
-      </button>
-    </div>
-  </div>
-
-  <!-- 📊 MULTI-LEVEL SPREADSHEET TABLE -->
-  <div class="table-container" id="tableContainer">
-    <table id="studentsTable">
-      <thead>
-        <tr>
-          <th rowspan="2" class="sticky-col-1"><div class="th-vertical">ល.រ</div></th>
-          <th rowspan="2" class="col-photo"><div class="th-vertical">រូបថត</div></th>
-          <th rowspan="2" class="col-id"><div class="th-vertical">អត្តលេខ *</div></th>
-          <th rowspan="2" class="sticky-col-2"><div class="th-vertical">គោត្តនាម *</div></th>
-          <th rowspan="2" class="sticky-col-3"><div class="th-vertical">នាម</div></th>
-          <th rowspan="2" class="col-gender" style="width: 60px;"><div class="th-vertical">ភេទ *</div></th>
-          <th colspan="4" class="th-academic col-info">ព័ត៌មានសិស្ស</th>
-          <th colspan="4" class="th-pob-main col-pob">ទីកន្លែងកំណើតសិស្ស</th>
-          <th colspan="4" class="th-addr-main col-address">អាសយដ្ឋានបច្ចុប្បន្នសិស្ស</th>
-          <th colspan="4" class="th-parent-main col-parent">ព័ត៌មានឪពុកម្តាយ</th>
-          <th rowspan="2" class="sticky-action">សកម្មភាព</th>
-        </tr>
-        <tr>
-          <th class="col-info" style="width: 130px;">ថ្ងៃកំណើត</th>
-          <th class="col-info" style="width: 50px;">អាយុ</th>
-          <th class="col-info" style="width: 90px;">ថ្នាក់</th>
-          <th class="col-info" style="width: 105px;">ទូរស័ព្ទ</th>
-          <th class="th-sub-pob col-pob" style="width: 95px;">ភូមិ</th>
-          <th class="th-sub-pob col-pob" style="width: 105px;">ឃុំ/សង្កាត់</th>
-          <th class="th-sub-pob col-pob" style="width: 105px;">ស្រុក/ខណ្ឌ</th>
-          <th class="th-sub-pob col-pob" style="width: 105px;">ខេត្ត/ក្រុង</th>
-          <th class="th-sub-addr col-address" style="width: 95px;">ភូមិ</th>
-          <th class="th-sub-addr col-address" style="width: 105px;">ឃុំ/សង្កាត់</th>
-          <th class="th-sub-addr col-address" style="width: 105px;">ស្រុក/ខណ្ឌ</th>
-          <th class="th-sub-addr col-address" style="width: 105px;">ខេត្ត/ក្រុង</th>
-          <th class="th-sub-parent col-parent" style="width: 130px;">ឈ្មោះឪពុក</th>
-          <th class="th-sub-parent col-parent" style="width: 110px;">មុខរបរឪពុក</th>
-          <th class="th-sub-parent col-parent" style="width: 130px;">ឈ្មោះម្តាយ</th>
-          <th class="th-sub-parent col-parent" style="width: 110px;">មុខរបរម្តាយ</th>
-        </tr>
-      </thead>
-      <tbody id="tableBody">
-        <tr>
-          <td colspan="22" class="status-row">
-            <span class="spinner-dark"></span> កំពុងទាញទិន្នន័យ
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  </div> <!-- END #mainPageContent -->
 
   <!-- 📥 ផ្ទាំង IMPORT ROSTER MODAL (Excel + Paste) -->
   <div class="import-modal-overlay" id="importModalOverlay">
@@ -1167,11 +1217,38 @@
 
     const STUDENTS_TABLE = 'students';
 
-    // Session Info
-    const CURRENT_USER = JSON.parse(localStorage.getItem('krou_supabase_user') || 'null');
-    const USER_ROLE = CURRENT_USER?.role || "teacher";
-    const USER_CLASS = CURRENT_USER?.assigned_classes || "";
-    const IS_ADMIN = String(USER_ROLE).toLowerCase().trim() === 'admin';
+    // 🌟 READ SESSION & AUTH GUARD
+    function readSession() {
+      try { return JSON.parse(localStorage.getItem('krou_supabase_user') || 'null'); } catch(e) { return null; }
+    }
+    const CURRENT_USER = readSession();
+
+    function checkAuthentication() {
+      if (!CURRENT_USER || !CURRENT_USER.username) {
+        document.getElementById('mainPageContent').style.display = 'none';
+        document.getElementById('authDeniedWrap').style.display = 'flex';
+        return false;
+      }
+      document.getElementById('authDeniedWrap').style.display = 'none';
+      document.getElementById('mainPageContent').style.display = 'block';
+      return true;
+    }
+
+    function goToIndex(e) {
+      if (e) e.preventDefault();
+      if (window.parent && window.parent !== window) {
+        try {
+          window.parent.postMessage({ type: 'OPEN_LOGIN', action: 'LOGIN' }, '*');
+          window.parent.location.href = 'index.html';
+          return;
+        } catch(err) {}
+      }
+      window.location.href = 'index.html';
+    }
+
+    const USER_ROLE  = CURRENT_USER?.role || "teacher";
+    const USER_CLASS = CURRENT_USER?.assigned_classes || CURRENT_USER?.assigned_class || "";
+    const IS_ADMIN   = String(USER_ROLE).toLowerCase().trim() === 'admin';
 
     const ALL_CLASSES = ['១', '២', '៣', '៤(ក)', '៤(ខ)', '៥', '៦'];
     let classesWithData = [];
@@ -1233,7 +1310,6 @@
       const cleanId = String(studentId || '').trim();
       if (!cleanId) return false;
 
-      // ១. ពិនិត្យក្នុងបញ្ជីសិស្សនៅលើទំព័រ (Local check)
       const localDup = studentsList.some(other => {
         if (excludeDbId && other.db_id === excludeDbId) return false;
         if (excludeUid && other._uid === excludeUid) return false;
@@ -1241,7 +1317,6 @@
       });
       if (localDup) return true;
 
-      // ២. ពិនិត្យក្នុង Supabase Database
       try {
         let q = sb.from(STUDENTS_TABLE).select('id').eq('student_id', cleanId);
         if (excludeDbId) q = q.neq('id', excludeDbId);
@@ -1384,6 +1459,12 @@
     async function loadStudentsFromSupabase() {
       const tbody = document.getElementById('tableBody');
       tbody.innerHTML = `<tr><td colspan="22" class="status-row"><span class="spinner-dark"></span> កំពុងទាញទិន្នន័យពី Supabase...</td></tr>`;
+
+      if (!IS_ADMIN && !currentSelectedClass) {
+        tbody.innerHTML = `<tr><td colspan="22" class="status-row" style="color:#f59e0b; font-weight:700;">⚠️ គណនីរបស់អ្នកមិនទាន់មានថ្នាក់ទទួលបន្ទុកនៅឡើយទេ។ សូមទាក់ទង Admin។</td></tr>`;
+        updateCounters(0, 0);
+        return;
+      }
 
       try {
         let query = sb.from(STUDENTS_TABLE).select('*');
@@ -1683,7 +1764,7 @@
       if (!s.isDraft) triggerAutoSave(realIdx);
     }
 
-    /* 6. TABLE RENDER (ចុចលើរូបថត = បើកផ្ទាំងកែប្រែព័ត៌មាន) */
+    /* 6. TABLE RENDER */
     function applyFilterAndRender() {
       const q = document.getElementById('searchInput').value.toLowerCase().trim();
 
@@ -1755,7 +1836,6 @@
           <tr data-index="${realIdx}">
             <td class="sticky-col-1">${col1Content}</td>
             <td class="col-photo">
-              <!-- 👉 ចុចលើរូបថត = បើកផ្ទាំងកែប្រែព័ត៌មាន (Edit Modal) -->
               <div class="table-photo-box" onclick="openEditModal(${realIdx})" title="ចុចដើម្បីកែប្រែព័ត៌មានសិស្ស">
                 ${photoUrl ? `<img src="${esc(photoUrl)}">` : esc(initialBadge)}
               </div>
@@ -2406,6 +2486,9 @@
 
     /* 13. BOOTSTRAP */
     window.addEventListener('DOMContentLoaded', () => {
+      // 🌟 ១. ត្រួតពិនិត្យ Auth Guard ជាមុនសិន បើមិនទាន់ Login បញ្ឈប់ដំណើរការភ្លាម
+      if (!checkAuthentication()) return;
+
       initKhmerCalendarComponent();
       installLockInterceptors();
       updateLockUI();
