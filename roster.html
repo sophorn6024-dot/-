@@ -230,7 +230,7 @@
       margin: 0 auto;
       background: #ffffff !important;
       color: #000000 !important;
-      padding: 16mm 14mm;
+      padding: 16mm 14mm 22mm;
       border-radius: 8px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.25);
       position: relative;
@@ -355,15 +355,16 @@
     }
     .empty-note { text-align: center; padding: 22px; color: #64748b; font-size: 13px; }
 
-    /* ============ FOOTER ============ */
+    /* ============ FOOTER & TEACHER DRAGGABLE ============ */
     .footer-container {
       margin-top: 20px;
+      margin-bottom: 30px;
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
       font-size: 12px;
-      position: relative;
       color: #000 !important;
+      position: relative;
     }
     .footer-left { text-align: center; width: 44%; margin-top: 50px; font-weight: 700; }
     .footer-right { text-align: center; width: 54%; font-weight: 700; }
@@ -380,25 +381,34 @@
       color: #000 !important;
     }
 
+    /* 👉 ឈ្មោះគ្រូ៖ បន្ថែម Margin 40px ទុកកន្លែងស៊ីញ៉េ និងអនុញ្ញាតឱ្យអូសដោយសេរី */
     .teacher-name-display {
       font-family: 'Moul', cursive;
       font-size: 12px;
       color: #000 !important;
-      margin-top: 6px;
-      min-height: 22px;
+      margin-top: 40px; /* 👈 ចន្លោះទំនេរ 40px សម្រាប់ស៊ីញ៉េ និងបោះត្រា */
+      min-height: 24px;
       text-align: center;
       display: inline-block;
       cursor: grab;
       user-select: none;
       -webkit-user-select: none;
-      padding: 4px 10px;
+      padding: 4px 12px;
       border: 1px dashed transparent;
-      border-radius: 4px;
+      border-radius: 6px;
       touch-action: none;
       white-space: nowrap !important;
-      z-index: 50 !important;
+      position: relative;
+      z-index: 50;
+      transition: box-shadow 0.15s;
     }
     .teacher-name-display:hover { border-color: #93c5fd; background: rgba(59,130,246,0.06); }
+    .teacher-name-display.dragging {
+      border-color: #2563eb !important;
+      background: rgba(37,99,235,0.15) !important;
+      cursor: grabbing !important;
+      box-shadow: 0 4px 14px rgba(37,99,235,0.25);
+    }
 
     @media screen and (max-width: 768px) {
       body { padding: 0 0 110px 0 !important; }
@@ -617,7 +627,7 @@
   </div>
 
   <!-- =========================================================
-       ⚙️ JAVASCRIPT: SUPABASE & DROPOUT FILTERING ENGINE
+       ⚙️ JAVASCRIPT: SUPABASE & SMOOTH TRANSLATE DRAGGING
   ========================================================= -->
   <script>
     /* 1. SUPABASE CLIENT CONFIG */
@@ -676,8 +686,11 @@
       setZoom(targetScale, btnEl);
     }
 
-    // ── DRAGGABLE TEACHER NAME ──
-    var TEACHER_POS_KEY = 'rosterTeacherNameDragPosPct';
+    // =========================================================
+    // 🌟 DRAGGABLE TEACHER NAME (SMOOTH TRANSLATE SYSTEM)
+    // =========================================================
+    var TEACHER_POS_KEY = 'rosterTeacherTranslate_V2';
+    var curX = 0, curY = 0;
 
     function initDraggableTeacherName() {
       var el = document.getElementById('teacherNameDisplay');
@@ -686,63 +699,50 @@
 
       try {
         var saved = JSON.parse(localStorage.getItem(TEACHER_POS_KEY) || 'null');
-        if (saved && typeof saved.leftPct === 'number' && typeof saved.topPct === 'number') {
-          el.style.position = 'absolute';
-          el.style.left = saved.leftPct + '%';
-          el.style.top = saved.topPct + '%';
-          el.style.margin = '0';
+        if (saved && typeof saved.x === 'number' && typeof saved.y === 'number') {
+          curX = saved.x;
+          curY = saved.y;
+          el.style.transform = 'translate(' + curX + 'px, ' + curY + 'px)';
         }
-      } catch (e) {}
+      } catch (e) {
+        localStorage.removeItem(TEACHER_POS_KEY);
+      }
 
       var isDragging = false;
-      var offsetX = 0, offsetY = 0;
+      var startMouseX = 0, startMouseY = 0;
+      var initialX = 0, initialY = 0;
 
       function startDrag(clientX, clientY) {
         isDragging = true;
         el.classList.add('dragging');
-        var pageRect = page.getBoundingClientRect();
-        var rect = el.getBoundingClientRect();
-        var z = parseFloat(page.style.zoom) || 1;
-
-        var unzoomedLeft = (rect.left - pageRect.left) / z;
-        var unzoomedTop  = (rect.top  - pageRect.top)  / z;
-
-        el.style.position = 'absolute';
-        el.style.left = unzoomedLeft + 'px';
-        el.style.top = unzoomedTop + 'px';
-        el.style.margin = '0';
-
-        offsetX = ((clientX - pageRect.left) / z) - unzoomedLeft;
-        offsetY = ((clientY - pageRect.top)  / z) - unzoomedTop;
+        startMouseX = clientX;
+        startMouseY = clientY;
+        initialX = curX;
+        initialY = curY;
       }
 
       function moveDrag(clientX, clientY, e) {
         if (!isDragging) return;
         if (e && e.cancelable) e.preventDefault();
         var z = parseFloat(page.style.zoom) || 1;
-        var pageRect = page.getBoundingClientRect();
-        var newLeft = ((clientX - pageRect.left) / z) - offsetX;
-        var newTop  = ((clientY - pageRect.top)  / z) - offsetY;
-        el.style.left = newLeft + 'px';
-        el.style.top = newTop + 'px';
+        var dx = (clientX - startMouseX) / z;
+        var dy = (clientY - startMouseY) / z;
+        curX = initialX + dx;
+        curY = initialY + dy;
+        el.style.transform = 'translate(' + curX + 'px, ' + curY + 'px)';
       }
 
       function endDrag() {
         if (!isDragging) return;
         isDragging = false;
         el.classList.remove('dragging');
-        var z = parseFloat(page.style.zoom) || 1;
-        var pageRect = page.getBoundingClientRect();
-        var currentLeft = parseFloat(el.style.left) || 0;
-        var currentTop  = parseFloat(el.style.top)  || 0;
-        var leftPct = (currentLeft / (pageRect.width / z)) * 100;
-        var topPct  = (currentTop  / (pageRect.height / z)) * 100;
-        el.style.left = leftPct + '%';
-        el.style.top = topPct + '%';
-        localStorage.setItem(TEACHER_POS_KEY, JSON.stringify({ leftPct: leftPct, topPct: topPct }));
+        localStorage.setItem(TEACHER_POS_KEY, JSON.stringify({ x: curX, y: curY }));
       }
 
-      el.addEventListener('mousedown', function(e) { startDrag(e.clientX, e.clientY); e.preventDefault(); });
+      el.addEventListener('mousedown', function(e) {
+        startDrag(e.clientX, e.clientY);
+        e.preventDefault();
+      });
       document.addEventListener('mousemove', function(e) { moveDrag(e.clientX, e.clientY); });
       document.addEventListener('mouseup', endDrag);
 
@@ -757,12 +757,11 @@
 
     function resetTeacherNamePosition() {
       localStorage.removeItem(TEACHER_POS_KEY);
+      curX = 0;
+      curY = 0;
       var el = document.getElementById('teacherNameDisplay');
       if (el) {
-        el.style.position = '';
-        el.style.left = '';
-        el.style.top = '';
-        el.style.margin = '';
+        el.style.transform = 'translate(0px, 0px)';
       }
     }
 
@@ -910,7 +909,7 @@
 
       var classStudents = allStudentsCache.filter(s => cleanGrade(s.grade) === cls);
 
-      // 👉 ត្រងសិស្ស៖ ពេលជ្រើស «ឆមាសទី២» សិស្សដែលបោះបង់ក្នុង «ឆមាសទី១» ត្រូវលាក់ចេញទាំងស្រុង
+      // 👉 ពេលជ្រើស «ឆមាសទី២» សិស្សដែលបោះបង់ក្នុង «ឆមាសទី១» ត្រូវលាក់ចេញទាំងស្រុង
       var displayStudents = classStudents.filter(function(s) {
         var drop = parseDropoutStatus(s);
         if (!drop.isDropped) return true;
@@ -938,7 +937,7 @@
         var isMarkedDropped = false;
         var noteText = '';
 
-        // ក្នុងតារាងបង្ហាញត្រឹមពាក្យ «បោះបង់» សុទ្ធ (គ្មានពាក្យឆមាសឡើយ)
+        // បង្ហាញត្រឹមពាក្យ «បោះបង់» សុទ្ធក្នុងតារាង
         if (currentSemester === 'ឆមាសទី១' && drop.semester === 'ឆមាសទី១') {
           isMarkedDropped = true;
           noteText = 'បោះបង់';
