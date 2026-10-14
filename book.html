@@ -6,10 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
   <title>ការខ្ចី-សងសៀវភៅសិក្សា - សាលាបឋមសិក្សាកំពង់ល្ពៅ</title>
 
-  <!-- 🔤 Google Fonts Khmer & FontAwesome -->
+  <!-- 🔤 Google Fonts Khmer (Battambang & Moul ដើម) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;600;700;900&family=Kantumruy+Pro:wght@400;500;600;700&family=Moul&family=Noto+Serif+Khmer:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;600;700;900&family=Moul&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <!-- 📊 Excel & PDF Libraries -->
@@ -62,7 +62,13 @@
       --bg-lost: rgba(248, 113, 113, 0.15);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Kantumruy Pro', 'Battambang', sans-serif; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Khmer OS Battambang', 'Battambang', sans-serif;
+    }
+
     body {
       background: var(--bg);
       color: var(--text);
@@ -72,6 +78,11 @@
       padding: 14px 18px 60px;
       transition: background .25s, color .25s;
     }
+
+    input, select, button, textarea {
+      font-family: 'Khmer OS Battambang', 'Battambang', sans-serif;
+    }
+
     .f-moul { font-family: 'Khmer OS Muol Light', 'Moul', cursive !important; font-weight: normal; }
 
     /* ══════════════ 🔒 AUTH WRAPPER ══════════════ */
@@ -99,7 +110,7 @@
     #toastNotif.show { transform: translateY(0); opacity: 1; }
 
     /* =========================================================
-       1. MANAGE VIEW (ផ្ទាំងបញ្ចូលទិន្នន័យ ដូចរូបទី ២ និង ៣)
+       1. MANAGE VIEW (ផ្ទាំងបញ្ចូលទិន្នន័យ)
     ========================================================= */
     #manageView { display: flex; flex-direction: column; gap: 14px; max-width: 1400px; margin: 0 auto; }
 
@@ -211,7 +222,6 @@
       color: var(--text);
     }
 
-    /* Checkbox / Return Status Buttons */
     .book-checkbox {
       width: 20px; height: 20px;
       accent-color: var(--primary);
@@ -253,7 +263,7 @@
     .note-input:focus { border-color: var(--primary); }
 
     /* =========================================================
-       2. PRINT PREVIEW (ដូចរូបទី១ បេះបិទ)
+       2. PRINT PREVIEW
     ========================================================= */
     #printPreviewModal {
       display: none;
@@ -265,10 +275,9 @@
       padding: 10px 14px 60px;
     }
 
-    /* ── Top Bar ដូចក្នុងរូបភាពទី១ ── */
     .preview-nav-bar {
       position: sticky; top: 0;
-      background: rgba(15, 23, 42, 0.95);
+      background: rgba(15, 23, 42, 0.96);
       border-bottom: 1.5px solid #334155;
       padding: 8px 14px;
       display: flex;
@@ -304,7 +313,7 @@
       padding: 10mm 14mm 14mm;
       border-radius: 4px;
       box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
-      font-family: 'Noto Serif Khmer', 'Kantumruy Pro', sans-serif !important;
+      font-family: 'Khmer OS Battambang', 'Battambang', sans-serif !important;
     }
 
     .print-header-top { text-align: center; margin-bottom: 10px; }
@@ -332,7 +341,6 @@
       margin-bottom: 10px;
     }
 
-    /* Print Table */
     table.print-report-table {
       width: 100%;
       border-collapse: collapse;
@@ -340,6 +348,7 @@
       text-align: center;
       border: 1px solid #000 !important;
       margin-bottom: 14px;
+      background: #ffffff !important;
     }
     table.print-report-table th, table.print-report-table td {
       border: 1px solid #000 !important;
@@ -358,7 +367,6 @@
       font-weight: bold;
     }
 
-    /* Footer Signatures */
     .print-signatures-row {
       display: flex;
       justify-content: space-between;
@@ -369,9 +377,10 @@
     .sig-left-block { text-align: center; min-width: 180px; margin-top: 36px; font-weight: bold; }
     .sig-right-block { text-align: center; min-width: 330px; }
 
-    /* ── Signature Visual Box ── */
+    /* ── Signature Visual Box (គ្មានហត្ថលេខាគំរូ ទុកទំនេរស្អាត) ── */
     .signature-interactive-box {
-      min-height: 54px;
+      min-height: 52px;
+      height: 52px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -379,26 +388,12 @@
       position: relative;
       margin: 2px 0;
       padding: 2px 8px;
-      border: 1px dashed transparent;
-      border-radius: 6px;
       transition: all .15s;
     }
-    .signature-interactive-box:hover {
-      border-color: #3b82f6;
-      background: rgba(59, 130, 246, 0.05);
-    }
     .signature-interactive-box img {
-      max-height: 52px;
+      max-height: 50px;
       max-width: 140px;
       object-fit: contain;
-    }
-    .signature-hint {
-      font-size: 11px;
-      color: #94a3b8;
-      font-style: italic;
-      border: 1px dashed #cbd5e1;
-      padding: 4px 10px;
-      border-radius: 6px;
     }
 
     /* =========================================================
@@ -459,7 +454,6 @@
       #printPreviewModal { display: block !important; position: static !important; background: transparent !important; padding: 0 !important; }
       .print-paper-sheet { width: 100% !important; box-shadow: none !important; padding: 0 !important; }
       .signature-interactive-box { border: none !important; background: transparent !important; }
-      .signature-hint { display: none !important; }
     }
   </style>
 </head>
@@ -483,7 +477,7 @@
   <!-- ══════════════ 🌟 1. MANAGE VIEW ══════════════ -->
   <div id="manageView" style="display:none;">
     
-    <!-- Top Hero Card (ដូចរូបទី ២ និង ៣) -->
+    <!-- Top Hero Card -->
     <div class="top-hero-card">
       <div class="hero-left">
         <div class="hero-icon-box"><i class="fa-solid fa-book-open"></i></div>
@@ -562,7 +556,7 @@
 
   </div>
 
-  <!-- ══════════════ 📄 2. PRINT PREVIEW MODAL (ដូចរូបទី១ បេះបិទ) ══════════════ -->
+  <!-- ══════════════ 📄 2. PRINT PREVIEW MODAL (ដូចរូបទី១) ══════════════ -->
   <div id="printPreviewModal">
     <div class="preview-nav-bar">
       <!-- ផ្នែកខាងឆ្វេង៖ ត្រឡប់ & ឈ្មោះសៀវភៅ -->
@@ -674,10 +668,9 @@
           </div>
           <div class="f-moul" style="font-size:12px; color:#1e40af; margin-top:4px;">គ្រូទទួលបន្ទុកថ្នាក់</div>
           
-          <!-- 🌟 ប្រអប់ហត្ថលេខាឌីជីថល (អាចចុចដើម្បីប្តូរ ឬគូរ) -->
-          <div class="signature-interactive-box" id="sigImageBox" onclick="openSignatureModal()" title="ចុចលើនេះដើម្បី គូរ ឬ Upload ហត្ថលេខា">
+          <!-- 🌟 ប្រអប់ហត្ថលេខា (ទុកទំនេរស្អាត ប្រសិនមិនទាន់បានគូរ/Upload) -->
+          <div class="signature-interactive-box" id="sigImageBox" onclick="openSignatureModal()" title="ចុចដើម្បីគូរ ឬ Upload ហត្ថលេខាផ្ទាល់ខ្លួន">
             <img id="teacherSigImg" src="" alt="ហត្ថលេខាគ្រូ" style="display:none;">
-            <span class="signature-hint" id="noSigHint"><i class="fa-solid fa-signature"></i> ចុចទីនេះដើម្បីដាក់ហត្ថលេខា</span>
           </div>
 
           <div style="font-size:12.5px; font-weight:bold; color:#1e40af; margin-top:2px;" id="rptTeacherName">សេង សុភាស់</div>
@@ -793,6 +786,45 @@
     const KHMER_MONTHS = ['មករា','កុម្ភៈ','មីនា','មេសា','ឧសភា','មិថុនា','កក្កដា','សីហា','កញ្ញា','តុលា','វិច្ឆិកា','ធ្នូ'];
     function toKhmerNum(n) { return String(n).replace(/\d/g, d => KHMER_DIGITS[d]); }
 
+    /* 🌟 អនុគមន៍តម្រៀបថ្នាក់ពីតូចទៅធំ (១ < ២ < ៣ < ៤(ក) < ៤(ខ) < ៥ < ៦...) */
+    const KHMER_DIGITS_MAP = { '០': 0, '១': 1, '២': 2, '៣': 3, '៤': 4, '៥': 5, '៦': 6, '៧': 7, '៨': 8, '៩': 9 };
+
+    function parseGradeValue(gradeStr) {
+      const clean = cleanGrade(gradeStr);
+      const match = clean.match(/^([០-៩\d]+)(.*)$/);
+      if (match) {
+        const rawNum = match[1].replace(/[០-៩]/g, d => KHMER_DIGITS_MAP[d] !== undefined ? KHMER_DIGITS_MAP[d] : d);
+        const num = parseInt(rawNum, 10);
+        const suffix = (match[2] || '').trim();
+        return { num: isNaN(num) ? 999 : num, suffix: suffix, orig: clean };
+      }
+      return { num: 999, suffix: clean, orig: clean };
+    }
+
+    function sortGradesAscending(gradesArray) {
+      const standardGrades = ['១', '២', '៣', '៤', '៤(ក)', '៤(ខ)', '៥', '៦'];
+
+      return gradesArray.sort((a, b) => {
+        const cleanA = cleanGrade(a);
+        const cleanB = cleanGrade(b);
+
+        const idxA = standardGrades.indexOf(cleanA);
+        const idxB = standardGrades.indexOf(cleanB);
+
+        if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+        if (idxA !== -1) return -1;
+        if (idxB !== -1) return 1;
+
+        const parsedA = parseGradeValue(cleanA);
+        const parsedB = parseGradeValue(cleanB);
+
+        if (parsedA.num !== parsedB.num) {
+          return parsedA.num - parsedB.num;
+        }
+        return parsedA.suffix.localeCompare(parsedB.suffix, 'km');
+      });
+    }
+
     const SUBJECT_KEYS = ['kh', 'math', 'sci', 'soc', 'pe', 'for'];
     const SUBJECT_NAMES = {
       kh: 'ភាសាខ្មែរ', math: 'គណិតវិទ្យា', sci: 'វិទ្យាសាស្ត្រ', soc: 'សិក្សាសង្គម', pe: 'អប់រំកាយសុខភាព សិល្បៈ', for: 'ភាសាបរទេស'
@@ -803,9 +835,8 @@
     let rawStudentsList = [];
     let bookRecordsMap = {};
 
-    // ── Signature Management ──
-    const DEFAULT_STYLIZED_SIG = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='70' viewBox='0 0 120 60' fill='none' stroke='%231d4ed8' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><path d='M10 40 Q30 5, 55 35 T90 20 Q105 10, 115 45 M35 48 L85 48'/></svg>";
-    let savedSignatureDataUrl = localStorage.getItem('krou_teacher_signature') || DEFAULT_STYLIZED_SIG;
+    // ── Signature Management (គ្មានហត្ថលេខាគំរូឡើយ ទុកជាចន្លោះទំនេរ) ──
+    let savedSignatureDataUrl = localStorage.getItem('krou_teacher_signature') || '';
     let activeSigTab = 'draw';
     let uploadedSigBase64 = null;
 
@@ -885,7 +916,7 @@
       ctx.lineWidth = 2.4;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
-      ctx.strokeStyle = '#1d4ed8'; // Blue signature ink
+      ctx.strokeStyle = '#1d4ed8'; // ទឹកប៊ិកខៀវ
 
       function getPos(e) {
         const rect = canvas.getBoundingClientRect();
@@ -992,56 +1023,76 @@
 
     function loadDisplaySignature() {
       const img = document.getElementById('teacherSigImg');
-      const hint = document.getElementById('noSigHint');
-      if (savedSignatureDataUrl) {
+      if (savedSignatureDataUrl && savedSignatureDataUrl.trim() !== '') {
         img.src = savedSignatureDataUrl;
         img.style.display = 'inline-block';
-        hint.style.display = 'none';
       } else {
         img.src = '';
         img.style.display = 'none';
-        hint.style.display = 'inline-block';
       }
     }
 
-    /* 5. CLASS & STUDENT DATA LOADER */
+    /* 5. CLASS & STUDENT DATA LOADER (🌟 ទាញយកថ្នាក់ផ្ទាល់ពី Database និងតម្រៀបពីតូចទៅធំ) */
     async function initClassSelection() {
       const adminBox = document.getElementById('adminClassBox');
       const teacherBadge = document.getElementById('teacherClassBadge');
       const sel = document.getElementById('classSelect');
       const cleanUserClass = cleanGrade(USER_CLASS);
 
-      if (!IS_ADMIN) {
-        adminBox.style.display = 'none';
-        if (cleanUserClass) {
-          document.getElementById('teacherClassText').innerText = 'ថ្នាក់ទី ' + cleanUserClass;
-          teacherBadge.style.display = 'inline-flex';
-          currentClassName = cleanUserClass;
-          await loadStudentsAndBookData();
-        } else {
-          teacherBadge.style.display = 'inline-flex';
-          document.getElementById('teacherClassText').innerText = 'មិនទាន់កំណត់ថ្នាក់';
-          document.getElementById('studentTableBody').innerHTML = '<tr><td colspan="11" style="padding:40px; color:#f59e0b; font-weight:bold;">⚠️ គណនីរបស់អ្នកមិនទាន់មានថ្នាក់ទទួលបន្ទុកឡើយ។</td></tr>';
-        }
-        return;
-      }
-
-      teacherBadge.style.display = 'none';
-      adminBox.style.display = 'inline-flex';
+      sel.innerHTML = '<option value="">កំពុងទាញយកថ្នាក់...</option>';
 
       try {
-        const { data, error } = await sb.from('students').select('grade');
-        let classes = [];
-        if (!error && data) {
-          classes = [...new Set(data.map(d => cleanGrade(d.grade)).filter(Boolean))];
-        }
-        if (!classes.length) classes = ['១', '២', '៣', '៤(ក)', '៤(ខ)', '៥', '៦'];
+        // 🌟 ១. ទាញយកបញ្ជីថ្នាក់ទាំងអស់ផ្ទាល់ពី Table: students ក្នុង Supabase Database
+        const { data, error } = await sb.from('students').select('grade').limit(5000);
+        if (error) throw error;
 
-        sel.innerHTML = classes.map(c => `<option value="${c}">ថ្នាក់ទី ${c}</option>`).join('');
-        if (cleanUserClass && classes.includes(cleanUserClass)) sel.value = cleanUserClass;
-        currentClassName = sel.value;
-        await loadStudentsAndBookData();
+        let rawClasses = [];
+        if (data && data.length > 0) {
+          const uniqueSet = new Set();
+          data.forEach(d => {
+            const g = cleanGrade(d.grade);
+            if (g) uniqueSet.add(g);
+          });
+          rawClasses = Array.from(uniqueSet);
+        }
+
+        if (!rawClasses.length) {
+          rawClasses = ['១', '២', '៣', '៤(ក)', '៤(ខ)', '៥', '៦'];
+        }
+
+        // 🌟 ២. តម្រៀបថ្នាក់ពីតូចទៅធំ (១, ២, ៣, ៤(ក), ៤(ខ), ៥, ៦...)
+        const sortedClasses = sortGradesAscending(rawClasses);
+
+        // បង្កើត Options ក្នុង Select
+        sel.innerHTML = sortedClasses.map(c => `<option value="${c}">ថ្នាក់ទី ${c}</option>`).join('');
+
+        if (!IS_ADMIN) {
+          adminBox.style.display = 'none';
+          if (cleanUserClass) {
+            document.getElementById('teacherClassText').innerText = 'ថ្នាក់ទី ' + cleanUserClass;
+            teacherBadge.style.display = 'inline-flex';
+            currentClassName = cleanUserClass;
+            sel.value = cleanUserClass;
+            await loadStudentsAndBookData();
+          } else {
+            teacherBadge.style.display = 'inline-flex';
+            document.getElementById('teacherClassText').innerText = 'មិនទាន់កំណត់ថ្នាក់';
+            document.getElementById('studentTableBody').innerHTML = '<tr><td colspan="11" style="padding:40px; color:#f59e0b; font-weight:bold;">⚠️ គណនីរបស់អ្នកមិនទាន់មានថ្នាក់ទទួលបន្ទុកឡើយ។</td></tr>';
+          }
+        } else {
+          teacherBadge.style.display = 'none';
+          adminBox.style.display = 'inline-flex';
+
+          if (cleanUserClass && sortedClasses.includes(cleanUserClass)) {
+            sel.value = cleanUserClass;
+          } else {
+            sel.value = sortedClasses[0]; // ជ្រើសថ្នាក់តូចជាងគេជាមុនស្វ័យប្រវត្តិ
+          }
+          currentClassName = sel.value;
+          await loadStudentsAndBookData();
+        }
       } catch (e) {
+        console.error('Error fetching classes:', e);
         sel.innerHTML = '<option value="">កំហុសទាញយកថ្នាក់</option>';
       }
     }
