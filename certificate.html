@@ -131,7 +131,7 @@
     }
 
     /* =====================================================
-       🎛️ 2-ROW BALANCED & SLEEK TOOLBAR DESIGN
+       🎛️ 2-ROW BALANCED TOOLBAR DESIGN
     ===================================================== */
     .no-print-toolbar {
       position: sticky;
@@ -279,7 +279,6 @@
       box-shadow: 0 2px 6px rgba(2, 132, 199, 0.35);
     }
 
-    /* ── Tablet & Mobile Responsive ── */
     @media screen and (max-width: 768px) {
       body { padding: 0 0 50px 0 !important; }
       .no-print-toolbar { padding: 8px 10px; gap: 6px; }
@@ -668,19 +667,25 @@
       </div>
     </div>
 
-    <!-- ជួរទី ២ ៖ ព័ត៌មានលម្អិតលើបណ្ណសរសើរ -->
+    <!-- ជួរទី ២ ៖ ព័ត៌មានលម្អិតលើបណ្ណសរសើរ (បំបែកកាលបរិច្ឆេទជា ចន្ទគតិ និង សុរិយគតិ) -->
     <div class="toolbar-row" style="background:var(--ctrl-group-bg); padding:6px 10px; border-radius:10px; border:1px solid var(--tb-border);">
-      <div class="toolbar-section" style="width:100%;">
+      <div class="toolbar-section" style="width:100%; display:flex; flex-wrap:wrap; gap:8px;">
         <!-- សាលា -->
         <div class="panel-pill-box">
           <span class="toolbar-label"><i class="fa-solid fa-school" style="color:#10b981;"></i> សាលារៀន៖</span>
-          <input type="text" id="inSchool" class="form-control" value="សាលាបឋមសិក្សាកំពង់ល្ពៅ" style="width:210px;" oninput="updateAllCertText()">
+          <input type="text" id="inSchool" class="form-control" value="សាលាបឋមសិក្សាកំពង់ល្ពៅ" style="width:200px;" oninput="updateAllCertText()">
         </div>
 
-        <!-- កាលបរិច្ឆេទ -->
-        <div class="panel-pill-box" style="flex:1;">
-          <span class="toolbar-label"><i class="fa-solid fa-pen-nib" style="color:#0284c7;"></i> កាលបរិច្ឆេទ៖</span>
-          <input type="text" id="inDate" class="form-control" style="width:100%; min-width:260px;" value="ថ្ងៃព្រហស្បតិ៍ ១៤កើត ខែស្រាពណ៍ ឆ្នាំមមី អដ្ឋស័ក ព.ស ២៥៧០&#10;កំពង់ល្ពៅ ថ្ងៃទី២៧ ខែសីហា ឆ្នាំ២០២៦" oninput="updateAllCertText()" title="ចុចដើម្បីកែប្រែកាលបរិច្ឆេទចន្ទគតិ និងសុរិយគតិ">
+        <!-- ថ្ងៃចន្ទគតិ -->
+        <div class="panel-pill-box" style="flex:1; min-width:240px;">
+          <span class="toolbar-label"><i class="fa-solid fa-moon" style="color:#f59e0b;"></i> ចន្ទគតិ៖</span>
+          <input type="text" id="inLunarDate" class="form-control" style="width:100%;" value="ថ្ងៃព្រហស្បតិ៍ ១៤កើត ខែស្រាពណ៍ ឆ្នាំមមី អដ្ឋស័ក ព.ស. ២៥៧០" oninput="updateAllCertText()" title="កាលបរិច្ឆេទចន្ទគតិ">
+        </div>
+
+        <!-- ថ្ងៃសុរិយគតិ -->
+        <div class="panel-pill-box" style="flex:1; min-width:210px;">
+          <span class="toolbar-label"><i class="fa-solid fa-sun" style="color:#0284c7;"></i> សុរិយគតិ៖</span>
+          <input type="text" id="inSolarDate" class="form-control" style="width:100%;" value="កំពង់ល្ពៅ, ថ្ងៃទី២៧ ខែសីហា ឆ្នាំ២០២៦" oninput="updateAllCertText()" title="កាលបរិច្ឆេទសុរិយគតិ">
         </div>
       </div>
     </div>
@@ -981,7 +986,7 @@
       }
     }
 
-    /* 6. RENDER CERTIFICATES */
+    /* 6. RENDER CERTIFICATES (បែងចែកកាលបរិច្ឆេទជា ២ ជួរដាច់ពីគ្នា) */
     function renderAllCertificates(topStudents, selectedClass) {
       const container = document.getElementById('certificateList');
 
@@ -991,8 +996,9 @@
       }
 
       const schoolInput = document.getElementById('inSchool').value || 'សាលាបឋមសិក្សាកំពង់ល្ពៅ';
-      const yearInput = document.getElementById('inYear').value || defaultAcademicYear();
-      const dateInput = document.getElementById('inDate').value || '';
+      const yearInput   = document.getElementById('inYear').value || defaultAcademicYear();
+      const lunarInput  = document.getElementById('inLunarDate').value || '';
+      const solarInput  = document.getElementById('inSolarDate').value || '';
 
       let html = '';
 
@@ -1055,7 +1061,7 @@
                 បណ្ណសរសើរនេះប្រគល់ជូនសាមីខ្លួនប្រើប្រាស់តាមការដែលអាចប្រើបាន ។
               </div>
 
-              <!-- FOOTER -->
+              <!-- FOOTER (២ ជួរដាច់ពីគ្នាស្អាត) -->
               <div class="footer-section">
                 <div class="signature-box">
                   <span>បានឃើញ និងឯកភាព</span><br>
@@ -1067,8 +1073,9 @@
                   <img src="${photoSrc}" alt="Student Photo" onerror="this.onerror=null; this.src=NO_PHOTO_SRC;">
                 </div>
 
-                <div class="signature-box" style="align-self:start; margin-top:6px;">
-                  <span class="cert-out-date" style="display:inline-block; white-space:pre-line; font-size:12px; line-height:1.5;">${toKhmerDigits(dateInput)}</span><br>
+                <div class="signature-box" style="align-self:start; margin-top:4px;">
+                  <div class="cert-out-lunar" style="font-size:11.5px; line-height:1.45; white-space:nowrap;">${toKhmerDigits(lunarInput)}</div>
+                  <div class="cert-out-solar" style="font-size:12px; line-height:1.45; white-space:nowrap;">${toKhmerDigits(solarInput)}</div>
                   <div class="signature-title">គ្រូបន្ទុកថ្នាក់</div>
                   <div class="signature-space"></div>
                 </div>
@@ -1085,13 +1092,15 @@
 
     function updateAllCertText() {
       const schoolVal = document.getElementById('inSchool').value || '...................';
-      const yearVal = toKhmerDigits(document.getElementById('inYear').value || '...................');
-      const dateVal = toKhmerDigits(document.getElementById('inDate').value || '');
+      const yearVal   = toKhmerDigits(document.getElementById('inYear').value || '...................');
+      const lunarVal  = toKhmerDigits(document.getElementById('inLunarDate').value || '');
+      const solarVal  = toKhmerDigits(document.getElementById('inSolarDate').value || '');
 
       document.querySelectorAll('.cert-out-school').forEach(el => el.innerText = schoolVal);
       document.querySelectorAll('.cert-subtitle-school').forEach(el => el.innerText = 'នាយក' + schoolVal);
       document.querySelectorAll('.cert-out-year').forEach(el => el.innerText = yearVal);
-      document.querySelectorAll('.cert-out-date').forEach(el => el.innerText = dateVal);
+      document.querySelectorAll('.cert-out-lunar').forEach(el => el.innerText = lunarVal);
+      document.querySelectorAll('.cert-out-solar').forEach(el => el.innerText = solarVal);
     }
 
     function updateAllFrames() {
