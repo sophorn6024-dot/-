@@ -479,7 +479,7 @@
     }
 
     /* =========================================================
-       📅 4. KHMER CALENDAR POPUP (ដូចទំព័រមុនៗ)
+       📅 4. KHMER CALENDAR POPUP
     ========================================================= */
     .khmer-cal-popup {
       display: none; position: fixed; z-index: 10010;
@@ -567,6 +567,7 @@
       display: flex; align-items: center; justify-content: space-between; background: var(--surface-card);
     }
 
+    @page { size: A4 landscape; margin: 6mm; }
     @media print {
       body { background: #fff !important; color: #000 !important; padding: 0 !important; }
       #authDeniedWrap, #manageView, .preview-nav-bar, .sig-modal-backdrop, .page-setup-modal-backdrop, .khmer-cal-popup { display: none !important; }
@@ -693,7 +694,7 @@
           <i class="fa-solid fa-file-excel" style="color:#10b981;"></i> ទាញយក Excel
         </button>
 
-        <!-- ថ្ងៃអ្នកធ្វើចុះហត្ថលេខា (ចុចបើកប្រតិទិនខ្មែរស្អាត) -->
+        <!-- ថ្ងៃអ្នកធ្វើចុះហត្ថលេខា (ចុចបើកប្រតិទិនខ្មែរ) -->
         <button type="button" class="bar-pill" id="btnTeacherSignDateTrigger" onclick="openKhmerCalForTeacher(event)">
           <span>ថ្ងៃអ្នកធ្វើចុះហត្ថលេខា</span>
           <span id="txtTeacherSignDate" style="color:#38bdf8; font-weight:bold;">[ ជ្រើសថ្ងៃ 📅 ]</span>
@@ -714,7 +715,7 @@
           <i class="fa-solid fa-signature"></i> <span>ហត្ថលេខា</span>
         </button>
 
-        <!-- ⚙️ ប៊ូតុងកំណត់ទំព័រ (បើកផ្ទាំងដូចរូបថត) -->
+        <!-- ⚙️ ប៊ូតុងកំណត់ទំព័រ -->
         <button type="button" class="bar-pill" onclick="openPageSetupModal()" title="កំណត់ទំព័រ (ក្រដាស កែម អក្សរ កម្ពស់ជួរ)">
           <i class="fa-solid fa-sliders"></i> <span>កំណត់ទំព័រ</span>
         </button>
@@ -798,7 +799,7 @@
     </div>
   </div>
 
-  <!-- ══════════════ 📄 3. MODAL ការរៀបចំទំព័រ (ដូចរូបថត) ══════════════ -->
+  <!-- ══════════════ 📄 3. MODAL ការរៀបចំទំព័រ ══════════════ -->
   <div class="page-setup-modal-backdrop" id="pageSetupModal" onclick="if(event.target===this) closePageSetupModal()">
     <div class="page-setup-card" onclick="event.stopPropagation()">
       <div class="setup-header">
@@ -1020,33 +1021,32 @@
     const KHMER_MONTHS = ['មករា','កុម្ភៈ','មីនា','មេសា','ឧសភា','មិថុនា','កក្កដា','សីហា','កញ្ញា','តុលា','វិច្ឆិកា','ធ្នូ'];
     function toKhmerNum(n) { return String(n).replace(/\d/g, d => KHMER_DIGITS[d]); }
 
-    /* 🌟 អនុគមន៍តម្រៀបថ្នាក់ពីតូចទៅធំ */
+    /* 🌟 អនុគមន៍តម្រៀបថ្នាក់ពីតូចទៅធំ ដោយមិនកំណត់ថ្នាក់រឹងឡើយ (១ < ២ < ៣ < ៤ < ៥ < ៦...) */
     const KHMER_DIGITS_MAP = { '០': 0, '១': 1, '២': 2, '៣': 3, '៤': 4, '៥': 5, '៦': 6, '៧': 7, '៨': 8, '៩': 9 };
+
     function parseGradeValue(gradeStr) {
       const clean = cleanGrade(gradeStr);
+      // ស្វែងរកលេខដើម (ទាំងលេខខ្មែរ និងលេខអារ៉ាប់) ព្រមទាំងអក្សរកន្ទុយ
       const match = clean.match(/^([០-៩\d]+)(.*)$/);
       if (match) {
         const rawNum = match[1].replace(/[០-៩]/g, d => KHMER_DIGITS_MAP[d] !== undefined ? KHMER_DIGITS_MAP[d] : d);
         const num = parseInt(rawNum, 10);
         const suffix = (match[2] || '').trim();
-        return { num: isNaN(num) ? 999 : num, suffix: suffix, orig: clean };
+        return { num: isNaN(num) ? 999 : num, suffix: suffix };
       }
-      return { num: 999, suffix: clean, orig: clean };
+      return { num: 999, suffix: clean };
     }
 
     function sortGradesAscending(gradesArray) {
-      const standardGrades = ['១', '២', '៣', '៤', '៤(ក)', '៤(ខ)', '៥', '៦'];
       return gradesArray.sort((a, b) => {
-        const cleanA = cleanGrade(a);
-        const cleanB = cleanGrade(b);
-        const idxA = standardGrades.indexOf(cleanA);
-        const idxB = standardGrades.indexOf(cleanB);
-        if (idxA !== -1 && idxB !== -1) return idxA - idxB;
-        if (idxA !== -1) return -1;
-        if (idxB !== -1) return 1;
-        const parsedA = parseGradeValue(cleanA);
-        const parsedB = parseGradeValue(cleanB);
-        if (parsedA.num !== parsedB.num) return parsedA.num - parsedB.num;
+        const parsedA = parseGradeValue(a);
+        const parsedB = parseGradeValue(b);
+
+        // ១. ប្រៀបធៀបលេខថ្នាក់ពីតូចទៅធំ
+        if (parsedA.num !== parsedB.num) {
+          return parsedA.num - parsedB.num;
+        }
+        // ២. បើសិនលេខថ្នាក់ស្មើគ្នា តម្រៀបតាមអក្សរកន្ទុយ (ក < ខ...)
         return parsedA.suffix.localeCompare(parsedB.suffix, 'km');
       });
     }
@@ -1134,7 +1134,7 @@
     }
 
     /* =========================================================
-       4. 📅 KHMER CALENDAR LOGIC (ដូចទំព័រមុនៗ)
+       4. 📅 KHMER CALENDAR LOGIC
     ========================================================= */
     let calCurrentYear = 2026;
     let calCurrentMonth = 9;
@@ -1238,11 +1238,11 @@
     document.addEventListener('click', () => { closeKhmerCalendar(); });
 
     /* =========================================================
-       ⚙️ 5. PAGE SETUP MODAL (ដូចក្នុងរូបថត)
+       ⚙️ 5. PAGE SETUP MODAL
     ========================================================= */
     const pageSetup = {
-      size: 'A4',            // 'A4' | 'F4'
-      orientation: 'landscape', // 'portrait' | 'landscape'
+      size: 'A4',
+      orientation: 'landscape',
       marginMm: 5,
       fontPercent: 100,
       rowHeightMm: 7.1
@@ -1308,14 +1308,11 @@
     }
 
     function updatePageSetupUI() {
-      // Paper size buttons
       document.getElementById('btnSizeA4').classList.toggle('active', pageSetup.size === 'A4');
       document.getElementById('btnSizeF4').classList.toggle('active', pageSetup.size === 'F4');
-      // Orientation buttons
       document.getElementById('btnOriPort').classList.toggle('active', pageSetup.orientation === 'portrait');
       document.getElementById('btnOriLand').classList.toggle('active', pageSetup.orientation === 'landscape');
 
-      // Margin presets
       [2, 5, 10, 15].forEach(m => {
         const b = document.getElementById('btnMargin' + m);
         if (b) b.classList.toggle('active', pageSetup.marginMm === m);
@@ -1323,7 +1320,6 @@
 
       document.getElementById('valMarginMm').innerText = pageSetup.marginMm;
 
-      // Usable area calculation
       let wMm = (pageSetup.size === 'A4') ? 210 : 216;
       let hMm = (pageSetup.size === 'A4') ? 297 : 330;
       if (pageSetup.orientation === 'landscape') {
@@ -1333,14 +1329,12 @@
       const useH = hMm - (pageSetup.marginMm * 2);
       document.getElementById('txtUsableArea').innerText = `ផ្ទៃប្រើ ${useW}×${useH}mm`;
 
-      // Font Scale Stepper
       document.getElementById('valFontPercent').innerText = pageSetup.fontPercent;
       let fontLabel = 'ធម្មតា';
       if (pageSetup.fontPercent < 95) fontLabel = 'តូច';
       else if (pageSetup.fontPercent > 105) fontLabel = 'ធំ';
       document.getElementById('txtFontScaleLabel').innerText = fontLabel;
 
-      // Row Height Stepper
       document.getElementById('valRowHeightMm').innerText = pageSetup.rowHeightMm;
       document.getElementById('txtRowHeightLabel').innerText = pageSetup.rowHeightMm === 7.1 ? 'តាមអក្សរ' : 'ផ្ទាល់ខ្លួន';
 
@@ -1371,7 +1365,7 @@
       setTimeout(() => {
         let sheetHeightMm = (pageSetup.size === 'A4' ? (pageSetup.orientation === 'landscape' ? 210 : 297) : (pageSetup.orientation === 'landscape' ? 216 : 330));
         let actualHeightPx = paper.scrollHeight;
-        let sheetHeightPx = sheetHeightMm * 3.78; // approx mm to px
+        let sheetHeightPx = sheetHeightMm * 3.78;
         let count = Math.max(1, Math.ceil(actualHeightPx / sheetHeightPx));
         badge.innerText = `${toKhmerNum(count)} សន្លឹក`;
       }, 50);
@@ -1506,7 +1500,7 @@
     }
 
     /* =========================================================
-       7. CLASS & STUDENT DATA LOADER
+       7. CLASS & STUDENT DATA LOADER (🌟 ទាញយកថ្នាក់ផ្ទាល់ពី DATABASE)
     ========================================================= */
     async function initClassSelection() {
       const adminBox = document.getElementById('adminClassBox');
@@ -1514,9 +1508,10 @@
       const sel = document.getElementById('classSelect');
       const cleanUserClass = cleanGrade(USER_CLASS);
 
-      sel.innerHTML = '<option value="">កំពុងទាញយកថ្នាក់...</option>';
+      sel.innerHTML = '<option value="">កំពុងទាញយកថ្នាក់ពី Database...</option>';
 
       try {
+        // 🌟 ១. ទាញយកថ្នាក់ពី Table: students ក្នុង Database (គ្មានកំណត់ថ្នាក់រឹងឡើយ)
         const { data, error } = await sb.from('students').select('grade').limit(5000);
         if (error) throw error;
 
@@ -1531,19 +1526,27 @@
         }
 
         if (!rawClasses.length) {
-          rawClasses = ['១', '២', '៣', '៤(ក)', '៤(ខ)', '៥', '៦'];
+          sel.innerHTML = '<option value="">មិនមានថ្នាក់ក្នុង Database ទេ</option>';
+          document.getElementById('studentTableBody').innerHTML = '<tr><td colspan="11" style="padding:40px; color:var(--text-muted);">មិនទាន់មានទិន្នន័យសិស្ស ឬថ្នាក់ក្នុង Database ឡើយ</td></tr>';
+          return;
         }
 
+        // 🌟 ២. តម្រៀបថ្នាក់ពីតូចទៅធំដោយស្វ័យប្រវត្តិតាមលេខ និងអក្សរ
         const sortedClasses = sortGradesAscending(rawClasses);
         sel.innerHTML = sortedClasses.map(c => `<option value="${c}">ថ្នាក់ទី ${c}</option>`).join('');
 
         if (!IS_ADMIN) {
           adminBox.style.display = 'none';
-          if (cleanUserClass) {
+          if (cleanUserClass && sortedClasses.includes(cleanUserClass)) {
             document.getElementById('teacherClassText').innerText = 'ថ្នាក់ទី ' + cleanUserClass;
             teacherBadge.style.display = 'inline-flex';
             currentClassName = cleanUserClass;
             sel.value = cleanUserClass;
+            await loadStudentsAndBookData();
+          } else if (cleanUserClass) {
+            document.getElementById('teacherClassText').innerText = 'ថ្នាក់ទី ' + cleanUserClass;
+            teacherBadge.style.display = 'inline-flex';
+            currentClassName = cleanUserClass;
             await loadStudentsAndBookData();
           } else {
             teacherBadge.style.display = 'inline-flex';
@@ -1557,7 +1560,7 @@
           if (cleanUserClass && sortedClasses.includes(cleanUserClass)) {
             sel.value = cleanUserClass;
           } else {
-            sel.value = sortedClasses[0];
+            sel.value = sortedClasses[0]; // ជ្រើសថ្នាក់តូចជាងគេជាមុនស្វ័យប្រវត្តិ
           }
           currentClassName = sel.value;
           await loadStudentsAndBookData();
@@ -1778,7 +1781,7 @@
       }
     }
 
-    /* 10. PRINT PREVIEW (A4 LANDSCAPE) */
+    /* 10. PRINT PREVIEW */
     function openPrintPreview() {
       document.getElementById('printPreviewModal').style.display = 'block';
 
