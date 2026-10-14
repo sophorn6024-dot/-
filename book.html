@@ -259,32 +259,37 @@
       display: none;
       position: fixed;
       inset: 0;
-      background: #334155;
+      background: #1e293b;
       z-index: 2000;
       overflow-y: auto;
-      padding: 12px 14px 60px;
+      padding: 10px 14px 60px;
     }
+
+    /* ── Top Bar ដូចក្នុងរូបភាពទី១ ── */
     .preview-nav-bar {
       position: sticky; top: 0;
-      background: rgba(30, 41, 59, 0.95);
-      border-bottom: 1px solid #475569;
-      padding: 10px 16px;
+      background: rgba(15, 23, 42, 0.95);
+      border-bottom: 1.5px solid #334155;
+      padding: 8px 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
+      gap: 8px;
       z-index: 100;
       color: #fff;
       border-radius: 14px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       flex-wrap: wrap;
     }
-    .nav-btn-icon {
-      background: #1e293b; color: #fff; border: 1px solid #475569;
-      padding: 7px 14px; border-radius: 10px; font-weight: 700; font-size: 12.5px;
-      cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+    .bar-pill {
+      background: #1e293b; color: #f8fafc; border: 1px solid #475569;
+      padding: 6px 12px; border-radius: 10px; font-weight: 600; font-size: 12.5px;
+      display: inline-flex; align-items: center; gap: 6px; cursor: pointer; user-select: none;
     }
-    .nav-btn-icon:hover { background: #334155; }
+    .bar-pill:hover { background: #334155; }
+    .bar-pill select, .bar-pill input[type="date"] {
+      background: transparent; border: none; color: #fff; outline: none; font-size: 12.5px; font-weight: 700; cursor: pointer;
+    }
     .nav-btn-green { background: #059669; color: #fff; border: none; }
     .nav-btn-green:hover { background: #047857; }
 
@@ -296,28 +301,28 @@
       background: #ffffff !important;
       color: #000000 !important;
       margin: 0 auto;
-      padding: 12mm 14mm;
+      padding: 10mm 14mm 14mm;
       border-radius: 4px;
       box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
       font-family: 'Noto Serif Khmer', 'Kantumruy Pro', sans-serif !important;
     }
 
-    .print-header-top { text-align: center; margin-bottom: 12px; }
+    .print-header-top { text-align: center; margin-bottom: 10px; }
     .print-kingdom { font-size: 15px; margin-bottom: 2px; }
     .print-motto { font-size: 13.5px; margin-bottom: 4px; }
-    .print-divider { font-size: 12px; letter-spacing: 4px; margin-bottom: 8px; }
+    .print-divider { font-size: 12px; letter-spacing: 4px; margin-bottom: 6px; }
 
     .print-school-meta {
       text-align: left;
       font-size: 12px;
       font-weight: bold;
       line-height: 1.5;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
     .print-doc-title {
       text-align: center;
-      font-size: 16px;
-      margin: 12px 0 4px;
+      font-size: 16.5px;
+      margin: 10px 0 3px;
       color: #000;
     }
     .print-sub-legend {
@@ -358,19 +363,103 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-top: 18px;
+      margin-top: 14px;
       font-size: 12px;
     }
-    .sig-left-block { text-align: center; min-width: 180px; margin-top: 40px; font-weight: bold; }
-    .sig-right-block { text-align: center; min-width: 320px; }
-    .sig-digital-img { width: 110px; height: 50px; object-fit: contain; margin-top: 4px; }
+    .sig-left-block { text-align: center; min-width: 180px; margin-top: 36px; font-weight: bold; }
+    .sig-right-block { text-align: center; min-width: 330px; }
+
+    /* ── Signature Visual Box ── */
+    .signature-interactive-box {
+      min-height: 54px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      margin: 2px 0;
+      padding: 2px 8px;
+      border: 1px dashed transparent;
+      border-radius: 6px;
+      transition: all .15s;
+    }
+    .signature-interactive-box:hover {
+      border-color: #3b82f6;
+      background: rgba(59, 130, 246, 0.05);
+    }
+    .signature-interactive-box img {
+      max-height: 52px;
+      max-width: 140px;
+      object-fit: contain;
+    }
+    .signature-hint {
+      font-size: 11px;
+      color: #94a3b8;
+      font-style: italic;
+      border: 1px dashed #cbd5e1;
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+
+    /* =========================================================
+       ✍️ SIGNATURE MODAL (CANVAS PAD + UPLOAD)
+    ========================================================= */
+    .sig-modal-backdrop {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(6px);
+      z-index: 10000; align-items: center; justify-content: center; padding: 14px;
+    }
+    .sig-modal-card {
+      background: var(--surface); color: var(--text); border-radius: 22px;
+      border: 1.5px solid var(--border); box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+      width: 480px; max-width: 100%; overflow: hidden; display: flex; flex-direction: column;
+    }
+    .sig-modal-header {
+      padding: 14px 18px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--surface-card);
+    }
+    .sig-modal-body { padding: 16px 20px; display: flex; flex-direction: column; gap: 12px; }
+    
+    .sig-tabs-bar {
+      display: flex; gap: 8px; background: var(--surface-elevated); padding: 4px; border-radius: 12px;
+    }
+    .sig-tab-btn {
+      flex: 1; padding: 7px; border: none; border-radius: 8px; font-weight: 700; font-size: 12.5px;
+      background: transparent; color: var(--text-muted); cursor: pointer;
+    }
+    .sig-tab-btn.active { background: var(--surface); color: var(--text); box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+
+    .canvas-wrap {
+      border: 2px dashed #93c5fd; border-radius: 14px; background: #ffffff;
+      height: 180px; width: 100%; position: relative; touch-action: none;
+    }
+    #signatureCanvas { width: 100%; height: 100%; border-radius: 12px; cursor: crosshair; }
+    .canvas-clear-btn {
+      position: absolute; right: 10px; top: 10px; background: rgba(239, 68, 68, 0.15);
+      color: #ef4444; border: 1px solid rgba(239,68,68,0.3); border-radius: 8px;
+      padding: 3px 8px; font-size: 11px; font-weight: bold; cursor: pointer;
+    }
+
+    .upload-zone {
+      border: 2px dashed var(--border); border-radius: 14px; padding: 24px 16px;
+      text-align: center; cursor: pointer; background: var(--surface-card);
+    }
+    .upload-zone:hover { border-color: var(--primary); background: var(--surface-elevated); }
+
+    .sig-modal-footer {
+      padding: 12px 18px; border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between; background: var(--surface-card);
+    }
 
     @page { size: A4 landscape; margin: 6mm; }
     @media print {
       body { background: #fff !important; color: #000 !important; padding: 0 !important; }
-      #authDeniedWrap, #manageView, .preview-nav-bar { display: none !important; }
+      #authDeniedWrap, #manageView, .preview-nav-bar, .sig-modal-backdrop { display: none !important; }
       #printPreviewModal { display: block !important; position: static !important; background: transparent !important; padding: 0 !important; }
       .print-paper-sheet { width: 100% !important; box-shadow: none !important; padding: 0 !important; }
+      .signature-interactive-box { border: none !important; background: transparent !important; }
+      .signature-hint { display: none !important; }
     }
   </style>
 </head>
@@ -473,31 +562,60 @@
 
   </div>
 
-  <!-- ══════════════ 📄 2. PRINT PREVIEW MODAL (ដូចរូបទី១) ══════════════ -->
+  <!-- ══════════════ 📄 2. PRINT PREVIEW MODAL (ដូចរូបទី១ បេះបិទ) ══════════════ -->
   <div id="printPreviewModal">
     <div class="preview-nav-bar">
+      <!-- ផ្នែកខាងឆ្វេង៖ ត្រឡប់ & ឈ្មោះសៀវភៅ -->
       <div style="display:flex; align-items:center; gap:8px;">
-        <button type="button" class="nav-btn-icon" onclick="closePrintPreview()">
+        <button type="button" class="bar-pill" onclick="closePrintPreview()">
           <i class="fa-solid fa-chevron-left"></i> ត្រឡប់
         </button>
-        <span style="font-size:13px; font-weight:700;">សៀវភៅ៖</span>
+        <span style="font-size:12.5px; font-weight:700;">សៀវភៅ</span>
         <input type="text" id="rptSubjectNames" value="ភាសាខ្មែរ, គណិតវិទ្យា, វិទ្យាសាស្ត្រ, សិក្សាសង្គម" style="background:#0f172a; border:1px solid #475569; color:#fff; padding:6px 10px; border-radius:8px; font-size:12px; min-width:240px; outline:none;">
       </div>
 
+      <!-- ផ្នែកខាងស្តាំ៖ ទាញយក Excel, ថ្ងៃអ្នកធ្វើ, ថ្ងៃនាយក, ហត្ថលេខា, PDF, Print -->
       <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-        <button type="button" class="nav-btn-icon" onclick="exportToExcel()">
+        <button type="button" class="bar-pill" onclick="exportToExcel()">
           <i class="fa-solid fa-file-excel" style="color:#10b981;"></i> ទាញយក Excel
         </button>
-        <button type="button" class="nav-btn-icon" onclick="downloadPDF()">
+
+        <!-- ថ្ងៃអ្នកធ្វើចុះហត្ថលេខា -->
+        <div class="bar-pill" title="ជ្រើសរើសថ្ងៃអ្នកធ្វើចុះហត្ថលេខា">
+          <span>ថ្ងៃអ្នកធ្វើចុះហត្ថលេខា</span>
+          <input type="date" id="inputSignDate" onchange="onSignDateChange(this.value)">
+        </div>
+
+        <!-- ថ្ងៃនាយកចុះហត្ថលេខា -->
+        <div class="bar-pill" title="កំណត់ថ្ងៃនាយកចុះហត្ថលេខា">
+          <span>ថ្ងៃនាយកចុះហត្ថលេខា</span>
+          <select id="selDirectorDateOpt" onchange="onDirectorDateOptChange(this.value)">
+            <option value="none" selected>មិនដាក់</option>
+            <option value="same">ដូចថ្ងៃអ្នកធ្វើ</option>
+            <option value="custom">ជ្រើសថ្ងៃ</option>
+          </select>
+          <input type="date" id="inputDirectorDate" style="display:none; margin-left:4px;" onchange="updateDirectorSignDateDisplay()">
+        </div>
+
+        <!-- 🖊️ មុខងារហត្ថលេខា -->
+        <button type="button" class="bar-pill" onclick="openSignatureModal()" style="border-color:#38bdf8; color:#38bdf8;" title="គូរ ឬ Upload ហត្ថលេខាគ្រូ">
+          <i class="fa-solid fa-signature"></i> <span>ហត្ថលេខា</span>
+        </button>
+
+        <button type="button" class="bar-pill" onclick="openPageSetupAlert()" title="កំណត់ទំព័រ">
+          <i class="fa-solid fa-sliders"></i> <span>កំណត់ទំព័រ</span>
+        </button>
+
+        <button type="button" class="bar-pill" onclick="downloadPDF()">
           <i class="fa-solid fa-file-pdf" style="color:#ef4444;"></i> ទាញយក PDF
         </button>
-        <button type="button" class="nav-btn-icon nav-btn-green" onclick="window.print()">
+        <button type="button" class="bar-pill nav-btn-green" onclick="window.print()">
           <i class="fa-solid fa-print"></i> បោះពុម្ព
         </button>
       </div>
     </div>
 
-    <!-- Paper Sheet A4 -->
+    <!-- Paper Sheet A4 Landscape -->
     <div class="print-paper-sheet" id="printableReportPaper">
       <div class="print-header-top">
         <div class="f-moul print-kingdom">ព្រះរាជាណាចក្រកម្ពុជា</div>
@@ -537,28 +655,98 @@
 
       <!-- Signatures Footer -->
       <div class="print-signatures-row">
+        <!-- ផ្នែកនាយកសាលា -->
         <div class="sig-left-block">
+          <div id="directorDateLine" style="font-size:11px; margin-bottom:4px; font-weight:normal; display:none;">
+            ថ្ងៃទី...... ខែ...... ឆ្នាំ២០២៦
+          </div>
           <div class="f-moul" style="font-size:12px;">បានឃើញ និងឯកភាព</div>
           <div class="f-moul" style="font-size:12px; margin-top:4px;">នាយកសាលា</div>
         </div>
 
+        <!-- ផ្នែកគ្រូទទួលបន្ទុកថ្នាក់ -->
         <div class="sig-right-block">
-          <div style="font-size:11.5px;" id="rptLunarDate">ថ្ងៃពុធ ៣កើត ខែអស្សុជ ឆ្នាំមមី អដ្ឋស័ក ពុទ្ធសករាជ ២៥៧០</div>
-          <div style="font-size:11.5px; margin-top:2px;" id="rptSolarDate">កំពង់ល្ពៅ ថ្ងៃទី១៤ ខែតុលា ឆ្នាំ២០២៦</div>
-          <div class="f-moul" style="font-size:12px; color:#1e40af; margin-top:4px;">គ្រូទទួលបន្ទុកថ្នាក់</div>
-          <div style="margin-top:6px;">
-            <svg width="85" height="42" viewBox="0 0 120 60" fill="none" stroke="#1d4ed8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M10 40 Q30 5, 55 35 T90 20 Q105 10, 115 45 M35 48 L85 48"/>
-            </svg>
+          <div style="font-size:11.5px;" id="rptLunarDate" contenteditable="true" title="ចុចដើម្បីកែសម្រួលថ្ងៃចន្ទគតិ">
+            ថ្ងៃពុធ ៣កើត ខែអស្សុជ ឆ្នាំមមី អដ្ឋស័ក ពុទ្ធសករាជ ២៥៧០
           </div>
-          <div style="font-size:12px; font-weight:bold; color:#1e40af; margin-top:2px;" id="rptTeacherName">សេង សុភាស់</div>
+          <div style="font-size:11.5px; margin-top:2px;" id="rptSolarDate" contenteditable="true" title="ចុចដើម្បីកែសម្រួលថ្ងៃសុរិយគតិ">
+            កំពង់ល្ពៅ ថ្ងៃទី១៤ ខែតុលា ឆ្នាំ២០២៦
+          </div>
+          <div class="f-moul" style="font-size:12px; color:#1e40af; margin-top:4px;">គ្រូទទួលបន្ទុកថ្នាក់</div>
+          
+          <!-- 🌟 ប្រអប់ហត្ថលេខាឌីជីថល (អាចចុចដើម្បីប្តូរ ឬគូរ) -->
+          <div class="signature-interactive-box" id="sigImageBox" onclick="openSignatureModal()" title="ចុចលើនេះដើម្បី គូរ ឬ Upload ហត្ថលេខា">
+            <img id="teacherSigImg" src="" alt="ហត្ថលេខាគ្រូ" style="display:none;">
+            <span class="signature-hint" id="noSigHint"><i class="fa-solid fa-signature"></i> ចុចទីនេះដើម្បីដាក់ហត្ថលេខា</span>
+          </div>
+
+          <div style="font-size:12.5px; font-weight:bold; color:#1e40af; margin-top:2px;" id="rptTeacherName">សេង សុភាស់</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ ✍️ 3. SIGNATURE MODAL (CANVAS + UPLOAD) ══════════════ -->
+  <div class="sig-modal-backdrop" id="signatureModal" onclick="if(event.target===this) closeSignatureModal()">
+    <div class="sig-modal-card">
+      <div class="sig-modal-header">
+        <div style="font-size:14.5px; font-weight:700;"><i class="fa-solid fa-signature" style="color:var(--primary);"></i> ហត្ថលេខាគ្រូទទួលបន្ទុកថ្នាក់</div>
+        <button type="button" onclick="closeSignatureModal()" style="background:none; border:none; color:var(--text-muted); font-size:16px; cursor:pointer;">✕</button>
+      </div>
+
+      <div class="sig-modal-body">
+        <div class="sig-tabs-bar">
+          <button type="button" class="sig-tab-btn active" id="tabDrawBtn" onclick="switchSigTab('draw')">
+            <i class="fa-solid fa-pen"></i> គូរហត្ថលេខា
+          </button>
+          <button type="button" class="sig-tab-btn" id="tabUploadBtn" onclick="switchSigTab('upload')">
+            <i class="fa-solid fa-upload"></i> Upload រូបភាព
+          </button>
+        </div>
+
+        <!-- Tab 1: Draw Pad -->
+        <div id="sigDrawTab">
+          <div class="canvas-wrap">
+            <canvas id="signatureCanvas" width="440" height="180"></canvas>
+            <button type="button" class="canvas-clear-btn" onclick="clearSignatureCanvas()">
+              <i class="fa-solid fa-trash-can"></i> លុបគូរឡើងវិញ
+            </button>
+          </div>
+          <p style="font-size:11.5px; color:var(--text-muted); margin-top:6px; text-align:center;">
+            👆 ប្រើម្រាមដៃ (លើទូរស័ព្ទ/Tablet) ឬ Mouse ដើម្បីគូរហត្ថលេខាពណ៌ទឹកប៊ិកខៀវ
+          </p>
+        </div>
+
+        <!-- Tab 2: Upload Image -->
+        <div id="sigUploadTab" style="display:none;">
+          <div class="upload-zone" onclick="document.getElementById('sigFileInput').click()">
+            <i class="fa-solid fa-cloud-arrow-up" style="font-size:32px; color:var(--primary); margin-bottom:6px;"></i>
+            <div style="font-size:13px; font-weight:700;">ចុចទីនេះ ដើម្បីជ្រើសរើសរូបហត្ថលេខា</div>
+            <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">PNG (គ្មាន background) ឬ JPG</div>
+          </div>
+          <input type="file" id="sigFileInput" accept="image/*" style="display:none;" onchange="onSigFileSelected(this)">
+          <div id="sigUploadPreviewWrap" style="text-align:center; display:none; margin-top:10px;">
+            <img id="sigUploadPreviewImg" style="max-height:70px; border:1px dashed #cbd5e1; border-radius:8px; padding:4px;">
+          </div>
+        </div>
+      </div>
+
+      <div class="sig-modal-footer">
+        <button type="button" class="bar-pill" style="color:#ef4444;" onclick="removeSavedSignature()">
+          <i class="fa-solid fa-trash"></i> លុបហត្ថលេខា
+        </button>
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="bar-pill" onclick="closeSignatureModal()">បិទ</button>
+          <button type="button" class="btn-save-main" onclick="applyAndSaveSignature()">
+            <i class="fa-solid fa-check"></i> យល់ព្រម & រក្សាទុក
+          </button>
         </div>
       </div>
     </div>
   </div>
 
   <!-- =========================================================
-       ⚙️ JAVASCRIPT LOGIC & SUPABASE SYNC
+       ⚙️ JAVASCRIPT LOGIC
   ========================================================= -->
   <script>
     /* 1. SUPABASE CLIENT CONFIG */
@@ -602,18 +790,24 @@
 
     function cleanGrade(g) { return String(g || '').replace(/^(ថ្នាក់ទី|ថ្នាក់)\s*/, '').trim(); }
     const KHMER_DIGITS = ['០','១','២','៣','៤','៥','៦','៧','៨','៩'];
+    const KHMER_MONTHS = ['មករា','កុម្ភៈ','មីនា','មេសា','ឧសភា','មិថុនា','កក្កដា','សីហា','កញ្ញា','តុលា','វិច្ឆិកា','ធ្នូ'];
     function toKhmerNum(n) { return String(n).replace(/\d/g, d => KHMER_DIGITS[d]); }
 
-    // ── Application State ──
     const SUBJECT_KEYS = ['kh', 'math', 'sci', 'soc', 'pe', 'for'];
     const SUBJECT_NAMES = {
       kh: 'ភាសាខ្មែរ', math: 'គណិតវិទ្យា', sci: 'វិទ្យាសាស្ត្រ', soc: 'សិក្សាសង្គម', pe: 'អប់រំកាយសុខភាព សិល្បៈ', for: 'ភាសាបរទេស'
     };
 
-    let activeTab = 'borrow'; // 'borrow' (ខ្ចី) or 'return' (សង)
+    let activeTab = 'borrow';
     let currentClassName = '';
     let rawStudentsList = [];
-    let bookRecordsMap = {}; // sid -> { borrow: { kh: true, ... }, returnStatus: { kh: 'returned'|'damaged'|'lost'|'none' }, note: '' }
+    let bookRecordsMap = {};
+
+    // ── Signature Management ──
+    const DEFAULT_STYLIZED_SIG = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='70' viewBox='0 0 120 60' fill='none' stroke='%231d4ed8' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><path d='M10 40 Q30 5, 55 35 T90 20 Q105 10, 115 45 M35 48 L85 48'/></svg>";
+    let savedSignatureDataUrl = localStorage.getItem('krou_teacher_signature') || DEFAULT_STYLIZED_SIG;
+    let activeSigTab = 'draw';
+    let uploadedSigBase64 = null;
 
     function showToast(msg) {
       const t = document.getElementById('toastNotif');
@@ -624,14 +818,193 @@
 
     function applyTheme(th) { document.documentElement.setAttribute('data-theme', th || 'dark'); }
     applyTheme(localStorage.getItem('krou_theme_manual') || 'dark');
-    window.addEventListener('message', ev => { if (ev.data?.type === 'THEME_CHANGE') applyTheme(ev.data.theme); });
 
     /* 3. INITIALIZATION */
     window.addEventListener('DOMContentLoaded', async () => {
       if (!checkAuthentication()) return;
+      
+      initSignDates();
+      initSignatureCanvas();
+      loadDisplaySignature();
       await initClassSelection();
     });
 
+    function initSignDates() {
+      const now = new Date();
+      const isoToday = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+      const inputSign = document.getElementById('inputSignDate');
+      if (inputSign) inputSign.value = isoToday;
+      onSignDateChange(isoToday);
+    }
+
+    function onSignDateChange(val) {
+      if (!val) return;
+      const d = new Date(val);
+      const solarTxt = `កំពង់ល្ពៅ ថ្ងៃទី${toKhmerNum(d.getDate())} ខែ${KHMER_MONTHS[d.getMonth()]} ឆ្នាំ${toKhmerNum(d.getFullYear())}`;
+      document.getElementById('rptSolarDate').innerText = solarTxt;
+      updateDirectorSignDateDisplay();
+    }
+
+    function onDirectorDateOptChange(opt) {
+      const inp = document.getElementById('inputDirectorDate');
+      const line = document.getElementById('directorDateLine');
+      if (opt === 'custom') {
+        inp.style.display = 'inline-block';
+        inp.value = document.getElementById('inputSignDate').value;
+      } else {
+        inp.style.display = 'none';
+      }
+      updateDirectorSignDateDisplay();
+    }
+
+    function updateDirectorSignDateDisplay() {
+      const opt = document.getElementById('selDirectorDateOpt').value;
+      const line = document.getElementById('directorDateLine');
+      if (opt === 'none') {
+        line.style.display = 'none';
+        return;
+      }
+      let targetDateStr = (opt === 'custom') ? document.getElementById('inputDirectorDate').value : document.getElementById('inputSignDate').value;
+      if (!targetDateStr) targetDateStr = new Date().toISOString().split('T')[0];
+      const d = new Date(targetDateStr);
+      line.innerText = `ថ្ងៃទី${toKhmerNum(d.getDate())} ខែ${KHMER_MONTHS[d.getMonth()]} ឆ្នាំ${toKhmerNum(d.getFullYear())}`;
+      line.style.display = 'block';
+    }
+
+    function openPageSetupAlert() {
+      alert('📄 កំណត់ទំព័រ៖\n- ទំហំក្រដាស៖ A4 Landscape\n- Margins សម្រាប់បោះពុម្ព៖ 5mm ទៅ 6mm (Default)');
+    }
+
+    /* 4. SIGNATURE CANVAS & MODAL */
+    let canvas, ctx, isDrawing = false;
+
+    function initSignatureCanvas() {
+      canvas = document.getElementById('signatureCanvas');
+      if (!canvas) return;
+      ctx = canvas.getContext('2d');
+      ctx.lineWidth = 2.4;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.strokeStyle = '#1d4ed8'; // Blue signature ink
+
+      function getPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return {
+          x: (clientX - rect.left) * (canvas.width / rect.width),
+          y: (clientY - rect.top) * (canvas.height / rect.height)
+        };
+      }
+
+      function start(e) {
+        isDrawing = true;
+        const p = getPos(e);
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        e.preventDefault();
+      }
+      function move(e) {
+        if (!isDrawing) return;
+        const p = getPos(e);
+        ctx.lineTo(p.x, p.y);
+        ctx.stroke();
+        e.preventDefault();
+      }
+      function stop() { isDrawing = false; }
+
+      canvas.addEventListener('mousedown', start);
+      canvas.addEventListener('mousemove', move);
+      window.addEventListener('mouseup', stop);
+
+      canvas.addEventListener('touchstart', start, { passive: false });
+      canvas.addEventListener('touchmove', move, { passive: false });
+      window.addEventListener('touchend', stop);
+    }
+
+    function clearSignatureCanvas() {
+      if (ctx && canvas) ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function isCanvasBlank() {
+      const pixelBuffer = new Uint32Array(ctx.getImageData(0, 0, canvas.width, canvas.height).data.buffer);
+      return !pixelBuffer.some(color => color !== 0);
+    }
+
+    function openSignatureModal() {
+      document.getElementById('signatureModal').style.display = 'flex';
+      switchSigTab('draw');
+      clearSignatureCanvas();
+    }
+    function closeSignatureModal() {
+      document.getElementById('signatureModal').style.display = 'none';
+    }
+
+    function switchSigTab(tab) {
+      activeSigTab = tab;
+      document.getElementById('tabDrawBtn').classList.toggle('active', tab === 'draw');
+      document.getElementById('tabUploadBtn').classList.toggle('active', tab === 'upload');
+      document.getElementById('sigDrawTab').style.display = (tab === 'draw') ? 'block' : 'none';
+      document.getElementById('sigUploadTab').style.display = (tab === 'upload') ? 'block' : 'none';
+    }
+
+    function onSigFileSelected(input) {
+      const file = input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        uploadedSigBase64 = e.target.result;
+        document.getElementById('sigUploadPreviewImg').src = uploadedSigBase64;
+        document.getElementById('sigUploadPreviewWrap').style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function applyAndSaveSignature() {
+      if (activeSigTab === 'draw') {
+        if (isCanvasBlank()) {
+          alert('សូមគូរហត្ថលេខាលើផ្ទាំងសិន!');
+          return;
+        }
+        savedSignatureDataUrl = canvas.toDataURL('image/png');
+      } else {
+        if (!uploadedSigBase64) {
+          alert('សូមជ្រើសរើសរូបភាពហត្ថលេខាសិន!');
+          return;
+        }
+        savedSignatureDataUrl = uploadedSigBase64;
+      }
+
+      localStorage.setItem('krou_teacher_signature', savedSignatureDataUrl);
+      loadDisplaySignature();
+      closeSignatureModal();
+      showToast('🖋️ បានរក្សាទុកហត្ថលេខាជោគជ័យ!');
+    }
+
+    function removeSavedSignature() {
+      if (!confirm('តើអ្នកពិតជាចង់លុបហត្ថលេខានេះមែនទេ?')) return;
+      savedSignatureDataUrl = '';
+      localStorage.removeItem('krou_teacher_signature');
+      loadDisplaySignature();
+      closeSignatureModal();
+      showToast('🗑️ បានលុបហត្ថលេខារួចរាល់');
+    }
+
+    function loadDisplaySignature() {
+      const img = document.getElementById('teacherSigImg');
+      const hint = document.getElementById('noSigHint');
+      if (savedSignatureDataUrl) {
+        img.src = savedSignatureDataUrl;
+        img.style.display = 'inline-block';
+        hint.style.display = 'none';
+      } else {
+        img.src = '';
+        img.style.display = 'none';
+        hint.style.display = 'inline-block';
+      }
+    }
+
+    /* 5. CLASS & STUDENT DATA LOADER */
     async function initClassSelection() {
       const adminBox = document.getElementById('adminClassBox');
       const teacherBadge = document.getElementById('teacherClassBadge');
@@ -678,7 +1051,6 @@
       loadStudentsAndBookData();
     }
 
-    /* 4. LOAD STUDENTS & SAVED BOOK LOAN DATA (SUPABASE) */
     async function loadStudentsAndBookData() {
       if (!currentClassName) return;
       const curPure = cleanGrade(currentClassName);
@@ -686,7 +1058,6 @@
       document.getElementById('studentTableBody').innerHTML = '<tr><td colspan="11" style="padding:40px; color:var(--text-muted);"><i class="fa-solid fa-spinner fa-spin fa-2x"></i><p style="margin-top:10px;">កំពុងទាញយកទិន្នន័យ...</p></td></tr>';
 
       try {
-        // ក. ទាញយកសិស្សក្នុងថ្នាក់
         const { data: stList, error: stErr } = await sb
           .from('students')
           .select('id, student_id, student_name, gender, grade, dropout_semester')
@@ -696,11 +1067,9 @@
 
         rawStudentsList = (stList || []).filter(s => cleanGrade(s.grade) === curPure);
 
-        // ខ. ទាញយកកំណត់ត្រាការខ្ចី-សង (table: book_loans)
         const studentIds = rawStudentsList.map(s => String(s.student_id || s.id));
         bookRecordsMap = {};
 
-        // លំនាំដើម
         rawStudentsList.forEach(s => {
           const sid = String(s.student_id || s.id);
           bookRecordsMap[sid] = {
@@ -710,13 +1079,13 @@
           };
         });
 
-        const { data: bookLoans, error: bErr } = await sb
+        const { data: bookLoans } = await sb
           .from('book_loans')
           .select('*')
           .eq('assigned_class', curPure)
           .in('student_id', studentIds);
 
-        if (!bErr && bookLoans) {
+        if (bookLoans) {
           bookLoans.forEach(row => {
             const sid = String(row.student_id);
             bookRecordsMap[sid] = {
@@ -733,7 +1102,7 @@
       }
     }
 
-    /* 5. SWITCH TABS (ខ្ចី vs សង) */
+    /* 6. SWITCH TABS & TABLE RENDER */
     function switchActionTab(tab) {
       activeTab = tab;
       document.getElementById('btnTabBorrow').classList.toggle('active', tab === 'borrow');
@@ -749,11 +1118,9 @@
         subTitle.innerText = "ចុចត្រឡប់ម្តងៗ ៖ ✓ សង ➔ ✓ ខូច ➔ ✗ បាត់ ➔ មិនទាន់សង";
         bulkBtnTxt.innerText = "ប្រមូលទាំងថ្នាក់";
       }
-
       renderTable();
     }
 
-    /* 6. RENDER DATA TABLE */
     function renderTable() {
       const tbody = document.getElementById('studentTableBody');
       if (!rawStudentsList.length) {
@@ -774,13 +1141,11 @@
           if (isBorrowed) totalBorrowed++;
 
           if (activeTab === 'borrow') {
-            // Checkbox ខ្ចី
             cellsHtml += `
               <td class="col-sub col-${k}">
                 <input type="checkbox" class="book-checkbox" ${isBorrowed ? 'checked' : ''} onchange="toggleStudentBorrow('${sid}', '${k}', this.checked)">
               </td>`;
           } else {
-            // Button សង
             const st = rec.returnStatus[k] || 'none';
             let btnClass = 'st-none', btnText = '-';
             if (st === 'returned') { btnClass = 'st-returned'; btnText = '✓ សង'; }
@@ -837,15 +1202,13 @@
     function bulkActionAllStudents() {
       const activeSubjects = SUBJECT_KEYS.filter(k => document.getElementById('chk_' + k).checked);
       if (activeTab === 'borrow') {
-        const msg = confirm('តើអ្នកពិតជាចង់ចែកសៀវភៅមុខវិជ្ជាសកម្មទាំងនេះ ជូនសិស្សទាំងអស់ក្នុងថ្នាក់មែនទេ?');
-        if (!msg) return;
+        if (!confirm('តើអ្នកពិតជាចង់ចែកសៀវភៅមុខវិជ្ជាសកម្មទាំងនេះ ជូនសិស្សទាំងអស់ក្នុងថ្នាក់មែនទេ?')) return;
         rawStudentsList.forEach(s => {
           const sid = String(s.student_id || s.id);
           activeSubjects.forEach(k => { bookRecordsMap[sid].borrow[k] = true; });
         });
       } else {
-        const msg = confirm('តើអ្នកពិតជាចង់កំណត់ថា "បានសងគ្រប់គ្នា" សម្រាប់មុខវិជ្ជាសកម្មមែនទេ?');
-        if (!msg) return;
+        if (!confirm('តើអ្នកពិតជាចង់កំណត់ថា "បានសងគ្រប់គ្នា" សម្រាប់មុខវិជ្ជាសកម្មមែនទេ?')) return;
         rawStudentsList.forEach(s => {
           const sid = String(s.student_id || s.id);
           activeSubjects.forEach(k => { bookRecordsMap[sid].returnStatus[k] = 'returned'; });
@@ -855,9 +1218,7 @@
       showToast('🎉 បានអនុវត្តទាំងថ្នាក់ជោគជ័យ!');
     }
 
-    function toggleSubjectColumn(key) {
-      applySubjectVisibility();
-    }
+    function toggleSubjectColumn(key) { applySubjectVisibility(); }
 
     function applySubjectVisibility() {
       SUBJECT_KEYS.forEach(k => {
@@ -895,7 +1256,7 @@
       }
     }
 
-    /* 8. PRINT PREVIEW (ដូចរូបទី ១ បេះបិទ) */
+    /* 8. PRINT PREVIEW (ដូចរូបទី ១) */
     function openPrintPreview() {
       document.getElementById('printPreviewModal').style.display = 'block';
 
@@ -904,7 +1265,6 @@
       document.getElementById('rptTotalStudents').innerText = toKhmerNum(rawStudentsList.length);
       document.getElementById('rptTeacherName').innerText = TEACHER_NAME || 'សេង សុភាស់';
 
-      // បង្កើតបញ្ជីឈ្មោះមុខវិជ្ជាដែលបានជ្រើស
       const activeSubjects = SUBJECT_KEYS.filter(k => document.getElementById('chk_' + k).checked);
       document.getElementById('rptSubjectNames').value = activeSubjects.map(k => SUBJECT_NAMES[k]).join(', ');
 
@@ -947,6 +1307,7 @@
 
       tbody.innerHTML = html;
       applySubjectVisibility();
+      loadDisplaySignature();
     }
 
     function closePrintPreview() {
