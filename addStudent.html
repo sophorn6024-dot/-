@@ -33,7 +33,6 @@
       --cal-selected-bg: #f1f5f9;
       --cal-selected-text: #0f172a;
 
-      /* 🎨 Header + Control card (ដូចរូបគំរូ) */
       --hdr-bg: linear-gradient(90deg, #d1fae5 0%, #ccfbf1 50%, #a7f3d0 100%);
       --hdr-border: #bbf7d0;
       --title-color: #0f766e;
@@ -74,8 +73,7 @@
 
     * {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+      margin: 0; padding: 0;
       font-family: 'Khmer OS Battambang', 'Battambang', -apple-system, BlinkMacSystemFont, sans-serif;
       -webkit-tap-highlight-color: transparent;
     }
@@ -96,7 +94,6 @@
       stroke-linecap: round; stroke-linejoin: round;
     }
 
-    /* 🌟 TOAST NOTIFICATION */
     .toast-notification {
       position: fixed; top: 18px; right: 20px; background: #16a34a; color: #fff;
       padding: 10px 18px; border-radius: 12px; font-size: 13px; font-weight: 700;
@@ -108,60 +105,30 @@
 
     /* ══════════════ 🔒 AUTH DENIED WRAPPER ══════════════ */
     #authDeniedWrap {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 85vh;
-      text-align: center;
-      padding: 30px 20px;
+      display: none; flex-direction: column; align-items: center; justify-content: center;
+      min-height: 85vh; text-align: center; padding: 30px 20px;
     }
     .auth-card {
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      border-radius: 24px;
-      padding: 40px 28px;
-      max-width: 440px;
-      width: 100%;
-      box-shadow: var(--card-shadow);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      background: var(--surface); border: 1.5px solid var(--border); border-radius: 24px;
+      padding: 40px 28px; max-width: 440px; width: 100%; box-shadow: var(--card-shadow);
+      display: flex; flex-direction: column; align-items: center;
     }
     .auth-icon {
-      width: 68px;
-      height: 68px;
-      border-radius: 20px;
-      background: rgba(239, 68, 68, 0.15);
-      color: #ef4444;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 32px;
-      margin-bottom: 16px;
+      width: 68px; height: 68px; border-radius: 20px; background: rgba(239, 68, 68, 0.15);
+      color: #ef4444; display: flex; align-items: center; justify-content: center;
+      font-size: 32px; margin-bottom: 16px;
     }
     .auth-card h2 { font-size: 18px; margin-bottom: 8px; color: #ef4444; font-weight: 700; }
     .auth-card p { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 24px; }
     .btn-login-redirect {
-      background: linear-gradient(135deg, #0284c7, #2563eb);
-      color: #ffffff;
-      padding: 10px 24px;
-      border-radius: 12px;
-      font-weight: 700;
-      font-size: 13.5px;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
-      transition: all 0.2s;
-      cursor: pointer;
-      border: none;
+      background: linear-gradient(135deg, #0284c7, #2563eb); color: #ffffff;
+      padding: 10px 24px; border-radius: 12px; font-weight: 700; font-size: 13.5px;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3); cursor: pointer; border: none;
     }
-    .btn-login-redirect:hover { transform: translateY(-2px); }
 
     /* =========================================================
-       🌟 HEADER BAR (ដូចរូបគំរូ)
+       🌟 HEADER BAR
     ========================================================= */
     .top-nav {
       display: flex; align-items: center; gap: 10px;
@@ -209,7 +176,7 @@
     }
 
     /* =========================================================
-       🎛️ CONTROL CARD (ដូចរូបគំរូ)
+       🎛️ CONTROL CARD
     ========================================================= */
     .control-card {
       background: var(--card-bg); border-radius: 24px; border: 1.5px solid var(--card-border);
@@ -264,16 +231,13 @@
     .status-item.active .check-mark { display: inline-block; }
 
     .search-box { cursor: text; justify-content: flex-start; padding: 0 14px; }
-    .search-box:hover { border-color: var(--ctl-border); background: var(--ctl-bg); }
     .search-box input {
       border: none; background: transparent; outline: none; width: 100%; min-width: 0;
       font-size: 13px; color: var(--text); font-weight: 600;
     }
     .search-box input::placeholder { color: var(--text-muted); font-weight: 500; }
 
-    .chip-btn.locked {
-      border-color: #f59e0b; color: var(--amber-txt); background: var(--amber-bg);
-    }
+    .chip-btn.locked { border-color: #f59e0b; color: var(--amber-txt); background: var(--amber-bg); }
     .chip-btn.locked .ic { color: var(--amber-txt); }
 
     .btn-add {
@@ -302,7 +266,6 @@
     .btn-excel-export .ic { color: #059669; }
     .btn-excel-export:hover { background: rgba(5, 150, 105, 0.12); border-color: #059669; }
 
-    .btn-warning .ic { color: var(--text-muted); }
     .btn-warning.active { background: #f59e0b; color: #fff; border-color: #f59e0b; }
     .btn-warning.active .ic { color: #fff; }
 
@@ -351,15 +314,31 @@
       border-right: 2px solid var(--border) !important;
       box-shadow: 4px 0 10px -2px rgba(0, 0, 0, 0.22);
     }
+
+    /* 🌟 ជួរ «សកម្មភាព»៖ ជាប់ស្តាំដៃសម្រាប់តែកុំព្យូទ័រ (Screen > 768px) ប៉ុណ្ណោះ */
     .sticky-action {
-      position: sticky; right: 0px; z-index: 20; background: var(--bg-sticky); width: 95px; min-width: 95px;
-      border-left: 2px solid var(--border) !important;
-      box-shadow: -4px 0 10px -2px rgba(0, 0, 0, 0.2);
+      width: 95px; min-width: 95px;
+      background: var(--bg-sticky);
+      vertical-align: middle;
+    }
+    @media (min-width: 769px) {
+      .sticky-action {
+        position: sticky; right: 0px; z-index: 20;
+        border-left: 2px solid var(--border) !important;
+        box-shadow: -4px 0 10px -2px rgba(0, 0, 0, 0.2);
+      }
+      thead th.sticky-action { z-index: 60; background: var(--surface-elevated); color: var(--text); }
+    }
+    @media (max-width: 768px) {
+      .sticky-action {
+        position: static !important;
+        box-shadow: none !important;
+        border-left: 1px solid var(--border) !important;
+      }
     }
 
     thead .sticky-col-1 { z-index: 70; background: var(--bg-header-sticky); }
     thead .sticky-col-2, thead .sticky-col-3 { z-index: 65; background: var(--bg-header-sticky); }
-    thead th.sticky-action { z-index: 60; background: var(--surface-elevated); color: var(--text); }
 
     .th-vertical {
       writing-mode: vertical-rl; transform: rotate(180deg); text-orientation: mixed; white-space: nowrap;
@@ -479,11 +458,7 @@
     .profile-nav-group { display: flex; align-items: center; gap: 8px; flex: 1; }
     .profile-pill-select {
       background: var(--surface-elevated); border: 1.5px solid var(--border); border-radius: 14px;
-      height: 38px; padding: 0 12px; font-size: 13px; font-weight: 700; color: var(--text);
-      outline: none; cursor: pointer;
-    }
-    .profile-pill-select:disabled {
-      opacity: 0.9; cursor: not-allowed; background: rgba(2, 132, 199, 0.1); color: var(--primary);
+      height: 38px; padding: 0 12px; font-size: 13px; font-weight: 700; color: var(--text); outline: none; cursor: pointer;
     }
     .profile-nav-btn {
       width: 36px; height: 36px; border-radius: 12px; border: 1.5px solid var(--border);
@@ -509,7 +484,6 @@
       color: white; font-size: 38px; font-weight: 800; flex-shrink: 0; box-shadow: 0 4px 14px rgba(0,0,0,0.15);
       cursor: pointer; transition: transform 0.15s, box-shadow 0.15s;
     }
-    .profile-avatar-box:hover { transform: scale(1.05); box-shadow: 0 6px 18px rgba(2,132,199,0.35); }
     .profile-avatar-box img { width: 100%; height: 100%; object-fit: cover; }
     .profile-hero-name { font-size: 24px; font-weight: 900; color: #0284c7; margin-bottom: 8px; }
     .profile-badges-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
@@ -525,10 +499,7 @@
       font-size: 14.5px; font-weight: 800; color: #0284c7; display: flex; align-items: center; gap: 8px;
       border-bottom: 1px solid var(--border-subtle); padding-bottom: 10px;
     }
-    .profile-info-row {
-      display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; font-size: 13px;
-      line-height: 1.6;
-    }
+    .profile-info-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; font-size: 13px; line-height: 1.6; }
     .profile-label { color: var(--text-muted); font-weight: 600; min-width: 130px; flex-shrink: 0; }
     .profile-value { color: var(--text); font-weight: 700; text-align: right; word-break: break-word; }
 
@@ -566,9 +537,7 @@
     }
     @keyframes modalZoom { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
 
-    .import-modal-header {
-      padding: 20px 24px 14px; display: flex; align-items: center; justify-content: space-between;
-    }
+    .import-modal-header { padding: 20px 24px 14px; display: flex; align-items: center; justify-content: space-between; }
     .import-title { font-size: 18px; font-weight: 900; color: var(--text); }
     .import-close-btn {
       width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border);
@@ -578,8 +547,7 @@
     .import-close-btn:hover { color: #ef4444; border-color: #ef4444; }
 
     .import-class-row {
-      padding: 0 24px 14px; display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700;
-      color: var(--text-muted);
+      padding: 0 24px 14px; display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: var(--text-muted);
     }
     .import-class-tag {
       background: var(--surface-elevated); border: 1px solid var(--border); border-radius: 8px;
@@ -596,14 +564,10 @@
       align-items: center; justify-content: center; gap: 7px; transition: all 0.15s;
     }
     .import-tab-btn.active {
-      background: var(--surface); color: var(--text); box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      font-weight: 800;
+      background: var(--surface); color: var(--text); box-shadow: 0 2px 8px rgba(0,0,0,0.08); font-weight: 800;
     }
 
-    .import-body-content {
-      padding: 0 24px 20px; overflow-y: auto; max-height: calc(85vh - 200px);
-    }
-
+    .import-body-content { padding: 0 24px 20px; overflow-y: auto; max-height: calc(85vh - 200px); }
     .paste-guide-card {
       background: var(--surface-elevated); border: 1.5px solid var(--border); border-radius: 18px;
       padding: 16px; margin-bottom: 12px;
@@ -616,13 +580,10 @@
     .guide-title { font-size: 14px; font-weight: 800; color: var(--text); margin-bottom: 3px; }
     .guide-sub { font-size: 11.5px; color: var(--text-muted); line-height: 1.5; }
 
-    .numbered-chips-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px;
-    }
+    .numbered-chips-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
     .num-chip {
       background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
-      padding: 7px 8px; font-size: 11px; font-weight: 700; display: flex; align-items: center; gap: 6px;
-      color: var(--text);
+      padding: 7px 8px; font-size: 11px; font-weight: 700; display: flex; align-items: center; gap: 6px; color: var(--text);
     }
     .num-chip.primary { background: rgba(37, 99, 235, 0.08); border-color: rgba(37, 99, 235, 0.25); color: #2563eb; }
     .num-chip .chip-n { font-weight: 900; opacity: 0.8; }
@@ -640,8 +601,7 @@
     }
     .step-number-circle {
       width: 32px; height: 32px; border-radius: 50%; background: #2563eb; color: white;
-      font-weight: 900; font-size: 14px; display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
+      font-weight: 900; font-size: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
     }
     .step-info { flex: 1; }
     .step-title { font-size: 14px; font-weight: 800; margin-bottom: 4px; color: var(--text); }
@@ -664,24 +624,19 @@
     .dropzone-types { font-size: 12px; color: var(--text-muted); }
 
     .import-modal-footer {
-      padding: 14px 24px 20px; display: flex; align-items: center; justify-content: space-between;
-      border-top: 1px solid var(--border);
+      padding: 14px 24px 20px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border);
     }
     .btn-modal-cancel {
-      background: transparent; border: none; font-size: 13.5px; font-weight: 700;
-      color: var(--text-muted); cursor: pointer; padding: 8px 16px;
+      background: transparent; border: none; font-size: 13.5px; font-weight: 700; color: var(--text-muted); cursor: pointer; padding: 8px 16px;
     }
     .btn-modal-cancel:hover { color: var(--text); }
 
     .btn-modal-submit {
       background: #3b82f6; color: white; border: none; border-radius: 10px; height: 42px;
-      padding: 0 22px; font-size: 13.5px; font-weight: 800; cursor: pointer;
-      display: inline-flex; align-items: center; gap: 6px; transition: all 0.15s;
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+      padding: 0 22px; font-size: 13.5px; font-weight: 800; cursor: pointer; display: inline-flex;
+      align-items: center; gap: 6px; transition: all 0.15s; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
     }
-    .btn-modal-submit:disabled {
-      background: #93c5fd; cursor: not-allowed; box-shadow: none; opacity: 0.8;
-    }
+    .btn-modal-submit:disabled { background: #93c5fd; cursor: not-allowed; box-shadow: none; opacity: 0.8; }
     .btn-modal-submit:not(:disabled):hover { background: #2563eb; }
 
     /* CALENDAR MODAL */
@@ -697,8 +652,7 @@
     .cal-header-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
     .cal-select {
       background: var(--surface-elevated); border: 1.5px solid var(--border); border-radius: 12px;
-      height: 38px; padding: 0 10px; font-size: 13px; font-weight: 700; color: var(--text);
-      outline: none; cursor: pointer; width: 100%; transition: border-color 0.15s;
+      height: 38px; padding: 0 10px; font-size: 13px; font-weight: 700; color: var(--text); outline: none; cursor: pointer; width: 100%;
     }
     .cal-subtitle { text-align: center; font-size: 14.5px; font-weight: 700; color: var(--text); margin-bottom: 12px; }
     .cal-grid-weekdays {
@@ -708,8 +662,7 @@
     .cal-grid-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px 2px; }
     .cal-day-cell {
       height: 36px; display: flex; align-items: center; justify-content: center;
-      font-size: 13.5px; font-weight: 500; border-radius: 8px; cursor: pointer;
-      color: var(--text); transition: background 0.12s;
+      font-size: 13.5px; font-weight: 500; border-radius: 8px; cursor: pointer; color: var(--text); transition: background 0.12s;
     }
     .cal-day-cell:hover { background: rgba(2, 132, 199, 0.12); color: var(--primary); }
     .cal-day-other { opacity: 0.32; font-weight: 400; color: var(--text-muted); }
@@ -719,8 +672,7 @@
     }
     .cal-footer-box { border-top: 1px solid var(--border-subtle); margin-top: 12px; padding-top: 8px; }
     .cal-btn-today {
-      background: none; border: none; color: #2563eb; font-size: 13px; font-weight: 700;
-      cursor: pointer; padding: 4px 6px; border-radius: 6px;
+      background: none; border: none; color: #2563eb; font-size: 13px; font-weight: 700; cursor: pointer; padding: 4px 6px; border-radius: 6px;
     }
 
     /* BOTTOM BAR */
@@ -735,8 +687,7 @@
     .bottom-nav-bar.visible { transform: translateY(0); opacity: 1; pointer-events: auto; }
     .bottom-nav-btn {
       height: 38px; padding: 0 16px; border-radius: 8px; font-size: 13px; font-weight: 700;
-      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
-      border: none; user-select: none;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; border: none; user-select: none;
     }
     .bottom-nav-primary { background: #0284c7; color: white; flex: 1; }
     .bottom-nav-icon-btn {
@@ -823,38 +774,30 @@
     .em-footer .modal-btn { height:46px; border-radius:12px; font-size:14px; }
     .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
 
-    /* =========================================================
-       📱 COMPACT MODE: ពេលពង្រីក/អេក្រង់តូច → កាត់អក្សរ បង្ហាញតែ icon
-    ========================================================= */
     @media (max-width: 1100px) {
       .btn-label { display: none !important; }
       .badge-ic { display: inline; }
-
       body { padding: 8px 8px 60px; }
       .top-nav { gap: 7px; padding: 7px 10px; }
       .badge-pill { font-size: 12px; padding: 4px 10px; }
       .lock-hint { padding: 5px 9px; }
       #roleBadge { max-width: 90px; font-size: 11.5px; padding: 4px 10px; }
-
       .control-card { padding: 10px; gap: 8px; border-radius: 20px; }
       .ctl-row { gap: 8px; }
       .ctl { height: 40px; border-radius: 12px; padding: 0 8px; }
       .ctl-row-1 { grid-template-columns: 1.3fr 1.6fr 44px 44px; }
       .control-card.is-admin .ctl-row-1 { grid-template-columns: 1.2fr 1.2fr 1.4fr 44px 44px; }
       .ctl-row-2 { grid-template-columns: repeat(6, 1fr); }
-
       .btn-add { padding: 0; }
       .btn-add .add-main { gap: 0; }
       .btn-add .count-box { width: 34px; font-size: 13px; }
-
       .status-dropdown-btn { padding: 0 10px; font-size: 12.5px; }
       .table-container { max-height: calc(100vh - 230px); }
     }
 
     @media (max-width: 600px) {
       #roleBadge { display: none; }
-      .ctl-row-1,
-      .control-card.is-admin .ctl-row-1 { grid-template-columns: 1fr 44px 44px; }
+      .ctl-row-1, .control-card.is-admin .ctl-row-1 { grid-template-columns: 1fr 44px 44px; }
       .control-card.is-admin #classFilterContainer { grid-column: 1 / -1; }
       .ctl-row-1 .search-box { grid-column: 1 / -1; order: 5; }
       .numbered-chips-grid { grid-template-columns: 1fr 1fr; }
@@ -872,7 +815,7 @@
   <input type="file" id="rowPhotoFileInput" accept="image/*" style="display:none;" onchange="onRowPhotoFileSelected(this)">
   <input type="file" id="excelRosterFileInput" accept=".xlsx, .xls" style="display:none;" onchange="onExcelFileSelected(this)">
 
-  <!-- ══════════════ 🔒 0. AUTH DENIED WRAPPER (ពេលមិនទាន់ LOGIN) ══════════════ -->
+  <!-- ══════════════ 🔒 0. AUTH DENIED WRAPPER ══════════════ -->
   <div id="authDeniedWrap">
     <div class="auth-card">
       <div class="auth-icon">🔒</div>
@@ -902,7 +845,6 @@
       <div class="badge-pill badge-female" id="badgeFemale" title="ស្រី"><span class="badge-ic">♀</span><span class="btn-label">ស្រី</span> 0</div>
       <div class="badge-pill badge-male" id="badgeMale" title="ប្រុស"><span class="badge-ic">♂</span><span class="btn-label">ប្រុស</span> 0</div>
 
-      <!-- 🔒 សារប្រាប់ពេលចាក់សោ -->
       <div class="lock-hint" id="lockHint" title="តារាងកំពុងចាក់សោ — ចុចប៊ូតុង «បើកសោ» ដើម្បីកែប្រែ ឬបន្ថែមទិន្នន័យ">
         <svg class="ic" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
         <span class="btn-label">ចាក់សោ · ចុច 🔒 ដើម្បីកែ</span>
@@ -950,7 +892,7 @@
           <span id="syncStatusText" class="btn-label">ស្វ័យប្រវត្តិ</span>
         </div>
 
-        <div class="ctl chip-btn" id="lockBtn" onclick="toggleLockTable()" title="ចុចដើម្បីចាក់សោតារាង (ការពារកុំឱ្យកែប្រែដោយចៃដន្យ)">
+        <div class="ctl chip-btn" id="lockBtn" onclick="toggleLockTable()" title="ចុចដើម្បីចាក់សោតារាង">
           <span id="lockIcon" style="display:flex;"></span>
           <span id="lockText" class="btn-label">ចាក់សោ</span>
         </div>
@@ -1053,7 +995,7 @@
 
   </div> <!-- END #mainPageContent -->
 
-  <!-- 📥 ផ្ទាំង IMPORT ROSTER MODAL (Excel + Paste) -->
+  <!-- 📥 ផ្ទាំង IMPORT ROSTER MODAL -->
   <div class="import-modal-overlay" id="importModalOverlay">
     <div class="import-modal-card">
       <div class="import-modal-header">
@@ -1266,7 +1208,7 @@
             <input type="file" id="modalPhotoInput" accept="image/jpeg,image/png,image/webp" style="display:none;" onchange="previewModalPhoto(this)">
           </div>
           <div class="em-name" id="modalProfileNameText">ឈ្មោះសិស្ស</div>
-          <div class="em-hint">JPG / PNG / WEBP</div>
+          <div class="em-hint">រូបថតបង្រួម ≤ 100KB ដោយស្វ័យប្រវត្តិ</div>
         </div>
 
         <div class="em-section">
@@ -1366,7 +1308,6 @@
       window.location.href = 'index.html';
     }
 
-    /* ◀ ប៊ូតុងត្រឡប់ក្រោយ (ក្បាលលើ) */
     function goBack() {
       if (window.parent && window.parent !== window) {
         try { window.parent.postMessage({ type: 'GO_BACK' }, '*'); } catch(err) {}
@@ -1386,7 +1327,10 @@
     let visibleList = [];
     let activeRowIndex = null;
     let uploadTargetIndex = null;
-    let isTableLocked = false;
+
+    // 🌟 មុខងារចាក់សោ៖ រក្សាទុកក្នុង localStorage ពេល Refresh នៅចាក់សោដដែល
+    let isTableLocked = localStorage.getItem('krou_addstudent_locked') === 'true';
+
     let modalPhotoBase64 = null;
     let currentStatusFilter = 'កំពុងសិក្សា';
     let isMissingFilterActive = false;
@@ -1435,7 +1379,52 @@
       return currentSelectedClass ? `ថ្នាក់ទី${currentSelectedClass}` : 'ថ្នាក់ទី១';
     }
 
-    /* 🔍 មុខងារពិនិត្យអត្តលេខស្ទួន (Local + Database Check) */
+    /* 🌟 អនុគមន៍បង្រួមទំហំរូបថតឱ្យនៅសល់ត្រឹមអតិបរមា ≤ 100KB ដោយស្វ័យប្រវត្តិ */
+    function compressImageToMaxKb(file, maxKb = 100) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            let width = img.width;
+            let height = img.height;
+            const maxDimension = 480;
+
+            if (width > maxDimension || height > maxDimension) {
+              if (width > height) {
+                height = Math.round((height * maxDimension) / width);
+                width = maxDimension;
+              } else {
+                width = Math.round((width * maxDimension) / height);
+                height = maxDimension;
+              }
+            }
+
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            let quality = 0.85;
+            let resultDataUrl = canvas.toDataURL('image/jpeg', quality);
+
+            while ((resultDataUrl.length * 3) / 4 > maxKb * 1024 && quality > 0.25) {
+              quality -= 0.12;
+              resultDataUrl = canvas.toDataURL('image/jpeg', quality);
+            }
+
+            resolve(resultDataUrl);
+          };
+          img.onerror = reject;
+          img.src = e.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    /* 🔍 មុខងារពិនិត្យអត្តលេខស្ទួន */
     async function isStudentIdDuplicate(studentId, excludeDbId = null, excludeUid = null) {
       const cleanId = String(studentId || '').trim();
       if (!cleanId) return false;
@@ -1467,7 +1456,7 @@
     }
 
     /* =========================================================
-       🔒 LOCK SYSTEM
+       🔒 LOCK SYSTEM (រក្សាទុកក្នុង localStorage)
     ========================================================= */
     const SVG_LOCK = '<svg class="ic" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
     const SVG_UNLOCK = '<svg class="ic" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.5-2"/></svg>';
@@ -1508,6 +1497,7 @@
 
     function toggleLockTable() {
       isTableLocked = !isTableLocked;
+      localStorage.setItem('krou_addstudent_locked', isTableLocked ? 'true' : 'false');
       if (isTableLocked) hideBottomNavBar();
       else if (studentsList.some(s => s.isDraft)) showBottomNavBar();
       applyLockState();
@@ -1664,7 +1654,7 @@
       };
     }
 
-    /* 4. CRUD OPERATIONS WITH DUPLICATE CHECK */
+    /* 4. CRUD OPERATIONS */
     function triggerAutoSave(realIdx) {
       const s = studentsList[realIdx];
       if (!s || s.isDraft) return;
@@ -1803,12 +1793,6 @@
     }
 
     /* 5. ADDRESS HELPERS */
-    function cleanDuplicateAddress(str) {
-      if (!str) return '';
-      const parts = str.split(',').map(s => s.trim()).filter(Boolean);
-      return Array.from(new Set(parts)).join(', ');
-    }
-
     function parseAddressParts(addrStr) {
       if (!addrStr) return { village: '', commune: '', district: '', province: '' };
       const parts = addrStr.split(',').map(p => p.trim()).filter(Boolean);
@@ -2013,7 +1997,6 @@
       applyLockState();
     }
 
-    /* 🌟 Badge ក្បាលលើ: សរុប (បង្ហាញ/ទាំងអស់) • ស្រី • ប្រុស — ពេល compact បង្ហាញតែ icon + លេខ */
     function updateCounters(total, female) {
       const all = studentsList.length;
       document.getElementById('badgeTotal').innerHTML = `<span class="badge-ic">👥</span><span class="btn-label">សរុប</span> ${total}/${all}`;
@@ -2171,7 +2154,7 @@
       return age >= 0 ? age : '';
     }
 
-    /* 8. PROFILE MODAL (BIODATA) */
+    /* 8. PROFILE MODAL */
     let currentProfileSubIdx = 0;
 
     function openProfileModal(realIdx) {
@@ -2226,7 +2209,7 @@
       renderProfileModalContent();
     }
 
-    /* 9. EDIT MODAL WITH DUPLICATE CHECK */
+    /* 9. EDIT MODAL */
     function openEditModal(realIdx) {
       if (guardLocked()) return;
       activeRowIndex = realIdx;
@@ -2318,20 +2301,22 @@
       }
     }
 
-    function previewModalPhoto(input) {
+    async function previewModalPhoto(input) {
       const file = input.files[0];
       if (!file) return;
-      const reader = new FileReader();
-      reader.onload = e => {
-        modalPhotoBase64 = e.target.result;
+      try {
+        showToast("⏳ កំពុងបង្រួមទំហំរូបថត (≤ 100KB)...");
+        modalPhotoBase64 = await compressImageToMaxKb(file, 100);
         document.getElementById('modalAvatarBox').innerHTML = `<img src="${modalPhotoBase64}">`;
-      };
-      reader.readAsDataURL(file);
+        showToast("✅ បានបង្រួមរូបថតរួចរាល់!");
+      } catch(err) {
+        alert("កំហុសអានរូបភាព៖ " + err.message);
+      }
     }
 
     function onRowPhotoFileSelected(input) { input.value = ''; }
 
-    /* 10. IMPORT (EXCEL + PASTE) WITH DUPLICATE CHECK */
+    /* 10. IMPORT (EXCEL + PASTE) */
     function openImportModal() {
       if (guardLocked()) return;
       document.getElementById('importClassTag').innerText = currentSelectedClass ? `ថ្នាក់ទី ${currentSelectedClass}` : 'ថ្នាក់ទី១ (លំនាំដើម)';
@@ -2623,7 +2608,6 @@
 
     /* 13. BOOTSTRAP */
     window.addEventListener('DOMContentLoaded', () => {
-      // 🌟 ១. ត្រួតពិនិត្យ Auth Guard ជាមុនសិន បើមិនទាន់ Login បញ្ឈប់ដំណើរការភ្លាម
       if (!checkAuthentication()) return;
 
       initKhmerCalendarComponent();
@@ -2639,7 +2623,6 @@
             <option value="">គ្រប់ថ្នាក់ទាំងអស់</option>
           </select>`;
       } else {
-        // គ្រូ៖ ថ្នាក់បង្ហាញក្នុង Badge ខាងស្តាំលើរួចហើយ
         filterBox.style.display = 'none';
       }
 
