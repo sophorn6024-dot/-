@@ -224,34 +224,34 @@
 
 
     /* ការកំណត់ចំនួនវេន — រចនាតាមរូបគំរូ */
-    .split-panel { width:100%; display:flex; flex-direction:column; gap:14px; }
-    .split-tabs { display:flex; gap:4px; padding:6px; width:min(100%, 560px); border-radius:18px; background:var(--surface-elevated); border:1px solid var(--border); }
-    .split-tab { flex:1; min-height:42px; padding:8px 14px; border:0; border-radius:14px; background:transparent; color:var(--text-muted); font-size:14px; font-weight:700; font-family:inherit; cursor:pointer; }
+    .split-panel { width:100%; display:flex; flex-direction:column; gap:10px; }
+    .split-tabs { display:flex; gap:4px; padding:4px; width:min(100%, 460px); border-radius:14px; background:var(--surface-elevated); border:1px solid var(--border); }
+    .split-tab { flex:1; min-height:36px; padding:6px 10px; border:0; border-radius:10px; background:transparent; color:var(--text-muted); font-size:14px; font-weight:700; font-family:inherit; cursor:pointer; }
     .split-tab.active { background:var(--surface); color:var(--text-main); box-shadow:0 2px 8px rgba(0,0,0,.08); }
-    .split-workspace { display:grid; grid-template-columns:minmax(210px, 278px) minmax(0,1fr); min-height:150px; border:1px solid var(--border); border-radius:22px; overflow:hidden; background:var(--surface-card); }
-    .split-entry { padding:22px 26px; border-right:1px solid var(--border); display:flex; flex-direction:column; gap:12px; justify-content:flex-start; }
-    .split-label { color:var(--text-muted); font-size:13px; font-weight:700; }
+    .split-workspace { display:grid; grid-template-columns:minmax(190px, 230px) minmax(0,1fr); min-height:118px; border:1px solid var(--border); border-radius:16px; overflow:hidden; background:var(--surface-card); }
+    .split-entry { padding:14px 16px; border-right:1px solid var(--border); display:flex; flex-direction:column; gap:12px; justify-content:flex-start; }
+    .split-label { color:var(--text-muted); font-size:12px; font-weight:700; }
     .split-input-line { display:flex; align-items:center; gap:12px; }
-    #tabGroup .split-input-line input[type=number] { width: min(100%, 168px); height:64px; padding:4px 12px; border:2px solid var(--input-border); border-radius:18px; background:var(--input-bg); color:var(--text-main); text-align:center; font-size:30px; font-weight:800; }
-    .split-input-line span { font-size:15px; font-weight:700; white-space:nowrap; }
-    .split-preview { padding:22px 28px; min-width:0; }
-    .split-preview-main { margin-top:22px; font-size:19px; font-weight:800; color:var(--text-main); }
-    .split-preview-main span { font-size:14px; font-weight:500; color:var(--text-muted); }
-    .split-chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; }
-    .split-chip { min-width:36px; height:36px; padding:0 10px; border-radius:50px; background:#edb5f2; color:#1e293b; display:inline-flex; align-items:center; justify-content:center; font-size:13px; }
+    #tabGroup .split-input-line input[type=number] { width: min(100%, 132px); height:50px; padding:4px 10px; border:2px solid var(--input-border); border-radius:13px; background:var(--input-bg); color:var(--text-main); text-align:center; font-size:25px; font-weight:800; }
+    .split-input-line span { font-size:13px; font-weight:700; white-space:nowrap; }
+    .split-preview { padding:14px 18px; min-width:0; }
+    .split-preview-main { margin-top:12px; font-size:16px; font-weight:800; color:var(--text-main); }
+    .split-preview-main span { font-size:12px; font-weight:500; color:var(--text-muted); }
+    .split-chips { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
+    .split-chip { min-width:30px; height:30px; padding:0 8px; border-radius:50px; background:#edb5f2; color:#1e293b; display:inline-flex; align-items:center; justify-content:center; font-size:13px; }
     .split-mode-hidden { position:absolute!important; width:1px!important; height:1px!important; opacity:0!important; pointer-events:none!important; }
     .split-actions { display:flex; align-items:center; justify-content:flex-end; gap:10px; flex-wrap:wrap; }
-    #tabGroup .split-main-btn { min-height:68px; height:auto; min-width:300px; justify-content:center; border-radius:22px; padding:14px 32px; font-size:19px; }
+    #tabGroup .split-main-btn { min-height:48px; height:auto; min-width:220px; justify-content:center; border-radius:14px; padding:10px 22px; font-size:15px; }
     @media(max-width:768px) {
       .split-tabs { width:100%; }
       .split-tab { font-size:12px; padding:8px 6px; }
       .split-workspace { grid-template-columns:minmax(0, 1fr); }
-      .split-entry { border-right:0; border-bottom:1px solid var(--border); padding:16px; }
-      .split-preview { padding:16px; }
-      .split-preview-main { margin-top:12px; font-size:17px; }
-      #tabGroup .split-input-line input[type=number] { height:56px; font-size:26px; }
+      .split-entry { border-right:0; border-bottom:1px solid var(--border); padding:12px 14px; }
+      .split-preview { padding:12px 14px; }
+      .split-preview-main { margin-top:8px; font-size:15px; }
+      #tabGroup .split-input-line input[type=number] { height:46px; width:min(100%, 120px); font-size:23px; }
       .split-actions { justify-content:stretch; }
-      #tabGroup .split-main-btn { width:100%; min-width:0; min-height:58px; font-size:16px; }
+      #tabGroup .split-main-btn { width:100%; min-width:0; min-height:46px; font-size:14px; }
     }
 
     .print-header, .print-footer { display: none; }
