@@ -546,7 +546,7 @@
 
     /* 📐 ជួរជាប់ឆ្វេង៖ ល.រ | ឈ្មោះសិស្ស (ទទឹងតាមឈ្មោះវែងជាងគេ) | ភេទ
        --w2 ត្រូវបានគណនាដោយ JS (fixStickyOffsets) តាមទទឹងពិតនៃជួរឈ្មោះ */
-    :root { --w1: 44px; --w2: 150px; --w3: 50px; }
+    :root { --w1: 44px; --w2: 110px; --w2b: 110px; --w3: 50px; }
     .stk-1 { left: 0; min-width: var(--w1); max-width: var(--w1); }
     .stk-2 {
       left: var(--w1);
@@ -556,8 +556,16 @@
       font-weight: bold;
       white-space: nowrap;
     }
-    .stk-3 {
+    .stk-2b {
       left: calc(var(--w1) + var(--w2));
+      min-width: 70px;
+      text-align: left;
+      padding: 3px 12px 3px 8px !important;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+    .stk-3 {
+      left: calc(var(--w1) + var(--w2) + var(--w2b));
       min-width: var(--w3); max-width: var(--w3);
       box-shadow: 3px 0 6px -2px rgba(0,0,0,0.12);
     }
@@ -760,7 +768,7 @@
 
     /* 📱 ទូរសព្ទ៖ ឱ្យសល់កន្លែងបញ្ចូលពិន្ទុច្រើន */
     @media (max-width: 700px) {
-      :root { --w1: 28px; --w3: 34px; --col-w: 46px; --res-w: 62px; --bw: 40px; }
+      :root { --w1: 28px; --w2b: 0px; --w3: 34px; --col-w: 46px; --res-w: 62px; --bw: 40px; }
       .stk-2 { font-size: 11.5px; padding: 3px 8px 3px 5px !important; min-width: 70px; }
       .score-box { height: 30px; font-size: 12.5px; }
       .modern-score-table th, .modern-score-table td { padding-left: 1px; padding-right: 1px; }
@@ -1186,7 +1194,17 @@
     window.addEventListener('DOMContentLoaded', () => {
       // 🌟 បិទ Popup និទ្ទេសពេល Toolbar scroll ឬអេក្រង់ប្តូរទំហំ (ដាក់មុន auth check)
       document.getElementById('topToolbar')?.addEventListener('scroll', closeGradeMenu);
-      window.addEventListener('resize', () => { closeGradeMenu(); fixStickyOffsets(); });
+      let lastMobile = isMobileLayout();
+      window.addEventListener('resize', () => {
+        closeGradeMenu();
+        const nowMobile = isMobileLayout();
+        // ប្តូររវាងទូរសព្ទ ↔ កុំព្យូទ័រ → គូរតារាងឡើងវិញ (ឈ្មោះ ១ ជួរ ↔ គោត្តនាម+នាម)
+        if (nowMobile !== lastMobile) {
+          lastMobile = nowMobile;
+          if (displayedStudents.length && document.getElementById('mainForm').style.display === 'flex') renderTable();
+        }
+        fixStickyOffsets();
+      });
       // ពេលហ្វុង Khmer ផ្ទុករួច ទទឹងឈ្មោះអាចប្តូរ → គណនាម្តងទៀត
       if (document.fonts && document.fonts.ready) document.fonts.ready.then(fixStickyOffsets);
 
@@ -1390,11 +1408,30 @@
     }
 
     /* 📐 គណនាទទឹងជួរឈ្មោះ ដើម្បីឱ្យជួរ "ភេទ" ជាប់ត្រូវទីតាំង (ឈ្មោះវែង → ជួរវែងតាម) */
+    function isMobileLayout() {
+      return window.matchMedia('(max-width: 700px)').matches;
+    }
+
+    // បំបែកឈ្មោះ → [គោត្តនាម, នាម]
+    function splitName(full) {
+      const parts = String(full || '').trim().split(/\s+/);
+      return parts.length > 1 ? [parts[0], parts.slice(1).join(' ')] : ['', parts[0] || ''];
+    }
+
     function fixStickyOffsets() {
+      const root = document.documentElement;
       const th = document.querySelector('.modern-score-table thead th.stk-2');
       if (!th) return;
       const w = Math.ceil(th.getBoundingClientRect().width);
-      if (w > 0) document.documentElement.style.setProperty('--w2', w + 'px');
+      if (w > 0) root.style.setProperty('--w2', w + 'px');
+
+      const thb = document.querySelector('.modern-score-table thead th.stk-2b');
+      if (thb) {
+        const wb = Math.ceil(thb.getBoundingClientRect().width);
+        if (wb > 0) root.style.setProperty('--w2b', wb + 'px');
+      } else {
+        root.style.setProperty('--w2b', '0px');   // ទូរសព្ទ៖ គ្មានជួរនាមដាច់ដោយឡែក
+      }
     }
 
     /* =========================================================
@@ -1726,13 +1763,17 @@
       }
 
       const ranks = computeRanks();
-      const totalCols = 3 + keys.length + RES_COLS.length;
+      const mobile = isMobileLayout();
+      const nameCols = mobile ? 3 : 4;   // ល.រ + (ឈ្មោះ | គោត្តនាម+នាម) + ភេទ
+      const totalCols = nameCols + keys.length + RES_COLS.length;
 
       let h = '<table class="modern-score-table"><thead>';
 
       h += '<tr>'
         +  '<th class="stk stk-1" rowspan="2">ល.រ</th>'
-        +  '<th class="stk stk-2" rowspan="2">ឈ្មោះសិស្ស</th>'
+        +  (mobile
+              ? '<th class="stk stk-2" rowspan="2">ឈ្មោះសិស្ស</th>'
+              : '<th class="stk stk-2" rowspan="2">គោត្តនាម</th><th class="stk stk-2b" rowspan="2">នាម</th>')
         +  '<th class="stk stk-3" rowspan="2">ភេទ</th>';
       
       grps.forEach(g => {
@@ -1758,7 +1799,7 @@
       });
       h += '</tr>';
 
-      h += '<tr class="coef-row"><td colspan="3" class="stk" style="left:0; text-align:right; padding-right:6px; font-weight:700; font-size:9.5px;">មេគុណតាមមុខវិជ្ជា</td>';
+      h += '<tr class="coef-row"><td colspan="' + nameCols + '" class="stk" style="left:0; text-align:right; padding-right:6px; font-weight:700; font-size:9.5px;">មេគុណតាមមុខវិជ្ជា</td>';
       grps.forEach(g => {
         g.cols.forEach(c => {
           h += `<td class="th-sub-${g.grp} sc-td"><span class="coef-tag coef-zero" id="ac-${c.key}">×0</span></td>`;
@@ -1781,7 +1822,9 @@
 
           h += `<tr class="dr" data-id="${s.id}">`
             +  `<td class="stk stk-1" style="color:var(--text-muted); font-weight:700;">${idx + 1}</td>`
-            +  `<td class="stk stk-2">${s.name}</td>`
+            +  (mobile
+                  ? `<td class="stk stk-2">${s.name}</td>`
+                  : (() => { const [ln, fn] = splitName(s.name); return `<td class="stk stk-2">${ln}</td><td class="stk stk-2b">${fn}</td>`; })())
             +  `<td class="stk stk-3" style="font-weight:bold; color:${isF ? '#ec4899' : '#0284c7'};">${isF ? 'ស្រី' : 'ប្រុស'}</td>`;
 
           grps.forEach(g => {
