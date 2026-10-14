@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="km">
+<html lang="km" data-theme="dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>សារសន្ទនា</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,7 +14,56 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    /* =========================================================
+       🎨 DYNAMIC THEME SYSTEM (LIGHT & DARK MODE)
+    ========================================================= */
+    :root, [data-theme="light"] {
+      --chat-bg: #f1f5f9;
+      --chat-surface: #ffffff;
+      --chat-surface-card: #f8fafc;
+      --chat-border: #e2e8f0;
+      --chat-border-strong: #cbd5e1;
+      --chat-text: #0f172a;
+      --chat-text-muted: #64748b;
+      --chat-input-bg: #ffffff;
+
+      --bubble-in-bg: #ffffff;
+      --bubble-in-border: #e2e8f0;
+      --bubble-in-text: #0f172a;
+
+      --bubble-out-bg: #0284c7;
+      --bubble-out-border: #0369a1;
+      --bubble-out-text: #ffffff;
+      --bubble-out-time: rgba(255, 255, 255, 0.85);
+
+      --card-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
+      --bottom-bar-bg: #ffffff;
+    }
+
+    [data-theme="dark"] {
+      --chat-bg: #05131b;
+      --chat-surface: #0e202c;
+      --chat-surface-card: #11222e;
+      --chat-border: #162f40;
+      --chat-border-strong: #1d3a50;
+      --chat-text: #f8fafc;
+      --chat-text-muted: #94a3b8;
+      --chat-input-bg: #0e202c;
+
+      --bubble-in-bg: #11222e;
+      --bubble-in-border: #162f40;
+      --bubble-in-text: #e2e8f0;
+
+      --bubble-out-bg: #0d3856;
+      --bubble-out-border: #175480;
+      --bubble-out-text: #f8fafc;
+      --bubble-out-time: #94a3b8;
+
+      --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
+      --bottom-bar-bg: #05131b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     
     html, body {
       width: 100%;
@@ -22,10 +71,11 @@
       margin: 0;
       padding: 0;
       overflow: hidden;
-      background: #05131b;
-      color: #e2e8f0;
-      font-family: 'Kantumruy Pro', sans-serif;
+      background: var(--chat-bg);
+      color: var(--chat-text);
+      font-family: 'Kantumruy Pro', -apple-system, BlinkMacSystemFont, sans-serif;
       -webkit-font-smoothing: antialiased;
+      transition: background 0.25s ease, color 0.25s ease;
     }
 
     .chat-app-wrapper {
@@ -36,7 +86,7 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      background: #05131b;
+      background: var(--chat-bg);
     }
 
     .icon {
@@ -60,16 +110,16 @@
       min-height: 100vh;
       text-align: center;
       padding: 30px 20px;
-      background: #05131b;
+      background: var(--chat-bg);
     }
     .auth-card {
-      background: #0e202c;
-      border: 1.5px solid #162f40;
+      background: var(--chat-surface);
+      border: 1.5px solid var(--chat-border);
       border-radius: 24px;
       padding: 40px 28px;
       max-width: 440px;
       width: 100%;
-      box-shadow: 0 10px 35px rgba(0,0,0,0.5);
+      box-shadow: var(--card-shadow);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -87,7 +137,7 @@
       margin-bottom: 16px;
     }
     .auth-card h2 { font-size: 18px; margin-bottom: 8px; color: #ef4444; font-weight: 700; }
-    .auth-card p { font-size: 13px; color: #94a3b8; line-height: 1.6; margin-bottom: 24px; }
+    .auth-card p { font-size: 13px; color: var(--chat-text-muted); line-height: 1.6; margin-bottom: 24px; }
     .btn-login-redirect {
       background: linear-gradient(135deg, #0284c7, #7c3aed);
       color: #ffffff;
@@ -109,42 +159,46 @@
       flex: 0 0 auto;
       padding: 8px 14px 4px 14px;
       z-index: 30;
-      background: #05131b;
+      background: var(--chat-bg);
     }
     .room-header-card {
-      background: #0e202c;
-      border: 1px solid #162f40;
+      background: var(--chat-surface);
+      border: 1px solid var(--chat-border);
       border-radius: 9999px;
       padding: 6px 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+      box-shadow: var(--card-shadow);
     }
     .room-left {
       display: flex;
       align-items: center;
       gap: 10px;
       cursor: pointer;
+      min-width: 0;
     }
     .room-badge-logo {
-      width: 32px;
-      height: 32px;
+      width: 34px;
+      height: 34px;
       border-radius: 50%;
-      background: #ffffff;
+      background: #0284c7;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
       flex-shrink: 0;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+      color: #ffffff;
     }
-    .room-badge-logo svg { width: 22px; height: 22px; }
     .room-title-text {
-      font-size: 14px;
+      font-size: 13.5px;
       font-weight: 700;
-      color: #f8fafc;
+      color: var(--chat-text);
       letter-spacing: 0.2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .room-right {
@@ -156,9 +210,9 @@
       width: 36px;
       height: 36px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      color: #cbd5e1;
+      background: var(--chat-surface-card);
+      border: 1px solid var(--chat-border);
+      color: var(--chat-text-muted);
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -167,18 +221,17 @@
       touch-action: manipulation;
     }
     .room-action-btn:hover, .room-action-btn:active {
-      color: #38bdf8;
-      background: rgba(56, 189, 248, 0.25);
-      border-color: #38bdf8;
+      color: #0284c7;
+      border-color: #0284c7;
       transform: scale(1.06);
     }
 
     /* Search Bar */
     .search-bar-inline {
       display: none;
-      padding: 8px 16px;
-      background: #0a1824;
-      border-bottom: 1px solid #162f40;
+      padding: 8px 14px;
+      background: var(--chat-surface);
+      border-bottom: 1px solid var(--chat-border);
       align-items: center;
       gap: 10px;
       flex: 0 0 auto;
@@ -186,12 +239,12 @@
     }
     .search-input-field {
       flex: 1;
-      background: #0e202c;
-      border: 1.5px solid #1d3a50;
+      background: var(--chat-surface-card);
+      border: 1.5px solid var(--chat-border);
       border-radius: 20px;
-      padding: 7px 16px;
-      color: #fff;
-      font-size: 13.5px;
+      padding: 6px 14px;
+      color: var(--chat-text);
+      font-size: 13px;
       outline: none;
       font-family: inherit;
     }
@@ -200,28 +253,29 @@
     .chat-messages {
       flex: 1 1 auto;
       min-height: 0;
-      padding: 12px 16px 80px 16px;
+      padding: 10px 14px calc(74px + env(safe-area-inset-bottom, 0px)) 14px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 12px;
       -webkit-overflow-scrolling: touch;
     }
     .chat-messages::-webkit-scrollbar { width: 5px; }
-    .chat-messages::-webkit-scrollbar-thumb { background: #132a38; border-radius: 4px; }
+    .chat-messages::-webkit-scrollbar-thumb { background: var(--chat-border); border-radius: 4px; }
 
     .msg-group {
       display: flex;
-      gap: 10px;
-      max-width: 86%;
+      gap: 9px;
+      max-width: 88%;
       align-items: flex-start;
     }
     .msg-group.incoming { align-self: flex-start; }
     .msg-group.outgoing { align-self: flex-end; flex-direction: row-reverse; }
 
+    /* 🌟 PROFILE AVATAR WITH REAL PICTURE SUPPORT */
     .msg-avatar {
-      width: 34px;
-      height: 34px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -231,51 +285,68 @@
       color: #ffffff;
       flex-shrink: 0;
       margin-top: 2px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      background: #0284c7;
+      border: 1.5px solid var(--chat-border);
+    }
+    .msg-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .msg-avatar.admin-ring {
+      border: 2px solid #facc15 !important;
+      box-shadow: 0 0 8px rgba(250, 204, 21, 0.4);
     }
     .msg-avatar.purple-s { background: #9333ea; }
     .msg-avatar.green-l  { background: #059669; }
 
-    .msg-content-wrap { display: flex; flex-direction: column; gap: 3px; }
+    .msg-content-wrap { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
     .msg-sender-label { font-size: 11.5px; font-weight: 700; line-height: 1.3; }
-    .msg-sender-label.owner-gold { color: #facc15; }
-    .msg-sender-label.teacher-grey { color: #94a3b8; }
-    .msg-group.outgoing .msg-sender-label { text-align: right; color: #38bdf8; }
+    .msg-sender-label.owner-gold { color: #d97706; }
+    [data-theme="dark"] .msg-sender-label.owner-gold { color: #facc15; }
+    .msg-sender-label.teacher-grey { color: var(--chat-text-muted); }
+    .msg-group.outgoing .msg-sender-label { text-align: right; color: #0284c7; }
+    [data-theme="dark"] .msg-group.outgoing .msg-sender-label { color: #38bdf8; }
 
     .msg-bubble {
-      background: #11222e;
-      border: 1px solid #162f40;
+      background: var(--bubble-in-bg);
+      border: 1px solid var(--bubble-in-border);
       border-radius: 14px;
       border-top-left-radius: 3px;
-      padding: 9px 14px;
+      padding: 8px 13px;
       font-size: 13.5px;
-      line-height: 1.55;
-      color: #e2e8f0;
+      line-height: 1.5;
+      color: var(--bubble-in-text);
       word-break: break-word;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
     }
     .msg-group.outgoing .msg-bubble {
-      background: #0d3856;
-      border-color: #175480;
+      background: var(--bubble-out-bg);
+      border-color: var(--bubble-out-border);
+      color: var(--bubble-out-text);
       border-top-left-radius: 14px;
       border-top-right-radius: 3px;
     }
 
     .msg-bubble a { color: #38bdf8; text-decoration: underline; word-break: break-all; }
+    .msg-group.outgoing .msg-bubble a { color: #bae6fd; }
     
     .msg-footer {
       display: flex;
       align-items: center;
       justify-content: flex-end;
       gap: 6px;
-      margin-top: 4px;
+      margin-top: 3px;
     }
-    .msg-time { font-size: 10px; color: #64748b; }
-    .msg-group.outgoing .msg-time { color: #94a3b8; }
+    .msg-time { font-size: 10px; color: var(--chat-text-muted); }
+    .msg-group.outgoing .msg-time { color: var(--bubble-out-time); }
 
     .btn-delete-msg {
       background: transparent;
       border: none;
-      color: #94a3b8;
+      color: var(--chat-text-muted);
       cursor: pointer;
       font-size: 11px;
       padding: 2px 4px;
@@ -283,147 +354,147 @@
       opacity: 0.7;
       transition: all 0.15s;
     }
+    .msg-group.outgoing .btn-delete-msg { color: var(--bubble-out-time); }
     .btn-delete-msg:hover {
       opacity: 1;
-      color: #ef4444;
+      color: #ef4444 !important;
       background: rgba(239, 68, 68, 0.15);
       transform: scale(1.15);
     }
 
-    .chat-img-thumb { max-width: 250px; max-height: 250px; border-radius: 8px; display: block; margin-bottom: 4px; cursor: pointer; }
-    .chat-audio-player { width: 220px; height: 34px; margin-top: 4px; outline: none; }
+    .chat-img-thumb { max-width: 240px; max-height: 240px; border-radius: 8px; display: block; margin-bottom: 4px; cursor: pointer; }
+    .chat-audio-player { width: 210px; height: 34px; margin-top: 4px; outline: none; }
 
-    /* ============ 3. BOTTOM INPUT BAR ============ */
+    /* ============ 3. BOTTOM INPUT BAR (RESPONSIVE) ============ */
     .chat-bottom-bar {
       position: fixed !important;
       bottom: 0 !important;
       left: 0 !important;
       right: 0 !important;
       width: 100% !important;
-      height: 64px !important;
-      padding: 8px 14px 10px 14px !important;
-      background: #05131b !important;
-      border-top: 2px solid #102a3a !important;
+      height: calc(62px + env(safe-area-inset-bottom, 0px)) !important;
+      padding: 8px 12px calc(8px + env(safe-area-inset-bottom, 0px)) 12px !important;
+      background: var(--bottom-bar-bg) !important;
+      border-top: 1.5px solid var(--chat-border) !important;
       z-index: 9999 !important;
       display: flex !important;
       align-items: center !important;
-      box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.7) !important;
+      box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.15) !important;
     }
     .input-capsule {
       width: 100%;
-      background: #0e202c;
-      border: 1.5px solid #183345;
+      background: var(--chat-input-bg);
+      border: 1.5px solid var(--chat-border);
       border-radius: 9999px;
-      padding: 4px 6px 4px 12px;
+      padding: 3px 5px 3px 10px;
       display: flex;
       align-items: center;
-      gap: 10px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+      gap: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
     .input-capsule:focus-within { border-color: #0284c7; }
 
-    .left-actions { display: flex; align-items: center; gap: 8px; color: #94a3b8; }
+    .left-actions { display: flex; align-items: center; gap: 4px; color: var(--chat-text-muted); }
     .left-action-btn {
       background: transparent; border: none; color: inherit; cursor: pointer;
-      display: flex; align-items: center; justify-content: center; padding: 5px;
+      display: flex; align-items: center; justify-content: center; padding: 6px;
       border-radius: 50%; transition: color 0.15s;
     }
-    .left-action-btn:hover { color: #38bdf8; }
+    .left-action-btn:hover { color: #0284c7; }
 
     .chat-input-field {
       flex: 1; background: transparent; border: none; outline: none;
-      color: #f8fafc; font-family: 'Kantumruy Pro', sans-serif;
-      font-size: 14px; padding: 6px 2px;
+      color: var(--chat-text); font-family: inherit;
+      font-size: 13.5px; padding: 6px 2px;
     }
-    .chat-input-field::placeholder { color: #64748b; }
+    .chat-input-field::placeholder { color: var(--chat-text-muted); }
 
     .right-circle-btn {
-      width: 40px; height: 40px; border-radius: 50%;
+      width: 38px; height: 38px; border-radius: 50%;
       background: #0284c7; border: none; color: #ffffff; cursor: pointer;
       display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-      transition: all 0.15s ease; box-shadow: 0 2px 8px rgba(2, 132, 199, 0.4);
+      transition: all 0.15s ease; box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35);
     }
     .right-circle-btn:hover { background: #0369a1; transform: scale(1.04); }
     .right-circle-btn.recording { background: #ef4444; animation: pulseRec 1s infinite; }
     @keyframes pulseRec { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
 
-    .recording-banner { display: none; align-items: center; gap: 8px; color: #ef4444; font-size: 12.5px; font-weight: 700; flex: 1; }
+    .recording-banner { display: none; align-items: center; gap: 8px; color: #ef4444; font-size: 12px; font-weight: 700; flex: 1; }
 
     /* Emoji Picker Drawer */
     .emoji-picker-drawer {
       position: fixed;
-      bottom: 72px;
-      left: 16px;
-      width: min(360px, calc(100% - 32px));
-      background: #0e202c;
-      border: 1.5px solid #183345;
+      bottom: calc(68px + env(safe-area-inset-bottom, 0px));
+      left: 12px;
+      width: min(360px, calc(100% - 24px));
+      background: var(--chat-surface);
+      border: 1.5px solid var(--chat-border);
       border-radius: 18px;
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.7);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
       z-index: 10000;
       display: none;
       flex-direction: column;
       overflow: hidden;
     }
     .emoji-drawer-header {
-      padding: 8px 12px; background: #0a1824; border-bottom: 1px solid #162f40;
+      padding: 8px 12px; background: var(--chat-surface-card); border-bottom: 1px solid var(--chat-border);
       display: flex; align-items: center; justify-content: space-between;
-      font-size: 11.5px; font-weight: 700; color: #94a3b8;
+      font-size: 11.5px; font-weight: 700; color: var(--chat-text-muted);
     }
     .emoji-drawer-grid {
-      display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px;
-      padding: 10px; max-height: 220px; overflow-y: auto;
-      font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
+      display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px;
+      padding: 10px; max-height: 200px; overflow-y: auto;
     }
     .emoji-btn {
-      font-size: 24px; background: transparent; border: none; cursor: pointer;
+      font-size: 22px; background: transparent; border: none; cursor: pointer;
       border-radius: 8px; padding: 4px; display: flex; align-items: center; justify-content: center;
     }
-    .emoji-btn:hover, .emoji-btn:active { background: rgba(56, 189, 248, 0.15); transform: scale(1.2); }
+    .emoji-btn:hover, .emoji-btn:active { background: rgba(2, 132, 199, 0.15); transform: scale(1.18); }
 
     /* ============ 👥 4. MEMBERS MODAL DIALOG ============ */
     .modal-overlay {
-      position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8);
+      position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7);
       backdrop-filter: blur(4px); display: none; align-items: center;
-      justify-content: center; z-index: 10000; padding: 16px;
+      justify-content: center; z-index: 10000; padding: 14px;
     }
     .modal-card {
-      width: 100%; max-width: 420px; background: #0e202c; border: 1px solid #1a354a;
-      border-radius: 18px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+      width: 100%; max-width: 420px; background: var(--chat-surface); border: 1px solid var(--chat-border);
+      border-radius: 20px; box-shadow: var(--card-shadow);
       display: flex; flex-direction: column; max-height: 80vh; overflow: hidden;
     }
     .modal-head {
-      padding: 14px 18px; border-bottom: 1px solid #162f40;
+      padding: 12px 16px; border-bottom: 1px solid var(--chat-border);
       display: flex; align-items: center; justify-content: space-between;
     }
-    .modal-head-title { font-size: 14.5px; font-weight: 700; color: #fff; }
-    .modal-close-btn { background: none; border: none; color: #94a3b8; font-size: 18px; cursor: pointer; padding: 4px; }
-    .members-list { padding: 12px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+    .modal-head-title { font-size: 14px; font-weight: 700; color: var(--chat-text); }
+    .modal-close-btn { background: none; border: none; color: var(--chat-text-muted); font-size: 18px; cursor: pointer; padding: 4px; }
+    .members-list { padding: 10px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
 
     .member-item {
-      display: flex; align-items: center; gap: 12px; padding: 10px 12px;
-      background: #11222e; border-radius: 12px; border: 1px solid #162f40;
+      display: flex; align-items: center; gap: 11px; padding: 8px 12px;
+      background: var(--chat-surface-card); border-radius: 12px; border: 1px solid var(--chat-border);
     }
     .member-item.is-current-user {
-      background: #092c42 !important;
-      border: 1.5px solid #0ea5e9 !important;
-      box-shadow: 0 0 14px rgba(14, 165, 233, 0.35) !important;
+      background: rgba(2, 132, 199, 0.08) !important;
+      border: 1.5px solid #0284c7 !important;
     }
     .member-avatar {
-      width: 36px; height: 36px; border-radius: 50%;
+      width: 38px; height: 38px; border-radius: 50%;
       background: #0284c7; color: #fff; font-weight: 700;
       display: flex; align-items: center; justify-content: center; font-size: 14px;
-      flex-shrink: 0;
+      flex-shrink: 0; overflow: hidden;
     }
+    .member-avatar img { width: 100%; height: 100%; object-fit: cover; }
     .member-info { flex: 1; min-width: 0; }
     .member-info .m-name {
-      font-size: 13.5px; font-weight: 700; color: #f8fafc;
+      font-size: 13px; font-weight: 700; color: var(--chat-text);
       display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
     }
-    .member-info .m-sub { font-size: 11px; color: #38bdf8; margin-top: 2px; }
+    .member-info .m-sub { font-size: 11px; color: #0284c7; margin-top: 2px; }
 
     .badge-current-user {
       background: #059669; color: #ffffff;
-      font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px;
+      font-size: 9.5px; font-weight: 700; padding: 1px 7px; border-radius: 12px;
     }
   </style>
 </head>
@@ -448,26 +519,18 @@
       <div class="room-header-card">
         <div class="room-left" onclick="openMembersModal()" title="មើលសមាជិក">
           <div class="room-badge-logo">
-            <svg viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="10" stroke="#0284c7" stroke-width="2"/>
-              <path d="M8 12l3 3 5-5" stroke="#059669" stroke-width="2" stroke-linecap="round"/>
-            </svg>
+            <i class="fa-solid fa-comments"></i>
           </div>
           <span class="room-title-text" id="roomTitle">បន្ទប់សន្ទនារួម (គ្រូបង្រៀន)</span>
         </div>
 
         <div class="room-right">
           <button type="button" class="room-action-btn" onclick="toggleSearch()" title="ស្វែងរកសារ">
-            <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <i class="fa-solid fa-magnifying-glass"></i>
           </button>
 
           <button type="button" class="room-action-btn" onclick="openMembersModal()" title="សមាជិកក្រុម">
-            <svg class="icon" viewBox="0 0 24 24">
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-              <circle cx="9" cy="7" r="4"/>
-              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-            </svg>
+            <i class="fa-solid fa-users"></i>
           </button>
         </div>
       </div>
@@ -476,65 +539,47 @@
     <!-- Search Bar -->
     <div class="search-bar-inline" id="searchBar">
       <input type="text" id="searchInput" class="search-input-field" placeholder="វាយពាក្យស្វែងរកសារ..." oninput="filterMessages(this.value)">
-      <button type="button" onclick="toggleSearch()" style="background:none; border:none; color:#ef4444; font-size:16px; cursor:pointer; padding:4px;">✕</button>
+      <button type="button" onclick="toggleSearch()" style="background:none; border:none; color:#ef4444; font-size:15px; cursor:pointer; padding:4px;">✕</button>
     </div>
 
     <!-- 2. CHAT MESSAGES BODY -->
     <div class="chat-messages" id="chatBox">
-      <div style="text-align:center; padding:30px; color:#64748b;">⏳ កំពុងទាញយកសារ...</div>
+      <div style="text-align:center; padding:30px; color:var(--chat-text-muted);">⏳ កំពុងទាញយកសារ...</div>
     </div>
 
     <!-- Emoji Picker Drawer -->
     <div class="emoji-picker-drawer" id="emojiDrawer">
       <div class="emoji-drawer-header">
         <span>😀 រូបសញ្ញា EMOJI</span>
-        <button type="button" onclick="toggleEmojiPicker()" style="background:none; border:none; color:#94a3b8; cursor:pointer; font-size:14px;">✕</button>
+        <button type="button" onclick="toggleEmojiPicker()" style="background:none; border:none; color:var(--chat-text-muted); cursor:pointer; font-size:14px;">✕</button>
       </div>
       <div class="emoji-drawer-grid" id="emojiGrid"></div>
     </div>
 
-    <!-- 3. BOTTOM INPUT BAR -->
+    <!-- 3. BOTTOM INPUT BAR (RESPONSIVE TOUCH-FRIENDLY) -->
     <div class="chat-bottom-bar" id="chatBottomBar">
       <div class="input-capsule">
         <div class="left-actions">
           <button class="left-action-btn" type="button" onclick="toggleEmojiPicker()" title="Emoji">
-            <svg class="icon" viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="10"/>
-              <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
-              <line x1="9" y1="9" x2="9.01" y2="9"/>
-              <line x1="15" y1="9" x2="15.01" y2="9"/>
-            </svg>
+            <i class="fa-regular fa-face-smile" style="font-size:17px;"></i>
           </button>
 
           <button class="left-action-btn" type="button" onclick="document.getElementById('imageFileInput').click()" title="ផ្ញើរូបភាព">
-            <svg class="icon" viewBox="0 0 24 24">
-              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-              <circle cx="8.5" cy="8.5" r="1.5"/>
-              <polyline points="21 15 16 10 5 21"/>
-            </svg>
+            <i class="fa-regular fa-image" style="font-size:17px;"></i>
           </button>
           <input type="file" id="imageFileInput" accept="image/*" style="display:none" onchange="handleImageUpload(this)">
         </div>
 
         <div class="recording-banner" id="recIndicator">
-          <span>🔴 កំពុងថតសំឡេង... (<span id="recTimer">0:00</span>)</span>
-          <button type="button" onclick="cancelRecording()" style="background:transparent; border:none; color:#94a3b8; cursor:pointer; font-size:11px;">[បោះបង់]</button>
+          <span>🔴 កំពុងថត... (<span id="recTimer">0:00</span>)</span>
+          <button type="button" onclick="cancelRecording()" style="background:transparent; border:none; color:var(--chat-text-muted); cursor:pointer; font-size:11px;">[បោះបង់]</button>
         </div>
 
         <input type="text" id="msgInput" class="chat-input-field" placeholder="ផ្ញើសារ..." onfocus="closeEmojiPicker()" oninput="handleInputState(this.value)" onkeydown="if(event.key==='Enter') sendMsg()">
 
         <button class="right-circle-btn" id="mainActionBtn" type="button" onclick="handleMainAction()" title="ផ្ញើសារ / ថតសំឡេង">
-          <svg class="icon" id="micIcon" viewBox="0 0 24 24">
-            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-            <line x1="12" y1="19" x2="12" y2="23"/>
-            <line x1="8" y1="23" x2="16" y2="23"/>
-          </svg>
-
-          <svg class="icon" id="sendIcon" style="display:none;" viewBox="0 0 24 24">
-            <line x1="22" y1="2" x2="11" y2="13"/>
-            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-          </svg>
+          <i class="fa-solid fa-microphone" id="micIcon" style="font-size:16px;"></i>
+          <i class="fa-solid fa-paper-plane" id="sendIcon" style="font-size:15px; display:none;"></i>
         </button>
       </div>
     </div>
@@ -545,11 +590,11 @@
   <div class="modal-overlay" id="membersModal" onclick="if(event.target===this) closeMembersModal()">
     <div class="modal-card">
       <div class="modal-head">
-        <span class="modal-head-title">👥 សមាជិកគ្រូទាំងអស់</span>
+        <span class="modal-head-title"><i class="fa-solid fa-users"></i> សមាជិកគ្រូទាំងអស់</span>
         <button type="button" class="modal-close-btn" onclick="closeMembersModal()">✕</button>
       </div>
       <div class="members-list" id="membersListArea">
-        <div style="text-align:center; padding:20px; color:#94a3b8; font-size:12px;">⏳ កំពុងទាញយកសមាជិក...</div>
+        <div style="text-align:center; padding:20px; color:var(--chat-text-muted); font-size:12px;">⏳ កំពុងទាញយកសមាជិក...</div>
       </div>
     </div>
   </div>
@@ -562,7 +607,7 @@
 
     const CURRENT_ROOM = 'global';
 
-    /* 2. AUTH GUARD */
+    /* 2. AUTH GUARD & SESSION */
     function readSession() {
       try { return JSON.parse(localStorage.getItem('krou_supabase_user') || 'null'); } catch(e) { return null; }
     }
@@ -591,7 +636,72 @@
       window.location.href = 'index.html';
     }
 
+    /* 3. THEME SYSTEM SYNC */
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme || 'dark');
+    }
+    applyTheme(localStorage.getItem('krou_theme_manual') || 'dark');
+    window.addEventListener('message', e => {
+      if (e.data && (e.data.type === 'THEME_CHANGE' || e.data.theme)) {
+        applyTheme(e.data.theme || e.data);
+      }
+    });
+
     let allCachedMessages = [];
+    let teachersMap = {}; // 🌟 Cache សម្រាប់ផ្ទុកព័ត៌មាន និងរូបថត Profile របស់គ្រូ
+
+    function safeUrl(u) {
+      u = String(u || '').trim();
+      return /^(https:\/\/|http:\/\/|data:image\/)/.test(u) ? u : '';
+    }
+
+    function escapeHtml(t) {
+      if (!t) return '';
+      return String(t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+
+    /* 4. FETCH TEACHERS FOR PROFILE PICTURES */
+    async function loadTeachersCache() {
+      try {
+        const { data, error } = await sb
+          .from('users')
+          .select('id, teacher_id, teacher_name, username, role, assigned_classes, photo_url');
+        
+        if (!error && data) {
+          teachersMap = {};
+          data.forEach(t => {
+            if (t.username) teachersMap[t.username.toLowerCase()] = t;
+            if (t.teacher_id) teachersMap[String(t.teacher_id).toLowerCase()] = t;
+            if (t.teacher_name) teachersMap[t.teacher_name.trim()] = t;
+          });
+        }
+      } catch(e) {
+        console.warn('loadTeachersCache error:', e);
+      }
+    }
+
+    /* 🌟 អនុគមន៍បង្កើត Avatar (បង្ហាញរូបថតពិត ឬអក្សរកាត់) */
+    function renderAvatar(senderCode, senderName, senderRole) {
+      const codeKey = (senderCode || '').toLowerCase();
+      const nameKey = (senderName || '').trim();
+      const teacherObj = teachersMap[codeKey] || teachersMap[nameKey];
+
+      const photoUrl = teacherObj ? safeUrl(teacherObj.photo_url) : '';
+      const initial = senderName ? senderName.charAt(0) : 'U';
+      const isAdm = (String(senderRole || '').toLowerCase() === 'admin');
+      const ringClass = isAdm ? 'admin-ring' : '';
+
+      if (photoUrl) {
+        return `
+          <div class="msg-avatar ${ringClass}">
+            <img src="${escapeHtml(photoUrl)}" alt="Avatar" onerror="this.outerHTML='<span>${initial}</span>'">
+          </div>`;
+      }
+      return `
+        <div class="msg-avatar ${isAdm ? 'purple-s' : 'green-l'}">
+          <span>${initial}</span>
+        </div>`;
+    }
 
     const NATIVE_EMOJIS = [
       "😀","😃","😄","😁","😆","😅","😂","🤣","🙂","🙃","😉","😊","😇","🥰","😍","🤩","😘","😗","😚","😋","😛","😜","🤪","😝","🤗","🤭","🤫","🤔","🤐","🤨","😐","😑","😶","😏","😒","🙄","😬","🤥","😌","😔","😪","🤤","😴","😷","🤒","🤕","🤢","🤮","🤧","🥵","🥶","🥴","😵","🤯","🤠","🥳","😎","🤓","🧐","👍","👎","👏","🙌","🤝","👊","✊","🤛","🤜","🤞","✌️","🤟","🤘","👌","🤏","👈","👉","👆","👇","☝️","✋","🤚","🖐️","🖖","👋","🤙","💪","🙏","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","❣️","💕","💞","💓","💗","💖","💘","💝","💟","🔥","💯","✨","🎉","🎊","⭐","🌟","💡","☕","✅","❌","❓","❗"
@@ -620,13 +730,16 @@
       input.focus();
     }
 
-    /* 3. INITIALIZATION & REALTIME SYNC */
-    window.addEventListener('DOMContentLoaded', () => {
+    /* 5. INITIALIZATION */
+    window.addEventListener('DOMContentLoaded', async () => {
       if (!checkAuthentication()) return;
       initNativeEmojiGrid();
+
+      // ទាញយក Profile គ្រូជាមុន រួចទាញយកសារ
+      await loadTeachersCache();
       loadMessages();
 
-      // 🌟 Supabase Realtime Listener (សារលោតភ្លាមៗស្វ័យប្រវត្តិកុំឱ្យពិបាក Refresh)
+      // 🌟 Supabase Realtime Listener (សារលោតភ្លាមៗស្វ័យប្រវត្តិ)
       try {
         sb.channel('realtime_chat')
           .on('postgres_changes', { event: '*', schema: 'public', table: 'chat_messages' }, () => {
@@ -637,7 +750,6 @@
         console.warn('Realtime error:', e);
       }
 
-      // Polling fallback រៀងរាល់ ៦ វិនាទី
       setInterval(loadMessages, 6000);
     });
 
@@ -667,7 +779,7 @@
       renderMessages(filtered);
     }
 
-    /* 4. LOAD & RENDER MESSAGES */
+    /* 6. LOAD & RENDER MESSAGES (WITH REAL AVATARS) */
     async function loadMessages() {
       try {
         const { data, error } = await sb
@@ -688,7 +800,7 @@
     function renderMessages(messages) {
       const box = document.getElementById('chatBox');
       if (!messages || messages.length === 0) {
-        box.innerHTML = '<div style="text-align:center; padding:30px; color:#64748b;">មិនទាន់មានសារសន្ទនានៅឡើយទេ<br><small style="color:#475569;">វាយបញ្ចូលសារខាងក្រោមដើម្បីចាប់ផ្តើម</small></div>';
+        box.innerHTML = '<div style="text-align:center; padding:30px; color:var(--chat-text-muted);">មិនទាន់មានសារសន្ទនានៅឡើយទេ<br><small>វាយបញ្ចូលសារខាងក្រោមដើម្បីចាប់ផ្តើម</small></div>';
         return;
       }
 
@@ -701,9 +813,10 @@
         const isMe = (m.sender_code && m.sender_code === myCode) || (m.sender_name === myName);
         const rowClass = isMe ? 'outgoing' : 'incoming';
         const senderIsAdm = (String(m.sender_role || '').toLowerCase() === 'admin');
-        const avatarClass = senderIsAdm ? 'purple-s' : 'green-l';
         const senderClass = senderIsAdm ? 'owner-gold' : 'teacher-grey';
-        const initial = m.sender_name ? m.sender_name.charAt(0) : 'U';
+
+        // 🌟 បង្កើត Avatar ដោយទាញយករូប Profile ពិត
+        const avatarHtml = renderAvatar(m.sender_code, m.sender_name, m.sender_role);
 
         let senderTitle = m.sender_name;
         if (m.caption && m.type === 'image') {
@@ -732,8 +845,8 @@
         let deleteBtnHtml = '';
         if (isMe || isAdmUser) {
           deleteBtnHtml = `
-            <button type="button" class="btn-delete-msg" onclick="deleteMsg(${m.id})" title="លុបសារនេះ">
-              🗑️
+            <button type="button" class="btn-delete-msg" onclick="deleteMsg(${m.id})" title="លុបសារ">
+              <i class="fa-solid fa-trash-can"></i>
             </button>
           `;
         }
@@ -742,7 +855,7 @@
 
         html += `
           <div class="msg-group ${rowClass}" id="msg_${m.id}">
-            <div class="msg-avatar ${avatarClass}">${initial}</div>
+            ${avatarHtml}
             <div class="msg-content-wrap">
               <div class="msg-sender-label ${senderClass}">${escapeHtml(senderTitle)}</div>
               <div class="msg-bubble">
@@ -768,7 +881,7 @@
       } catch(e) { return ''; }
     }
 
-    /* 5. SEND MESSAGE & ACTIONS */
+    /* 7. ACTIONS: SEND, UPLOAD & RECORD */
     function handleInputState(val) {
       const hasText = val.trim().length > 0;
       document.getElementById('micIcon').style.display = hasText ? 'none' : 'inline-block';
@@ -845,7 +958,7 @@
 
     async function deleteMsg(messageId) {
       if (!messageId) return;
-      if (!confirm('តើអ្នកពិតជាចង់លុបសារនេះមែនទេ?')) return;
+      if (!confirm('តើលោកគ្រូ/អ្នកគ្រូពិតជាចង់លុបសារនេះមែនទេ?')) return;
 
       try {
         const { error } = await sb.from('chat_messages').delete().eq('id', messageId);
@@ -856,7 +969,7 @@
       }
     }
 
-    /* 6. VOICE RECORDING */
+    /* 8. VOICE RECORDING */
     let mediaRecorder = null;
     let audioChunks = [];
     let recInterval = null;
@@ -937,34 +1050,39 @@
       document.getElementById('msgInput').style.display = 'block';
     }
 
-    /* 7. MEMBERS MODAL (FETCH FROM USERS TABLE) */
+    /* 9. MEMBERS MODAL (SHOWING REAL PROFILE PICTURES) */
     async function openMembersModal() {
       const modal = document.getElementById('membersModal');
       const area = document.getElementById('membersListArea');
       modal.style.display = 'flex';
-      area.innerHTML = '<div style="text-align:center; padding:20px; color:#94a3b8; font-size:12px;">⏳ កំពុងទាញយកសមាជិក...</div>';
+      area.innerHTML = '<div style="text-align:center; padding:20px; color:var(--chat-text-muted); font-size:12px;">⏳ កំពុងទាញយកសមាជិក...</div>';
 
       try {
         const { data: teachers, error } = await sb
           .from('users')
-          .select('id, teacher_id, teacher_name, username, role, assigned_classes')
+          .select('id, teacher_id, teacher_name, username, role, assigned_classes, photo_url')
           .order('id', { ascending: true });
 
         if (error) throw error;
 
         if (!teachers || teachers.length === 0) {
-          area.innerHTML = '<div style="text-align:center; padding:20px; color:#94a3b8;">មិនមានបញ្ជីសមាជិកឡើយ</div>';
+          area.innerHTML = '<div style="text-align:center; padding:20px; color:var(--chat-text-muted);">មិនមានបញ្ជីសមាជិកឡើយ</div>';
           return;
         }
 
-        const myUsername = CURRENT_USER?.username || '';
+        const myUsername = (CURRENT_USER?.username || '').toLowerCase();
         let currentUserCard = '';
         let otherTeachersCards = '';
 
         teachers.forEach(t => {
           const isAdm = String(t.role).toLowerCase() === 'admin';
+          const isCurrent = (t.username && t.username.toLowerCase() === myUsername);
           const initial = t.teacher_name ? t.teacher_name.charAt(0) : (t.username ? t.username.charAt(0) : 'U');
-          const isCurrent = (t.username && t.username.toLowerCase() === myUsername.toLowerCase());
+          const photoUrl = safeUrl(t.photo_url);
+
+          const avatarInner = photoUrl 
+            ? `<img src="${escapeHtml(photoUrl)}" alt="Avatar" onerror="this.outerHTML='<span>${initial}</span>'">`
+            : `<span>${initial}</span>`;
 
           const roleSub = isAdm 
             ? 'អ្នកគ្រប់គ្រងប្រព័ន្ធ (Admin)' 
@@ -972,9 +1090,11 @@
 
           const itemHtml = `
             <div class="member-item ${isCurrent ? 'is-current-user' : ''}">
-              <div class="member-avatar" style="background:${isAdm ? '#9333ea' : '#059669'};">${initial}</div>
+              <div class="member-avatar" style="background:${isAdm ? '#9333ea' : '#0284c7'};">
+                ${avatarInner}
+              </div>
               <div class="member-info">
-                <div class="m-name" style="${isAdm ? 'color:#facc15;' : ''}">
+                <div class="m-name" style="${isAdm ? 'color:#f59e0b;' : ''}">
                   ${escapeHtml(t.teacher_name || t.username)}
                   ${isCurrent ? '<span class="badge-current-user">🟢 គណនីរបស់អ្នក</span>' : ''}
                 </div>
@@ -1000,11 +1120,6 @@
     function formatLinks(text) {
       const urlPattern = /(https?:\/\/[^\s]+)/g;
       return text.replace(urlPattern, url => `<a href="${url}" target="_blank">${url}</a>`);
-    }
-
-    function escapeHtml(t) {
-      if (!t) return '';
-      return String(t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     }
   </script>
 </body>
