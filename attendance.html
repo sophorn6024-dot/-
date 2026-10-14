@@ -799,8 +799,36 @@
         allStudentsCache = stList;
 
         if (IS_ADMIN) {
+          // ទាញថ្នាក់ពីទិន្នន័យ students ក្នុង Supabase ប៉ុណ្ណោះ មិនកំណត់ថ្នាក់ស្រាប់ទេ
           var uniqueClasses = [...new Set(stList.map(s => cleanGrade(s.grade)).filter(Boolean))];
-          if (!uniqueClasses.length) uniqueClasses = ['១', '២', '៣', '៤(ក)', '៤(ខ)', '៥', '៦'];
+          if (!uniqueClasses.length) {
+            sel.innerHTML = '<option value="">មិនមានថ្នាក់ក្នុង Database</option>';
+            currentClassName = '';
+            container.innerHTML = '<div style="text-align:center;padding:32px;color:#d97706;font-weight:600;">មិនមានព័ត៌មានថ្នាក់ក្នុងតារាង students ទេ។ សូមពិនិត្យទិន្នន័យ grade ក្នុង Database។</div>';
+            return;
+          }
+
+          // តម្រៀបថ្នាក់ពីតូចទៅធំ ដោយមិនអាស្រ័យលើលំដាប់ទិន្នន័យក្នុង Supabase
+          var khmerDigits = {'០':0,'១':1,'២':2,'៣':3,'៤':4,'៥':5,'៦':6,'៧':7,'៨':8,'៩':9};
+          function gradeNumber(value) {
+            var match = String(value).match(/[០-៩0-9]+/);
+            if (!match) return 999;
+            var digits = match[0].replace(/[០-៩]/g, ch => khmerDigits[ch]);
+            return parseInt(digits, 10);
+          }
+          function gradeSection(value) {
+            var v = String(value);
+            if (v.includes('ក')) return 1;
+            if (v.includes('ខ')) return 2;
+            if (v.includes('គ')) return 3;
+            if (v.includes('ឃ')) return 4;
+            if (v.includes('ង')) return 5;
+            return 0;
+          }
+          uniqueClasses.sort(function(a, b) {
+            var diff = gradeNumber(a) - gradeNumber(b);
+            return diff !== 0 ? diff : gradeSection(a) - gradeSection(b);
+          });
 
           sel.innerHTML = '';
           uniqueClasses.forEach(function(c) {
