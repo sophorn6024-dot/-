@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="km" data-theme="dark">
 <head>
-  <meta charset="UTF-8">
   <base target="_top">
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-  <title>កាតសម្គាល់ខ្លួនសិស្ស - សាលាបឋមសិក្សាកំពង់ល្ពៅ</title>
+  <title>បង្វិលឈ្មោះ · បែងចែកក្រុម - សាលាបឋមសិក្សាកំពង់ល្ពៅ</title>
 
-  <!-- 🔤 Google Fonts Khmer & FontAwesome -->
+  <!-- 🔤 Google Fonts Khmer -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;600;700;900&family=Moul&family=Siemreap&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;600;700;900&family=Kantumruy+Pro:wght@400;600;700&family=Moul&family=Siemreap&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <!-- ⚡ Supabase JS Client (v2) -->
@@ -17,1136 +17,1379 @@
 
   <style>
     /* =========================================================
-       🎨 DYNAMIC THEME SYSTEM (LIGHT & DARK MODE)
+       🎨 THEME (LIGHT & DARK)
     ========================================================= */
     :root {
-      /* Theme Tokens - Light Mode */
-      --app-bg: #f8fafc;
-      --tb-bg: rgba(255, 255, 255, 0.96);
-      --tb-border: #e2e8f0;
-      --card-panel-bg: #ffffff;
-      --text-main: #0f172a;
+      --bg-app: #f1faf6; --bg: #f1faf6;
+      --surface: #ffffff;
+      --surface-elevated: #eef2f7;
+      --surface-card: #ffffff;
+      --border: #e2e8f0;
+      --border-subtle: #cbd5e1;
+      --text-main: #0f172a; --text: #0f172a;
       --text-muted: #64748b;
-      --input-bg: #f8fafc;
+      --input-bg: #ffffff;
       --input-border: #cbd5e1;
       --input-focus: #0284c7;
-      --ctrl-group-bg: #f1f5f9;
-      --shadow-sm: 0 4px 16px rgba(15, 23, 42, 0.06);
+      --primary: #0284c7;
+      --card-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
+      --hdr-bg: linear-gradient(90deg, #bbf7d0 0%, #d1fae5 55%, #ecfdf5 100%);
+      --hdr-title: #059669;
 
-      /* Card Printing Palette (ស្តង់ដារកាតសិស្ស) */
-      --c-blue: #001fd1;
-      --c-green: #009639;
-      --c-orange: #c85000;
-      --c-red: #e60000;
-      --c-border: #0022cc;
-      --stamp-w: 34mm;
-      --stamp-h: 23.8mm;
-      --stamp-top: -3px;
-      --stamp-left: 0px;
+      --role-pres-border: #ef4444; --role-pres-bg: rgba(239, 68, 68, 0.08);
+      --role-dep1-border: #0284c7; --role-dep1-bg: rgba(2, 132, 199, 0.08);
+      --role-dep2-border: #10b981; --role-dep2-bg: rgba(16, 185, 129, 0.08);
     }
-
     [data-theme="dark"] {
-      /* Theme Tokens - Dark Mode */
-      --app-bg: #090e17;
-      --tb-bg: rgba(15, 23, 42, 0.95);
-      --tb-border: #1e293b;
-      --card-panel-bg: #111e33;
-      --text-main: #f8fafc;
+      --bg-app: #090e17; --bg: #090e17;
+      --surface: #0f172a;
+      --surface-elevated: #162642;
+      --surface-card: #111e33;
+      --border: #1e293b;
+      --border-subtle: #233f66;
+      --text-main: #f8fafc; --text: #f8fafc;
       --text-muted: #94a3b8;
       --input-bg: #162642;
       --input-border: #233f66;
       --input-focus: #38bdf8;
-      --ctrl-group-bg: #0e1a2d;
-      --shadow-sm: 0 8px 24px rgba(0, 0, 0, 0.45);
+      --primary: #38bdf8;
+      --card-shadow: 0 8px 25px rgba(0, 0, 0, 0.45);
+      --hdr-bg: linear-gradient(90deg, #0b2b33 0%, #0c2b3d 100%);
+      --hdr-title: #34d399;
+
+      --role-pres-border: #f87171; --role-pres-bg: rgba(239, 68, 68, 0.15);
+      --role-dep1-border: #38bdf8; --role-dep1-bg: rgba(56, 189, 248, 0.15);
+      --role-dep2-border: #34d399; --role-dep2-bg: rgba(52, 211, 153, 0.15);
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      -webkit-print-color-adjust: exact !important;
-      print-color-adjust: exact !important;
-    }
-
-    html, body {
-      min-height: 100%;
-      background-color: var(--app-bg);
-      color: var(--text-main);
-      font-family: 'Siemreap', 'Battambang', Arial, sans-serif;
-      transition: background-color 0.25s ease, color 0.25s ease;
-      -webkit-overflow-scrolling: touch;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
     body {
-      padding-bottom: 70px;
+      font-family: 'Kantumruy Pro', 'Battambang', 'Siemreap', Arial, sans-serif;
+      background: var(--bg-app);
+      color: var(--text-main);
+      font-size: 13.5px;
+      line-height: 1.5;
+      min-height: 100vh;
+      transition: background 0.25s ease, color 0.25s ease;
     }
+    button, input, select { font-family: inherit; }
+    .khmer-moul { font-family: 'Moul', 'Khmer OS Muol Light', serif !important; font-weight: normal; }
 
-    /* ══════════════ 🔒 AUTH DENIED WRAPPER ══════════════ */
-    .auth-wrapper {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 80vh;
-      text-align: center;
-      padding: 30px 20px;
-    }
-    .auth-card {
-      background: var(--card-panel-bg);
-      border: 1.5px solid var(--tb-border);
-      border-radius: 24px;
-      padding: 40px 28px;
-      max-width: 440px;
-      width: 100%;
-      box-shadow: var(--shadow-sm);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .auth-icon {
-      width: 68px;
-      height: 68px;
-      border-radius: 20px;
-      background: rgba(239, 68, 68, 0.15);
-      color: #ef4444;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 32px;
-      margin-bottom: 16px;
-    }
+    /* ══════════════ 🔒 AUTH DENIED ══════════════ */
+    .auth-wrapper { display: none; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; text-align: center; padding: 30px 20px; }
+    .auth-card { background: var(--surface-card); border: 1.5px solid var(--border); border-radius: 24px; padding: 40px 28px; max-width: 440px; width: 100%; box-shadow: var(--card-shadow); display: flex; flex-direction: column; align-items: center; }
+    .auth-icon { width: 68px; height: 68px; border-radius: 20px; background: rgba(239, 68, 68, 0.15); color: #ef4444; display: flex; align-items: center; justify-content: center; font-size: 32px; margin-bottom: 16px; }
     .auth-card h2 { font-size: 18px; margin-bottom: 8px; color: #ef4444; font-weight: 700; }
     .auth-card p { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 24px; }
-    .btn-login-redirect {
-      background: linear-gradient(135deg, #0284c7, #7c3aed);
-      color: #ffffff;
-      padding: 10px 24px;
-      border-radius: 12px;
-      font-weight: 700;
-      font-size: 13.5px;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
-      cursor: pointer;
-      border: none;
-    }
+    .btn-login-redirect { background: linear-gradient(135deg, #0284c7, #7c3aed); color: #fff; padding: 10px 24px; border-radius: 12px; font-weight: 700; font-size: 13.5px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3); cursor: pointer; border: none; }
 
-    /* =========================================================
-       🎛️ 2-ROW BALANCED TOOLBAR DESIGN
-    ========================================================= */
-    .no-print-toolbar {
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      background: var(--tb-bg);
-      backdrop-filter: blur(14px);
-      padding: 10px 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      box-shadow: var(--shadow-sm);
-      border-bottom: 1.5px solid var(--tb-border);
-      transition: all 0.25s ease;
-    }
+    /* ══════════════ APP HEADER ══════════════ */
+    .app-header { display: flex; align-items: center; gap: 12px; padding: 10px 18px; background: var(--hdr-bg); border-bottom: 1px solid var(--border); }
+    .hdr-back { width: 32px; height: 32px; border-radius: 50%; border: none; background: transparent; color: var(--text-main); cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; }
+    .hdr-back:hover { background: rgba(0,0,0,0.07); }
+    .hdr-title { color: var(--hdr-title); font-size: 15px; }
 
-    .toolbar-row {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-    }
+    .shell { max-width: 1280px; margin: 0 auto; padding: 18px 20px 60px; }
 
-    .toolbar-section {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
+    /* ══════════════ TOOLBAR (TABS + CLASS + PARTICIPANTS) ══════════════ */
+    .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    .seg-tabs { display: inline-flex; gap: 4px; padding: 6px; border-radius: 20px; background: var(--surface-elevated); border: 1px solid var(--border); }
+    .seg { border: none; background: transparent; color: var(--text-muted); font-weight: 700; font-size: 14px; padding: 10px 22px; border-radius: 15px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: all 0.18s ease; }
+    .seg.active { background: var(--surface); color: var(--text-main); box-shadow: 0 2px 10px rgba(0,0,0,0.12); }
+    .seg:disabled { opacity: 0.55; cursor: not-allowed; }
 
-    .panel-pill-box {
-      background: var(--ctrl-group-bg);
-      border: 1px solid var(--tb-border);
-      border-radius: 10px;
-      padding: 4px 8px;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-    }
+    .toolbar-right { display: inline-flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .class-badge { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #0284c7, #2563eb); color: #fff; padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 13px; box-shadow: 0 3px 10px rgba(2, 132, 199, 0.3); }
+    .top-select { height: 40px; padding: 0 14px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--surface-elevated); color: var(--text-main); font-weight: 700; font-size: 13px; outline: none; cursor: pointer; }
+    .pill { height: 40px; padding: 0 18px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface-elevated); color: var(--text-main); font-weight: 700; font-size: 13.5px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+    .pill:hover { border-color: var(--primary); }
 
-    .toolbar-label {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      white-space: nowrap;
-    }
+    .subline { margin: 14px 0 0; color: var(--text-muted); font-size: 13px; }
 
-    .form-control {
-      padding: 5px 8px;
-      font-family: inherit;
-      font-size: 12.5px;
-      font-weight: 600;
-      border: 1.5px solid var(--input-border);
-      border-radius: 8px;
-      outline: none;
-      background: var(--input-bg);
-      color: var(--text-main);
-      transition: all 0.2s ease;
-      height: 32px;
-    }
-    .form-control:focus {
-      border-color: var(--input-focus);
-      box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15);
-    }
+    /* ── popup (participants / dropdown) ── */
+    .popup { display: none; position: fixed; top: 0; left: 0; width: 300px; max-width: calc(100vw - 16px); max-height: 70vh; overflow-y: auto; overscroll-behavior: contain; background: var(--surface-card); border: 1.5px solid var(--border); border-radius: 18px; box-shadow: 0 14px 34px rgba(0,0,0,0.25); z-index: 5000; padding: 10px; }
+    .popup.show { display: block; }
+    .popup-head { display: flex; justify-content: space-between; align-items: center; padding: 2px 6px 8px; font-size: 12px; color: var(--text-muted); font-weight: 700; border-bottom: 1px solid var(--border); margin-bottom: 6px; }
+    .popup-head span.lnk { cursor: pointer; color: var(--primary); }
+    .popup-head span.lnk.red { color: #ef4444; }
+    .part-item { display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: 10px; cursor: pointer; font-size: 13px; }
+    .part-item:hover { background: var(--surface-elevated); }
+    .part-item input { width: 16px; height: 16px; cursor: pointer; }
 
-    .teacher-class-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: linear-gradient(135deg, #0284c7, #2563eb);
-      color: #ffffff;
-      padding: 4px 12px;
-      border-radius: 10px;
-      font-weight: 700;
-      font-size: 12.5px;
-      height: 32px;
-      white-space: nowrap;
-      user-select: none;
-    }
+    /* ══════════════ 🎡 SPIN TAB ══════════════ */
+    .spin-layout { display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 30px; align-items: start; margin-top: 10px; }
 
-    /* ── Buttons ── */
-    .btn {
-      padding: 5px 12px;
-      font-family: inherit;
-      font-size: 12.5px;
-      font-weight: 700;
-      border-radius: 8px;
-      border: 1px solid transparent;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
-      user-select: none;
-      white-space: nowrap;
-      height: 32px;
-    }
+    .stage-col { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+    .mode-mini { display: inline-flex; gap: 4px; padding: 4px; border-radius: 14px; background: var(--surface-elevated); border: 1px solid var(--border); }
+    .mini { border: none; background: transparent; color: var(--text-muted); font-weight: 700; font-size: 12.5px; padding: 6px 14px; border-radius: 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+    .mini.active { background: var(--surface); color: var(--primary); box-shadow: 0 1px 6px rgba(0,0,0,0.12); }
+    .mini:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    .stage { width: 100%; display: flex; justify-content: center; padding-right: 34px; user-select: none; -webkit-user-select: none; }
+    .wheel-wrap { position: relative; width: min(100%, 640px); aspect-ratio: 1 / 1; }
+    #wheelCanvas { width: 100%; height: 100%; display: block; border-radius: 50%; filter: drop-shadow(0 8px 22px rgba(0,0,0,0.18)); }
+
+    /* ◀ ព្រួញចង្អុលនៅខាងស្តាំ */
+    .pointer { position: absolute; right: -28px; top: 50%; transform: translateY(-50%); width: 0; height: 0; border-top: 20px solid transparent; border-bottom: 20px solid transparent; border-right: 36px solid #4f46e5; filter: drop-shadow(0 3px 5px rgba(0,0,0,0.35)); z-index: 5; pointer-events: none; }
+
+    /* ក្រឡាបង្វិលកណ្តាល */
+    .hub { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 17%; aspect-ratio: 1 / 1; border-radius: 50%; border: none; background: #fff; box-shadow: 0 4px 16px rgba(0,0,0,0.22); cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 6; transition: transform 0.15s ease; }
+    .hub:hover:not(:disabled) { transform: translate(-50%, -50%) scale(1.05); }
+    .hub:disabled { cursor: not-allowed; }
+    .hub span { white-space: nowrap; background: #fff; color: #1e293b; font-weight: 800; font-size: clamp(11px, 1.6vw, 14px); padding: 7px 14px; border-radius: 22px; box-shadow: 0 2px 10px rgba(0,0,0,0.16); }
+
+    #raceCanvas { width: min(100%, 720px); height: auto; border-radius: 16px; box-shadow: 0 8px 22px rgba(0,0,0,0.2); }
+
+    .ctrl-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: center; }
+    .btn-spin { height: 52px; padding: 0 30px; border: none; border-radius: 16px; background: linear-gradient(135deg, #059669, #10b981); color: #fff; font-weight: 800; font-size: 16px; cursor: pointer; display: inline-flex; align-items: center; gap: 10px; box-shadow: 0 6px 16px rgba(5, 150, 105, 0.35); transition: all 0.18s ease; }
+    .btn-spin:hover:not(:disabled) { transform: translateY(-2px); }
+    .btn-spin:disabled { background: #94a3b8; box-shadow: none; cursor: not-allowed; }
+    .btn-soft { height: 52px; padding: 0 22px; border: 1px solid var(--border); border-radius: 16px; background: var(--surface-elevated); color: var(--text-main); font-weight: 700; font-size: 14.5px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+    .btn-soft:hover:not(:disabled) { border-color: var(--primary); }
+    .btn-soft:disabled { opacity: 0.55; cursor: not-allowed; }
+    .btn-icon { width: 52px; padding: 0; justify-content: center; }
+    .btn-icon.on { background: rgba(79, 70, 229, 0.14); color: #6366f1; border-color: rgba(99,102,241,0.35); }
+
+    .chk { display: inline-flex; align-items: center; gap: 10px; font-size: 14px; color: var(--text-main); cursor: pointer; }
+    .chk input { width: 20px; height: 20px; accent-color: #059669; cursor: pointer; }
+
+    #stageCol:fullscreen { background: var(--bg-app); justify-content: center; padding: 20px; }
+    #stageCol:fullscreen .wheel-wrap { width: min(78vh, 88vw); }
+
+    /* ── Right side panel ── */
+    .side-card { background: var(--surface-card); border: 1px solid var(--border); border-radius: 24px; padding: 14px; box-shadow: var(--card-shadow); display: flex; flex-direction: column; gap: 12px; }
+    .side-tabs { display: flex; gap: 4px; padding: 5px; border-radius: 16px; background: var(--surface-elevated); }
+    .side-tab { flex: 1; border: none; background: transparent; color: var(--text-muted); font-weight: 700; font-size: 14px; padding: 11px 6px; border-radius: 12px; cursor: pointer; }
+    .side-tab.active { background: var(--surface); color: var(--text-main); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .two-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .tool-btn { height: 46px; border: none; border-radius: 14px; background: var(--surface-elevated); color: var(--text-main); font-weight: 700; font-size: 14px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+    .tool-btn:hover { background: var(--border); }
+    .add-row { display: flex; gap: 10px; }
+    .add-row input { flex: 1; height: 46px; padding: 0 16px; border: 1.5px solid var(--input-border); border-radius: 16px; background: var(--input-bg); color: var(--text-main); font-size: 14px; outline: none; min-width: 0; }
+    .add-row input:focus { border-color: var(--input-focus); }
+    .add-row button { width: 46px; height: 46px; border: none; border-radius: 14px; background: var(--surface-elevated); color: var(--text-muted); cursor: pointer; font-size: 15px; }
+    .add-row button:hover { color: var(--primary); }
+    .name-list { max-height: 440px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; padding-right: 2px; }
+    .name-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); }
+    .name-item .dot { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; }
+    .name-item .nm { flex: 1; font-size: 14px; font-weight: 600; word-break: break-word; }
+    .name-item .x { border: none; background: transparent; color: var(--text-muted); cursor: pointer; font-size: 16px; width: 28px; height: 28px; border-radius: 8px; }
+    .name-item .x:hover { color: #ef4444; background: rgba(239,68,68,0.1); }
+    .empty-note { text-align: center; padding: 26px 10px; color: var(--text-muted); font-size: 13px; }
+    .res-item { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); }
+    .res-item .no { width: 26px; height: 26px; border-radius: 50%; background: rgba(5,150,105,0.14); color: #059669; font-weight: 800; font-size: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .res-item .nm { flex: 1; font-weight: 600; font-size: 14px; }
+    .res-item .tm { font-size: 11px; color: var(--text-muted); }
+
+    /* ══════════════ 👥 GROUP TAB ══════════════ */
+    #tabGroup { display: none; flex-direction: column; gap: 16px; margin-top: 14px; }
+    .card, .roles-card { background: var(--surface-card); border: 1px solid var(--border); border-radius: 18px; padding: 18px 22px; box-shadow: var(--card-shadow); }
+    .section-title { color: #0284c7; font-size: 14.5px; display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+    [data-theme="dark"] .section-title { color: #38bdf8; }
+    .controls { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; background: var(--surface-elevated); padding: 12px 16px; border-radius: 14px; border: 1px solid var(--border); }
+    .col { flex: 1; min-width: 160px; display: flex; flex-direction: column; gap: 5px; }
+    label.lbl { font-weight: 700; font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 5px; }
+    #tabGroup select, #tabGroup input[type=number] { padding: 7px 11px; border: 1.5px solid var(--input-border); border-radius: 8px; font-size: 12.5px; font-weight: 600; background: var(--input-bg); color: var(--text-main); outline: none; height: 36px; width: 100%; }
+    #tabGroup select:focus, #tabGroup input[type=number]:focus { border-color: var(--input-focus); }
+    .btn { padding: 7px 15px; font-weight: 700; border-radius: 9px; border: 1px solid transparent; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.18s ease; font-size: 12.5px; white-space: nowrap; height: 36px; }
     .btn:active { transform: scale(0.96); }
+    .btn-group { background: linear-gradient(135deg, #10b981, #059669); color: #fff; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25); }
+    .btn-save  { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; display: none; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.25); }
+    .btn-print { background: linear-gradient(135deg, #0284c7, #2563eb); color: #fff; display: none; box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25); }
+    .btn-role  { background: #7c3aed; color: #fff; box-shadow: 0 2px 8px rgba(124, 58, 237, 0.25); }
+    .btn-rotate{ background: #0891b2; color: #fff; box-shadow: 0 2px 8px rgba(8, 145, 178, 0.25); }
+    .roles-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .role-item { background: var(--surface-elevated); border: 1.5px solid var(--border); border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; }
+    .role-item.president { border-left: 5px solid var(--role-pres-border); background: var(--role-pres-bg); }
+    .role-item.deputy1   { border-left: 5px solid var(--role-dep1-border); background: var(--role-dep1-bg); }
+    .role-item.deputy2   { border-left: 5px solid var(--role-dep2-border); background: var(--role-dep2-bg); }
+    .summary { margin-top: 12px; background: var(--surface-elevated); padding: 10px 14px; border: 1px solid var(--border); border-radius: 10px; line-height: 1.8; font-size: 12.5px; }
+    #gStatus { text-align: center; margin-top: 10px; font-weight: 700; font-size: 12.5px; min-height: 20px; }
+    .count-info { margin-top: 8px; font-size: 12px; font-weight: 600; color: var(--text-muted); }
+    .groups-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; margin-top: 4px; }
+    .group-box { background: var(--surface-card); border: 1.5px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: var(--card-shadow); transition: all 0.2s ease; }
+    .group-box:hover { border-color: #0284c7; transform: translateY(-2px); }
+    .group-header { background: linear-gradient(135deg, #0284c7, #2563eb); color: #fff; font-weight: 700; padding: 9px 12px; text-align: center; font-size: 13.5px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .group-list { list-style: none; padding: 0; margin: 0; }
+    .group-list li { padding: 7px 12px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .group-list li:last-child { border-bottom: none; }
+    .group-list li:hover { background: var(--surface-elevated); }
+    .student-sex { color: var(--text-muted); font-size: 11px; font-weight: 600; white-space: nowrap; }
+    .role-badge { font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 5px; margin-left: 5px; display: inline-flex; align-items: center; gap: 3px; }
+    .role-leader { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.35); }
+    [data-theme="dark"] .role-leader { color: #fbbf24; }
+    .role-sub { background: rgba(2, 132, 199, 0.15); color: #0284c7; border: 1px solid rgba(2, 132, 199, 0.35); }
+    [data-theme="dark"] .role-sub { color: #38bdf8; }
 
-    .btn-primary {
-      background: linear-gradient(135deg, #0284c7, #2563eb);
-      color: #fff;
-      box-shadow: 0 2px 7px rgba(37, 99, 235, 0.25);
-    }
-    .btn-success {
-      background: linear-gradient(135deg, #10b981, #059669);
-      color: #fff;
-      box-shadow: 0 2px 7px rgba(16, 185, 129, 0.25);
-    }
+    .print-header, .print-footer { display: none; }
 
-    .btn-danger {
-      background: rgba(239, 68, 68, 0.12);
-      color: #ef4444;
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      padding: 4px 8px;
-      height: 30px;
-    }
-    .btn-danger:hover {
-      background: #ef4444;
-      color: #fff;
-    }
+    /* ══════════════ 🏆 WINNER MODAL ══════════════ */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.72); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 9000; opacity: 0; pointer-events: none; transition: opacity 0.25s ease; padding: 16px; }
+    .modal-overlay.active { opacity: 1; pointer-events: auto; }
+    .winner-card { background: var(--surface-card); border: 1.5px solid var(--border); color: var(--text-main); padding: 28px 24px; border-radius: 24px; text-align: center; max-width: 360px; width: 100%; box-shadow: 0 25px 50px rgba(0,0,0,0.35); transform: scale(0.85); transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .modal-overlay.active .winner-card { transform: scale(1); }
+    .winner-avatar { width: 105px; height: 105px; border-radius: 50%; object-fit: cover; border: 4px solid var(--primary); margin: 0 auto 12px; box-shadow: 0 6px 16px rgba(2, 132, 199, 0.35); background: var(--surface-elevated); }
+    .winner-title { font-size: 13.5px; color: #10b981; font-weight: 700; margin-bottom: 4px; }
+    .winner-name { font-size: 21px; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+    .winner-class { font-size: 12.5px; color: var(--text-muted); margin-bottom: 18px; min-height: 18px; }
+    .close-btn { padding: 9px 28px; background: linear-gradient(135deg, #0284c7, #2563eb); color: #fff; border: none; border-radius: 50px; font-weight: 700; font-size: 13.5px; cursor: pointer; box-shadow: 0 3px 10px rgba(2, 132, 199, 0.3); }
 
-    .btn-outline {
-      background: var(--card-panel-bg);
-      border: 1px solid var(--input-border);
-      color: var(--text-main);
-      padding: 4px 10px;
-      height: 30px;
-      font-size: 12px;
+    /* 📱 RESPONSIVE */
+    @media (max-width: 980px) {
+      .spin-layout { grid-template-columns: 1fr; gap: 20px; }
+      .side-card { width: 100%; }
     }
-    .btn-outline:hover {
-      border-color: var(--input-focus);
-      color: var(--input-focus);
-    }
-
-    /* ── Zoom Buttons ── */
-    .zoom-btn-group {
-      display: inline-flex;
-      align-items: center;
-      gap: 2px;
-      background: var(--ctrl-group-bg);
-      padding: 2px;
-      border-radius: 8px;
-      border: 1px solid var(--tb-border);
-      height: 32px;
-    }
-    .zoom-btn {
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      padding: 3px 8px;
-      border-radius: 6px;
-      font-size: 11.5px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      font-family: inherit;
-      height: 26px;
-      display: flex;
-      align-items: center;
-    }
-    .zoom-btn:hover { color: var(--text-main); }
-    .zoom-btn.active {
-      background: #0284c7 !important;
-      color: #ffffff !important;
-      box-shadow: 0 1px 5px rgba(2, 132, 199, 0.35);
+    @media (max-width: 768px) {
+      .shell { padding: 12px 10px 40px; }
+      .roles-grid { grid-template-columns: 1fr; }
+      .controls { flex-direction: column; align-items: stretch; gap: 8px; }
+      .col { width: 100%; min-width: 0; }
+      .seg { padding: 9px 14px; font-size: 13px; }
+      .stage { padding-right: 26px; }
+      .pointer { right: -22px; border-top-width: 16px; border-bottom-width: 16px; border-right-width: 28px; }
+      .btn-spin { height: 46px; padding: 0 20px; font-size: 14.5px; }
+      .btn-soft { height: 46px; padding: 0 14px; font-size: 13px; }
+      .btn-icon { width: 46px; }
     }
 
-    /* ── Range Sliders ── */
-    input[type="range"] {
-      -webkit-appearance: none;
-      height: 5px;
-      border-radius: 4px;
-      background: var(--input-border);
-      outline: none;
-    }
-    input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      background: #0284c7;
-      cursor: pointer;
-      box-shadow: 0 1px 4px rgba(2, 132, 199, 0.4);
-    }
-
-    @media screen and (max-width: 768px) {
-      .no-print-toolbar { padding: 8px 10px; gap: 6px; }
-      .toolbar-row { gap: 6px; }
-      .form-control, .btn { height: 28px; font-size: 11.5px; padding: 3px 6px; }
-      .zoom-btn-group { height: 28px; }
-      .zoom-btn { height: 24px; padding: 2px 6px; font-size: 10.5px; }
-    }
-
-    /* =========================================================
-       📄 PRINT PREVIEW AREA (A4 PAGES)
-    ========================================================= */
-    .print-area {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-top: 15px;
-      gap: 22px;
-      padding-bottom: 50px;
-      transition: zoom 0.2s ease;
-      transform-origin: top center;
-    }
-
-    .a4-page {
-      width: 297mm;
-      height: 209mm;
-      background: #ffffff !important;
-      color: #0f172a !important;
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.35);
-      page-break-after: always;
-      break-after: page;
-      page-break-inside: avoid;
-      break-inside: avoid;
-      overflow: hidden;
-      box-sizing: border-box;
-      flex-shrink: 0;
-      border-radius: 4px;
-    }
-
-    /* 3x2 (6 កាត) */
-    .a4-page.layout-6 {
-      display: grid;
-      grid-template-columns: repeat(3, 70mm);
-      grid-template-rows: repeat(2, 100mm);
-      justify-content: center;
-      align-content: center;
-      gap: 3mm 14mm;
-      padding: 2mm 4mm;
-    }
-
-    /* 4x2 (8 កាត) */
-    .a4-page.layout-8 {
-      display: grid;
-      grid-template-columns: repeat(4, 70mm);
-      grid-template-rows: repeat(2, 100mm);
-      justify-content: center;
-      align-content: center;
-      gap: 3mm 3mm;
-      padding: 2mm 4mm;
-    }
-
-    /* ── Student Card (7cm × 10cm) ── */
-    .student-card {
-      width: 70mm;
-      height: 100mm;
-      border: 1.8px solid var(--c-border);
-      background: #ffffff !important;
-      color: #000000 !important;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      overflow: hidden;
-      border-radius: 4px;
-      box-sizing: border-box;
-    }
-
-    .card-top-header {
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-bottom: 1.8px solid var(--c-border);
-      padding: 1px 4px;
-      background: #ffffff !important;
-      height: 33px;
-      flex-shrink: 0;
-    }
-    .header-logo-box {
-      position: absolute; left: 5px; top: 50%; transform: translateY(-50%);
-      width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; z-index: 2;
-    }
-    .header-logo-img { width: 26px; height: 26px; object-fit: contain; }
-    .header-kingdom { width: 100%; text-align: center; line-height: 1.15; z-index: 1; }
-    .kingdom-title    { font-family: 'Moul', serif; font-size: 8.2px; color: #000 !important; letter-spacing: -.1px; }
-    .kingdom-subtitle { font-family: 'Moul', serif; font-size: 7.5px; color: #000 !important; margin-top: 1px; }
-    .kingdom-divider  { display: flex; align-items: center; justify-content: center; margin-top: 1px; }
-    .kingdom-divider svg { width: 72px; height: 3.5px; }
-
-    .card-main-body {
-      flex: 1;
-      padding: 3mm 4mm 2.5mm 4mm;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      background: #ffffff !important;
-    }
-    .card-watermark {
-      position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
-      width: 44mm; height: 44mm; opacity: .22; pointer-events: none; z-index: 0; object-fit: contain;
-    }
-
-    .card-titles {
-      position: relative; z-index: 1; text-align: center;
-      display: flex; flex-direction: column; align-items: center;
-      gap: 1px; margin-bottom: 1px;
-    }
-    .title-badge        { font-family: 'Moul', serif; font-size: 9.2px; color: var(--c-blue) !important; letter-spacing: .2px; line-height: 1.35; }
-    .title-school       { font-family: 'Moul', serif; font-size: 8.3px; color: var(--c-green) !important; line-height: 1.35; }
-    .title-id           { font-family: 'Moul', serif; font-size: 8.8px; color: var(--c-orange) !important; line-height: 1.35; }
-
-    .title-student-name-center {
-      font-family: 'Moul', 'Khmer OS Muol Light', serif;
-      font-size: 12.2px;
-      color: var(--c-blue) !important;
-      text-align: center;
-      line-height: 1.65;
-      padding-top: 2px;
-      padding-bottom: 1px;
-      width: 100%;
-      white-space: nowrap;
-      overflow: visible;
-      letter-spacing: .2px;
-    }
-
-    .content-container { 
-      position: relative; 
-      z-index: 1; 
-      display: flex; 
-      flex-direction: column; 
-      margin-top: 1px; 
-    }
-    
-    .mid-split { 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: stretch; 
-      gap: 5px; 
-      height: 25.5mm; 
-    }
-    .left-profile-block { flex: 1; display: flex; flex-direction: column; height: 100%; overflow: hidden; }
-
-    .student-card table,
-    .student-card tbody,
-    .student-card tr,
-    .student-card td,
-    .info-table-top,
-    .info-table-bottom,
-    .info-table-top td,
-    .info-table-bottom td {
-      background: transparent !important;
-      background-color: transparent !important;
-      border: none !important;
-      box-shadow: none !important;
-    }
-
-    .info-table-top  { width: 100%; height: 100%; border-collapse: collapse; font-size: 8.8px; line-height: 1.42; }
-    .info-table-top tr { height: 20%; }
-    .info-table-top td { padding: 1.2px 0; vertical-align: middle; }
-
-    .info-table-bottom { width: 100%; border-collapse: collapse; font-size: 8.8px; line-height: 1.42; margin-top: 3px; }
-    .info-table-bottom tr { height: 16px; }
-    .info-table-bottom td { padding: 1.2px 0; vertical-align: middle; }
-
-    .lbl-col { width: 68px; color: var(--c-red) !important; font-weight: 700 !important; white-space: nowrap; text-align: left; }
-    .cln-col { width: 8px; color: var(--c-red) !important; font-weight: 700 !important; text-align: center; padding-right: 1px; }
-    .val-col { font-weight: 700 !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left; font-size: 9px; }
-    .val-blue  { color: var(--c-blue) !important; }
-    .val-green { color: var(--c-green) !important; }
-
-    .student-photo-box {
-      width: 19mm; height: 25.5mm; border: 1.5px solid #000;
-      border-radius: 4px; background: #fff !important; overflow: hidden; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .student-photo-box img { width: 100%; height: 100%; object-fit: cover; }
-    .student-photo-box i { font-size: 24px; color: #cbd5e1; }
-
-    .card-bottom-signature {
-      position: relative; 
-      z-index: 2;
-      display: flex; 
-      justify-content: flex-start;
-      padding-left: 2mm;
-      margin-top: 2mm;
-      margin-bottom: 1mm;
-    }
-    .signature-box { display: flex; flex-direction: column; align-items: center; position: relative; width: 44mm; text-align: center; }
-    .sig-date { font-family: inherit; font-weight: 700; font-size: 6.8px; color: #000 !important; line-height: 1.2; white-space: nowrap; text-align: center; }
-
-    .sig-stamp-wrapper {
-      position: relative; display: flex; flex-direction: column; align-items: center;
-      width: 100%; margin-top: 1.5px; min-height: 22mm;
-    }
-    .sig-title { font-family: 'Moul', serif; font-size: 7.2px; color: #000 !important; line-height: 1.25; margin-top: 1px; white-space: nowrap; text-align: center; position: relative; z-index: 2; }
-    .sig-role  { font-family: 'Moul', serif; font-size: 7px; color: #000 !important; line-height: 1.25; margin-top: 1px; white-space: nowrap; text-align: center; position: relative; z-index: 2; }
-
-    .stamp-overlay-box {
-      position: absolute;
-      top: var(--stamp-top);
-      left: calc(50% + var(--stamp-left));
-      transform: translateX(-50%);
-      width: var(--stamp-w);
-      height: var(--stamp-h);
-      pointer-events: none; z-index: 6;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .stamp-overlay-box img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; }
-
-    /* ── Print Settings ── */
-    @page {
-      size: A4 landscape;
-      margin: 0;
-    }
+    /* 🖨️ PRINT */
     @media print {
-      html, body {
-        width: 100% !important;
-        height: auto !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        background: transparent !important;
-        overflow: visible !important;
-      }
-      .no-print-toolbar { display: none !important; }
-      .print-area {
-        zoom: 1 !important;
-        transform: none !important;
-        margin: 0 !important;
-        gap: 0 !important;
-        padding: 0 !important;
-        width: 100% !important;
-      }
-      .a4-page {
-        box-shadow: none !important;
-        margin: 0 !important;
-        border: none !important;
-        width: 297mm !important;
-        height: 209mm !important;
-        page-break-after: always !important;
-        break-after: page !important;
-        page-break-inside: avoid !important;
-        break-inside: avoid !important;
-        overflow: hidden !important;
-      }
+      body { background: #fff !important; color: #000 !important; }
+      .no-print { display: none !important; }
+      .shell { padding: 0 !important; max-width: none !important; }
+      #tabGroup { margin: 0 !important; display: block !important; }
+      .print-header { display: block !important; margin-bottom: 18px; }
+      .print-header .kingdom { font-size: 13.5px; text-align: center; margin-bottom: 10px; line-height: 1.8; }
+      .print-header .school-info { text-align: left; font-size: 12.5px; line-height: 1.6; }
+      .print-header .doc-title { font-size: 16.5px; text-align: center; margin-top: 10px; color: #000; }
+      .print-header .doc-sub { font-size: 12px; color: #475569; text-align: center; margin-top: 3px; }
+      .groups-container { display: flex !important; flex-wrap: wrap !important; justify-content: center !important; gap: 12px !important; }
+      .group-box { width: 31% !important; background: #fff !important; border: 1.5px solid #000 !important; page-break-inside: avoid; }
+      .group-header { background: #1e3a8a !important; color: #fff !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      .group-list li { background: #fff !important; color: #000 !important; border-bottom: 1px solid #cbd5e1 !important; }
+      .role-badge { border: 1px solid #000 !important; color: #000 !important; background: transparent !important; }
+      .print-footer { display: flex !important; justify-content: space-between; align-items: flex-start; margin-top: 25px; page-break-inside: avoid; font-size: 12.5px; }
+      .footer-left { text-align: center; width: 40%; margin-top: 45px; }
+      .footer-right { text-align: center; width: 45%; }
+      .signature-space { height: 65px; }
     }
   </style>
 </head>
 <body>
 
-<!-- ══════════════ 🔒 AUTH DENIED WRAPPER ══════════════ -->
-<div class="auth-wrapper" id="authDeniedWrap">
-  <div class="auth-card">
-    <div class="auth-icon">🔒</div>
-    <h2>សូមចូលប្រើប្រាស់ជាមុនសិន!</h2>
-    <p>លោកអ្នកមិនទាន់បាន Login ចូលក្នុងប្រព័ន្ធនៅឡើយទេ។ សូម Login គណនីរបស់អ្នកដើម្បីមើល ឬបោះពុម្ពកាតសិស្ស។</p>
-    <a href="index.html" target="_top" class="btn-login-redirect" onclick="goToIndex(event)">
-      <span>🔑</span> <span>ទៅកាន់ទំព័រដើម (Login)</span>
-    </a>
-  </div>
-</div>
-
-<!-- =========================================================
-     🎛️ 2-ROW BALANCED TOOLBAR DESIGN
-========================================================= -->
-<div class="no-print-toolbar" id="controlToolbar" style="display:none;">
-  <!-- ជួរទី ១៖ ការកំណត់ថ្នាក់ + ទម្រង់ + សាលា + ឆ្នាំ + Zoom + បោះពុម្ព -->
-  <div class="toolbar-row">
-    <div class="toolbar-section">
-      <!-- ថ្នាក់ -->
-      <div class="panel-pill-box" id="adminClassBox" style="display:none;">
-        <span class="toolbar-label"><i class="fa-solid fa-graduation-cap" style="color:#0284c7;"></i> ថ្នាក់៖</span>
-        <select id="classSelect" class="form-control" style="min-width:120px;" onchange="onClassChange()">
-          <option value="">កំពុងទាញយក...</option>
-        </select>
-      </div>
-
-      <div id="teacherClassBadge" class="teacher-class-badge" style="display:none;">
-        <i class="fa-solid fa-chalkboard-user"></i>
-        <span id="teacherClassText">ថ្នាក់ទី...</span>
-      </div>
-
-      <div class="panel-pill-box">
-        <span class="toolbar-label"><i class="fa-solid fa-layer-group" style="color:#2563eb;"></i> ទម្រង់៖</span>
-        <select id="layoutSelect" class="form-control" onchange="switchLayout(this.value)">
-          <option value="8">៨ កាត (៤×២)</option>
-          <option value="6">៦ កាត (៣×២)</option>
-        </select>
-      </div>
-
-      <div class="panel-pill-box">
-        <span class="toolbar-label"><i class="fa-solid fa-school" style="color:#10b981;"></i> សាលា៖</span>
-        <input type="text" id="schoolName" class="form-control" value="សាលាបឋមសិក្សាកំពង់ល្ពៅ" style="width:160px;" oninput="refreshDisplay()">
-      </div>
-
-      <div class="panel-pill-box">
-        <span class="toolbar-label"><i class="fa-solid fa-calendar-days" style="color:#f59e0b;"></i> ឆ្នាំសិក្សា៖</span>
-        <input type="text" id="schoolYear" class="form-control" value="២០២៦~២០២៧" style="width:100px;" oninput="refreshDisplay()">
-      </div>
-    </div>
-
-    <div class="toolbar-section">
-      <!-- 🔍 Zoom Buttons (មានប៊ូតុង សម / Fit សម្រាប់ Tablet & Mobile) -->
-      <div class="zoom-btn-group" title="ពង្រីក/បង្រួមទំហំមើលកាតលើអេក្រង់">
-        <button type="button" class="zoom-btn active" id="zFit" onclick="setFitZoom()">សម</button>
-        <button type="button" class="zoom-btn" id="z75" onclick="setZoom(0.75, 'z75')">75%</button>
-        <button type="button" class="zoom-btn" id="z100" onclick="setZoom(1, 'z100')">100%</button>
-      </div>
-
-      <button class="btn btn-primary" onclick="initPage()" title="ទាញយកទិន្នន័យឡើងវិញ">
-        <i class="fa-solid fa-rotate"></i> <span>ផ្ទុកឡើងវិញ</span>
-      </button>
-
-      <button class="btn btn-success" onclick="doPrintCards()" title="បោះពុម្ពកាតសិស្ស A4 Landscape">
-        <i class="fa-solid fa-print"></i> <span>បោះពុម្ព A4</span>
-      </button>
+  <!-- ══════════════ 🔒 AUTH DENIED ══════════════ -->
+  <div class="auth-wrapper" id="authDeniedWrap">
+    <div class="auth-card">
+      <div class="auth-icon">🔒</div>
+      <h2>សូមចូលប្រើប្រាស់ជាមុនសិន!</h2>
+      <p>លោកអ្នកមិនទាន់បាន Login ចូលក្នុងប្រព័ន្ធនៅឡើយទេ។ សូម Login គណនីរបស់អ្នកដើម្បីបង្វិលឈ្មោះ ឬបែងចែកក្រុមសិស្ស។</p>
+      <a href="index.html" target="_top" class="btn-login-redirect" onclick="goToIndex(event)">
+        <span>🔑</span> <span>ទៅកាន់ទំព័រដើម (Login)</span>
+      </a>
     </div>
   </div>
 
-  <!-- ជួរទី ២៖ ការគ្រប់គ្រង Logo, Watermark និងត្រានាយក -->
-  <div class="toolbar-row" style="background:var(--ctrl-group-bg); padding:5px 10px; border-radius:10px; border:1px solid var(--tb-border);">
-    <div class="toolbar-section">
-      <span class="toolbar-label"><i class="fa-solid fa-image" style="color:#0284c7;"></i> ឡូហ្គោ៖</span>
-      <label class="btn btn-outline" style="cursor:pointer;">
-        <i class="fa-solid fa-upload" style="color:#2563eb;"></i> ប្តូរ Logo
-        <input type="file" id="logoUploadInput" accept="image/*" style="display:none;" onchange="handleCustomLogo(event)">
-      </label>
-      <button class="btn btn-danger" onclick="clearCustomLogo()">
-        <i class="fa-solid fa-trash-can"></i> លុប Logo
-      </button>
+  <!-- ══════════════ MAIN APP ══════════════ -->
+  <div id="app" style="display:none;">
 
-      <span class="toolbar-label" style="margin-left:6px;">Watermark:</span>
-      <input type="range" id="opacitySlider" min="0.10" max="0.40" step="0.02" value="0.22" style="width:65px; cursor:pointer;" oninput="updateWatermarkOpacity(this.value)">
-    </div>
+    <header class="app-header no-print">
+      <button type="button" class="hdr-back" onclick="goBack()" title="ត្រឡប់"><i class="fa-solid fa-chevron-left"></i></button>
+      <div class="hdr-title khmer-moul">បង្វិលឈ្មោះ · បែងចែកក្រុម</div>
+    </header>
 
-    <div class="toolbar-section">
-      <span class="toolbar-label"><i class="fa-solid fa-stamp" style="color:#ef4444;"></i> ត្រានាយក៖</span>
-      <label class="btn btn-outline" style="cursor:pointer; border-color:#fca5a5; color:#ef4444;">
-        <i class="fa-solid fa-file-arrow-up"></i> បញ្ចូលត្រា
-        <input type="file" id="stampUploadInput" accept="image/*" style="display:none;" onchange="handleCustomStamp(event)">
-      </label>
-      <button class="btn btn-danger" onclick="clearCustomStamp()">
-        <i class="fa-solid fa-trash-can"></i> លុបត្រា
-      </button>
+    <div class="shell">
 
-      <span class="toolbar-label" style="margin-left:4px;">ទំហំ:</span>
-      <input type="range" id="stampSizeSlider" min="20" max="55" value="34" style="width:55px; cursor:pointer;" oninput="updateStampSize(this.value)">
+      <!-- ── ផ្ទាំងប្តូរ + ថ្នាក់ + អ្នកចូលរួម ── -->
+      <div class="toolbar no-print">
+        <div class="seg-tabs">
+          <button type="button" class="seg active" id="segSpin" onclick="setTab('spin')"><i class="fa-solid fa-dice"></i> បង្វិលឈ្មោះ</button>
+          <button type="button" class="seg" id="segGroup" onclick="setTab('group')"><i class="fa-regular fa-user"></i> បែងចែកក្រុម</button>
+        </div>
 
-      <span class="toolbar-label">លើ/ក្រោម:</span>
-      <input type="range" id="stampTopSlider" min="-60" max="60" value="-3" style="width:60px; cursor:pointer;" oninput="updateStampTop(this.value)">
+        <div class="toolbar-right">
+          <div id="teacherClassBadge" class="class-badge" style="display:none;"><i class="fa-solid fa-chalkboard-user"></i> <span id="teacherClassText">ថ្នាក់ទី...</span></div>
+          <select id="classSelect" class="top-select" style="display:none;" onchange="onClassChange()">
+            <option value="">-- កំពុងទាញយកថ្នាក់ --</option>
+          </select>
+          <button type="button" class="pill" id="partBtn" onclick="togglePart(event)">
+            <i class="fa-regular fa-user"></i> ចូលរួម <span id="partCount">0/0</span> <i class="fa-solid fa-chevron-down" style="font-size:11px;"></i>
+          </button>
+          <div class="popup" id="partPopup"></div>
+        </div>
+      </div>
 
-      <span class="toolbar-label">ឆ្វេង/ស្តាំ:</span>
-      <input type="range" id="stampLeftSlider" min="-120" max="120" value="0" style="width:60px; cursor:pointer;" oninput="updateStampLeft(this.value)">
+      <div class="subline no-print" id="subLine">កំពុងទាញយកទិន្នន័យ...</div>
 
-      <button class="btn btn-outline" onclick="resetStampPosition()" style="font-size:11.5px;" title="កំណត់ត្រាទៅចំកណ្តាលដើម">
-        🎯 កណ្តាលដើម
-      </button>
-    </div>
-  </div>
-</div>
+      <!-- ═════════════════ TAB 1: បង្វិលឈ្មោះ ═════════════════ -->
+      <section id="tabSpin" class="spin-layout no-print">
 
-<!-- =========================================================
-     📄 PRINT PREVIEW CONTAINER
-========================================================= -->
-<div class="print-area" id="printArea" style="display:none;">
-  <div style="text-align:center; padding:60px 20px; color:var(--text-muted);">
-    <i class="fa-solid fa-spinner fa-spin fa-2x" style="color:#0284c7;"></i>
-    <p style="margin-top:12px; font-weight:600;">សូមរង់ចាំ កំពុងទាញយកទិន្នន័យ...</p>
-  </div>
-</div>
+        <div class="stage-col" id="stageCol">
+          <div class="mode-mini">
+            <button type="button" class="mini active" data-m="WHEEL" onclick="switchMode('WHEEL')"><i class="fa-solid fa-dharmachakra"></i> កង់</button>
+            <button type="button" class="mini" data-m="BOAT" onclick="switchMode('BOAT')"><i class="fa-solid fa-ship"></i> ទូកង</button>
+            <button type="button" class="mini" data-m="CAR" onclick="switchMode('CAR')"><i class="fa-solid fa-car-side"></i> ឡាន</button>
+          </div>
 
-<script>
-/* 1. SUPABASE CLIENT CONFIG */
-const SUPABASE_URL = "https://nggnuobnrxiqjtcwlvwk.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_AHDcUJbuMAfhaocyfm2X7w_O9s06wML";
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+          <div class="stage">
+            <div class="wheel-wrap" id="wheelWrap">
+              <canvas id="wheelCanvas"></canvas>
+              <div class="pointer"></div>
+              <button type="button" class="hub" id="hubBtn" onclick="startRandomizer()"><span>ចុចដើម្បីបង្វិល</span></button>
+            </div>
+            <canvas id="raceCanvas" width="720" height="520" style="display:none;"></canvas>
+          </div>
 
-/* 2. AUTH GUARD */
-function readSession() {
-  try { return JSON.parse(localStorage.getItem('krou_supabase_user') || 'null'); } catch(e) { return null; }
-}
-const CURRENT_USER = readSession();
+          <div class="ctrl-row">
+            <button type="button" class="btn-spin" id="spinBtn" onclick="startRandomizer()"><i class="fa-solid fa-dice" id="spinIcon"></i> <span id="spinTxt">បង្វិល</span></button>
+            <button type="button" class="btn-soft" id="restartBtn" onclick="restartAll()"><i class="fa-solid fa-rotate-right"></i> ចាប់ផ្តើមឡើងវិញ</button>
+            <button type="button" class="btn-soft btn-icon on" id="soundBtn" onclick="toggleSound()" title="សំឡេង"><i class="fa-solid fa-volume-high" id="soundIcon"></i></button>
+            <button type="button" class="btn-soft btn-icon" id="fsBtn" onclick="toggleFullscreen()" title="ពេញអេក្រង់"><i class="fa-solid fa-expand" id="fsIcon"></i></button>
+          </div>
 
-function checkAuthentication() {
-  if (!CURRENT_USER || !CURRENT_USER.username) {
-    document.getElementById('controlToolbar').style.display = 'none';
-    document.getElementById('printArea').style.display = 'none';
-    document.getElementById('authDeniedWrap').style.display = 'flex';
-    return false;
-  }
-  document.getElementById('authDeniedWrap').style.display = 'none';
-  document.getElementById('controlToolbar').style.display = 'flex';
-  document.getElementById('printArea').style.display = 'flex';
-  return true;
-}
+          <label class="chk"><input type="checkbox" id="removeAfter" onchange="onRemoveAfter()"> ដកអ្នកដែលត្រូវហៅចេញពីកង (កុំហៅម្តងទៀត)</label>
+        </div>
 
-function goToIndex(e) {
-  if (e) e.preventDefault();
-  if (window.parent && window.parent !== window) {
-    try {
-      window.parent.postMessage({ type: 'OPEN_LOGIN', action: 'LOGIN' }, '*');
-      window.parent.location.href = 'index.html';
-      return;
-    } catch(err) {}
-  }
-  window.location.href = 'index.html';
-}
+        <aside class="side-card">
+          <div class="side-tabs">
+            <button type="button" class="side-tab active" id="stNames" onclick="setSideTab('names')">ឈ្មោះ <span id="cntNames">0</span></button>
+            <button type="button" class="side-tab" id="stResults" onclick="setSideTab('results')">លទ្ធផល <span id="cntResults">0</span></button>
+          </div>
 
-const USER_ROLE    = CURRENT_USER?.role || "teacher";
-const USER_CLASS   = CURRENT_USER?.assigned_classes || CURRENT_USER?.assigned_class || "";
-const IS_ADMIN     = String(USER_ROLE).toLowerCase().trim() === 'admin';
+          <div id="namesPane" style="display:flex; flex-direction:column; gap:12px;">
+            <div class="two-btns">
+              <button type="button" class="tool-btn" onclick="shuffleNames()"><i class="fa-solid fa-shuffle"></i> លាយ</button>
+              <button type="button" class="tool-btn" onclick="sortNames()"><i class="fa-solid fa-arrow-down-a-z"></i> តម្រៀប</button>
+            </div>
+            <div class="add-row">
+              <input type="text" id="newName" placeholder="បន្ថែមឈ្មោះ..." maxlength="40" onkeydown="if(event.key==='Enter'){addName();}">
+              <button type="button" onclick="addName()" title="បន្ថែម"><i class="fa-solid fa-user-plus"></i></button>
+            </div>
+            <div class="name-list" id="nameList"></div>
+          </div>
 
-const OFFICIAL_LOGO = 'https://images.weserv.nl/?url=upload.wikimedia.org/wikipedia/commons/thumb/8/85/Emblem_of_the_Ministry_of_Education%2C_Youth_and_Sport_%28Cambodia%29.svg/300px-Emblem_of_the_Ministry_of_Education%2C_Youth_and_Sport_%28Cambodia%29.svg.png';
+          <div id="resultsPane" style="display:none;">
+            <div class="name-list" id="resultList"></div>
+          </div>
+        </aside>
+      </section>
 
-function _get(key) { try { return localStorage.getItem(key) || ''; } catch(e) { return ''; } }
-function _set(key, val) { try { localStorage.setItem(key, val); } catch(e) {} }
-function _del(key) { try { localStorage.removeItem(key); } catch(e) {} }
+      <!-- ═════════════════ TAB 2: បែងចែកក្រុម ═════════════════ -->
+      <section id="tabGroup">
 
-let customLogoUrl  = _get('school_user_logo_url')       || OFFICIAL_LOGO;
-let customStampUrl = _get('school_principal_stamp_url') || '';
-let currentOpacity = '0.22';
-let currentLayout  = parseInt(_get('school_cards_layout') || '8');
-let currentZoom    = 1;
+        <!-- តួនាទីអចិន្ត្រៃយ៍ក្នុងថ្នាក់ -->
+        <div class="roles-card no-print">
+          <div class="section-title khmer-moul"><i class="fa-solid fa-crown" style="color:#f59e0b;"></i> តួនាទីអចិន្ត្រៃយ៍ក្នុងថ្នាក់</div>
 
-let stampSettings = { size: '34', top: '-3', left: '0' };
-try {
-  const _sp = _get('school_stamp_settings');
-  if (_sp) stampSettings = JSON.parse(_sp);
-} catch(e) {}
-
-let allStudents = [];
-
-function applyTheme(theme) { document.documentElement.setAttribute('data-theme', theme || 'dark'); }
-applyTheme(localStorage.getItem('krou_theme_manual') || 'dark');
-window.addEventListener('message', e => { if (e.data && (e.data.type === 'THEME_CHANGE' || e.data.theme)) applyTheme(e.data.theme || e.data); });
-
-const _KHMER_DIGITS = ['០','១','២','៣','៤','៥','៦','៧','៨','៩'];
-function toKhmerNum(val) {
-  if (val === null || val === undefined || val === '') return '';
-  return val.toString().replace(/[0-9]/g, d => _KHMER_DIGITS[+d]);
-}
-function cleanGrade(g) { return String(g || '').replace(/^ថ្នាក់ទី\s*/, '').trim(); }
-
-function getAutoKhmerDate() {
-  const now = new Date();
-  const months = ['មករា','កុម្ភៈ','មីនា','មេសា','ឧសភា','មិថុនា','កក្កដា','សីហា','កញ្ញា','តុលា','វិច្ឆិកា','ធ្នូ'];
-  return 'ធ្វើនៅកំពង់ល្ពៅ ថ្ងៃទី' + toKhmerNum(now.getDate())
-       + ' ខែ' + months[now.getMonth()]
-       + ' ឆ្នាំ' + toKhmerNum(now.getFullYear());
-}
-
-/* 3. ZOOM CONTROLS (TABLET & MOBILE AUTO-FIT) */
-function setZoom(scale, btnId) {
-  currentZoom = scale;
-  const printArea = document.getElementById('printArea');
-  if (printArea) printArea.style.zoom = scale;
-
-  ['zFit', 'z75', 'z100'].forEach(id => document.getElementById(id)?.classList.remove('active'));
-  document.getElementById(btnId)?.classList.add('active');
-}
-
-function setFitZoom() {
-  const screenW = window.innerWidth;
-  // A4 Landscape width ~1125px
-  let scale = (screenW - 20) / 1125;
-  if (scale > 1) scale = 1;
-  if (scale < 0.28) scale = 0.28;
-  setZoom(scale, 'zFit');
-}
-
-window.addEventListener('resize', () => {
-  if (window.innerWidth <= 1180 && document.getElementById('zFit')?.classList.contains('active')) {
-    setFitZoom();
-  }
-});
-
-/* ── Stamp Customization ── */
-function applyStampStyles() {
-  const sz  = parseFloat(stampSettings.size)  || 34;
-  const top = parseFloat(stampSettings.top)   || -3;
-  const lft = parseFloat(stampSettings.left)  || 0;
-  document.documentElement.style.setProperty('--stamp-w', sz + 'mm');
-  document.documentElement.style.setProperty('--stamp-h', (sz * 0.70).toFixed(1) + 'mm');
-  document.documentElement.style.setProperty('--stamp-top',  top + 'px');
-  document.documentElement.style.setProperty('--stamp-left', lft + 'px');
-  _set('school_stamp_settings', JSON.stringify(stampSettings));
-}
-function updateStampSize(v)  { stampSettings.size = v;  applyStampStyles(); }
-function updateStampTop(v)   { stampSettings.top  = v;  applyStampStyles(); }
-function updateStampLeft(v)  { stampSettings.left = v;  applyStampStyles(); }
-function resetStampPosition() {
-  stampSettings = { size:'34', top:'-3', left:'0' };
-  document.getElementById('stampSizeSlider').value = 34;
-  document.getElementById('stampTopSlider').value  = -3;
-  document.getElementById('stampLeftSlider').value = 0;
-  applyStampStyles();
-}
-
-function handleCustomLogo(event) {
-  const file = event.target.files[0]; if (!file) return;
-  const r = new FileReader();
-  r.onload = function(e) {
-    customLogoUrl = e.target.result;
-    _set('school_user_logo_url', customLogoUrl);
-    renderCards();
-  };
-  r.readAsDataURL(file);
-}
-function clearCustomLogo() {
-  customLogoUrl = '';
-  _del('school_user_logo_url');
-  document.getElementById('logoUploadInput').value = '';
-  renderCards();
-}
-
-function handleCustomStamp(event) {
-  const file = event.target.files[0]; if (!file) return;
-  const r = new FileReader();
-  r.onload = function(e) {
-    customStampUrl = e.target.result;
-    _set('school_principal_stamp_url', customStampUrl);
-    renderCards();
-  };
-  r.readAsDataURL(file);
-}
-function clearCustomStamp() {
-  customStampUrl = '';
-  _del('school_principal_stamp_url');
-  document.getElementById('stampUploadInput').value = '';
-  renderCards();
-}
-
-function updateWatermarkOpacity(val) {
-  currentOpacity = val;
-  document.querySelectorAll('.card-watermark').forEach(m => m.style.opacity = val);
-}
-
-function switchLayout(val) {
-  currentLayout = parseInt(val);
-  _set('school_cards_layout', currentLayout);
-  renderCards();
-}
-function refreshDisplay() { renderCards(); }
-
-function doPrintCards() {
-  if (!allStudents || allStudents.length === 0) {
-    alert('⚠️ សូមរង់ចាំឱ្យទិន្នន័យកាតបង្ហាញសិន ទើបអាចបោះពុម្ពបាន!');
-    return;
-  }
-  window.focus();
-  setTimeout(() => {
-    try { window.print(); } catch(err) { window.parent.print(); }
-  }, 100);
-}
-
-/* 4. INITIALIZATION */
-window.addEventListener('DOMContentLoaded', async () => {
-  if (!checkAuthentication()) return;
-
-  document.getElementById('stampSizeSlider').value = stampSettings.size;
-  document.getElementById('stampTopSlider').value  = stampSettings.top;
-  document.getElementById('stampLeftSlider').value = stampSettings.left;
-  document.getElementById('layoutSelect').value    = currentLayout;
-  applyStampStyles();
-
-  await initPage();
-
-  if (window.innerWidth <= 1180) {
-    setFitZoom();
-  }
-});
-
-async function initPage() {
-  const adminBox = document.getElementById('adminClassBox');
-  const teacherBadge = document.getElementById('teacherClassBadge');
-  const select = document.getElementById('classSelect');
-  const cleanCls = cleanGrade(USER_CLASS);
-
-  if (!IS_ADMIN) {
-    adminBox.style.display = 'none';
-    if (cleanCls) {
-      document.getElementById('teacherClassText').innerText = 'ថ្នាក់ទី ' + cleanCls;
-      teacherBadge.style.display = 'inline-flex';
-      select.innerHTML = `<option value="${cleanCls}">ថ្នាក់ទី ${cleanCls}</option>`;
-      select.value = cleanCls;
-      onClassChange();
-    } else {
-      teacherBadge.style.display = 'inline-flex';
-      document.getElementById('teacherClassText').innerText = 'មិនទាន់កំណត់ថ្នាក់';
-      document.getElementById('printArea').innerHTML = 
-        '<div style="text-align:center; padding:50px; color:#f59e0b; font-weight:700;">⚠️ គណនីរបស់អ្នកមិនទាន់មានថ្នាក់ទទួលបន្ទុកឡើយ។ សូមទាក់ទង Admin។</div>';
-    }
-    return;
-  }
-
-  teacherBadge.style.display = 'none';
-  adminBox.style.display = 'inline-flex';
-
-  try {
-    const { data, error } = await sb.from('students').select('grade');
-    let classes = [];
-    if (!error && data) {
-      classes = [...new Set(data.map(d => cleanGrade(d.grade)).filter(Boolean))];
-    }
-    if (!classes.length) classes = ['១', '២', '៣', '៤(ក)', '៤(ខ)', '៥', '៦'];
-
-    select.innerHTML = classes.map(c => `<option value="${c}">ថ្នាក់ទី ${c}</option>`).join('');
-    if (cleanCls && classes.includes(cleanCls)) select.value = cleanCls;
-    onClassChange();
-  } catch (err) {
-    select.innerHTML = '<option value="">កំហុសទាញយកថ្នាក់</option>';
-  }
-}
-
-async function onClassChange() {
-  const selectedClass = document.getElementById('classSelect').value || cleanGrade(USER_CLASS);
-  const curPure = cleanGrade(selectedClass);
-
-  if (!curPure) {
-    document.getElementById('printArea').innerHTML = '<div style="text-align:center;padding:60px;color:var(--text-muted);">សូមជ្រើសរើសថ្នាក់</div>';
-    return;
-  }
-
-  document.getElementById('printArea').innerHTML = `
-    <div style="text-align:center;padding:60px;color:var(--text-muted);">
-      <i class="fa-solid fa-spinner fa-spin fa-2x" style="color:#0284c7;"></i>
-      <p style="margin-top:12px;font-weight:600;">កំពុងទាញយកទិន្នន័យសិស្សថ្នាក់ទី ${curPure} ពី Supabase...</p>
-    </div>`;
-
-  try {
-    const { data: stList, error: stErr } = await sb
-      .from('students')
-      .select('id, student_id, student_name, gender, dob, pob, address, father_name, mother_name, grade, photo_url, dropout_semester')
-      .order('id', { ascending: true });
-
-    if (stErr) throw stErr;
-
-    // ត្រងសិស្សក្នុងថ្នាក់ (ដកសិស្សបោះបង់ការសិក្សាឆមាសទី១ ចេញ)
-    allStudents = (stList || [])
-      .filter(s => cleanGrade(s.grade) === curPure)
-      .filter(s => {
-        const drop = String(s.dropout_semester || '').trim();
-        if (drop.includes('ឆមាស១') || drop.includes('ឆមាសទី១') || drop === '១') return false;
-        return true;
-      })
-      .map(s => ({
-        id: s.student_id || s.id,
-        name: s.student_name || 'គ្មានឈ្មោះ',
-        sex: s.gender || 'ប្រុស',
-        dob: s.dob || '',
-        pob: s.pob || '',
-        address: s.address || s.pob || 'ស្វាយជ្រុំ កំពង់ល្ពៅ សំឡូត បាត់ដំបង',
-        father: s.father_name || '—',
-        mother: s.mother_name || '—',
-        grade: curPure,
-        imageUrl: s.photo_url || ''
-      }));
-
-    renderCards();
-  } catch (err) {
-    document.getElementById('printArea').innerHTML = `
-      <div style="color:#ef4444;text-align:center;padding:40px;font-weight:700;">
-        ❌ កំហុសក្នុងការទាញយកទិន្នន័យ៖ ${err.message || err}
-      </div>`;
-  }
-}
-
-/* 5. RENDER STUDENT CARDS */
-function renderCards() {
-  const container = document.getElementById('printArea');
-  if (!allStudents || allStudents.length === 0) {
-    container.innerHTML = '<div style="text-align:center;padding:60px;color:var(--text-muted);font-weight:600;">មិនមានទិន្នន័យសិស្សក្នុងថ្នាក់នេះទេ</div>';
-    return;
-  }
-
-  const schoolName   = document.getElementById('schoolName').value || 'សាលាបឋមសិក្សាកំពង់ល្ពៅ';
-  const schoolYear   = document.getElementById('schoolYear').value || '២០២៦~២០២៧';
-  const autoDateText = getAutoKhmerDate();
-
-  const cardsPerPage = currentLayout;
-  const layoutClass  = (cardsPerPage === 6) ? 'layout-6' : 'layout-8';
-  const totalPages   = Math.ceil(allStudents.length / cardsPerPage);
-  let html = '';
-
-  for (let p = 0; p < totalPages; p++) {
-    html += `<div class="a4-page ${layoutClass}">`;
-    const pageStudents = allStudents.slice(p * cardsPerPage, (p + 1) * cardsPerPage);
-
-    for (let i = 0; i < pageStudents.length; i++) {
-      const s = pageStudents[i];
-      const khmerId = toKhmerNum(s.id);
-      const dobFormatted = toKhmerNum(s.dob || '');
-      const addressText = s.address || s.pob || 'ស្វាយជ្រុំ កំពង់ល្ពៅ សំឡូត បាត់ដំបង';
-      const cleanGradeStr = cleanGrade(s.grade);
-
-      const photoHtml = (s.imageUrl && s.imageUrl.length > 5)
-        ? `<img src="${s.imageUrl}" alt="រូបថត" onerror="this.parentElement.innerHTML='<i class=\\'fa-solid fa-user\\'></i>'">`
-        : `<i class="fa-solid fa-user"></i>`;
-
-      const stampHtml = customStampUrl
-        ? `<div class="stamp-overlay-box"><img src="${customStampUrl}" alt="ត្រានាយក"></div>`
-        : '';
-
-      const headerLogoHtml = customLogoUrl
-        ? `<img src="${customLogoUrl}" class="header-logo-img" alt="Logo" onerror="this.style.display='none'">`
-        : '';
-
-      const watermarkHtml = customLogoUrl
-        ? `<img src="${customLogoUrl}" class="card-watermark" style="opacity:${currentOpacity};" alt="Watermark" onerror="this.style.display='none'">`
-        : '';
-
-      html += `
-        <div class="student-card">
-          <div class="card-top-header">
-            <div class="header-logo-box">${headerLogoHtml}</div>
-            <div class="header-kingdom">
-              <div class="kingdom-title">ព្រះរាជាណាចក្រកម្ពុជា</div>
-              <div class="kingdom-subtitle">ជាតិ សាសនា ព្រះមហាក្សត្រ</div>
-              <div class="kingdom-divider">
-                <svg viewBox="0 0 140 8">
-                  <line x1="10" y1="4" x2="60" y2="4" stroke="#000" stroke-width="0.8"/>
-                  <circle cx="8" cy="4" r="1.4" fill="#000"/>
-                  <polygon points="70,1 74,4 70,7 66,4" fill="#000"/>
-                  <circle cx="63" cy="4" r="1.2" fill="#000"/>
-                  <circle cx="77" cy="4" r="1.2" fill="#000"/>
-                  <line x1="80" y1="4" x2="130" y2="4" stroke="#000" stroke-width="0.8"/>
-                  <circle cx="132" cy="4" r="1.4" fill="#000"/>
-                </svg>
-              </div>
+          <div class="roles-grid">
+            <div class="role-item president">
+              <label class="lbl"><i class="fa-solid fa-flag" style="color:#ef4444;"></i> ប្រធានថ្នាក់</label>
+              <select id="presidentSelect" onchange="onRoleChange()"></select>
+            </div>
+            <div class="role-item deputy1">
+              <label class="lbl"><i class="fa-solid fa-star" style="color:#0284c7;"></i> អនុប្រធានទី១</label>
+              <select id="deputy1Select" onchange="onRoleChange()"></select>
+            </div>
+            <div class="role-item deputy2">
+              <label class="lbl"><i class="fa-solid fa-star" style="color:#10b981;"></i> អនុប្រធានទី២</label>
+              <select id="deputy2Select" onchange="onRoleChange()"></select>
             </div>
           </div>
 
-          <div class="card-main-body">
-            ${watermarkHtml}
+          <div class="controls" style="margin-top:12px; background:transparent; padding:0; border:none; gap:8px;">
+            <button type="button" class="btn btn-role" onclick="randomLeadership()"><i class="fa-solid fa-dice"></i> រើសចៃដន្យ</button>
+            <button type="button" class="btn btn-rotate" onclick="rotateLeadership()"><i class="fa-solid fa-rotate"></i> កំណត់តាមវេន (បន្ទាប់)</button>
+            <button type="button" class="btn btn-group" onclick="saveLeadership()"><i class="fa-solid fa-floppy-disk"></i> រក្សាទុកតួនាទីថ្នាក់</button>
+          </div>
 
-            <!-- ផ្នែកចំណងជើង និងឈ្មោះសិស្ស -->
-            <div class="card-titles">
-              <div class="title-badge">កាតសម្គាល់ខ្លួនសិស្ស</div>
-              <div class="title-school">${schoolName}</div>
-              <div class="title-id">អត្តលេខ៖ ${khmerId}</div>
-              <div class="title-student-name-center">${s.name || ''}</div>
+          <div id="roleSummary" class="summary">សូមរង់ចាំ កំពុងទាញយកទិន្នន័យ...</div>
+        </div>
+
+        <!-- បែងចែកសិស្សសម្រាប់វេនសម្អាត -->
+        <div class="card no-print">
+          <div class="section-title khmer-moul"><i class="fa-solid fa-broom" style="color:#10b981;"></i> បែងចែកសិស្សសម្រាប់វេនសម្អាត</div>
+
+          <div class="controls">
+            <div class="col">
+              <label class="lbl"><i class="fa-solid fa-sliders"></i> របៀបបែងចែក ៖</label>
+              <select id="splitMode" onchange="toggleModeInput()">
+                <option value="numGroups">កំណត់ចំនួនវេន</option>
+                <option value="groupSize">កំណត់ចំនួនសិស្សក្នុង១វេន</option>
+              </select>
             </div>
-
-            <!-- តារាងព័ត៌មាន និងរូបថត -->
-            <div class="content-container">
-              <div class="mid-split">
-                <div class="left-profile-block">
-                  <table class="info-table-top">
-                    <tr>
-                      <td class="lbl-col">ភេទ</td>
-                      <td class="cln-col">៖</td>
-                      <td class="val-col val-blue">${s.sex || ''}</td>
-                    </tr>
-                    <tr>
-                      <td class="lbl-col">ថ្ងៃខែឆ្នាំកំណើត</td>
-                      <td class="cln-col">៖</td>
-                      <td class="val-col val-blue">${dobFormatted}</td>
-                    </tr>
-                    <tr>
-                      <td class="lbl-col">ថ្នាក់ទី</td>
-                      <td class="cln-col">៖</td>
-                      <td class="val-col val-blue">${toKhmerNum(cleanGradeStr)}</td>
-                    </tr>
-                    <tr>
-                      <td class="lbl-col">ឈ្មោះឪពុក</td>
-                      <td class="cln-col">៖</td>
-                      <td class="val-col val-green">${s.father || '—'}</td>
-                    </tr>
-                    <tr>
-                      <td class="lbl-col">ឈ្មោះម្តាយ</td>
-                      <td class="cln-col">៖</td>
-                      <td class="val-col val-green">${s.mother || '—'}</td>
-                    </tr>
-                  </table>
-                </div>
-
-                <div class="student-photo-box">${photoHtml}</div>
-              </div>
-
-              <table class="info-table-bottom">
-                <tr>
-                  <td class="lbl-col">អាសយដ្ឋាន</td>
-                  <td class="cln-col">៖</td>
-                  <td class="val-col val-blue" style="font-size: 8.8px;" title="${addressText}">${addressText}</td>
-                </tr>
-                <tr>
-                  <td class="lbl-col">ឆ្នាំសិក្សា</td>
-                  <td class="cln-col">៖</td>
-                  <td class="val-col val-green">${toKhmerNum(schoolYear)}</td>
-                </tr>
-              </table>
+            <div class="col">
+              <label class="lbl" id="inputLabel"><i class="fa-solid fa-hashtag"></i> ចំនួនវេន ៖</label>
+              <input type="number" id="splitValue" min="1" value="4">
             </div>
+            <button type="button" class="btn btn-group" onclick="generateGroups()"><i class="fa-solid fa-dice"></i> បែងចែកវេន</button>
+            <button type="button" class="btn btn-save" id="saveBtn" onclick="saveGroupsToSupabase()"><i class="fa-solid fa-floppy-disk"></i> រក្សាទុកវេន</button>
+            <button type="button" class="btn btn-print" id="printBtn" onclick="window.print()"><i class="fa-solid fa-print"></i> បោះពុម្ព</button>
+          </div>
 
-            <!-- ផ្នែកហត្ថលេខា និងត្រានាយកសាលា -->
-            <div class="card-bottom-signature">
-              <div class="signature-box">
-                <div class="sig-date">${autoDateText}</div>
-                <div class="sig-stamp-wrapper">
-                  <div class="sig-title">បានឃើញ និងឯកភាព</div>
-                  <div class="sig-role">នាយកសាលា</div>
-                  ${stampHtml}
-                </div>
-              </div>
+          <div id="countInfo" class="count-info"></div>
+          <div id="gStatus"></div>
+        </div>
+
+        <!-- 🖨️ Printable Area -->
+        <div id="printableArea">
+          <div class="print-header">
+            <div class="kingdom khmer-moul">ព្រះរាជាណាចក្រកម្ពុជា<br>ជាតិ សាសនា ព្រះមហាក្សត្រ</div>
+            <div class="school-info khmer-moul">
+              <div>សាលាបឋមសិក្សាកំពង់ល្ពៅ</div>
+              <div>កម្រងសាលារៀនអូរជាំ</div>
             </div>
+            <div class="doc-title khmer-moul">តារាងវេនសម្អាតថ្នាក់រៀន</div>
+            <div class="doc-sub" id="printClassName">ថ្នាក់រៀន ៖ ...</div>
+            <div class="doc-sub" id="printRoles"></div>
+          </div>
 
+          <div id="groupsContainer" class="groups-container"></div>
+
+          <div class="print-footer">
+            <div class="footer-left">
+              <b class="khmer-moul" style="font-size:12px">បានឃើញ និងឯកភាព</b><br>
+              <b class="khmer-moul" style="font-size:12px">នាយកសាលា</b>
+              <div class="signature-space"></div>
+            </div>
+            <div class="footer-right">
+              <div>ថ្ងៃ..................ខែ..........ឆ្នាំ............ព.ស.២៥៧០</div>
+              <div>ធ្វើនៅ កំពង់ល្ពៅ, ថ្ងៃទី....... ខែ....... ឆ្នាំ២០២៦</div>
+              <b class="khmer-moul" style="margin-top:5px;display:inline-block;font-size:12px">គ្រូបន្ទុកថ្នាក់</b>
+              <div class="signature-space"></div>
+            </div>
           </div>
         </div>
-      `;
-    }
-    html += '</div>';
-  }
+      </section>
 
-  container.innerHTML = html;
-}
-</script>
+    </div>
+  </div>
+
+  <!-- 🏆 WINNER DIALOG -->
+  <div class="modal-overlay" id="winnerModal">
+    <div class="winner-card">
+      <div style="font-size: 36px; margin-bottom: 6px;">🎉</div>
+      <div class="winner-title" id="winnerBadge">អ្នកទទួលបានវេន</div>
+      <img id="winnerPhoto" class="winner-avatar" src="" alt="Photo">
+      <div class="winner-name" id="winnerName">ឈ្មោះសិស្ស</div>
+      <div class="winner-class" id="winnerClass"></div>
+      <button type="button" class="close-btn" onclick="closeModal()">យល់ព្រម</button>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       ⚙️ JAVASCRIPT
+  ========================================================= -->
+  <script>
+    /* ───────── 1. SUPABASE ───────── */
+    const SUPABASE_URL = "https://nggnuobnrxiqjtcwlvwk.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_AHDcUJbuMAfhaocyfm2X7w_O9s06wML";
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    /* ───────── 2. AUTH ───────── */
+    function readSession() {
+      try { return JSON.parse(localStorage.getItem('krou_supabase_user') || 'null'); } catch (e) { return null; }
+    }
+    const CURRENT_USER = readSession();
+
+    function checkAuthentication() {
+      if (!CURRENT_USER || !CURRENT_USER.username) {
+        document.getElementById('app').style.display = 'none';
+        document.getElementById('authDeniedWrap').style.display = 'flex';
+        return false;
+      }
+      document.getElementById('authDeniedWrap').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      return true;
+    }
+    function goToIndex(e) {
+      if (e) e.preventDefault();
+      if (window.parent && window.parent !== window) {
+        try {
+          window.parent.postMessage({ type: 'OPEN_LOGIN', action: 'LOGIN' }, '*');
+          window.parent.location.href = 'index.html';
+          return;
+        } catch (err) {}
+      }
+      window.location.href = 'index.html';
+    }
+    function goBack() {
+      if (window.parent && window.parent !== window) {
+        try { window.parent.postMessage({ type: 'GO_BACK' }, '*'); } catch (e) {}
+      } else if (history.length > 1) {
+        history.back();
+      }
+    }
+
+    const USER_ROLE  = CURRENT_USER?.role || "teacher";
+    const USER_CLASS = CURRENT_USER?.assigned_classes || CURRENT_USER?.assigned_class || "";
+    const IS_ADMIN   = String(USER_ROLE).toLowerCase().trim() === 'admin';
+
+    function cleanGrade(g) { return String(g || '').replace(/^(ថ្នាក់ទី|ថ្នាក់)\s*/, '').trim(); }
+    function escapeHtml(s) {
+      return String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+    function applyTheme(theme) { document.documentElement.setAttribute('data-theme', theme || 'dark'); }
+    applyTheme(localStorage.getItem('krou_theme_manual') || 'dark');
+    window.addEventListener('message', e => { if (e.data && (e.data.type === 'THEME_CHANGE' || e.data.theme)) applyTheme(e.data.theme || e.data); });
+
+    /* ───────── 3. SHARED STATE ───────── */
+    const TAU = Math.PI * 2;
+    const FONT = '"Kantumruy Pro","Battambang","Khmer OS Battambang",sans-serif';
+    const PALETTE = ['#e8b4f0', '#a5d8ff', '#b2f2bb', '#ffec99', '#ffc9c9', '#d0bfff', '#99e9f2', '#ffd8a8', '#fcc2d7', '#c0eb75', '#bac8ff', '#96f2d7'];
+    const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><rect width='100%25' height='100%25' fill='%23cbd5e1'/><circle cx='50' cy='42' r='20' fill='%2364748b'/><path d='M20 90 Q50 60 80 90 Z' fill='%2364748b'/></svg>";
+
+    let curClass = '';
+    let students = [];            // សិស្សក្នុងថ្នាក់ { id, name, sex, photoUrl, className }
+    let currentTab = localStorage.getItem('krou_spin_tab') === 'group' ? 'group' : 'spin';
+
+    /* ───────── 4. INIT ───────── */
+    window.addEventListener('DOMContentLoaded', async () => {
+      if (!checkAuthentication()) return;
+
+      window.addEventListener('resize', () => { closePopups(); redrawStage(); });
+      if (window.ResizeObserver) new ResizeObserver(() => redrawStage()).observe(document.getElementById('wheelWrap'));
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(redrawStage);
+      document.addEventListener('click', e => { if (!e.target.closest('#partPopup') && !e.target.closest('#partBtn')) closePopups(); });
+      document.addEventListener('keydown', e => {
+        if (e.ctrlKey && e.key === 'Enter' && currentTab === 'spin') { e.preventDefault(); startRandomizer(); }
+      });
+      document.addEventListener('fullscreenchange', () => {
+        document.getElementById('fsIcon').className = document.fullscreenElement ? 'fa-solid fa-compress' : 'fa-solid fa-expand';
+        setTimeout(redrawStage, 120);
+      });
+
+      setTab(currentTab);
+      await initClasses();
+    });
+
+    function setTab(tab) {
+      if (spinning) return;
+      currentTab = tab;
+      try { localStorage.setItem('krou_spin_tab', tab); } catch (e) {}
+      document.getElementById('segSpin').classList.toggle('active', tab === 'spin');
+      document.getElementById('segGroup').classList.toggle('active', tab === 'group');
+      document.getElementById('tabSpin').style.display = tab === 'spin' ? 'grid' : 'none';
+      document.getElementById('tabGroup').style.display = tab === 'group' ? 'flex' : 'none';
+      document.getElementById('partBtn').style.display = tab === 'spin' ? 'inline-flex' : 'none';
+      closePopups();
+      updateSubline();
+      if (tab === 'spin') setTimeout(redrawStage, 30);
+    }
+
+    function updateSubline() {
+      const cls = curClass ? 'ថ្នាក់ទី' + curClass + ' · ' : '';
+      document.getElementById('subLine').textContent = currentTab === 'spin'
+        ? cls + 'ឈ្មោះ និងលទ្ធផលត្រូវចងចាំលើម៉ាស៊ីននេះ។ Ctrl + Enter = បង្វិល'
+        : cls + 'កំណត់តួនាទីថ្នាក់ និងបែងចែកវេនសម្អាត។';
+    }
+
+    async function initClasses() {
+      const select = document.getElementById('classSelect');
+      const badge = document.getElementById('teacherClassBadge');
+      const cleanCls = cleanGrade(USER_CLASS);
+
+      if (!IS_ADMIN) {
+        select.style.display = 'none';
+        badge.style.display = 'inline-flex';
+        if (cleanCls) {
+          document.getElementById('teacherClassText').innerText = 'ថ្នាក់ទី ' + cleanCls;
+          select.innerHTML = `<option value="${cleanCls}">ថ្នាក់ទី ${cleanCls}</option>`;
+          select.value = cleanCls;
+          onClassChange();
+        } else {
+          document.getElementById('teacherClassText').innerText = 'មិនទាន់កំណត់ថ្នាក់';
+          gStatus('⚠️ គណនីរបស់អ្នកមិនទាន់មានថ្នាក់ទទួលបន្ទុកឡើយ។ សូមទាក់ទង Admin។', '#f59e0b');
+          document.getElementById('subLine').textContent = '⚠️ គណនីរបស់អ្នកមិនទាន់មានថ្នាក់ទទួលបន្ទុកឡើយ។ សូមទាក់ទង Admin។';
+        }
+        return;
+      }
+
+      badge.style.display = 'none';
+      select.style.display = 'inline-block';
+      try {
+        const { data, error } = await sb.from('students').select('grade');
+        let classes = [];
+        if (!error && data) classes = [...new Set(data.map(d => cleanGrade(d.grade)).filter(Boolean))];
+        if (!classes.length) classes = ['១', '២', '៣', '៤(ក)', '៤(ខ)', '៥', '៦'];
+        select.innerHTML = classes.map(c => `<option value="${c}">ថ្នាក់ទី ${c}</option>`).join('');
+        if (cleanCls && classes.includes(cleanCls)) select.value = cleanCls;
+        onClassChange();
+      } catch (err) {
+        select.innerHTML = '<option value="">កំហុសទាញយកថ្នាក់</option>';
+      }
+    }
+
+    /* ───────── 5. LOAD CLASS (សិស្ស + តួនាទី) ───────── */
+    async function onClassChange() {
+      const c = document.getElementById('classSelect').value || cleanGrade(USER_CLASS);
+      curClass = cleanGrade(c);
+      updateSubline();
+
+      // reset group tab
+      currentGroups = [];
+      document.getElementById('groupsContainer').innerHTML = '';
+      document.getElementById('countInfo').innerHTML = '';
+      document.getElementById('saveBtn').style.display = 'none';
+      document.getElementById('printBtn').style.display = 'none';
+      clearRoles();
+
+      if (!curClass) {
+        students = [];
+        loadSt(); rebuild(); renderSpinUI(); updateRoleSummary();
+        return;
+      }
+
+      gStatus('⏳ កំពុងទាញយកសិស្ស និងតួនាទីពី Supabase...', '#0284c7');
+
+      try {
+        const { data: stList, error: stErr } = await sb
+          .from('students')
+          .select('id, student_id, student_name, gender, grade, photo_url, dropout_semester')
+          .order('id', { ascending: true });
+        if (stErr) throw stErr;
+
+        students = (stList || [])
+          .filter(s => cleanGrade(s.grade) === curClass)
+          .filter(s => {
+            const drop = String(s.dropout_semester || '').trim();
+            return !(drop.includes('ឆមាស១') || drop.includes('ឆមាសទី១') || drop === '១');
+          })
+          .map(s => ({
+            id: String(s.student_id || s.id),
+            name: s.student_name || 'គ្មានឈ្មោះ',
+            sex: s.gender || 'ប្រុស',
+            photoUrl: s.photo_url || '',
+            className: cleanGrade(s.grade)
+          }));
+
+        // 🎡 កង់
+        loadSt(); rebuild(); renderSpinUI();
+
+        // 👥 តួនាទី
+        populateRoles();
+        const { data: grpData } = await sb.from('class_groups').select('*').eq('assigned_class', curClass).maybeSingle();
+        if (grpData) {
+          if (grpData.president) document.getElementById('presidentSelect').value = studentKey(grpData.president);
+          if (grpData.deputy1) document.getElementById('deputy1Select').value = studentKey(grpData.deputy1);
+          if (grpData.deputy2) document.getElementById('deputy2Select').value = studentKey(grpData.deputy2);
+          enforceUnique();
+          updateRoleSummary();
+          if (grpData.groups_data && Array.isArray(grpData.groups_data) && grpData.groups_data.length > 0) {
+            currentGroups = grpData.groups_data;
+            document.getElementById('printClassName').innerText = 'ប្រចាំ ថ្នាក់ទី ' + curClass;
+            updatePrintRoles();
+            renderGroups(currentGroups);
+          }
+        }
+        gStatus('✅ បានទាញយកទិន្នន័យរួចរាល់', '#10b981');
+      } catch (e) {
+        gStatus('❌ ' + e.message, '#ef4444');
+        const nl = document.getElementById('nameList');
+        if (nl) nl.innerHTML = `<div class="empty-note" style="color:#ef4444;">❌ មិនអាចទាញទិន្នន័យបាន៖ ${escapeHtml(e.message)}</div>`;
+      }
+    }
+
+    /* =========================================================
+       🎡 SPIN TAB
+    ========================================================= */
+    function defState() { return { custom: [], excluded: [], removed: [], results: [], order: [], removeAfter: true, sound: true }; }
+    let st = defState();
+    let entries = [];            // ឈ្មោះសកម្មលើកង់
+    let currentMode = 'WHEEL';
+    let spinning = false;
+    let angle = 0;
+    let pendingRemoval = null;
+    let audioCtx = null;
+
+    function stKey() { return 'krou_spin_v2_' + (curClass || '_'); }
+    function loadSt() {
+      try { st = Object.assign(defState(), JSON.parse(localStorage.getItem(stKey()) || '{}')); } catch (e) { st = defState(); }
+      document.getElementById('removeAfter').checked = !!st.removeAfter;
+      syncSoundUI();
+    }
+    function saveSt() { try { localStorage.setItem(stKey(), JSON.stringify(st)); } catch (e) {} }
+
+    function candidates() {
+      const list = [];
+      students.forEach(s => {
+        if (!st.excluded.includes(s.id)) list.push({ key: 's:' + s.id, name: s.name, photoUrl: s.photoUrl, className: s.className, isCustom: false });
+      });
+      st.custom.forEach(c => list.push({ key: c.key, name: c.name, photoUrl: '', className: '', isCustom: true }));
+      const pos = k => { const i = st.order.indexOf(k); return i === -1 ? 1e6 : i; };
+      return list.map((e, i) => ({ e, i })).sort((a, b) => (pos(a.e.key) - pos(b.e.key)) || (a.i - b.i)).map(x => x.e);
+    }
+    function rebuild() { entries = candidates().filter(e => !st.removed.includes(e.key)); }
+
+    function colorOf(i, n) {
+      const L = PALETTE.length;
+      let idx = i % L;
+      if (n > 1 && i === n - 1 && idx === 0) idx = 5;   // កុំឱ្យជាប់ពណ៌ដូចគ្នានឹងចាប់ផ្តើម
+      return PALETTE[idx];
+    }
+
+    function renderSpinUI() {
+      renderNames();
+      renderResults();
+      renderPart();
+      redrawStage();
+    }
+
+    /* ── ឈ្មោះ ── */
+    function renderNames() {
+      const box = document.getElementById('nameList');
+      document.getElementById('cntNames').textContent = entries.length;
+      if (!entries.length) {
+        box.innerHTML = '<div class="empty-note">គ្មានឈ្មោះលើកង់ — សូមបន្ថែមឈ្មោះ ឬជ្រើសអ្នកចូលរួម</div>';
+        return;
+      }
+      box.innerHTML = entries.map((e, i) => `
+        <div class="name-item">
+          <span class="dot" style="background:${colorOf(i, entries.length)}"></span>
+          <span class="nm">${escapeHtml(e.name)}</span>
+          <button type="button" class="x" title="ដកចេញ" onclick="removeEntry('${e.key.replace(/'/g, "\\'")}')"><i class="fa-solid fa-xmark"></i></button>
+        </div>`).join('');
+    }
+
+    function renderResults() {
+      document.getElementById('cntResults').textContent = st.results.length;
+      const box = document.getElementById('resultList');
+      if (!st.results.length) { box.innerHTML = '<div class="empty-note">មិនទាន់មានលទ្ធផលទេ</div>'; return; }
+      box.innerHTML = st.results.map((r, i) => `
+        <div class="res-item">
+          <span class="no">${i + 1}</span>
+          <span class="nm">${escapeHtml(r.name)}</span>
+          <span class="tm">${escapeHtml(r.time || '')}</span>
+        </div>`).join('');
+    }
+
+    function setSideTab(t) {
+      document.getElementById('stNames').classList.toggle('active', t === 'names');
+      document.getElementById('stResults').classList.toggle('active', t === 'results');
+      document.getElementById('namesPane').style.display = t === 'names' ? 'flex' : 'none';
+      document.getElementById('resultsPane').style.display = t === 'results' ? 'block' : 'none';
+    }
+
+    function addName() {
+      const inp = document.getElementById('newName');
+      const v = (inp.value || '').trim();
+      if (!v) return;
+      st.custom.push({ key: 'c:' + Date.now() + Math.random().toString(36).slice(2, 6), name: v });
+      inp.value = '';
+      saveSt(); rebuild(); renderSpinUI();
+    }
+
+    function removeEntry(key) {
+      if (spinning) return;
+      if (key.startsWith('s:')) {
+        const id = key.slice(2);
+        if (!st.excluded.includes(id)) st.excluded.push(id);
+      } else {
+        st.custom = st.custom.filter(c => c.key !== key);
+      }
+      st.removed = st.removed.filter(k => k !== key);
+      saveSt(); rebuild(); renderSpinUI();
+    }
+
+    function shuffleNames() {
+      if (spinning) return;
+      const keys = entries.map(e => e.key);
+      for (let i = keys.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [keys[i], keys[j]] = [keys[j], keys[i]]; }
+      st.order = keys.concat(st.order.filter(k => !keys.includes(k)));
+      saveSt(); rebuild(); renderSpinUI();
+    }
+    function sortNames() {
+      if (spinning) return;
+      const keys = entries.slice().sort((a, b) => a.name.localeCompare(b.name, 'km')).map(e => e.key);
+      st.order = keys.concat(st.order.filter(k => !keys.includes(k)));
+      saveSt(); rebuild(); renderSpinUI();
+    }
+
+    /* ── អ្នកចូលរួម (popup) ── */
+    function renderPart() {
+      const total = students.length;
+      const on = students.filter(s => !st.excluded.includes(s.id)).length;
+      document.getElementById('partCount').textContent = on + '/' + total;
+
+      const pop = document.getElementById('partPopup');
+      if (!students.length) { pop.innerHTML = '<div class="empty-note">គ្មានសិស្សក្នុងថ្នាក់នេះ</div>'; return; }
+      pop.innerHTML = `
+        <div class="popup-head"><span>សិស្សចូលរួម</span>
+          <span><span class="lnk" onclick="partAll(true)">ទាំងអស់</span> | <span class="lnk red" onclick="partAll(false)">ដកទាំងអស់</span></span>
+        </div>` + students.map(s => `
+        <label class="part-item">
+          <input type="checkbox" ${st.excluded.includes(s.id) ? '' : 'checked'} onchange="togglePartStudent('${s.id.replace(/'/g, "\\'")}', this.checked)">
+          <span>${escapeHtml(s.name)}</span>
+        </label>`).join('');
+    }
+    function togglePart(e) {
+      if (e) e.stopPropagation();
+      const pop = document.getElementById('partPopup');
+      if (pop.classList.contains('show')) { pop.classList.remove('show'); return; }
+      pop.classList.add('show');
+      const r = document.getElementById('partBtn').getBoundingClientRect();
+      const pw = pop.offsetWidth, m = 8;
+      let left = Math.min(r.right - pw, window.innerWidth - pw - m);
+      left = Math.max(m, left);
+      pop.style.left = left + 'px';
+      pop.style.top = (r.bottom + 6) + 'px';
+      pop.style.maxHeight = Math.max(160, window.innerHeight - r.bottom - 20) + 'px';
+    }
+    function closePopups() { document.getElementById('partPopup')?.classList.remove('show'); }
+
+    function togglePartStudent(id, checked) {
+      if (spinning) { renderPart(); return; }
+      if (checked) st.excluded = st.excluded.filter(x => x !== id);
+      else if (!st.excluded.includes(id)) st.excluded.push(id);
+      saveSt(); rebuild(); renderNames(); renderResults(); document.getElementById('partCount').textContent =
+        students.filter(s => !st.excluded.includes(s.id)).length + '/' + students.length;
+      redrawStage();
+    }
+    function partAll(on) {
+      if (spinning) return;
+      st.excluded = on ? [] : students.map(s => s.id);
+      saveSt(); rebuild(); renderSpinUI();
+    }
+
+    /* ── ជម្រើស & ប៊ូតុង ── */
+    function onRemoveAfter() { st.removeAfter = document.getElementById('removeAfter').checked; saveSt(); }
+
+    function toggleSound() { st.sound = !st.sound; saveSt(); syncSoundUI(); }
+    function syncSoundUI() {
+      const b = document.getElementById('soundBtn');
+      if (!b) return;
+      b.classList.toggle('on', !!st.sound);
+      document.getElementById('soundIcon').className = st.sound ? 'fa-solid fa-volume-high' : 'fa-solid fa-volume-xmark';
+    }
+    function toggleFullscreen() {
+      const el = document.getElementById('stageCol');
+      if (!document.fullscreenElement) { (el.requestFullscreen || el.webkitRequestFullscreen)?.call(el); }
+      else { document.exitFullscreen?.(); }
+    }
+
+    function restartAll() {
+      if (spinning) return;
+      st.removed = [];
+      st.results = [];
+      angle = 0;
+      saveSt(); rebuild(); renderSpinUI();
+    }
+
+    function setBusy(b) {
+      spinning = b;
+      ['spinBtn', 'restartBtn', 'hubBtn', 'segSpin', 'segGroup'].forEach(id => { const el = document.getElementById(id); if (el) el.disabled = b; });
+      document.querySelectorAll('.mini').forEach(x => x.disabled = b);
+    }
+
+    function switchMode(mode) {
+      if (spinning) return;
+      currentMode = mode;
+      document.querySelectorAll('.mini').forEach(b => b.classList.toggle('active', b.dataset.m === mode));
+      document.getElementById('wheelWrap').style.display = mode === 'WHEEL' ? 'block' : 'none';
+      document.getElementById('raceCanvas').style.display = mode === 'WHEEL' ? 'none' : 'block';
+      document.getElementById('spinTxt').textContent = mode === 'WHEEL' ? 'បង្វិល' : 'ចាប់ផ្តើម';
+      document.getElementById('spinIcon').className = mode === 'WHEEL' ? 'fa-solid fa-dice' : 'fa-solid fa-flag-checkered';
+      initRace();
+      redrawStage();
+    }
+
+    function redrawStage() {
+      if (currentTab !== 'spin') return;
+      if (currentMode === 'WHEEL') drawWheel(); else drawRace();
+    }
+
+    function startRandomizer() {
+      if (spinning || !entries.length || currentTab !== 'spin') return;
+      if (currentMode === 'WHEEL') spinWheel();
+      else startRace();
+    }
+
+    /* ── សំឡេង ── */
+    function ac() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); return audioCtx; }
+    function playTick() {
+      if (!st.sound) return;
+      try {
+        const ctx = ac(); if (ctx.state === 'suspended') ctx.resume();
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = 'triangle'; o.frequency.setValueAtTime(620, ctx.currentTime);
+        g.gain.setValueAtTime(0.05, ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
+        o.connect(g); g.connect(ctx.destination); o.start(); o.stop(ctx.currentTime + 0.05);
+      } catch (e) {}
+    }
+    function playWin() {
+      if (!st.sound) return;
+      try {
+        const ctx = ac(); if (ctx.state === 'suspended') ctx.resume();
+        [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => {
+          const o = ctx.createOscillator(), g = ctx.createGain();
+          o.type = 'sine'; o.frequency.setValueAtTime(f, ctx.currentTime + i * 0.1);
+          g.gain.setValueAtTime(0.15, ctx.currentTime + i * 0.1);
+          g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.1 + 0.3);
+          o.connect(g); g.connect(ctx.destination); o.start(ctx.currentTime + i * 0.1); o.stop(ctx.currentTime + i * 0.1 + 0.3);
+        });
+      } catch (e) {}
+    }
+
+    /* ── Canvas helper ── */
+    function fitCanvas(cv, w, h) {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+      const pw = Math.round(w * dpr), ph = Math.round(h * dpr);
+      if (cv.width !== pw || cv.height !== ph) { cv.width = pw; cv.height = ph; }
+      const ctx = cv.getContext('2d');
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      return ctx;
+    }
+    function trimText(ctx, text, maxW) {
+      if (ctx.measureText(text).width <= maxW) return text;
+      const chars = Array.from(text);
+      while (chars.length > 1) {
+        chars.pop();
+        const t = chars.join('') + '…';
+        if (ctx.measureText(t).width <= maxW) return t;
+      }
+      return chars.join('');
+    }
+
+    /* ── 🎡 DRAW WHEEL (រចនាតាមរូប៖ ព្រួញនៅស្តាំ) ── */
+    function drawWheel() {
+      const cv = document.getElementById('wheelCanvas');
+      const L = cv.clientWidth || 600;
+      if (L < 10) return;
+      const ctx = fitCanvas(cv, L, L);
+      ctx.clearRect(0, 0, L, L);
+      const cx = L / 2, cy = L / 2, R = L / 2 - 6;
+      const n = entries.length;
+
+      if (!n) {
+        ctx.beginPath(); ctx.arc(cx, cy, R, 0, TAU);
+        ctx.fillStyle = '#e2e8f0'; ctx.fill();
+        ctx.fillStyle = '#64748b'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.font = `700 ${Math.max(13, L * 0.034)}px ${FONT}`;
+        ctx.fillText('សូមបន្ថែមឈ្មោះ ឬជ្រើសអ្នកចូលរួម', cx, cy - L * 0.12);
+        return;
+      }
+
+      const slice = TAU / n;
+      const fs = Math.max(11, Math.min(L * 0.05, (TAU * R * 0.72 / n) * 0.42));
+      const maxW = R - L * 0.12 - 24;
+
+      for (let i = 0; i < n; i++) {
+        const a0 = angle + i * slice;
+        ctx.beginPath();
+        if (n === 1) { ctx.arc(cx, cy, R, 0, TAU); }
+        else { ctx.moveTo(cx, cy); ctx.arc(cx, cy, R, a0, a0 + slice); ctx.closePath(); }
+        ctx.fillStyle = colorOf(i, n);
+        ctx.fill();
+        if (n > 1) { ctx.strokeStyle = 'rgba(255,255,255,0.95)'; ctx.lineWidth = 1.5; ctx.stroke(); }
+
+        // ឈ្មោះ (ត្រឡប់ឱ្យអានបានត្រង់នៅផ្នែកខាងឆ្វេង)
+        const mid = a0 + slice / 2;
+        const a = ((mid % TAU) + TAU) % TAU;
+        const flip = a > Math.PI / 2 && a < Math.PI * 1.5;
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(flip ? mid + Math.PI : mid);
+        ctx.font = `700 ${fs}px ${FONT}`;
+        ctx.fillStyle = '#1e293b';
+        ctx.textBaseline = 'middle';
+        const label = trimText(ctx, entries[i].name, maxW);
+        if (flip) { ctx.textAlign = 'left'; ctx.fillText(label, -(R - 18), 0); }
+        else { ctx.textAlign = 'right'; ctx.fillText(label, R - 18, 0); }
+        ctx.restore();
+      }
+
+      // គែមក្រៅ
+      ctx.beginPath(); ctx.arc(cx, cy, R, 0, TAU);
+      ctx.strokeStyle = 'rgba(255,255,255,0.95)'; ctx.lineWidth = 3; ctx.stroke();
+    }
+
+    function pointerIndex() {
+      const n = entries.length, slice = TAU / n;
+      const a = ((-angle) % TAU + TAU) % TAU;
+      return Math.min(n - 1, Math.floor(a / slice));
+    }
+
+    function spinWheel() {
+      setBusy(true);
+      const n = entries.length, slice = TAU / n;
+      const w = Math.floor(Math.random() * n);                         // អ្នកឈ្នះ (ចៃដន្យស្មើគ្នា)
+      const p = w * slice + slice * (0.12 + 0.76 * Math.random());     // ទីតាំងត្រូវឈប់ក្នុងចំណែកនោះ
+      const base = (((-p - angle) % TAU) + TAU) % TAU;
+      const turns = 6 + Math.floor(Math.random() * 3);
+      const start = angle, target = angle + turns * TAU + base;
+      const dur = 6500, t0 = performance.now();
+      let lastIdx = -1;
+
+      function frame(t) {
+        const pr = Math.min((t - t0) / dur, 1);
+        const ease = 1 - Math.pow(1 - pr, 4);
+        angle = start + (target - start) * ease;
+        const idx = pointerIndex();
+        if (idx !== lastIdx) { playTick(); lastIdx = idx; }
+        drawWheel();
+        if (pr < 1) requestAnimationFrame(frame);
+        else finishWinner(entries[w], '🎡 អ្នកឈ្នះកង់វិល!');
+      }
+      requestAnimationFrame(frame);
+    }
+
+    /* ── 🏁 RACES (ទូកង / ឡាន) ── */
+    let racers = [];
+    function initRace() { racers = entries.map((e, i) => ({ entry: e, x: 45, color: colorOf(i, entries.length) })); }
+
+    function drawRace() {
+      const cv = document.getElementById('raceCanvas');
+      const w = 720, h = 520;
+      const ctx = fitCanvas(cv, w, h);
+      ctx.clearRect(0, 0, w, h);
+
+      if (!entries.length) {
+        ctx.fillStyle = 'rgba(2,132,199,0.1)'; ctx.fillRect(0, 0, w, h);
+        ctx.fillStyle = '#0284c7'; ctx.font = `600 16px ${FONT}`; ctx.textAlign = 'center';
+        ctx.fillText('សូមជ្រើសរើសសិស្សយ៉ាងហោច ១ នាក់', w / 2, h / 2);
+        return;
+      }
+      if (racers.length !== entries.length) initRace();
+
+      const isBoat = currentMode === 'BOAT';
+      const finishX = w - 70;
+      ctx.fillStyle = isBoat ? '#0284c7' : '#1e293b';
+      ctx.fillRect(0, 0, w, h);
+
+      if (isBoat) {
+        ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 2;
+        for (let y = 20; y < h; y += 35) {
+          ctx.beginPath();
+          for (let x = 0; x < w; x += 40) { ctx.quadraticCurveTo(x + 10, y - 5, x + 20, y); ctx.quadraticCurveTo(x + 30, y + 5, x + 40, y); }
+          ctx.stroke();
+        }
+        ctx.fillStyle = '#fff'; ctx.fillRect(finishX, 0, 10, h);
+        ctx.fillStyle = '#ef4444';
+        for (let y = 0; y < h; y += 20) ctx.fillRect(finishX, y, 10, 10);
+      } else {
+        for (let x = 0; x < w; x += 20) {
+          ctx.fillStyle = (Math.floor(x / 20) % 2 === 0) ? '#ef4444' : '#fff';
+          ctx.fillRect(x, 0, 20, 6); ctx.fillRect(x, h - 6, 20, 6);
+        }
+        const sq = 10;
+        for (let y = 6; y < h - 6; y += sq) for (let c = 0; c < 2; c++) {
+          ctx.fillStyle = ((Math.floor(y / sq) + c) % 2 === 0) ? '#fff' : '#000';
+          ctx.fillRect(finishX + c * sq, y, sq, sq);
+        }
+      }
+
+      const nR = racers.length;
+      const top = isBoat ? 0 : 6, laneH = (h - (isBoat ? 0 : 12)) / nR;
+      const fs = Math.max(9, Math.min(13, laneH * 0.6));
+
+      racers.forEach((r, idx) => {
+        const laneY = top + idx * laneH + laneH / 2;
+        ctx.strokeStyle = isBoat ? 'rgba(255,255,255,0.2)' : '#475569'; ctx.lineWidth = 1;
+        if (!isBoat) ctx.setLineDash([12, 10]);
+        ctx.beginPath(); ctx.moveTo(0, top + idx * laneH); ctx.lineTo(w, top + idx * laneH); ctx.stroke();
+        ctx.setLineDash([]);
+
+        const x = r.x;
+        if (isBoat) {
+          ctx.fillStyle = r.color;
+          ctx.beginPath();
+          ctx.moveTo(x - 30, laneY - 4); ctx.lineTo(x + 15, laneY - 4);
+          ctx.quadraticCurveTo(x + 30, laneY, x + 25, laneY + 8); ctx.lineTo(x - 25, laneY + 8);
+          ctx.closePath(); ctx.fill();
+          ctx.fillStyle = '#f59e0b'; ctx.beginPath(); ctx.arc(x + 25, laneY + 1, 4, 0, TAU); ctx.fill();
+        } else {
+          ctx.fillStyle = r.color; ctx.fillRect(x - 26, laneY - 7, 34, 14);
+          ctx.fillStyle = '#0f172a'; ctx.fillRect(x - 14, laneY - 5, 16, 10);
+          ctx.fillStyle = '#38bdf8'; ctx.fillRect(x - 2, laneY - 4, 3, 8);
+          ctx.fillStyle = '#000';
+          ctx.fillRect(x - 20, laneY - 9, 8, 3); ctx.fillRect(x, laneY - 9, 8, 3);
+          ctx.fillRect(x - 20, laneY + 6, 8, 3); ctx.fillRect(x, laneY + 6, 8, 3);
+          ctx.fillStyle = '#fef08a'; ctx.fillRect(x + 7, laneY - 5, 2, 3); ctx.fillRect(x + 7, laneY + 2, 2, 3);
+        }
+        ctx.fillStyle = '#fff'; ctx.font = `700 ${fs}px ${FONT}`; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+        let name = r.entry.name; if (name.length > 12) name = name.substring(0, 10) + '…';
+        ctx.fillText(name, x - (isBoat ? 35 : 32), laneY + 1);
+      });
+    }
+
+    function startRace() {
+      setBusy(true);
+      initRace();
+      const isBoat = currentMode === 'BOAT';
+      const finishX = 720 - 70;
+      let winner = null;
+
+      function frame() {
+        let done = false;
+        racers.forEach(r => {
+          const left = finishX - r.x;
+          const sf = left > 180 ? 1 : Math.max(0.08, left / 200);
+          r.x += (Math.random() * (isBoat ? 1.8 : 2.0) + (isBoat ? 0.4 : 0.5)) * sf;
+          if (r.x >= finishX && !winner) { winner = r.entry; done = true; }
+        });
+        drawRace();
+        if (Math.random() < 0.2) playTick();
+        if (!done) requestAnimationFrame(frame);
+        else finishWinner(winner, isBoat ? '🚣 ជ័យលាភីប្រណាំងទូកង!' : '🏎️ ជ័យលាភីប្រណាំងឡាន!');
+      }
+      requestAnimationFrame(frame);
+    }
+
+    /* ── 🏆 លទ្ធផល ── */
+    function finishWinner(w, title) {
+      setBusy(false);
+      playWin();
+      const t = new Date();
+      st.results.push({ key: w.key, name: w.name, time: String(t.getHours()).padStart(2, '0') + ':' + String(t.getMinutes()).padStart(2, '0') });
+      pendingRemoval = st.removeAfter ? w.key : null;
+      saveSt();
+      renderResults();
+
+      document.getElementById('winnerBadge').textContent = title || 'អ្នកទទួលបានវេន';
+      document.getElementById('winnerName').textContent = w.name;
+      document.getElementById('winnerClass').textContent = w.className ? 'ថ្នាក់ទី ' + w.className : '';
+      document.getElementById('winnerPhoto').src = (w.photoUrl && w.photoUrl.trim() !== '') ? w.photoUrl : DEFAULT_AVATAR;
+      document.getElementById('winnerModal').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('winnerModal').classList.remove('active');
+      if (pendingRemoval) {
+        if (!st.removed.includes(pendingRemoval)) st.removed.push(pendingRemoval);
+        pendingRemoval = null;
+        saveSt(); rebuild(); renderSpinUI();
+        initRace();
+      }
+      redrawStage();
+    }
+
+    /* =========================================================
+       👥 GROUP TAB
+    ========================================================= */
+    let currentGroups = [];
+    const daysOfWeek = ["ថ្ងៃចន្ទ", "ថ្ងៃអង្គារ", "ថ្ងៃពុធ", "ថ្ងៃព្រហស្បតិ៍", "ថ្ងៃសុក្រ", "ថ្ងៃសៅរ៍"];
+
+    function gStatus(msg, color) {
+      const el = document.getElementById('gStatus');
+      if (el) { el.innerText = msg || ''; el.style.color = color || 'var(--text-muted)'; }
+    }
+    function studentKey(s) { return (s.id || s.name || '').toString().trim(); }
+    function findStudent(key) { return students.find(s => studentKey(s) === key || s.name === key) || null; }
+
+    function clearRoles() {
+      ['presidentSelect', 'deputy1Select', 'deputy2Select'].forEach(id => {
+        document.getElementById(id).innerHTML = '<option value="">-- ជ្រើសរើសសិស្ស --</option>';
+      });
+    }
+    function populateRoles() {
+      clearRoles();
+      students.forEach(s => {
+        ['presidentSelect', 'deputy1Select', 'deputy2Select'].forEach(id => {
+          const o = document.createElement('option');
+          o.value = studentKey(s);
+          o.textContent = s.name + (s.sex ? ` (${s.sex})` : '');
+          document.getElementById(id).appendChild(o);
+        });
+      });
+      enforceUnique();
+      updateRoleSummary();
+    }
+    function enforceUnique() {
+      const ids = ['presidentSelect', 'deputy1Select', 'deputy2Select'];
+      const chosen = ids.map(id => document.getElementById(id).value);
+      ids.forEach((id, idx) => {
+        const sel = document.getElementById(id);
+        const my = sel.value;
+        Array.prototype.forEach.call(sel.options, o => {
+          if (!o.value) { o.hidden = false; return; }
+          o.hidden = chosen.some((v, i) => i !== idx && v === o.value);
+        });
+        sel.value = my;
+      });
+    }
+    function onRoleChange() { enforceUnique(); updateRoleSummary(); }
+
+    function updateRoleSummary() {
+      const p = findStudent(document.getElementById('presidentSelect').value);
+      const d1 = findStudent(document.getElementById('deputy1Select').value);
+      const d2 = findStudent(document.getElementById('deputy2Select').value);
+      const none = '<span style="color:var(--text-muted)">មិនទាន់ជ្រើសរើស</span>';
+      document.getElementById('roleSummary').innerHTML =
+        '👑 <b>ប្រធានថ្នាក់៖</b> ' + (p ? escapeHtml(p.name) : none) +
+        '<br>⭐ <b>អនុប្រធានទី១៖</b> ' + (d1 ? escapeHtml(d1.name) : none) +
+        '<br>⭐ <b>អនុប្រធានទី២៖</b> ' + (d2 ? escapeHtml(d2.name) : none) +
+        '<br><small style="color:var(--text-muted)">ℹ️ សិស្សទាំង ៣ តួនាទីនេះនឹងមិនចូលក្នុងវេនសម្អាតឡើយ។</small>';
+    }
+
+    function randomLeadership() {
+      if (students.length < 3) { alert('ថ្នាក់នេះត្រូវមានសិស្សយ៉ាងតិច ៣ នាក់!'); return; }
+      const a = students.slice().sort(() => Math.random() - .5);
+      document.getElementById('presidentSelect').value = studentKey(a[0]);
+      document.getElementById('deputy1Select').value = studentKey(a[1]);
+      document.getElementById('deputy2Select').value = studentKey(a[2]);
+      enforceUnique(); updateRoleSummary();
+    }
+
+    function rotateLeadership() {
+      if (students.length < 3) { alert('ថ្នាក់នេះត្រូវមានសិស្សយ៉ាងតិច ៣ នាក់!'); return; }
+      const n = students.length;
+      let startIndex = 0;
+      const curKey = document.getElementById('presidentSelect').value;
+      if (curKey) {
+        const idx = students.findIndex(s => studentKey(s) === curKey);
+        if (idx !== -1) startIndex = (idx + 1) % n;
+      }
+      const picked = [0, 1, 2].map(i => students[(startIndex + i) % n]);
+      document.getElementById('presidentSelect').value = studentKey(picked[0]);
+      document.getElementById('deputy1Select').value = studentKey(picked[1]);
+      document.getElementById('deputy2Select').value = studentKey(picked[2]);
+      enforceUnique(); updateRoleSummary();
+      gStatus('🔄 បានកំណត់តួនាទីតាមវេន — កុំភ្លេចចុច "រក្សាទុកតួនាទីថ្នាក់"!', '#0284c7');
+    }
+
+    async function saveLeadership() {
+      if (!curClass) { alert('សូមជ្រើសរើសថ្នាក់សិន!'); return; }
+      const p = findStudent(document.getElementById('presidentSelect').value);
+      const d1 = findStudent(document.getElementById('deputy1Select').value);
+      const d2 = findStudent(document.getElementById('deputy2Select').value);
+      const arr = [p, d1, d2].filter(Boolean).map(studentKey);
+      if (new Set(arr).size !== arr.length) { alert('សិស្សម្នាក់មិនអាចកាន់តួនាទីពីរបានទេ!'); return; }
+
+      gStatus('⏳ កំពុងរក្សាទុកក្នុង Supabase...', '#0284c7');
+      try {
+        const payload = {
+          assigned_class: curClass,
+          president: p ? { id: p.id, name: p.name } : null,
+          deputy1: d1 ? { id: d1.id, name: d1.name } : null,
+          deputy2: d2 ? { id: d2.id, name: d2.name } : null,
+          updated_at: new Date().toISOString()
+        };
+        const { error } = await sb.from('class_groups').upsert(payload, { onConflict: 'assigned_class' });
+        if (error) throw error;
+        gStatus('✅ បានរក្សាទុកតួនាទីថ្នាក់ក្នុង Supabase រួចរាល់!', '#10b981');
+      } catch (e) { gStatus('❌ ' + e.message, '#ef4444'); }
+    }
+
+    function toggleModeInput() {
+      const m = document.getElementById('splitMode').value;
+      document.getElementById('inputLabel').innerHTML = m === 'numGroups'
+        ? '<i class="fa-solid fa-hashtag"></i> ចំនួនវេន ៖'
+        : '<i class="fa-solid fa-users"></i> ចំនួនសិស្ស/វេន ៖';
+      document.getElementById('splitValue').value = m === 'numGroups' ? 4 : 5;
+    }
+    function getExcludedKeys() {
+      return ['presidentSelect', 'deputy1Select', 'deputy2Select'].map(id => document.getElementById(id).value).filter(Boolean);
+    }
+
+    function generateGroups() {
+      const m = document.getElementById('splitMode').value;
+      const n = parseInt(document.getElementById('splitValue').value, 10);
+      if (!curClass) { alert('សូមជ្រើសរើសថ្នាក់រៀន!'); return; }
+      if (!n || n < 1) { alert('សូមបញ្ចូលចំនួនឱ្យបានត្រឹមត្រូវ!'); return; }
+
+      const excluded = getExcludedKeys();
+      const cleaning = students.filter(s => excluded.indexOf(studentKey(s)) === -1);
+      if (!cleaning.length) { gStatus('❌ មិនមានសិស្សសម្រាប់វេនសម្អាតទេ!', '#ef4444'); return; }
+      if (m === 'numGroups' && n > cleaning.length) { alert('ចំនួនវេនមិនអាចលើសចំនួនសិស្សដែលត្រូវសម្អាតបានទេ!'); return; }
+
+      for (let i = cleaning.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const t = cleaning[i]; cleaning[i] = cleaning[j]; cleaning[j] = t;
+      }
+      const groups = [];
+      if (m === 'numGroups') {
+        for (let i = 0; i < n; i++) groups.push([]);
+        cleaning.forEach((s, idx) => groups[idx % n].push(s));
+      } else {
+        for (let i = 0; i < cleaning.length; i += n) groups.push(cleaning.slice(i, i + n));
+      }
+
+      // រក្សាតែទិន្នន័យចាំបាច់ (មិនរក្សារូបថត)
+      currentGroups = groups.map(g => g.map(s => ({ id: s.id, name: s.name, sex: s.sex })));
+      document.getElementById('printClassName').innerText = 'ប្រចាំ ថ្នាក់ទី ' + curClass;
+      updatePrintRoles();
+      renderGroups(currentGroups);
+
+      document.getElementById('countInfo').innerHTML =
+        '👥 <b>សិស្សសរុប៖</b> ' + students.length + ' នាក់ | 🚫 <b>មិនចូលវេន៖</b> ' + excluded.length + ' នាក់ | 🧹 <b>ចូលវេនសម្អាត៖</b> ' + cleaning.length + ' នាក់';
+    }
+
+    function updatePrintRoles() {
+      const p = findStudent(document.getElementById('presidentSelect').value);
+      const d1 = findStudent(document.getElementById('deputy1Select').value);
+      const d2 = findStudent(document.getElementById('deputy2Select').value);
+      document.getElementById('printRoles').innerText =
+        'ប្រធានថ្នាក់៖ ' + (p ? p.name : '........') +
+        ' | អនុប្រធានទី១៖ ' + (d1 ? d1.name : '........') +
+        ' | អនុប្រធានទី២៖ ' + (d2 ? d2.name : '........');
+    }
+
+    function renderGroups(groups) {
+      const c = document.getElementById('groupsContainer');
+      c.innerHTML = '';
+      groups.forEach((group, index) => {
+        if (!group.length) return;
+        const box = document.createElement('div');
+        box.className = 'group-box';
+
+        const h = document.createElement('div');
+        h.className = 'group-header';
+        h.innerHTML = '<i class="fa-solid fa-flag"></i> ' + (daysOfWeek[index] || ('ក្រុមទី ' + (index + 1))) + ' (' + group.length + ' នាក់)';
+        box.appendChild(h);
+
+        const ul = document.createElement('ul');
+        ul.className = 'group-list';
+        group.forEach((s, i) => {
+          const li = document.createElement('li');
+          const left = document.createElement('span');
+          left.innerHTML = '<b>' + (i + 1) + '.</b> ' + escapeHtml(s.name);
+          if (i === 0) {
+            const b = document.createElement('span');
+            b.className = 'role-badge role-leader';
+            b.innerHTML = '<i class="fa-solid fa-crown"></i> ប្រធាន';
+            left.appendChild(b);
+          } else if (i === 1) {
+            const b = document.createElement('span');
+            b.className = 'role-badge role-sub';
+            b.innerHTML = '<i class="fa-solid fa-star"></i> អនុប្រធាន';
+            left.appendChild(b);
+          }
+          const sex = document.createElement('span');
+          sex.className = 'student-sex';
+          sex.textContent = '(' + (s.sex || 'មិនបានដាក់') + ')';
+          li.appendChild(left); li.appendChild(sex);
+          ul.appendChild(li);
+        });
+        box.appendChild(ul);
+        c.appendChild(box);
+      });
+
+      gStatus('🎉 បែងចែកវេនបានជោគជ័យ!', '#10b981');
+      document.getElementById('saveBtn').style.display = 'inline-flex';
+      document.getElementById('printBtn').style.display = 'inline-flex';
+    }
+
+    async function saveGroupsToSupabase() {
+      if (!currentGroups.length) { alert('សូមបែងចែកវេនសិន!'); return; }
+      const p = findStudent(document.getElementById('presidentSelect').value);
+      const d1 = findStudent(document.getElementById('deputy1Select').value);
+      const d2 = findStudent(document.getElementById('deputy2Select').value);
+
+      gStatus('⏳ កំពុងរក្សាទុកក្នុង Supabase...', '#0284c7');
+      try {
+        const payload = {
+          assigned_class: curClass,
+          president: p ? { id: p.id, name: p.name } : null,
+          deputy1: d1 ? { id: d1.id, name: d1.name } : null,
+          deputy2: d2 ? { id: d2.id, name: d2.name } : null,
+          groups_data: currentGroups,
+          updated_at: new Date().toISOString()
+        };
+        const { error } = await sb.from('class_groups').upsert(payload, { onConflict: 'assigned_class' });
+        if (error) throw error;
+        gStatus('✅ បានរក្សាទុកកាលវិភាគវេនសម្អាតក្នុង Supabase រួចរាល់!', '#10b981');
+      } catch (e) { gStatus('❌ ' + e.message, '#ef4444'); }
+    }
+  </script>
 </body>
 </html>
