@@ -66,781 +66,318 @@
       --res-bg: #312e81;   --res-txt: #c7d2fe;   --res-col: #1e1b4b; --res-brd: #3730a3;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Khmer OS Battambang', 'Battambang', sans-serif;
-    }
-    
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Khmer OS Battambang', 'Battambang', sans-serif; }
     html, body {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background-color: var(--bg);
-      color: var(--text);
-      font-size: 13px;
-      line-height: 1.4;
-      font-family: 'Khmer OS Battambang', 'Battambang', sans-serif;
-      -webkit-tap-highlight-color: transparent;
-      transition: background-color 0.25s ease, color 0.25s ease;
+      width: 100%; height: 100%; overflow: hidden;
+      background-color: var(--bg); color: var(--text); font-size: 13px; line-height: 1.4;
+      -webkit-tap-highlight-color: transparent; transition: background-color 0.25s ease, color 0.25s ease;
     }
-
-    input, select, button {
-      font-family: 'Khmer OS Battambang', 'Battambang', sans-serif;
-    }
-
+    input, select, button { font-family: 'Khmer OS Battambang', 'Battambang', sans-serif; }
     .f-moul { font-family: 'Khmer OS Muol Light', 'Moul', cursive; font-weight: normal; }
 
     /* 🌟 TOAST NOTIFICATION */
     .toast-notification {
-      position: fixed;
-      top: 18px;
-      right: 20px;
-      background: #059669;
-      color: white;
-      padding: 10px 18px;
-      border-radius: 12px;
-      font-size: 13px;
-      font-weight: 700;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
-      z-index: 99999;
-      transform: translateY(-50px);
-      opacity: 0;
-      pointer-events: none;
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      position: fixed; top: 18px; right: 20px; background: #059669; color: white;
+      padding: 10px 18px; border-radius: 12px; font-size: 13px; font-weight: 700;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35); z-index: 99999; transform: translateY(-50px);
+      opacity: 0; pointer-events: none; transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex; align-items: center; gap: 8px;
     }
     .toast-notification.show { transform: translateY(0); opacity: 1; }
 
     /* ══════════════ 🔒 AUTH DENIED WRAPPER ══════════════ */
     #authDeniedWrap {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      text-align: center;
-      padding: 30px 20px;
-      background: var(--bg);
+      display: none; flex-direction: column; align-items: center; justify-content: center;
+      min-height: 100vh; text-align: center; padding: 30px 20px; background: var(--bg);
     }
     .auth-card {
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      border-radius: 24px;
-      padding: 36px 28px;
-      max-width: 440px;
-      width: 100%;
-      box-shadow: var(--card-shadow);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      background: var(--surface); border: 1.5px solid var(--border); border-radius: 24px;
+      padding: 36px 28px; max-width: 440px; width: 100%; box-shadow: var(--card-shadow);
+      display: flex; flex-direction: column; align-items: center;
     }
     .auth-icon {
-      width: 68px; height: 68px; border-radius: 20px;
-      background: rgba(239, 68, 68, 0.15); color: #ef4444;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 32px; margin-bottom: 16px;
+      width: 68px; height: 68px; border-radius: 20px; background: rgba(239, 68, 68, 0.15); color: #ef4444;
+      display: flex; align-items: center; justify-content: center; font-size: 32px; margin-bottom: 16px;
     }
-    .auth-card h2 { font-size: 18px; margin-bottom: 8px; color: #ef4444; }
-    .auth-card p { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 22px; }
     .btn-login-redirect {
-      background: linear-gradient(135deg, #0284c7, #2563eb);
-      color: #ffffff; padding: 10px 24px; border-radius: 12px;
-      font-weight: 700; font-size: 13.5px; text-decoration: none;
-      display: inline-flex; align-items: center; gap: 8px;
-      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3); border: none; cursor: pointer;
+      background: linear-gradient(135deg, #0284c7, #2563eb); color: #ffffff; padding: 10px 24px; border-radius: 12px;
+      font-weight: 700; font-size: 13.5px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; border: none; cursor: pointer;
     }
 
     /* ================= LANDING PAGE CARDS ================= */
     #landingPage {
-      max-width: 860px;
-      margin: 0 auto;
-      padding: 30px 20px;
-      height: 100%;
-      overflow-y: auto;
-      animation: fadeIn 0.25s ease;
+      max-width: 920px; margin: 0 auto; padding: 30px 20px; height: 100%; overflow-y: auto;
     }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-
     .landing-header { margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end; }
     .landing-header h1 { font-size: 22px; color: var(--primary); margin-bottom: 4px; }
-    .landing-header p { font-size: 13px; color: var(--text-muted); }
     .assigned-class-badge {
-      background: var(--surface-elevated);
-      border: 1.5px solid var(--border);
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 12.5px;
-      font-weight: 700;
-      color: var(--primary);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+      background: var(--surface-elevated); border: 1.5px solid var(--border);
+      padding: 6px 14px; border-radius: 20px; font-size: 12.5px; font-weight: 700; color: var(--primary);
     }
-
-    .cards-wrapper {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 16px;
-    }
+    .cards-wrapper { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
     .score-card {
-      background: var(--surface);
-      border-radius: 20px;
-      padding: 22px;
-      cursor: pointer;
-      border: 1.5px solid var(--border);
-      box-shadow: var(--card-shadow);
-      transition: all 0.22s ease;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      min-height: 160px;
+      background: var(--surface); border-radius: 20px; padding: 22px; cursor: pointer;
+      border: 1.5px solid var(--border); box-shadow: var(--card-shadow); transition: all 0.22s ease;
+      display: flex; flex-direction: column; justify-content: space-between; min-height: 160px;
     }
-    .score-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 25px rgba(2, 132, 199, 0.15);
-      border-color: var(--primary);
-    }
+    .score-card:hover { transform: translateY(-3px); border-color: var(--primary); }
     .score-card.monthly { border-left: 6px solid #0284c7; }
     .score-card.semester { border-left: 6px solid #7c3aed; }
-    
+    .score-card.subject { border-left: 6px solid #00b894; }
     .card-top { display: flex; align-items: flex-start; gap: 14px; }
     .card-icon {
-      width: 46px; height: 46px; border-radius: 14px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 22px; flex-shrink: 0;
+      width: 46px; height: 46px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0;
     }
     .card-icon.m { background: rgba(2, 132, 199, 0.15); color: #0284c7; }
     .card-icon.s { background: rgba(124, 58, 237, 0.15); color: #7c3aed; }
-    
-    .card-info h2 { font-size: 16px; margin-bottom: 4px; }
-    .card-info p { font-size: 12px; color: var(--text-muted); }
-    
-    .card-bottom {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 14px;
-      padding-top: 10px;
-      border-top: 1px dashed var(--border);
-    }
-    .card-badge {
-      font-size: 11px; font-weight: bold; padding: 4px 12px; border-radius: 20px;
-      background: var(--surface-elevated); color: var(--text); border: 1px solid var(--border);
-    }
-    .card-arrow { font-size: 15px; color: var(--text-muted); transition: transform 0.2s; }
-    .score-card:hover .card-arrow { transform: translateX(3px); color: var(--primary); }
+    .card-icon.sub { background: rgba(0, 184, 148, 0.15); color: #00b894; }
+    .card-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; padding-top: 10px; border-top: 1px dashed var(--border); }
+    .card-badge { font-size: 11px; font-weight: bold; padding: 4px 12px; border-radius: 20px; background: var(--surface-elevated); border: 1px solid var(--border); }
 
     /* ================= MAIN SPREADSHEET FORM ================= */
-    #mainForm {
-      display: none;
-      width: 100%;
-      height: 100%;
-      flex-direction: column;
-      box-sizing: border-box;
-      overflow: hidden;
-    }
-
-    /* ── Top Soft Header Bar ── */
+    #mainForm { display: none; width: 100%; height: 100%; flex-direction: column; overflow: hidden; }
     .top-sub-bar {
-      flex: 0 0 auto;
-      padding: 8px 14px 6px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
+      flex: 0 0 auto; padding: 8px 14px 6px; display: flex; align-items: center; gap: 12px;
       background: linear-gradient(135deg, rgba(220, 252, 231, 0.6) 0%, rgba(224, 242, 254, 0.6) 100%);
       border-bottom: 1px solid var(--toolbar-border);
     }
-    [data-theme="dark"] .top-sub-bar {
-      background: linear-gradient(135deg, #09202a 0%, #0c2b3d 100%);
-      border-color: #17384a;
-    }
+    [data-theme="dark"] .top-sub-bar { background: linear-gradient(135deg, #09202a 0%, #0c2b3d 100%); border-color: #17384a; }
     .btn-back-arrow {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--text);
-      width: 30px; height: 30px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 13px; font-weight: 700;
-      transition: all 0.15s;
+      background: var(--surface); border: 1px solid var(--border); color: var(--text);
+      width: 30px; height: 30px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: 700;
     }
-    .btn-back-arrow:hover { color: #0284c7; border-color: #0284c7; }
-
     .tag-title-badge {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 4px 12px;
-      font-weight: 700;
-      font-size: 13px;
-      color: #059669;
-      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
+      padding: 4px 12px; font-weight: 700; font-size: 13px; color: #059669; display: inline-flex; align-items: center; gap: 6px;
     }
-    [data-theme="dark"] .tag-title-badge { color: #34d399; }
-
     .badge-student-counts {
-      background: rgba(255, 255, 255, 0.85);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 4px 14px;
-      font-weight: 700;
-      font-size: 12px;
-      color: #0284c7;
+      background: rgba(255, 255, 255, 0.85); border: 1px solid var(--border); border-radius: 20px;
+      padding: 4px 14px; font-weight: 700; font-size: 12px; color: #0284c7;
     }
-    [data-theme="dark"] .badge-student-counts {
-      background: #11222e; color: #38bdf8;
-    }
+    [data-theme="dark"] .badge-student-counts { background: #11222e; color: #38bdf8; }
 
-    /* ── Main Toolbar with Rounded Pills ── */
+    /* Toolbar with Rounded Pills */
     .top-toolbar {
-      flex: 0 0 auto;
-      background: var(--surface);
-      padding: 8px 12px;
-      border-bottom: 1.5px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 6px;
-      overflow-x: auto;
-      white-space: nowrap;
-      z-index: 50;
+      flex: 0 0 auto; background: var(--surface); padding: 8px 12px; border-bottom: 1.5px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between; gap: 6px; overflow-x: auto; white-space: nowrap; z-index: 50;
     }
-    .top-toolbar::-webkit-scrollbar { height: 3px; }
-    .top-toolbar::-webkit-scrollbar-thumb { background: rgba(2, 132, 199, 0.25); border-radius: 3px; }
-
-    .tb-group {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      flex-shrink: 0;
-    }
-
+    .tb-group { display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; }
     .pill-select {
-      border: 1.5px solid var(--border);
-      border-radius: 20px;
-      padding: 4px 12px;
-      font-size: 12.5px;
-      font-weight: 700;
-      background: var(--surface-elevated);
-      color: var(--text);
-      cursor: pointer;
-      outline: none;
-      height: 34px;
+      border: 1.5px solid var(--border); border-radius: 20px; padding: 4px 12px; font-size: 12.5px;
+      font-weight: 700; background: var(--surface-elevated); color: var(--text); cursor: pointer; height: 34px; outline: none;
     }
-    .pill-select:focus { border-color: #0284c7; }
-
     .pill-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 14px;
-      border-radius: 20px;
-      border: 1.5px solid var(--border);
-      background: var(--surface);
-      color: var(--text);
-      font-size: 12.5px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.15s;
-      height: 34px;
-      white-space: nowrap;
+      display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px; border-radius: 20px;
+      border: 1.5px solid var(--border); background: var(--surface); color: var(--text);
+      font-size: 12.5px; font-weight: 700; cursor: pointer; transition: all 0.15s; height: 34px; white-space: nowrap;
     }
     .pill-btn:hover { background: var(--surface-elevated); border-color: var(--primary); }
+    .pill-btn.teal { background: #00b894; color: #fff; border-color: #00b894; }
+    .pill-btn.teal:hover { background: #00a383; }
 
-    .btn-eraser {
-      width: 34px; height: 34px;
-      border-radius: 50%;
-      border: 1.5px solid var(--border);
-      background: var(--surface);
-      color: var(--text-muted);
-      cursor: pointer;
-      display: inline-flex; align-items: center; justify-content: center;
-      font-size: 13px; transition: all 0.15s;
+    .btn-eraser, .btn-lock {
+      width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--border);
+      background: var(--surface); color: var(--text-muted); cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
     }
-    .btn-eraser:hover { color: #dc2626; border-color: #dc2626; background: rgba(220, 38, 38, 0.08); }
-
-    .btn-lock {
-      width: 34px; height: 34px;
-      border-radius: 50%;
-      border: 1.5px solid var(--border);
-      background: var(--surface);
-      color: var(--text-muted);
-      cursor: pointer;
-      display: inline-flex; align-items: center; justify-content: center;
-      font-size: 13px; transition: all 0.15s;
-    }
-    .btn-lock.locked {
-      background: rgba(220, 38, 38, 0.12); color: #dc2626; border-color: #dc2626;
-    }
-
+    .btn-lock.locked { background: rgba(220, 38, 38, 0.12); color: #dc2626; border-color: #dc2626; }
     .search-input-wrap {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      border: 1.5px solid var(--border);
-      border-radius: 20px;
-      padding: 4px 12px;
-      background: var(--surface-elevated);
-      min-width: 170px;
-      height: 34px;
+      display: inline-flex; align-items: center; gap: 6px; border: 1.5px solid var(--border);
+      border-radius: 20px; padding: 4px 12px; background: var(--surface-elevated); min-width: 150px; height: 34px;
     }
-    .search-input-wrap input {
-      border: none; background: transparent; outline: none;
-      font-size: 12px; color: var(--text); width: 100%;
-    }
-
+    .search-input-wrap input { border: none; background: transparent; outline: none; font-size: 12px; color: var(--text); width: 100%; }
     .save-status-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 5px 14px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 700;
-      background: rgba(16, 185, 129, 0.12);
-      color: #059669;
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      height: 34px;
-    }
-    [data-theme="dark"] .save-status-pill { color: #34d399; }
-    .save-status-pill.saving {
-      background: rgba(245, 158, 11, 0.12); color: #d97706; border-color: rgba(245, 158, 11, 0.3);
-    }
-    .save-status-pill.error {
-      background: rgba(239, 68, 68, 0.12); color: #dc2626; border-color: rgba(239, 68, 68, 0.3);
+      display: inline-flex; align-items: center; gap: 5px; padding: 5px 14px; border-radius: 20px;
+      font-size: 12px; font-weight: 700; background: rgba(16, 185, 129, 0.12); color: #059669; border: 1px solid rgba(16, 185, 129, 0.3); height: 34px;
     }
 
-    /* ── Dropdown Filter និទ្ទេស ── */
+    /* Dropdown Filter និទ្ទេស */
     .dropdown-relative { position: relative; display: inline-block; }
-
     .grade-menu-popup {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      min-width: 150px;
-      max-height: 70vh;
-      overflow-y: auto;
-      overscroll-behavior: contain;
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      border-radius: 18px;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.22);
-      z-index: 5000;
-      padding: 6px;
-      animation: popIn 0.15s ease-out;
+      display: none; position: fixed; top: 0; left: 0; min-width: 150px; max-height: 70vh;
+      overflow-y: auto; background: var(--surface); border: 1.5px solid var(--border); border-radius: 18px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.22); z-index: 5000; padding: 6px;
     }
     .grade-menu-popup.show { display: block; }
-    @keyframes popIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-    
     .grade-menu-item {
-      padding: 8px 14px;
-      border-radius: 12px;
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--text);
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 8px;
-      transition: background 0.15s;
+      padding: 8px 14px; border-radius: 12px; font-size: 13px; font-weight: 700; color: var(--text);
+      cursor: pointer; display: flex; align-items: center; justify-content: space-between;
     }
     .grade-menu-item:hover { background: var(--surface-elevated); }
     .grade-menu-item.active { background: rgba(2, 132, 199, 0.12); color: var(--primary); }
 
-    /* =========================================================
-       📱 COMPACT MODE: ពេលពង្រីក/អេក្រង់តូច → បង្ហាញតែ icon
-    ========================================================= */
-    .btn-icon-only { display: none; }
-
-    @media (max-width: 1100px) {
-      .btn-label { display: none !important; }
-      .btn-icon-only { display: inline-block; }
-
-      .pill-btn {
-        padding: 0;
-        width: 34px;
-        justify-content: center;
-        gap: 0;
-      }
-      #btnToggleGradeLang { width: auto; padding: 0 10px; gap: 4px; }
-      #btnGradeFilter { width: 34px; }
-      #btnGradeFilter .fa-chevron-down { display: none; }
-
-      .pill-select { padding: 4px 8px; font-size: 12px; max-width: 110px; }
-      .search-input-wrap { min-width: 0; width: 120px; padding: 4px 10px; }
-      .save-status-pill { padding: 0; width: 34px; justify-content: center; }
-      .tag-title-badge { padding: 4px 9px; }
-
-      .top-sub-bar { gap: 8px; padding: 6px 10px; flex-wrap: nowrap; overflow: hidden; }
-      .badge-student-counts {
-        font-size: 11px; padding: 4px 10px;
-        white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;
-      }
-      .top-toolbar { padding: 6px 8px; gap: 5px; }
-      .tb-group { gap: 5px; }
-      .landing-header { flex-wrap: wrap; gap: 10px; }
-    }
-
-    @media (max-width: 600px) {
-      .search-input-wrap { width: 100px; }
-      .pill-select { max-width: 96px; }
-    }
-
     /* ================= TABLE SCROLL ENGINE ================= */
-    .table-container-card {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      min-height: 0;
-      background: var(--surface);
-      overflow: hidden;
-      position: relative;
-    }
+    .table-container-card { flex: 1; display: flex; flex-direction: column; min-height: 0; background: var(--surface); overflow: hidden; position: relative; }
+    .table-scroll-wrap { flex: 1; min-height: 0; width: 100%; overflow: auto !important; position: relative; background: var(--surface); }
+    .modern-score-table { width: max-content; min-width: 100%; border-collapse: collapse; font-size: 12.5px; text-align: center; border: 1px solid var(--border); }
+    .modern-score-table th, .modern-score-table td { border: 1px solid var(--border); padding: 3px 2px; height: 38px; vertical-align: middle; white-space: nowrap; }
 
-    .table-scroll-wrap {
-      flex: 1;
-      min-height: 0;
-      width: 100%;
-      overflow: auto !important;
-      position: relative;
-      background: var(--surface);
-      -webkit-overflow-scrolling: touch;
-      touch-action: pan-x pan-y !important;
-    }
-    .table-scroll-wrap::-webkit-scrollbar { width: 6px; height: 6px; }
-    .table-scroll-wrap::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-
-    .modern-score-table {
-      width: max-content;
-      min-width: 100%;
-      border-collapse: collapse;
-      font-size: 12.5px;
-      text-align: center;
-      border: 1px solid var(--border);
-    }
-    .modern-score-table th, .modern-score-table td {
-      border: 1px solid var(--border);
-      padding: 3px 2px;
-      height: 38px;
-      vertical-align: middle;
-      white-space: nowrap;
-    }
-
-    .stk {
-      position: sticky !important;
-      background: var(--surface) !important;
-      color: var(--text);
-      z-index: 20;
-    }
-
-    /* 📐 ជួរជាប់ឆ្វេង៖ ល.រ | ឈ្មោះសិស្ស | ភេទ */
-    :root { --w1: 44px; --w2: 110px; --w2b: 110px; --w3: 50px; }
+    .stk { position: sticky !important; background: var(--surface) !important; color: var(--text); z-index: 20; }
+    :root { --w1: 44px; --w2: 110px; --w2b: 110px; --w3: 50px; --col-w: 52px; --res-w: 68px; --bw: 42px; }
     .stk-1 { left: 0; min-width: var(--w1); max-width: var(--w1); }
-    .stk-2 {
-      left: var(--w1);
-      min-width: 90px;
-      text-align: left;
-      padding: 3px 12px 3px 8px !important;
-      font-weight: bold;
-      white-space: nowrap;
-    }
-    .stk-2b {
-      left: calc(var(--w1) + var(--w2));
-      min-width: 70px;
-      text-align: left;
-      padding: 3px 12px 3px 8px !important;
-      font-weight: bold;
-      white-space: nowrap;
-    }
-    .stk-3 {
-      left: calc(var(--w1) + var(--w2) + var(--w2b));
-      min-width: var(--w3); max-width: var(--w3);
-      box-shadow: 3px 0 6px -2px rgba(0,0,0,0.12);
-    }
-
+    .stk-2 { left: var(--w1); min-width: 90px; text-align: left; padding: 3px 12px 3px 8px !important; font-weight: bold; }
+    .stk-2b { left: calc(var(--w1) + var(--w2)); min-width: 70px; text-align: left; padding: 3px 12px 3px 8px !important; font-weight: bold; }
+    .stk-3 { left: calc(var(--w1) + var(--w2) + var(--w2b)); min-width: var(--w3); max-width: var(--w3); box-shadow: 3px 0 6px -2px rgba(0,0,0,0.12); }
     .modern-score-table thead th.stk { z-index: 40; background: var(--surface-elevated) !important; }
 
-    /* Category Headers */
-    .th-group-kh { background: var(--khmer-bg); color: var(--khmer-txt); }
-    .th-group-ma { background: var(--math-bg);  color: var(--math-txt); }
-    .th-group-sc { background: var(--sci-bg);   color: var(--sci-txt); }
-    .th-group-so { background: var(--soc-bg);   color: var(--soc-txt); }
-    .th-group-ar { background: var(--art-bg);   color: var(--art-txt); }
-    .th-group-fo { background: var(--for-bg);   color: var(--for-txt); }
-    .th-group-res{ background: var(--res-bg);   color: var(--res-txt); }
+    .th-vertical-cell { height: 125px !important; max-height: 125px; vertical-align: middle !important; text-align: center; position: relative; width: var(--col-w); min-width: var(--col-w); }
+    .th-vertical-wrap { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%) rotate(-90deg); font-size: 10.5px; font-weight: bold; }
 
-    .th-vertical-cell {
-      height: 125px !important;
-      max-height: 125px;
-      vertical-align: middle !important;
-      text-align: center;
-      padding: 4px 1px !important;
-    }
-    .th-vertical-wrap {
-      display: inline-block;
-      white-space: nowrap;
-      transform: rotate(-90deg);
-      font-size: 11px;
-      font-weight: bold;
-      letter-spacing: 0.3px;
-      margin: 0 auto;
-      line-height: 1;
-    }
-
-    .th-sub-kh { background: var(--khmer-col); color: var(--khmer-txt); }
-    .th-sub-ma { background: var(--math-col);  color: var(--math-txt); }
-    .th-sub-sc { background: var(--sci-col);   color: var(--sci-txt); }
-    .th-sub-so { background: var(--soc-col);   color: var(--soc-txt); }
-    .th-sub-ar { background: var(--art-col);   color: var(--art-txt); }
-    .th-sub-fo { background: var(--for-col);   color: var(--for-txt); }
-    .th-sub-res{ background: var(--res-col);   color: var(--res-txt); }
-
-    .coef-row {
-      background: var(--surface-elevated);
-      font-size: 9.5px;
-      font-weight: 700;
-      color: var(--text-muted);
-      height: 20px !important;
-      line-height: 1;
-    }
-    .coef-row td {
-      height: 20px !important;
-      padding: 1px 2px !important;
-    }
-    .coef-tag {
-      display: inline-block;
-      padding: 1px 4px;
-      border-radius: 3px;
-      font-weight: 700;
-      font-size: 9.5px;
-      line-height: 1.1;
-    }
-    .coef-zero { color: var(--text-muted); opacity: 0.55; }
-    .coef-active { color: #0284c7; font-weight: bold; }
-
-    /* =========================================================
-       🌟 COLOR-CODED PASTEL INPUTS
-    ========================================================= */
-    .score-box {
-      width: 44px;
-      height: 32px;
-      text-align: center;
-      border-radius: 9px;
-      border: 1.5px solid var(--border);
-      font-size: 13.5px;
-      font-weight: 700;
-      outline: none;
-      transition: all 0.15s ease;
-      background: var(--surface);
-      color: var(--text);
-    }
-    .score-box:focus {
-      border-color: #0284c7 !important;
-      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.25);
-      background: #ffffff !important;
-    }
-
+    .score-box { width: var(--bw); height: 32px; text-align: center; border-radius: 9px; border: 1.5px solid var(--border); font-size: 13.5px; font-weight: 700; outline: none; background: var(--surface); color: var(--text); }
+    .score-box:focus { border-color: #0284c7 !important; box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.25); background: #ffffff !important; }
     .score-box.val-low    { background: #fee2e2 !important; color: #dc2626 !important; border-color: #fca5a5 !important; }
     .score-box.val-medium { background: #ffedd5 !important; color: #ea580c !important; border-color: #fdba74 !important; }
     .score-box.val-fair   { background: #fef3c7 !important; color: #d97706 !important; border-color: #fde68a !important; }
     .score-box.val-good   { background: #dbeafe !important; color: #2563eb !important; border-color: #bfdbfe !important; }
     .score-box.val-excel  { background: #dcfce7 !important; color: #16a34a !important; border-color: #bbf7d0 !important; }
 
-    [data-theme="dark"] .score-box.val-low    { background: #450a0a !important; color: #f87171 !important; border-color: #991b1b !important; }
-    [data-theme="dark"] .score-box.val-medium { background: #431407 !important; color: #fb923c !important; border-color: #9a3412 !important; }
-    [data-theme="dark"] .score-box.val-fair   { background: #451a03 !important; color: #fbbf24 !important; border-color: #b45309 !important; }
-    [data-theme="dark"] .score-box.val-good   { background: #172554 !important; color: #60a5fa !important; border-color: #1e40af !important; }
-    [data-theme="dark"] .score-box.val-excel  { background: #052e16 !important; color: #4ade80 !important; border-color: #166534 !important; }
-
-    /* Results Column */
-    .col-res-tot   { min-width: 75px !important; font-size: 13px; color: var(--text-muted); }
-    .col-res-avg   { min-width: 75px !important; font-size: 13.5px; font-weight: bold; color: var(--text); }
-    .col-res-rank  { min-width: 75px !important; font-size: 13.5px; font-weight: bold; color: #dc2626; }
-    .col-res-grade { min-width: 90px !important; }
-    .col-res-note  { min-width: 75px !important; font-size: 12.5px; }
-    .col-res-abs   { min-width: 65px !important; font-size: 12.5px; color: #dc2626; font-weight: bold; }
-
-    .badge-grade {
-      display: inline-block;
-      padding: 3px 10px;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: 12px;
-      white-space: nowrap;
+    .modern-score-table td.sc-td { position: relative; width: var(--col-w); min-width: var(--col-w); }
+    .modern-score-table td.sc-td.lk::before {
+      content: "\f023"; font-family: "Font Awesome 6 Free"; font-weight: 900; position: absolute;
+      top: 50%; left: 50%; margin-left: calc(var(--bw) / -2 + 5px); transform: translateY(-50%); font-size: 8px; color: #dc2626; pointer-events: none;
     }
+    .modern-score-table td.sc-td.lk .score-box { padding-left: 11px; }
+
+    .badge-grade { display: inline-block; padding: 3px 10px; border-radius: 8px; font-weight: 700; font-size: 12px; }
     .grade-a { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
     .grade-b { background: #dbeafe; color: #1d4ed8; border: 1px solid #bfdbfe; }
     .grade-c { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
     .grade-d { background: #f3e8ff; color: #7e22ce; border: 1px solid #e9d5ff; }
     .grade-e { background: #ffedd5; color: #c2410c; border: 1px solid #fed7aa; }
     .grade-f { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
-
-    [data-theme="dark"] .grade-a { background: #052e16; color: #4ade80; border-color: #166534; }
-    [data-theme="dark"] .grade-b { background: #172554; color: #60a5fa; border-color: #1e40af; }
-    [data-theme="dark"] .grade-c { background: #451a03; color: #fbbf24; border-color: #b45309; }
-    [data-theme="dark"] .grade-d { background: #3b0764; color: #c084fc; border-color: #6b21a8; }
-    [data-theme="dark"] .grade-e { background: #431407; color: #fb923c; border-color: #9a3412; }
-    [data-theme="dark"] .grade-f { background: #450a0a; color: #f87171; border-color: #991b1b; }
-
     .status-pass { color: #16a34a; font-weight: bold; }
     .status-fail { color: #dc2626; font-weight: bold; }
 
-    .dr:hover { background-color: var(--surface-elevated); }
-    .dr:hover .stk { background-color: var(--surface-elevated) !important; }
-    .focused-row { background-color: rgba(2, 132, 199, 0.08) !important; }
-    .focused-row .stk { background-color: rgba(2, 132, 199, 0.08) !important; }
-
     /* =========================================================
-       📐 EQUAL COLUMN WIDTHS: ក្រឡាមុខវិជ្ជាស្មើគ្នា
+       📚 ផ្ទាំងគ្រប់គ្រងមុខវិជ្ជា (SUBJECT MANAGER MODAL ដូចរូបភាព)
     ========================================================= */
-    :root { --col-w: 52px; --res-w: 68px; --bw: 42px; }
-
-    .modern-score-table td.sc-td,
-    .modern-score-table th.th-vertical-cell:not([class*="col-res"]) {
-      width: var(--col-w);
-      min-width: var(--col-w);
-      max-width: var(--col-w);
-      padding: 3px 2px;
+    #subjectManagerModal {
+      display: none; position: fixed; inset: 0; background: rgba(5, 15, 23, 0.92); backdrop-filter: blur(8px);
+      z-index: 4000; overflow-y: auto; padding: 18px 24px 100px;
     }
-    .score-box { width: var(--bw); height: 32px; font-size: 13px; }
+    .sub-page-wrap { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
+    .sub-top-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+    .sub-title { font-size: 20px; font-weight: 800; color: #38bdf8; display: flex; align-items: center; gap: 10px; }
+    
+    .btn-template-import {
+      background: #00b894; color: #fff; border: none; padding: 8px 18px; border-radius: 12px;
+      font-size: 13px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-template-import:hover { background: #00a383; }
 
-    .th-vertical-cell { position: relative; }
-    .th-vertical-wrap {
-      position: absolute;
-      left: 50%; top: 50%;
-      transform: translate(-50%, -50%) rotate(-90deg);
-      margin: 0;
-      font-size: 10.5px;
-      letter-spacing: 0;
+    .subject-section-card {
+      background: #0e1e28; border: 1.5px solid #1c3647; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column;
+    }
+    .section-top-bar {
+      padding: 14px 18px; display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1.5px solid #1c3647; background: #122430; flex-wrap: wrap; gap: 10px;
+    }
+    .sec-left { display: flex; align-items: center; gap: 10px; }
+    .sec-title { font-size: 15px; font-weight: 800; color: #fff; }
+    .sec-count-badge {
+      background: rgba(0, 184, 148, 0.15); color: #00b894; border: 1px solid rgba(0,184,148,0.3);
+      padding: 2px 10px; border-radius: 20px; font-size: 11.5px; font-weight: 700;
+    }
+    .btn-action-pill {
+      background: #172d3c; color: #f8fafc; border: 1px solid #1c3647;
+      padding: 6px 14px; border-radius: 10px; font-size: 12.5px; font-weight: 700; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn-action-pill.teal { background: #00b894; color: #fff; border: none; }
+
+    table.subject-table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: center; }
+    table.subject-table thead th {
+      background: #0d2836; color: #38bdf8; font-weight: 800; padding: 12px 10px; border-bottom: 1.5px solid #1c3647;
+    }
+    table.subject-table tbody td { padding: 10px 8px; border-bottom: 1px solid #1c3647; vertical-align: middle; }
+    table.subject-table tbody tr:hover { background: #172d3c; }
+
+    .name-flex-cell { display: flex; align-items: center; gap: 10px; text-align: left; padding-left: 10px; }
+    .toggle-arrow-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 12px; width: 18px; }
+    .subject-icon-box {
+      width: 28px; height: 28px; border-radius: 7px; background: #00b894; color: #fff;
+      display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0;
+    }
+    .subject-icon-box.child { background: #0284c7; }
+    .badge-sub-count {
+      font-size: 11px; font-weight: 700; background: rgba(255, 255, 255, 0.08);
+      color: #00b894; border: 1px solid rgba(0, 184, 148, 0.3); padding: 1px 7px; border-radius: 8px;
+    }
+    .class-tag-pill { background: #1e3a8a; color: #93c5fd; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px; }
+    .badge-coef {
+      background: rgba(0, 184, 148, 0.15); color: #00b894; font-weight: 800; padding: 3px 10px; border-radius: 8px;
+    }
+    .row-action-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 13px; padding: 5px 8px; }
+    .row-action-btn:hover { color: #fff; }
+    .row-action-btn.del:hover { color: #f87171; }
+
+    .edit-input {
+      background: #0a1721; border: 1px solid #1c3647; color: #fff; border-radius: 8px;
+      padding: 6px 10px; font-size: 13px; font-weight: 700; outline: none; width: 100%; max-width: 220px;
+    }
+    .edit-input.sm { max-width: 70px; text-align: center; }
+
+    .edit-footer-bar {
+      position: fixed; bottom: 0; left: 0; right: 0; background: #0c1c27; border-top: 1.5px solid #1c3647;
+      padding: 12px 24px; display: none; align-items: center; justify-content: center; gap: 16px; z-index: 5000;
+      box-shadow: 0 -8px 25px rgba(0,0,0,0.45);
+    }
+    .btn-edit-cancel {
+      background: #f8fafc; color: #0f172a; border: none; padding: 10px 28px; border-radius: 12px; font-weight: 800; cursor: pointer;
+    }
+    .btn-edit-save {
+      background: linear-gradient(135deg, #8b5cf6, #6d28d9); color: #fff; border: none; padding: 10px 32px;
+      border-radius: 12px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 16px rgba(139, 92, 246, 0.4);
     }
 
-    .modern-score-table .col-res-tot,
-    .modern-score-table .col-res-avg,
-    .modern-score-table .col-res-rank,
-    .modern-score-table .col-res-note,
-    .modern-score-table .col-res-abs {
-      width: var(--res-w) !important;
-      min-width: var(--res-w) !important;
-      max-width: var(--res-w) !important;
-    }
-    .modern-score-table .col-res-grade {
-      width: 78px !important;
-      min-width: 78px !important;
-      max-width: 78px !important;
-    }
-
-    /* =========================================================
-       🔒 រូបសោនៅពីមុខពិន្ទុដែលបានបញ្ចូល (ពេលចាក់សោ)
-    ========================================================= */
-    .modern-score-table td.sc-td { position: relative; }
-    .modern-score-table td.sc-td.lk::before {
-      content: "\f023";
-      font-family: "Font Awesome 6 Free";
-      font-weight: 900;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      margin-left: calc(var(--bw) / -2 + 5px);
-      transform: translateY(-50%);
-      font-size: 8px;
-      color: #dc2626;
-      pointer-events: none;
-      z-index: 2;
-    }
-    .modern-score-table td.sc-td.lk .score-box { padding-left: 11px; }
-    body.is-locked .score-box { opacity: 0.85; cursor: not-allowed; }
-
-    /* 📱 ទូរសព្ទ */
-    @media (max-width: 700px) {
-      :root { --w1: 28px; --w2b: 0px; --w3: 34px; --col-w: 46px; --res-w: 62px; --bw: 40px; }
-      .stk-2 { font-size: 11.5px; padding: 3px 8px 3px 5px !important; min-width: 70px; }
-      .score-box { height: 30px; font-size: 12.5px; }
-      .modern-score-table th, .modern-score-table td { padding-left: 1px; padding-right: 1px; }
-    }
-
-    /* ================= PRINT REPORT MODAL ================= */
+    /* Print Preview */
     #scoreReportModal {
-      display: none; position: fixed; inset: 0;
-      background: rgba(9, 14, 23, 0.85); backdrop-filter: blur(6px);
+      display: none; position: fixed; inset: 0; background: rgba(9, 14, 23, 0.85);
       z-index: 3000; overflow-y: auto; padding: 14px 14px 40px;
     }
     .viewer-top-bar {
-      position: sticky; top: 0; background: var(--surface);
-      border: 1px solid var(--border); color: var(--text); padding: 10px 16px;
-      border-radius: 14px; display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 16px; z-index: 100; box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+      position: sticky; top: 0; background: var(--surface); border: 1px solid var(--border);
+      padding: 10px 16px; border-radius: 14px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;
     }
     .report-paper-container {
       background: #ffffff; width: 297mm; max-width: 100%; min-height: 210mm;
-      margin: 0 auto; padding: 10mm 12mm; border-radius: 6px;
-      box-shadow: 0 10px 35px rgba(0,0,0,0.6); color: #0f172a; font-size: 11px;
+      margin: 0 auto; padding: 10mm 12mm; border-radius: 6px; color: #0f172a; font-size: 11px;
     }
-    .rpt-header-banner { text-align: center; color: #000; margin-bottom: 10px; }
-    .print-report-table {
-      width: 100%; border-collapse: collapse; font-size: 10px; text-align: center;
-      border: 1px solid #1e293b; margin: 6px 0;
-    }
-    .print-report-table th, .print-report-table td {
-      border: 1px solid #1e293b; padding: 3px 1px; vertical-align: middle;
-    }
-    .print-report-table thead th { background: #f8fafc; font-weight: bold; }
-    .th-rpt-group { background: #e0f2fe !important; color: #1e3a8a; }
+    .print-report-table { width: 100%; border-collapse: collapse; font-size: 10px; text-align: center; border: 1px solid #1e293b; }
+    .print-report-table th, .print-report-table td { border: 1px solid #1e293b; padding: 3px 1px; vertical-align: middle; }
     .th-rpt-vert-box { width: 26px; height: 110px; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
-    .th-rpt-vert { display: inline-block; white-space: nowrap; transform: rotate(-90deg); font-size: 10px; font-weight: bold; color: #1e3a8a; line-height: 1; }
-    .clean-lunar-input {
-      font-size: 12px; font-weight: bold; color: #1e3a8a; border: none !important;
-      background: transparent !important; text-align: center; width: 100%; max-width: 480px; outline: none; margin: 0 auto; display: block;
-    }
+    .th-rpt-vert { display: inline-block; white-space: nowrap; transform: rotate(-90deg); font-size: 10px; font-weight: bold; color: #1e3a8a; }
 
     @page { size: A4 landscape; margin: 5mm 6mm; }
     @media print {
-      html, body {
-        background: #ffffff !important; color: #000000 !important; margin: 0 !important;
-        padding: 0 !important; width: 100% !important; height: auto !important; overflow: visible !important;
-        -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
-      }
-      #authDeniedWrap, #landingPage, #mainForm, .viewer-top-bar { display: none !important; }
-      #scoreReportModal {
-        display: block !important; position: static !important; background: #ffffff !important;
-        padding: 0 !important; margin: 0 !important; overflow: visible !important; width: 100% !important;
-      }
-      .report-paper-container {
-        width: 100% !important; max-width: 100% !important; min-height: auto !important;
-        margin: 0 !important; padding: 0 !important; box-shadow: none !important; border-radius: 0 !important;
-      }
+      body { background: #fff !important; color: #000 !important; }
+      #authDeniedWrap, #landingPage, #mainForm, #subjectManagerModal, .viewer-top-bar { display: none !important; }
+      #scoreReportModal { display: block !important; position: static !important; padding: 0 !important; }
     }
   </style>
 </head>
 <body>
 
-  <!-- 🌟 TOAST NOTIFICATION CONTAINER -->
   <div id="toastNotification" class="toast-notification"></div>
-
-  <!-- 🌟 HIDDEN FILE INPUT FOR EXCEL IMPORT -->
   <input type="file" id="excelScoreFileInput" accept=".xlsx, .xls" style="display:none;" onchange="handleExcelUpload(this)">
 
-  <!-- ══════════════ 🔒 AUTH DENIED WRAPPER ══════════════ -->
+  <!-- ══════════════ 🔒 AUTH WRAPPER ══════════════ -->
   <div id="authDeniedWrap">
     <div class="auth-card">
       <div class="auth-icon">🔒</div>
       <h2 class="f-moul">សូមចូលប្រើប្រាស់ជាមុនសិន!</h2>
-      <p>លោកអ្នកមិនទាន់បាន Login ចូលក្នុងប្រព័ន្ធនៅឡើយទេ។ សូម Login គណនីរបស់អ្នកដើម្បីមើល ឬកត់ត្រាពិន្ទុសិស្ស។</p>
+      <p>លោកអ្នកមិនទាន់បាន Login ចូលក្នុងប្រព័ន្ធនៅឡើយទេ។</p>
       <a href="index.html" target="_top" class="btn-login-redirect" onclick="goToIndex(event)">
-        <span>🔑</span> <span>ទៅកាន់ទំព័រដើម (Login)</span>
+        <span>🔑</span> <span>ទៅកាន់ទំព័រដើម</span>
       </a>
     </div>
   </div>
 
-  <!-- ══════════════ 1. LANDING PAGE CARDS ══════════════ -->
+  <!-- ══════════════ 1. LANDING PAGE ══════════════ -->
   <div id="landingPage">
     <div class="landing-header">
       <div>
         <h1 class="f-moul">ស្រង់ពិន្ទុ</h1>
-        <p>បញ្ចូលពិន្ទុសិស្សប្រចាំខែ និងឆមាស</p>
+        <p>បញ្ចូលពិន្ទុសិស្សប្រចាំខែ ឆមាស និងគ្រប់គ្រងមុខវិជ្ជា</p>
       </div>
       <div class="assigned-class-badge" id="landingClassBadge">
         <span>🏫</span> <span id="landingClassBadgeTxt">ថ្នាក់ទី...</span>
@@ -875,19 +412,33 @@
           <span class="card-arrow">➔</span>
         </div>
       </div>
+
+      <!-- 🌟 កាតគ្រប់គ្រងមុខវិជ្ជាលើ Landing Page -->
+      <div class="score-card subject" onclick="openSubjectModal()">
+        <div class="card-top">
+          <div class="card-icon sub">📚</div>
+          <div class="card-info">
+            <h2 class="f-moul" style="color: #00b894;">គ្រប់គ្រងមុខវិជ្ជា</h2>
+            <p>កំណត់មុខវិជ្ជាខែ/ឆមាស មេគុណ និងពិន្ទុអតិបរមា</p>
+          </div>
+        </div>
+        <div class="card-bottom">
+          <span class="card-badge">មុខវិជ្ជា & មេគុណ</span>
+          <span class="card-arrow">➔</span>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- ══════════════ 2. MAIN SCORE SPREADSHEET ══════════════ -->
+  <!-- ══════════════ 2. MAIN SPREADSHEET FORM ══════════════ -->
   <div id="mainForm">
-    
     <div class="top-sub-bar">
       <button type="button" class="btn-back-arrow" onclick="goBackLanding()" title="ត្រឡប់">
         <i class="fa-solid fa-chevron-left"></i>
       </button>
 
       <div class="tag-title-badge" id="formHeaderBadge">
-        <i class="fa-solid fa-list-check"></i> <span id="txtFormModeTitle" class="btn-label">ពិន្ទុខែ</span>
+        <i class="fa-solid fa-list-check"></i> <span id="txtFormModeTitle">ពិន្ទុខែ</span>
       </div>
 
       <div class="badge-student-counts" id="badgeStudentSummary">
@@ -895,9 +446,7 @@
       </div>
 
       <div id="adminClassBox" style="display:none; margin-left:auto;">
-        <select id="classSelect" onchange="loadStudents()" class="pill-select" style="height:32px;">
-          <option value="">កំពុងទាញយក...</option>
-        </select>
+        <select id="classSelect" onchange="loadStudents()" class="pill-select" style="height:32px;"></select>
       </div>
 
       <div id="teacherClassBadge" class="teacher-class-badge" style="display:none; margin-left:auto;">
@@ -905,7 +454,7 @@
       </div>
     </div>
 
-    <!-- ── របារឧបករណ៍ (TOOLBAR) ── -->
+    <!-- របារឧបករណ៍ (TOOLBAR) -->
     <div class="top-toolbar" id="topToolbar">
       <div class="tb-group">
         <select id="semesterFilterSelect" class="pill-select" onchange="onSemesterFilterChange()">
@@ -913,14 +462,17 @@
           <option value="2">ប្រចាំឆមាស ២</option>
         </select>
 
-        <select id="monthSelect" class="pill-select" onchange="loadStudents()">
-          <!-- Populated dynamically via JS -->
-        </select>
+        <select id="monthSelect" class="pill-select" onchange="loadStudents()"></select>
 
         <select id="semesterExamSelect" class="pill-select" style="display:none;" onchange="loadStudents()">
           <option value="ឆមាសទី១">ឆមាសទី 1</option>
           <option value="ឆមាសទី២">ឆមាសទី 2</option>
         </select>
+
+        <!-- 🌟 ប៊ូតុងបើកផ្ទាំងគ្រប់គ្រងមុខវិជ្ជា -->
+        <button type="button" class="pill-btn teal" onclick="openSubjectModal()" title="គ្រប់គ្រងមុខវិជ្ជា និងមេគុណ">
+          <i class="fa-solid fa-book-bookmark"></i> <span class="btn-label">មុខវិជ្ជា</span>
+        </button>
 
         <button type="button" class="pill-btn" onclick="downloadExcelTemplate()">
           <i class="fa-solid fa-download"></i> <span class="btn-label">ទាញយកគំរូ</span>
@@ -930,19 +482,15 @@
           <i class="fa-solid fa-upload"></i> <span class="btn-label">Upload</span>
         </button>
 
-        <button type="button" class="pill-btn" id="btnToggleGradeLang" onclick="toggleGradeLang()" title="ចុចដើម្បីប្តូររវាង A-F និង ខ្មែរ">
+        <button type="button" class="pill-btn" id="btnToggleGradeLang" onclick="toggleGradeLang()" title="ប្តូរ A-F / ខ្មែរ">
           <i class="fa-solid fa-language"></i> <span id="txtGradeLang">A-F</span>
         </button>
 
-        <!-- និទ្ទេស Dropdown Filter -->
         <div class="dropdown-relative">
           <button type="button" class="pill-btn" id="btnGradeFilter" onclick="toggleGradeMenu(event)">
             <i class="fa-solid fa-filter btn-icon-only"></i><span id="currentGradeFilterTxt" class="btn-label">និទ្ទេស</span> <i class="fa-solid fa-chevron-down" style="font-size:10px; margin-left:4px;"></i>
           </button>
-          
-          <div class="grade-menu-popup" id="gradeMenuPopup">
-            <!-- Rendered dynamically by renderGradeMenuPopup() -->
-          </div>
+          <div class="grade-menu-popup" id="gradeMenuPopup"></div>
         </div>
 
         <div class="search-input-wrap">
@@ -950,7 +498,7 @@
           <input type="text" id="searchBox" placeholder="ស្វែងរកសិស្ស..." oninput="renderTable()">
         </div>
 
-        <button type="button" class="btn-eraser" onclick="clearAllScoresPrompt()" title="លុបពិន្ទុទាំងអស់ក្នុងខែ/ឆមាសនេះ">
+        <button type="button" class="btn-eraser" onclick="clearAllScoresPrompt()" title="លុបពិន្ទុទាំងអស់">
           <i class="fa-solid fa-eraser"></i>
         </button>
 
@@ -968,30 +516,135 @@
       </div>
     </div>
 
-    <!-- ── តារាងស្រង់ពិន្ទុ ── -->
+    <!-- តារាងស្រង់ពិន្ទុ -->
     <div class="table-container-card">
       <div id="tableArea" class="table-scroll-wrap">
         <div style="text-align:center; padding: 50px; color:var(--text-muted);">កំពុងដំណើរការទិន្នន័យ...</div>
       </div>
     </div>
-
   </div>
 
-  <!-- ══════════════ 3. SCORE REPORT VIEWER MODAL ══════════════ -->
+  <!-- ══════════════ 📚 3. ផ្ទាំងគ្រប់គ្រងមុខវិជ្ជា (SUBJECT MODAL ដូចរូបភាព) ══════════════ -->
+  <div id="subjectManagerModal">
+    <div class="sub-page-wrap">
+      
+      <div class="sub-top-header">
+        <div class="sub-title">
+          <button type="button" class="btn-back-arrow" onclick="closeSubjectModal()" style="background:#172d3c; color:#fff; border-color:#1c3647; width:34px; height:34px;">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+          <i class="fa-solid fa-book-bookmark"></i>
+          <span>មុខវិជ្ជា (<span id="txtSubClassHeader">ថ្នាក់ទី...</span>)</span>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:10px;">
+          <button type="button" class="btn-template-import" onclick="importFromDefaultTemplate()">
+            <i class="fa-solid fa-download"></i> <span>នាំចូលពី Template</span>
+          </button>
+          <button type="button" class="btn-action-pill" onclick="closeSubjectModal()">
+            <i class="fa-solid fa-xmark"></i> <span>បិទ</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ផ្នែកមុខវិជ្ជាខែ -->
+      <div class="subject-section-card">
+        <div class="section-top-bar">
+          <div class="sec-left">
+            <i class="fa-solid fa-calendar-days" style="color:#00b894;"></i>
+            <span class="sec-title">មុខវិជ្ជាខែ</span>
+            <span class="sec-count-badge" id="badgeMonthlyCount">6 មុខវិជ្ជា</span>
+          </div>
+          <div class="sec-actions">
+            <button type="button" class="btn-action-pill teal" onclick="addNewSubject('monthly')">
+              <i class="fa-solid fa-plus"></i> <span>បន្ថែម</span>
+            </button>
+            <button type="button" class="btn-action-pill" onclick="toggleSubjectEditMode('monthly')">
+              <i class="fa-solid fa-pen"></i> <span>កែប្រែ</span>
+            </button>
+          </div>
+        </div>
+
+        <div style="overflow-x:auto;">
+          <table class="subject-table">
+            <thead>
+              <tr>
+                <th style="width: 70px;">លំដាប់</th>
+                <th style="text-align: left; padding-left: 20px;">មុខវិជ្ជា</th>
+                <th style="width: 110px;">ថ្នាក់</th>
+                <th style="width: 120px;">ពិន្ទុអតិបរមា</th>
+                <th style="width: 100px;">មេគុណ</th>
+                <th style="width: 100px;">កំណត់</th>
+              </tr>
+            </thead>
+            <tbody id="tableMonthlyBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ផ្នែកមុខវិជ្ជាឆមាស -->
+      <div class="subject-section-card">
+        <div class="section-top-bar">
+          <div class="sec-left">
+            <i class="fa-solid fa-book" style="color:#a78bfa;"></i>
+            <span class="sec-title">មុខវិជ្ជាឆមាស</span>
+            <span class="sec-count-badge" id="badgeSemesterCount" style="color:#a78bfa; border-color:rgba(167,139,250,0.3); background:rgba(167,139,250,0.15);">11 មុខវិជ្ជា</span>
+          </div>
+          <div class="sec-actions">
+            <button type="button" class="btn-action-pill teal" onclick="addNewSubject('semester')">
+              <i class="fa-solid fa-plus"></i> <span>បន្ថែម</span>
+            </button>
+            <button type="button" class="btn-action-pill" onclick="toggleSubjectEditMode('semester')">
+              <i class="fa-solid fa-pen"></i> <span>កែប្រែ</span>
+            </button>
+          </div>
+        </div>
+
+        <div style="overflow-x:auto;">
+          <table class="subject-table">
+            <thead>
+              <tr>
+                <th style="width: 70px;">លំដាប់</th>
+                <th style="text-align: left; padding-left: 20px;">មុខវិជ្ជា</th>
+                <th style="width: 110px;">ថ្នាក់</th>
+                <th style="width: 120px;">ពិន្ទុអតិបរមា</th>
+                <th style="width: 100px;">មេគុណ</th>
+                <th style="width: 100px;">កំណត់</th>
+              </tr>
+            </thead>
+            <tbody id="tableSemesterBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- របាររក្សាទុកខាងក្រោម (ដូចរូបទី ៣) -->
+    <div class="edit-footer-bar" id="subEditFooterBar">
+      <button type="button" class="btn-edit-cancel" onclick="cancelSubjectEditMode()">
+        <i class="fa-solid fa-xmark"></i> <span>បោះបង់</span>
+      </button>
+      <button type="button" class="btn-edit-save" onclick="saveAllSubjectChanges()">
+        <i class="fa-solid fa-check"></i> <span>រក្សាទុក</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════════ 4. SCORE REPORT VIEWER MODAL ══════════════ -->
   <div id="scoreReportModal">
     <div class="viewer-top-bar">
       <button class="pill-btn" onclick="closeScoreReportModal()">⬅ ត្រឡប់</button>
       <div style="display:flex; gap:8px;">
-        <button class="pill-btn" style="background:#0284c7; color:#fff; border-color:#0369a1;" onclick="downloadScorePDF()">📄 ទាញយក PDF</button>
-        <button class="pill-btn" style="background:#16a34a; color:#fff; border-color:#15803d;" onclick="exportToExcel()">📥 Excel</button>
-        <button class="pill-btn" style="background:#7c3aed; color:#fff; border-color:#6d28d9;" onclick="window.print()">🖨️ បោះពុម្ព</button>
+        <button class="pill-btn" style="background:#0284c7; color:#fff;" onclick="downloadScorePDF()">📄 PDF</button>
+        <button class="pill-btn" style="background:#16a34a; color:#fff;" onclick="exportToExcel()">📥 Excel</button>
+        <button class="pill-btn" style="background:#7c3aed; color:#fff;" onclick="window.print()">🖨️ បោះពុម្ព</button>
       </div>
     </div>
     <div class="report-paper-container" id="printableScorePaper"></div>
   </div>
 
   <!-- =========================================================
-       ⚙️ JAVASCRIPT : SUPABASE SCORE ENGINE
+       ⚙️ JAVASCRIPT LOGIC
   ========================================================= -->
   <script>
     /* 1. SUPABASE CLIENT CONFIG */
@@ -999,7 +652,7 @@
     const SUPABASE_ANON_KEY = "sb_publishable_AHDcUJbuMAfhaocyfm2X7w_O9s06wML";
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    /* 2. AUTH GUARD */
+    /* 2. AUTH & SESSION */
     function readSession() {
       try { return JSON.parse(localStorage.getItem('krou_supabase_user') || 'null'); } catch(e) { return null; }
     }
@@ -1019,11 +672,7 @@
     function goToIndex(e) {
       if (e) e.preventDefault();
       if (window.parent && window.parent !== window) {
-        try {
-          window.parent.postMessage({ type: 'OPEN_LOGIN', action: 'LOGIN' }, '*');
-          window.parent.location.href = 'index.html';
-          return;
-        } catch(err) {}
+        try { window.parent.postMessage({ type: 'OPEN_LOGIN', action: 'LOGIN' }, '*'); window.parent.location.href = 'index.html'; return; } catch(err) {}
       }
       window.location.href = 'index.html';
     }
@@ -1033,7 +682,6 @@
     const TEACHER_NAME = CURRENT_USER?.teacher_name || "";
     const IS_ADMIN     = String(USER_ROLE).toLowerCase().trim() === 'admin';
 
-    // 🌟 ការបែងចែកខែតាមឆមាស
     const SEMESTER_1_MONTHS = ['វិច្ឆិកា','ធ្នូ','មករា','កុម្ភៈ','មីនា','មេសា'];
     const SEMESTER_2_MONTHS = ['ឧសភា','មិថុនា','កក្កដា','សីហា','កញ្ញា','តុលា'];
     const ALL_MONTHS = [...SEMESTER_1_MONTHS, ...SEMESTER_2_MONTHS];
@@ -1042,30 +690,22 @@
     function toKhmerNum(n) { return String(n).replace(/\d/g, d => KHMER_DIGITS[d]); }
     function cleanGrade(g) { return String(g || '').replace(/^(ថ្នាក់ទី|ថ្នាក់)\s*/, '').trim(); }
 
-    /* 🌟 អនុគមន៍តម្រៀបថ្នាក់ពីតូចទៅធំ ដោយមិនកំណត់ថ្នាក់រឹងឡើយ (១ < ២ < ៣ < ៤ < ៥ < ៦...) */
     const KHMER_DIGITS_MAP = { '០': 0, '១': 1, '២': 2, '៣': 3, '៤': 4, '៥': 5, '៦': 6, '៧': 7, '៨': 8, '៩': 9 };
-
     function parseGradeValue(gradeStr) {
       const clean = cleanGrade(gradeStr);
       const match = clean.match(/^([០-៩\d]+)(.*)$/);
       if (match) {
         const rawNum = match[1].replace(/[០-៩]/g, d => KHMER_DIGITS_MAP[d] !== undefined ? KHMER_DIGITS_MAP[d] : d);
         const num = parseInt(rawNum, 10);
-        const suffix = (match[2] || '').trim();
-        return { num: isNaN(num) ? 999 : num, suffix: suffix };
+        return { num: isNaN(num) ? 999 : num, suffix: (match[2] || '').trim() };
       }
       return { num: 999, suffix: clean };
     }
-
-    function sortGradesAscending(gradesArray) {
-      return gradesArray.sort((a, b) => {
-        const parsedA = parseGradeValue(a);
-        const parsedB = parseGradeValue(b);
-
-        if (parsedA.num !== parsedB.num) {
-          return parsedA.num - parsedB.num;
-        }
-        return parsedA.suffix.localeCompare(parsedB.suffix, 'km');
+    function sortGradesAscending(arr) {
+      return arr.sort((a, b) => {
+        const pA = parseGradeValue(a), pB = parseGradeValue(b);
+        if (pA.num !== pB.num) return pA.num - pB.num;
+        return pA.suffix.localeCompare(pB.suffix, 'km');
       });
     }
 
@@ -1080,93 +720,66 @@
       toastTimer = setTimeout(() => toast.classList.remove('show'), 3200);
     }
 
-    function applyTheme(th) {
-      document.documentElement.setAttribute('data-theme', th || 'dark');
-    }
+    function applyTheme(th) { document.documentElement.setAttribute('data-theme', th || 'dark'); }
     applyTheme(localStorage.getItem('krou_theme_manual') || 'dark');
-    window.addEventListener('message', ev => {
-      if (ev.data && ev.data.type === 'THEME_CHANGE') applyTheme(ev.data.theme);
-    });
+    window.addEventListener('message', ev => { if (ev.data?.type === 'THEME_CHANGE') applyTheme(ev.data.theme); });
 
-    /* 3. SUBJECT GROUPS */
-    const MONTHLY_GROUPS = [
+    /* =========================================================
+       📚 3. DEFAULT SUBJECT TEMPLATES (ដូចរូបភាពគំរូទាំង ៣)
+    ========================================================= */
+    const DEFAULT_MONTHLY_TEMPLATE = [
       {
-        label: 'ភាសាខ្មែរ', grp: 'kh',
-        cols: [
-          { key: 'kh_listen', label: 'សមត្ថភាពស្តាប់' },
-          { key: 'kh_write',  label: 'សមត្ថភាពសរសេរ' },
-          { key: 'kh_read',   label: 'សមត្ថភាពអាន' },
-          { key: 'kh_speak',  label: 'សមត្ថភាពនិយាយ' }
+        name: 'ភាសាខ្មែរ', code: 'khmer', coef: 4, max_score: 10,
+        children: [
+          { name: 'សមត្ថភាពស្ដាប់', code: 'kh_listen', coef: 1, max_score: 10 },
+          { name: 'សមត្ថភាពសរសេរ', code: 'kh_write',  coef: 1, max_score: 10 },
+          { name: 'សមត្ថភាពអាន',   code: 'kh_read',   coef: 1, max_score: 10 },
+          { name: 'សមត្ថភាពនិយាយ', code: 'kh_speak',  coef: 1, max_score: 10 }
         ]
       },
       {
-        label: 'គណិតវិទ្យា', grp: 'ma',
-        cols: [
-          { key: 'm_num',     label: 'ចំនួន' },
-          { key: 'm_measure', label: 'រង្វាស់រង្វាល់' },
-          { key: 'm_geo',     label: 'ធរណីមាត្រ' },
-          { key: 'm_algebra', label: 'ពិជគណិត' },
-          { key: 'm_stat',    label: 'ស្ថិតិ' }
+        name: 'គណិតវិទ្យា', code: 'math', coef: 5, max_score: 10,
+        children: [
+          { name: 'ចំនួន',       code: 'm_num',     coef: 1, max_score: 10 },
+          { name: 'រង្វាស់រង្វាល់', code: 'm_measure', coef: 1, max_score: 10 },
+          { name: 'ធរណីមាត្រ',   code: 'm_geo',     coef: 1, max_score: 10 },
+          { name: 'ពិជគណិត',     code: 'm_algebra', coef: 1, max_score: 10 },
+          { name: 'ស្ថិតិ',       code: 'm_stat',    coef: 1, max_score: 10 }
         ]
       },
+      { name: 'វិទ្យាសាស្ត្រ', code: 'science', coef: 1, max_score: 10, children: [] },
+      { name: 'សិក្សាសង្គម',   code: 'social',  coef: 1, max_score: 10, children: [] },
       {
-        label: 'វិទ្យាសាស្ត្រ', grp: 'sc',
-        cols: [ { key: 'science', label: 'វិទ្យាសាស្ត្រ' } ]
-      },
-      {
-        label: 'សិក្សាសង្គម', grp: 'so',
-        cols: [ { key: 'social', label: 'សិក្សាសង្គម' } ]
-      },
-      {
-        label: 'អប់រំកាយសុខភាព សិល្បៈ', grp: 'ar',
-        cols: [
-          { key: 'a_craft',  label: 'គេហវិទ្យា-អប់រំសិល្បៈ' },
-          { key: 'a_pe',     label: 'អប់រំកាយ-កីឡា' },
-          { key: 'a_health', label: 'សុខភាព-អនាម័យ' },
-          { key: 'a_env',    label: 'អប់រំបំណិនជីវិត' }
+        name: 'អប់រំកាយសុខភាព សិល្បៈ', code: 'arts_pe', coef: 4, max_score: 10,
+        children: [
+          { name: 'គេហវិទ្យា-អប់រំសិល្បៈ', code: 'a_craft',  coef: 1, max_score: 10 },
+          { name: 'អប់រំកាយ-កីឡា',       code: 'a_pe',     coef: 1, max_score: 10 },
+          { name: 'សុខភាព-អនាម័យ',     code: 'a_health', coef: 1, max_score: 10 },
+          { name: 'អប់រំបំណិនជីវិត',     code: 'a_env',    coef: 1, max_score: 10 }
         ]
       },
-      {
-        label: 'ភាសាបរទេស', grp: 'fo',
-        cols: [ { key: 'foreign', label: 'ភាសាបរទេស' } ]
-      }
+      { name: 'ភាសាបរទេស', code: 'foreign', coef: 1, max_score: 10, children: [] }
     ];
 
-    const SEMESTER_GROUPS = [
-      {
-        label: 'ភាសាខ្មែរ', grp: 'kh',
-        cols: [
-          { key: 'read',      label: 'អំណាន' },
-          { key: 'listen',    label: 'ស្តាប់ និងនិយាយ' },
-          { key: 'dictation', label: 'សរសេរតាមអាន' },
-          { key: 'essay',     label: 'តែងសេចក្តី' }
-        ]
-      },
-      {
-        label: 'គណិតវិទ្យា', grp: 'ma',
-        cols: [ { key: 'math', label: 'គណិតវិទ្យា' } ]
-      },
-      {
-        label: 'វិទ្យាសាស្ត្រ', grp: 'sc',
-        cols: [ { key: 'science', label: 'វិទ្យាសាស្ត្រ' } ]
-      },
-      {
-        label: 'សិក្សាសង្គម', grp: 'so',
-        cols: [ { key: 'social', label: 'សិក្សាសង្គម' } ]
-      },
-      {
-        label: 'អប់រំកាយសុខភាព សិល្បៈ', grp: 'ar',
-        cols: [
-          { key: 'homeArts', label: 'គេហវិទ្យា-អប់រំសិល្បៈ' },
-          { key: 'pe',       label: 'អប់រំកាយ-សុខភាព' },
-          { key: 'ethics',   label: 'អប់រំបំណិនជីវិត' }
-        ]
-      },
-      {
-        label: 'ភាសាបរទេស', grp: 'fo',
-        cols: [ { key: 'foreign', label: 'ភាសាបរទេស' } ]
-      }
+    const DEFAULT_SEMESTER_TEMPLATE = [
+      { name: 'អំណាន',           code: 'read',      coef: 1, max_score: 10 },
+      { name: 'ស្ដាប់ និងនិយាយ',   code: 'listen',    coef: 1, max_score: 10 },
+      { name: 'សរសេរតាមអាន',     code: 'dictation', coef: 1, max_score: 10 },
+      { name: 'តែងសេចក្ដី',       code: 'essay',     coef: 1, max_score: 10 },
+      { name: 'គណិតវិទ្យា',       code: 'math',      coef: 1, max_score: 10 },
+      { name: 'វិទ្យាសាស្ត្រ',     code: 'science',   coef: 1, max_score: 10 },
+      { name: 'សិក្សាសង្គម',       code: 'social',    coef: 1, max_score: 10 },
+      { name: 'គេហវិទ្យា-អប់រំសិល្បៈ', code: 'homeArts', coef: 1, max_score: 10 },
+      { name: 'អប់រំកាយ-សុខភាព',   code: 'pe',        coef: 1, max_score: 10 },
+      { name: 'អប់រំបំណិនជីវិត',   code: 'ethics',    coef: 1, max_score: 10 },
+      { name: 'ភាសាបរទេស',       code: 'foreign',   coef: 1, max_score: 10 }
     ];
+
+    let monthlySubjects = JSON.parse(JSON.stringify(DEFAULT_MONTHLY_TEMPLATE));
+    let semesterSubjects = JSON.parse(JSON.stringify(DEFAULT_SEMESTER_TEMPLATE));
+
+    let MONTHLY_GROUPS = [];
+    let SEMESTER_GROUPS = [];
 
     const RES_COLS = [
       { key: '_total', label: 'ពិន្ទុសរុប',   cls: 'col-res-tot' },
@@ -1178,8 +791,6 @@
     ];
 
     let scoreType = 'monthly';
-    
-    // 🌟 មុខងារចាក់សោ៖ ទាញពី localStorage ពេលបើកទំព័រឡើងវិញ ដើម្បីរក្សាសភាពចាក់សោដដែល
     let isLocked = localStorage.getItem('krou_score_locked') === 'true';
 
     let displayedStudents = [];
@@ -1207,7 +818,9 @@
       el.className = 'save-status-pill ' + (statusClass || '');
     }
 
-    /* 4. INITIALIZATION */
+    /* =========================================================
+       4. INITIALIZATION
+    ========================================================= */
     window.addEventListener('DOMContentLoaded', () => {
       document.getElementById('topToolbar')?.addEventListener('scroll', closeGradeMenu);
       let lastMobile = isMobileLayout();
@@ -1226,7 +839,7 @@
 
       const now = new Date();
       const mIdx = now.getMonth();
-      const curKhMonth = ['មករា','កុម្ភៈ','មីនា','មេសា','ឧសភា','មិថុនា','កក្កដា','សីហា','កញ្ញា','តុលា','វិច្ឆិកា','ធ្នូ'][mIdx];
+      const curKhMonth = KHMER_MONTHS[mIdx] || 'តុលា';
       const isSem1 = SEMESTER_1_MONTHS.includes(curKhMonth);
 
       document.getElementById('semesterFilterSelect').value = isSem1 ? "1" : "2";
@@ -1255,11 +868,8 @@
       const mSel = document.getElementById('monthSelect');
       const months = sem === "1" ? SEMESTER_1_MONTHS : SEMESTER_2_MONTHS;
       mSel.innerHTML = months.map(m => `<option value="${m}">${m}</option>`).join('');
-      if (defaultMonth && months.includes(defaultMonth)) {
-        mSel.value = defaultMonth;
-      } else {
-        mSel.selectedIndex = 0;
-      }
+      if (defaultMonth && months.includes(defaultMonth)) mSel.value = defaultMonth;
+      else mSel.selectedIndex = 0;
     }
 
     function onSemesterFilterChange() {
@@ -1300,7 +910,6 @@
       document.getElementById('landingPage').style.display = 'block';
     }
 
-    /* 🌟 ប្តូរភាសានិទ្ទេស (A-F ឬ ខ្មែរ) */
     function toggleGradeLang() {
       gradeLangMode = (gradeLangMode === 'EN') ? 'KH' : 'EN';
       localStorage.setItem('score_grade_lang', gradeLangMode);
@@ -1308,12 +917,10 @@
       renderGradeMenuPopup();
       renderTable();
     }
-
     function updateGradeLangUI() {
       document.getElementById('txtGradeLang').innerText = gradeLangMode === 'EN' ? 'A-F' : 'ខ្មែរ';
     }
 
-    /* 🌟 Render Dropdown ច្រោះនិទ្ទេស */
     function renderGradeMenuPopup() {
       const popup = document.getElementById('gradeMenuPopup');
       if (!popup) return;
@@ -1345,27 +952,19 @@
       const popup = document.getElementById('gradeMenuPopup');
       const btn = document.getElementById('btnGradeFilter');
       if (!popup || !btn) return;
-
-      if (popup.classList.contains('show')) {
-        popup.classList.remove('show');
-        return;
-      }
+      if (popup.classList.contains('show')) { popup.classList.remove('show'); return; }
       popup.classList.add('show');
       positionGradeMenu(btn, popup);
     }
 
     function positionGradeMenu(btn, popup) {
       const r = btn.getBoundingClientRect();
-      const margin = 8;
       const pw = popup.offsetWidth;
-
-      let left = Math.min(r.left, window.innerWidth - pw - margin);
-      left = Math.max(margin, left);
-
+      let left = Math.min(r.left, window.innerWidth - pw - 8);
+      left = Math.max(8, left);
       const top = r.bottom + 6;
       popup.style.left = left + 'px';
       popup.style.top = top + 'px';
-      popup.style.maxHeight = Math.max(120, window.innerHeight - top - margin) + 'px';
     }
 
     function closeGradeMenu() {
@@ -1375,22 +974,6 @@
     function selectGradeFilter(grade, label, el) {
       currentGradeFilter = grade;
       document.getElementById('currentGradeFilterTxt').innerText = label;
-
-      document.querySelectorAll('.grade-menu-item').forEach(item => {
-        item.classList.remove('active');
-        const check = item.querySelector('.fa-check');
-        if (check) check.remove();
-      });
-
-      if (el) {
-        el.classList.add('active');
-        const chk = document.createElement('i');
-        chk.className = 'fa-solid fa-check';
-        chk.style.fontSize = '11px';
-        chk.style.color = '#0284c7';
-        el.appendChild(chk);
-      }
-
       closeGradeMenu();
       renderTable();
     }
@@ -1399,7 +982,6 @@
       if (!e.target.closest('.dropdown-relative')) closeGradeMenu();
     });
 
-    /* 🌟 អាប់ដេត UI សោ (ប្រើរួមទាំងពេល load & toggle) */
     function updateLockUI() {
       const btn = document.getElementById('btnLock');
       const icon = document.getElementById('lockIcon');
@@ -1410,7 +992,6 @@
       document.body.classList.toggle('is-locked', isLocked);
     }
 
-    /* 🌟 ចាក់សោ / ដោះសោ (រក្សាទុកក្នុង localStorage ពេល Refresh មិនបាត់សោ) */
     function toggleLock() {
       isLocked = !isLocked;
       localStorage.setItem('krou_score_locked', isLocked ? 'true' : 'false');
@@ -1424,9 +1005,7 @@
       showToast(isLocked ? '🔒 បានចាក់សោ — រារាំងមិនឱ្យកែប្រែ' : '🔓 បានដោះសោ — អ្នកអាចកែប្រែបាន');
     }
 
-    function isMobileLayout() {
-      return window.matchMedia('(max-width: 700px)').matches;
-    }
+    function isMobileLayout() { return window.matchMedia('(max-width: 700px)').matches; }
 
     function splitName(full) {
       const parts = String(full || '').trim().split(/\s+/);
@@ -1439,7 +1018,6 @@
       if (!th) return;
       const w = Math.ceil(th.getBoundingClientRect().width);
       if (w > 0) root.style.setProperty('--w2', w + 'px');
-
       const thb = document.querySelector('.modern-score-table thead th.stk-2b');
       if (thb) {
         const wb = Math.ceil(thb.getBoundingClientRect().width);
@@ -1450,45 +1028,130 @@
     }
 
     /* =========================================================
-       🏫 LOAD CLASS LIST (🌟 ទាញពី Database និងតម្រៀបពីតូចទៅធំ)
+       5. 📚 DYNAMIC SUBJECT SYSTEM (ទាញយក & រៀបចំមុខវិជ្ជា)
+    ========================================================= */
+    const GROUP_STYLES = ['kh', 'ma', 'sc', 'so', 'ar', 'fo'];
+
+    function buildGroupsFromConfig() {
+      // 1. បង្កើត Monthly Groups
+      MONTHLY_GROUPS = [];
+      monthlySubjects.forEach((p, idx) => {
+        const grpCode = GROUP_STYLES[idx % GROUP_STYLES.length];
+        if (p.children && p.children.length > 0) {
+          MONTHLY_GROUPS.push({
+            label: p.name,
+            grp: grpCode,
+            cols: p.children.map(c => ({ key: c.code, label: c.name }))
+          });
+        } else {
+          MONTHLY_GROUPS.push({
+            label: p.name,
+            grp: grpCode,
+            cols: [{ key: p.code, label: p.name }]
+          });
+        }
+      });
+
+      // 2. បង្កើត Semester Groups
+      SEMESTER_GROUPS = [];
+      const semMap = {
+        'read': 'kh', 'listen': 'kh', 'dictation': 'kh', 'essay': 'kh',
+        'math': 'ma', 'science': 'sc', 'social': 'so',
+        'homeArts': 'ar', 'pe': 'ar', 'ethics': 'ar', 'foreign': 'fo'
+      };
+      
+      // ចាត់ក្រុមតាមមុខវិជ្ជាធំ
+      const groupedSem = {};
+      semesterSubjects.forEach(s => {
+        const gKey = semMap[s.code] || 'kh';
+        if (!groupedSem[gKey]) groupedSem[gKey] = [];
+        groupedSem[gKey].push({ key: s.code, label: s.name });
+      });
+
+      const labelNames = { kh: 'ភាសាខ្មែរ', ma: 'គណិតវិទ្យា', sc: 'វិទ្យាសាស្ត្រ', so: 'សិក្សាសង្គម', ar: 'អប់រំកាយសុខភាព សិល្បៈ', fo: 'ភាសាបរទេស' };
+      Object.keys(groupedSem).forEach(g => {
+        SEMESTER_GROUPS.push({
+          label: labelNames[g] || 'មុខវិជ្ជា',
+          grp: g,
+          cols: groupedSem[g]
+        });
+      });
+    }
+
+    async function loadDynamicSubjects(curPure) {
+      try {
+        const { data: dbSubs, error } = await sb
+          .from('subjects')
+          .select('*')
+          .eq('assigned_class', curPure)
+          .order('sort_order', { ascending: true });
+
+        if (!error && dbSubs && dbSubs.length > 0) {
+          const rawM = dbSubs.filter(s => s.subject_type === 'monthly');
+          const rawS = dbSubs.filter(s => s.subject_type === 'semester');
+
+          if (rawM.length > 0) {
+            monthlySubjects = [];
+            const parents = rawM.filter(s => !s.parent_id);
+            parents.forEach(p => {
+              const children = rawM.filter(s => s.parent_id === p.id);
+              monthlySubjects.push({
+                id: p.id, name: p.name, code: p.code, max_score: p.max_score, coef: p.coefficient,
+                children: children.map(c => ({ id: c.id, name: c.name, code: c.code, max_score: c.max_score, coef: c.coefficient }))
+              });
+            });
+          } else {
+            monthlySubjects = JSON.parse(JSON.stringify(DEFAULT_MONTHLY_TEMPLATE));
+          }
+
+          if (rawS.length > 0) {
+            semesterSubjects = rawS.map(s => ({
+              id: s.id, name: s.name, code: s.code, max_score: s.max_score, coef: s.coefficient
+            }));
+          } else {
+            semesterSubjects = JSON.parse(JSON.stringify(DEFAULT_SEMESTER_TEMPLATE));
+          }
+        } else {
+          monthlySubjects = JSON.parse(JSON.stringify(DEFAULT_MONTHLY_TEMPLATE));
+          semesterSubjects = JSON.parse(JSON.stringify(DEFAULT_SEMESTER_TEMPLATE));
+        }
+      } catch (err) {
+        console.warn('Using default subjects:', err);
+        monthlySubjects = JSON.parse(JSON.stringify(DEFAULT_MONTHLY_TEMPLATE));
+        semesterSubjects = JSON.parse(JSON.stringify(DEFAULT_SEMESTER_TEMPLATE));
+      }
+
+      buildGroupsFromConfig();
+    }
+
+    /* =========================================================
+       6. LOAD CLASS LIST & STUDENTS (SUPABASE)
     ========================================================= */
     async function loadClassList() {
       const sel = document.getElementById('classSelect');
       const cleanUserClass = cleanGrade(USER_CLASS);
-
       sel.innerHTML = '<option value="">កំពុងទាញយកថ្នាក់...</option>';
 
       try {
-        // 🌟 ទាញយកថ្នាក់ពី Table: students ក្នុង Database ដោយមិនកំណត់ថ្នាក់រឹងឡើយ
         const { data, error } = await sb.from('students').select('grade').limit(5000);
         if (error) throw error;
 
         let rawClasses = [];
         if (data && data.length > 0) {
-          const uniqueSet = new Set();
-          data.forEach(d => {
-            const g = cleanGrade(d.grade);
-            if (g) uniqueSet.add(g);
-          });
-          rawClasses = Array.from(uniqueSet);
+          const s = new Set();
+          data.forEach(d => { const g = cleanGrade(d.grade); if(g) s.add(g); });
+          rawClasses = Array.from(s);
         }
+        if (!rawClasses.length) rawClasses = ['១', '២', '៣', '៤(ក)', '៤(ខ)', '៥', '៦'];
 
-        if (!rawClasses.length) {
-          sel.innerHTML = '<option value="">មិនមានថ្នាក់ក្នុង Database ទេ</option>';
-          document.getElementById('tableArea').innerHTML = '<div style="text-align:center; padding: 50px; color:var(--text-muted);">មិនទាន់មានទិន្នន័យសិស្ស ឬថ្នាក់ក្នុង Database ឡើយ</div>';
-          return;
-        }
-
-        // 🌟 តម្រៀបថ្នាក់ពីតូចទៅធំដោយស្វ័យប្រវត្តិតាមលេខ និងអក្សរ (១ < ២ < ៣ < ៤(ក) < ៤(ខ) < ៥ < ៦...)
-        const sortedClasses = sortGradesAscending(rawClasses);
-        sel.innerHTML = sortedClasses.map(c => `<option value="${c}">ថ្នាក់ទី ${c}</option>`).join('');
+        const sorted = sortGradesAscending(rawClasses);
+        sel.innerHTML = sorted.map(c => `<option value="${c}">ថ្នាក់ទី ${c}</option>`).join('');
 
         if (!IS_ADMIN) {
           document.getElementById('adminClassBox').style.display = 'none';
           const badge = document.getElementById('teacherClassBadge');
           const text = document.getElementById('teacherClassText');
-
-          if (cleanUserClass && sortedClasses.includes(cleanUserClass)) {
+          if (cleanUserClass && sorted.includes(cleanUserClass)) {
             text.innerText = 'ថ្នាក់ទី ' + cleanUserClass;
             badge.style.display = 'inline-flex';
             sel.value = cleanUserClass;
@@ -1500,26 +1163,23 @@
           } else {
             badge.style.display = 'inline-flex';
             text.innerText = 'មិនទាន់កំណត់ថ្នាក់';
-            document.getElementById('tableArea').innerHTML = '<div style="text-align:center; padding: 50px; color:#f59e0b; font-weight:bold;">⚠️ គណនីរបស់អ្នកមិនទាន់មានថ្នាក់ទទួលបន្ទុកឡើយ។ សូមទាក់ទង Admin។</div>';
+            document.getElementById('tableArea').innerHTML = '<div style="text-align:center; padding:50px; color:#f59e0b; font-weight:bold;">⚠️ គណនីរបស់អ្នកមិនទាន់មានថ្នាក់ទទួលបន្ទុកឡើយ។</div>';
           }
         } else {
           document.getElementById('teacherClassBadge').style.display = 'none';
           document.getElementById('adminClassBox').style.display = 'inline-block';
-
-          if (cleanUserClass && sortedClasses.includes(cleanUserClass)) {
+          if (cleanUserClass && sorted.includes(cleanUserClass)) {
             sel.value = cleanUserClass;
           } else {
-            sel.value = sortedClasses[0]; // ជ្រើសថ្នាក់តូចជាងគេជាមុនស្វ័យប្រវត្តិ
+            sel.value = sorted[0];
           }
           await loadStudents();
         }
-      } catch (err) {
-        console.error('Error fetching classes:', err);
+      } catch(err) {
         sel.innerHTML = '<option value="">កំហុសទាញយកថ្នាក់</option>';
       }
     }
 
-    /* 5. LOAD STUDENTS & SCORES (SUPABASE) */
     async function loadStudents() {
       const cls = document.getElementById('classSelect').value || cleanGrade(USER_CLASS);
       const period = getSelectedPeriod();
@@ -1530,6 +1190,10 @@
       document.getElementById('tableArea').innerHTML = '<div style="text-align:center; padding: 50px; color:var(--text-muted);"><i class="fa-solid fa-spinner fa-spin fa-2x"></i><p style="margin-top:10px;">កំពុងទាញយកទិន្នន័យ...</p></div>';
 
       try {
+        // 🌟 ១. ទាញយកមុខវិជ្ជារបស់ថ្នាក់នេះពី Database
+        await loadDynamicSubjects(curPure);
+
+        // 🌟 ២. ទាញយកសិស្សក្នុងថ្នាក់
         const { data: stList, error: stErr } = await sb
           .from('students')
           .select('id, student_id, student_name, gender, grade, dropout_semester')
@@ -1553,14 +1217,13 @@
             grade: s.grade
           }));
 
-        const { data: scList, error: scErr } = await sb
+        // 🌟 ៣. ទាញយកពិន្ទុ
+        const { data: scList } = await sb
           .from('scores')
           .select('*')
           .eq('assigned_class', curPure)
           .eq('score_type', scoreType)
           .eq('period', period);
-
-        if (scErr) console.warn("Score fetch warning:", scErr);
 
         savedScoresData = {};
         savedDbAverages = {};
@@ -1576,6 +1239,7 @@
           }
         });
 
+        // 🌟 ៤. ទាញយកអវត្តមានស្ងាត់ៗ (គ្មានសាររំខាន)
         await loadAttendanceData(curPure, period);
 
         renderTable();
@@ -1585,11 +1249,7 @@
       }
     }
 
-    /* 📅 លេខខែប្រតិទិនពិត (មករា=1 … ធ្នូ=12) */
-    const CAL_MONTH = {
-      'មករា':1,'កុម្ភៈ':2,'មីនា':3,'មេសា':4,'ឧសភា':5,'មិថុនា':6,
-      'កក្កដា':7,'សីហា':8,'កញ្ញា':9,'តុលា':10,'វិច្ឆិកា':11,'ធ្នូ':12
-    };
+    const CAL_MONTH = { 'មករា':1,'កុម្ភៈ':2,'មីនា':3,'មេសា':4,'ឧសភា':5,'មិថុនា':6,'កក្កដា':7,'សីហា':8,'កញ្ញា':9,'តុលា':10,'វិច្ឆិកា':11,'ធ្នូ':12 };
     const pad2 = n => String(n).padStart(2, '0');
 
     function yearOfMonth(m) {
@@ -1603,9 +1263,7 @@
       return [`${y}-${pad2(cm)}-01`, `${y}-${pad2(cm)}-${pad2(last)}`];
     }
     function attendanceRange(period) {
-      if (scoreType === 'monthly') {
-        return CAL_MONTH[period] ? monthBounds(period) : null;
-      }
+      if (scoreType === 'monthly') return CAL_MONTH[period] ? monthBounds(period) : null;
       if (period === 'ឆមាសទី១') {
         const y = yearOfMonth('វិច្ឆិកា');
         return [monthBounds('វិច្ឆិកា', y)[0], monthBounds('មេសា', y + 1)[1]];
@@ -1617,53 +1275,36 @@
       return null;
     }
 
-    /* 🌟 LOAD ATTENDANCE DATA (ដកចោលសារ Toast រំខានទាំងស្រុង) */
     async function loadAttendanceData(cls, period) {
       studentAbsenceData = {};
       try {
         const range = attendanceRange(period);
-        const PAGE = 1000;
-        let from = 0, all = [];
-
         const classVariants = [cls, 'ថ្នាក់ទី ' + cls, 'ថ្នាក់ទី' + cls, 'ថ្នាក់ ' + cls, 'ថ្នាក់' + cls];
 
-        while (true) {
-          let query = sb.from('attendance')
-            .select('student_id, attendance_date, status')
-            .in('assigned_class', classVariants)
-            .range(from, from + PAGE - 1);
-          if (range) query = query.gte('attendance_date', range[0]).lte('attendance_date', range[1]);
+        let query = sb.from('attendance')
+          .select('student_id, attendance_date, status')
+          .in('assigned_class', classVariants);
+        if (range) query = query.gte('attendance_date', range[0]).lte('attendance_date', range[1]);
 
-          const { data, error } = await query;
-          if (error) throw error;
-          all = all.concat(data || []);
-          if (!data || data.length < PAGE) break;
-          from += PAGE;
-        }
+        const { data } = await query.limit(5000);
+        const ABSENT_CODES = ['C','A','ច','អ','ច្បាប់','មានច្បាប់','អត់ច្បាប់','អវត្តមាន','ឈប់','ABSENT','EXCUSED','UNEXCUSED','PERMISSION'];
 
-        const ABSENT_CODES = ['C','A','ច','អ','ច្បាប់','មានច្បាប់','អត់ច្បាប់','អវត្តមាន','ឈប់',
-                              'ABSENT','EXCUSED','UNEXCUSED','PERMISSION'];
-        const isAbsent = st => ABSENT_CODES.includes(String(st || '').trim().toUpperCase());
-
-        all.forEach(r => {
-          if (!isAbsent(r.status)) return;
-          const sid = String(r.student_id).trim();
-          studentAbsenceData[sid] = (studentAbsenceData[sid] || 0) + 1;
+        (data || []).forEach(r => {
+          if (ABSENT_CODES.includes(String(r.status || '').trim().toUpperCase())) {
+            const sid = String(r.student_id).trim();
+            studentAbsenceData[sid] = (studentAbsenceData[sid] || 0) + 1;
+          }
         });
-
       } catch (e) {
-        // កត់ត្រាក្នុង Console ស្ងាត់ៗ មិនឱ្យលោតសារ Toast រំខានលើអេក្រង់ឡើយ
         console.warn('Attendance load background notice:', e);
       }
     }
 
-    /* 6. INPUT CLEANING & PASTEL COLOR UPDATE */
+    /* 7. INPUT CLEANING & CALCULATIONS */
     function cleanScore(input) {
       let v = String(input.value || '').replace(/,/g, '.').replace(/[^0-9.]/g, '');
       const firstDot = v.indexOf('.');
-      if (firstDot !== -1) {
-        v = v.slice(0, firstDot + 1) + v.slice(firstDot + 1).replace(/\./g, '');
-      }
+      if (firstDot !== -1) v = v.slice(0, firstDot + 1) + v.slice(firstDot + 1).replace(/\./g, '');
       input.value = v;
       applyPastelColor(input);
     }
@@ -1688,7 +1329,6 @@
       input.classList.remove('val-low', 'val-medium', 'val-fair', 'val-good', 'val-excel');
       const val = parseFloat(input.value);
       if (isNaN(val) || input.value === '') return;
-
       if (val < 5) input.classList.add('val-low');
       else if (val <= 6) input.classList.add('val-medium');
       else if (val === 7) input.classList.add('val-fair');
@@ -1753,9 +1393,7 @@
       else if (avg >= 7) { code = 'C'; khName = 'ល្អ';       cls = 'grade-c'; }
       else if (avg >= 6) { code = 'D'; khName = 'បង្គួរ';     cls = 'grade-d'; }
       else if (avg >= 5) { code = 'E'; khName = 'មធ្យម';    cls = 'grade-e'; }
-      
-      const label = (gradeLangMode === 'EN') ? code : khName;
-      return { code: code, khName: khName, label: label, c: cls };
+      return { code: code, khName: khName, label: (gradeLangMode === 'EN') ? code : khName, c: cls };
     }
 
     function computeRanks() {
@@ -1781,7 +1419,6 @@
       
       const tEl = document.getElementById('rt-' + sid);
       if (tEl) tEl.textContent = tot > 0 ? tot.toFixed(2) : '—';
-
       const aEl = document.getElementById('ra-' + sid);
       if (aEl) aEl.textContent = avg > 0 ? avg.toFixed(2) : '—';
 
@@ -1790,18 +1427,13 @@
         if (avg > 0) {
           const gr = getGradeBadge(avg);
           gEl.innerHTML = `<span class="badge-grade ${gr.c}">${gr.label}</span>`;
-        } else {
-          gEl.textContent = '—';
-        }
+        } else gEl.textContent = '—';
       }
 
       const nEl = document.getElementById('rn-' + sid);
       if (nEl) {
-        if (avg > 0) {
-          nEl.innerHTML = avg >= 5 ? '<span class="status-pass">ជាប់</span>' : '<span class="status-fail">ធ្លាក់</span>';
-        } else {
-          nEl.textContent = '—';
-        }
+        if (avg > 0) nEl.innerHTML = avg >= 5 ? '<span class="status-pass">ជាប់</span>' : '<span class="status-fail">ធ្លាក់</span>';
+        else nEl.textContent = '—';
       }
 
       const ranks = computeRanks();
@@ -1814,7 +1446,7 @@
       });
     }
 
-    /* 7. TABLE RENDER */
+    /* 8. RENDER SPREADSHEET TABLE */
     function renderTable() {
       const area = document.getElementById('tableArea');
       const grps = groups();
@@ -1822,16 +1454,12 @@
       const q = (document.getElementById('searchBox').value || '').trim().toLowerCase();
       let list = displayedStudents.slice();
 
-      if (q) {
-        list = list.filter(s => (s.name || '').toLowerCase().includes(q) || (s.id || '').toLowerCase().includes(q));
-      }
-
+      if (q) list = list.filter(s => (s.name || '').toLowerCase().includes(q) || (s.id || '').toLowerCase().includes(q));
       if (currentGradeFilter !== 'ALL') {
         list = list.filter(s => {
           const avg = calcAvg(s.id);
           if (avg <= 0) return false;
-          const gr = getGradeBadge(avg);
-          return gr.code === currentGradeFilter;
+          return getGradeBadge(avg).code === currentGradeFilter;
         });
       }
 
@@ -1839,12 +1467,7 @@
       const countSummaryEl = document.getElementById('badgeStudentSummary');
       if (countSummaryEl) {
         const fCount = list.filter(s => s.sex === 'ស្រី' || s.sex === 'F').length;
-        const mCount = list.length - fCount;
-        if (currentGradeFilter !== 'ALL' || q) {
-          countSummaryEl.textContent = `បង្ហាញ ${list.length}/${totalAll} • ស្រី ${fCount} • ប្រុស ${mCount}`;
-        } else {
-          countSummaryEl.textContent = `សិស្សសរុប ${totalAll} • ស្រី ${fCount} • ប្រុស ${mCount}`;
-        }
+        countSummaryEl.textContent = `សិស្សសរុប ${totalAll} • ស្រី ${fCount} • ប្រុស ${list.length - fCount}`;
       }
 
       const ranks = computeRanks();
@@ -1853,7 +1476,6 @@
       const totalCols = nameCols + keys.length + RES_COLS.length;
 
       let h = '<table class="modern-score-table"><thead>';
-
       h += '<tr>'
         +  '<th class="stk stk-1" rowspan="2">ល.រ</th>'
         +  (mobile
@@ -1869,37 +1491,28 @@
         }
       });
 
-      h += `<th class="th-group-res" colspan="${RES_COLS.length}" style="font-size:13px; font-weight:700;">${scoreType === 'monthly' ? 'លទ្ធផលខែ' : 'លទ្ធផលឆមាស'}</th></tr>`;
-
-      h += '<tr>';
+      h += `<th class="th-group-res" colspan="${RES_COLS.length}" style="font-size:13px; font-weight:700;">${scoreType === 'monthly' ? 'លទ្ធផលខែ' : 'លទ្ធផលឆមាស'}</th></tr><tr>`;
       grps.forEach(g => {
         if (g.cols.length > 1) {
-          g.cols.forEach(c => {
-            h += `<th class="th-sub-${g.grp} th-vertical-cell"><div class="th-vertical-wrap">${c.label}</div></th>`;
-          });
+          g.cols.forEach(c => { h += `<th class="th-sub-${g.grp} th-vertical-cell"><div class="th-vertical-wrap">${c.label}</div></th>`; });
         }
       });
-      RES_COLS.forEach(c => {
-        h += `<th class="th-sub-res th-vertical-cell ${c.cls}"><div class="th-vertical-wrap">${c.label}</div></th>`;
-      });
+      RES_COLS.forEach(c => { h += `<th class="th-sub-res th-vertical-cell ${c.cls}"><div class="th-vertical-wrap">${c.label}</div></th>`; });
       h += '</tr>';
 
       h += '<tr class="coef-row"><td colspan="' + nameCols + '" class="stk" style="left:0; text-align:right; padding-right:6px; font-weight:700; font-size:9.5px;">មេគុណតាមមុខវិជ្ជា</td>';
       grps.forEach(g => {
-        g.cols.forEach(c => {
-          h += `<td class="th-sub-${g.grp} sc-td"><span class="coef-tag coef-zero" id="ac-${c.key}">×0</span></td>`;
-        });
+        g.cols.forEach(c => { h += `<td class="th-sub-${g.grp} sc-td"><span class="coef-tag coef-zero" id="ac-${c.key}">×0</span></td>`; });
       });
       h += `<td class="col-res-tot" style="color:#0284c7; font-weight:bold; font-size:10px;" id="totalCoefCount">0</td><td colspan="${RES_COLS.length - 1}"></td></tr>`;
       h += '</thead><tbody>';
 
       if (!list.length) {
-        h += `<tr><td colspan="${totalCols}" style="padding:35px; color:var(--text-muted); font-weight:600;">⚠️ មិនមានទិន្នន័យសិស្សត្រូវនឹងការត្រងឡើយ</td></tr>`;
+        h += `<tr><td colspan="${totalCols}" style="padding:35px; color:var(--text-muted); font-weight:600;">⚠️ មិនមានទិន្នន័យសិស្សឡើយ</td></tr>`;
       } else {
         list.forEach((s, idx) => {
           const sc = savedScoresData[s.id] || {};
           const isF = s.sex === 'ស្រី' || s.sex === 'F';
-
           const avg = calcAvg(s.id);
           const tot = calcTotal(s.id);
           const gr = getGradeBadge(avg);
@@ -1916,7 +1529,6 @@
             g.cols.forEach(c => {
               const val = sc[c.key] !== undefined ? sc[c.key] : '';
               const numVal = parseFloat(val);
-              
               let colorClass = '';
               if (!isNaN(numVal) && val !== '') {
                 if (numVal < 5) colorClass = 'val-low';
@@ -1925,7 +1537,6 @@
                 else if (numVal === 8) colorClass = 'val-good';
                 else if (numVal >= 9) colorClass = 'val-excel';
               }
-
               const lkClass = (isLocked && val !== '') ? ' lk' : '';
 
               h += `<td class="sc-td${lkClass}">`
@@ -1972,35 +1583,20 @@
         let target = null;
 
         if (e.key === 'ArrowRight') {
-          for (let c = ci + 1; c < cells.length; c++) {
-            const i = cells[c].querySelector('.score-box');
-            if (i) { target = i; break; }
-          }
+          for (let c = ci + 1; c < cells.length; c++) { const i = cells[c].querySelector('.score-box'); if (i) { target = i; break; } }
         } else if (e.key === 'ArrowLeft') {
-          for (let c = ci - 1; c >= 0; c--) {
-            const i = cells[c].querySelector('.score-box');
-            if (i) { target = i; break; }
-          }
+          for (let c = ci - 1; c >= 0; c--) { const i = cells[c].querySelector('.score-box'); if (i) { target = i; break; } }
         } else if (e.key === 'ArrowDown' || e.key === 'Enter') {
-          if (ri + 1 < rows.length) {
-            const ni = rows[ri + 1].querySelectorAll('.score-box');
-            target = ni[mp] || ni[0];
-          }
+          if (ri + 1 < rows.length) { const ni = rows[ri + 1].querySelectorAll('.score-box'); target = ni[mp] || ni[0]; }
         } else if (e.key === 'ArrowUp') {
-          if (ri - 1 >= 0) {
-            const pi = rows[ri - 1].querySelectorAll('.score-box');
-            target = pi[mp] || pi[0];
-          }
+          if (ri - 1 >= 0) { const pi = rows[ri - 1].querySelectorAll('.score-box'); target = pi[mp] || pi[0]; }
         }
         if (target) {
-          e.preventDefault();
-          target.focus();
-          target.select();
+          e.preventDefault(); target.focus(); target.select();
           document.querySelectorAll('.focused-row').forEach(r => r.classList.remove('focused-row'));
           target.closest('tr').classList.add('focused-row');
         }
       });
-
       document.addEventListener('focusin', function(e) {
         if (e.target.classList && e.target.classList.contains('score-box')) {
           document.querySelectorAll('.focused-row').forEach(r => r.classList.remove('focused-row'));
@@ -2015,7 +1611,6 @@
       autoSaveTimer = setTimeout(autoSaveNow, 1200);
     }
 
-    /* 8. SAVE SCORES DIRECTLY TO SUPABASE */
     async function autoSaveNow() {
       if (isLocked) return;
       const cls = document.getElementById('classSelect').value || cleanGrade(USER_CLASS);
@@ -2050,10 +1645,7 @@
           };
         });
 
-        const { error } = await sb.from('scores').upsert(records, {
-          onConflict: 'student_id,score_type,period'
-        });
-
+        const { error } = await sb.from('scores').upsert(records, { onConflict: 'student_id,score_type,period' });
         if (error) throw error;
         isAutoSaving = false;
         setAutoSaveStatus('រក្សាទុករួច', '');
@@ -2063,36 +1655,23 @@
       }
     }
 
-    /* 9. CLEAR ALL SCORES (ERASER BUTTON) */
     async function clearAllScoresPrompt() {
-      if (isLocked) {
-        showToast('🔒 តារាងកំពុងចាក់សោ — សូមដោះសោជាមុនសិន!', true);
-        return;
-      }
+      if (isLocked) { showToast('🔒 តារាងកំពុងចាក់សោ — សូមដោះសោជាមុនសិន!', true); return; }
       const cls = document.getElementById('classSelect').value || cleanGrade(USER_CLASS);
       const period = getSelectedPeriod();
       const curPure = cleanGrade(cls);
 
-      const confirmMsg = `តើលោកគ្រូ/អ្នកគ្រូពិតជាចង់លុបពិន្ទុសិស្សទាំងអស់ក្នុង ${scoreType === 'monthly' ? 'ខែ ' + period : period} នៃថ្នាក់ទី ${curPure} មែនទេ?\n(សកម្មភាពនេះមិនអាចត្រឡប់វិញបានឡើយ!)`;
-      if (!confirm(confirmMsg)) return;
-
+      if (!confirm(`តើលោកគ្រូ/អ្នកគ្រូពិតជាចង់លុបពិន្ទុសិស្សទាំងអស់ក្នុង ${period} នៃថ្នាក់ទី ${curPure} មែនទេ?`)) return;
       setAutoSaveStatus('កំពុងលុប...', 'saving');
 
       try {
         const studentIds = displayedStudents.map(s => s.id);
-        const { error } = await sb
-          .from('scores')
-          .delete()
-          .eq('assigned_class', curPure)
-          .eq('score_type', scoreType)
-          .eq('period', period)
-          .in('student_id', studentIds);
-
+        const { error } = await sb.from('scores').delete()
+          .eq('assigned_class', curPure).eq('score_type', scoreType).eq('period', period).in('student_id', studentIds);
         if (error) throw error;
 
         savedScoresData = {};
         displayedStudents.forEach(s => { savedScoresData[s.id] = {}; });
-
         renderTable();
         setAutoSaveStatus('រក្សាទុករួច', '');
         showToast(`🗑️ បានលុបពិន្ទុទាំងអស់ក្នុង ${period} រួចរាល់!`);
@@ -2102,7 +1681,6 @@
       }
     }
 
-    /* 10. EXCEL TEMPLATE DOWNLOAD & UPLOAD */
     function downloadExcelTemplate() {
       const cls = document.getElementById('classSelect').value || cleanGrade(USER_CLASS);
       const period = getSelectedPeriod();
@@ -2113,8 +1691,7 @@
       const header = ['អត្តលេខ', 'គោត្តនាម នាម', 'ភេទ', ...labels];
       const rows = displayedStudents.map(s => {
         const sc = savedScoresData[s.id] || {};
-        const subjectScores = keys.map(k => sc[k] || '');
-        return [s.id, s.name, s.sex, ...subjectScores];
+        return [s.id, s.name, s.sex, ...keys.map(k => sc[k] || '')];
       });
 
       const ws = XLSX.utils.aoa_to_sheet([header, ...rows]);
@@ -2127,23 +1704,16 @@
     function handleExcelUpload(input) {
       const file = input.files[0];
       if (!file) return;
-
       const reader = new FileReader();
       reader.onload = async function(e) {
         try {
           const data = new Uint8Array(e.target.result);
           const workbook = XLSX.read(data, { type: 'array' });
-          const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-          const json = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
-
-          if (json.length < 2) {
-            showToast('⚠️ ឯកសារគ្មានទិន្នន័យឡើយ!', true);
-            return;
-          }
+          const json = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], { header: 1 });
+          if (json.length < 2) { showToast('⚠️ ឯកសារគ្មានទិន្នន័យឡើយ!', true); return; }
 
           const keys = allKeys();
-          let importedCount = 0;
-
+          let count = 0;
           for (let i = 1; i < json.length; i++) {
             const r = json[i];
             if (!r || !r[0]) continue;
@@ -2152,51 +1722,322 @@
             if (!s) continue;
 
             if (!savedScoresData[sid]) savedScoresData[sid] = {};
-            keys.forEach((k, colIdx) => {
-              const val = r[3 + colIdx];
-              if (val !== undefined && val !== null && val !== '') {
-                savedScoresData[sid][k] = String(val);
-              }
+            keys.forEach((k, idx) => {
+              const val = r[3 + idx];
+              if (val !== undefined && val !== null && val !== '') savedScoresData[sid][k] = String(val);
             });
-            importedCount++;
+            count++;
           }
-
           renderTable();
           scheduleAutoSave();
-          showToast(`🎉 បាន Upload ពិន្ទុសិស្ស ${importedCount} នាក់ជោគជ័យ!`);
+          showToast(`🎉 បាន Upload ពិន្ទុសិស្ស ${count} នាក់ជោគជ័យ!`);
         } catch(err) {
-          showToast('❌ កំហុស Upload Excel: ' + err.message, true);
-        } finally {
-          input.value = '';
-        }
+          showToast('❌ កំហុស Upload: ' + err.message, true);
+        } finally { input.value = ''; }
       };
       reader.readAsArrayBuffer(file);
     }
 
-    /* 11. REPORT PRINT MODAL */
+    /* =========================================================
+       📚 8. គ្រប់គ្រងមុខវិជ្ជា (SUBJECT MANAGER LOGIC ដូចរូបភាព)
+    ========================================================= */
+    let isSubEditingMode = false;
+    let subCollapsedMap = {};
+
+    function openSubjectModal() {
+      const cls = document.getElementById('classSelect').value || cleanGrade(USER_CLASS);
+      document.getElementById('txtSubClassHeader').innerText = `ថ្នាក់ទី ${cleanGrade(cls) || '៤(ក)'}`;
+      document.getElementById('subjectManagerModal').style.display = 'block';
+      renderSubjectManagerTables();
+    }
+
+    function closeSubjectModal() {
+      document.getElementById('subjectManagerModal').style.display = 'none';
+      cancelSubjectEditMode();
+    }
+
+    function toggleSubCollapse(key) {
+      subCollapsedMap[key] = !subCollapsedMap[key];
+      renderSubjectManagerTables();
+    }
+
+    function renderSubjectManagerTables() {
+      const cls = cleanGrade(document.getElementById('classSelect').value || USER_CLASS) || '៤(ក)';
+      const clsText = 'ថ្នាក់ទី' + cls;
+
+      // ១. តារាងមុខវិជ្ជាខែ
+      const mBody = document.getElementById('tableMonthlyBody');
+      let mHtml = '';
+
+      monthlySubjects.forEach((p, idx) => {
+        const hasChildren = p.children && p.children.length > 0;
+        const isCollapsed = Boolean(subCollapsedMap['m_' + idx]);
+        const arrow = hasChildren ? (isCollapsed ? 'fa-chevron-right' : 'fa-chevron-down') : 'fa-chevron-right';
+        const subBadge = hasChildren ? `<span class="badge-sub-count">${p.children.length} រង</span>` : '';
+        let parentCoef = p.coef;
+        if (hasChildren) parentCoef = p.children.reduce((sum, c) => sum + (Number(c.coef) || 1), 0);
+
+        if (!isSubEditingMode) {
+          mHtml += `
+            <tr style="font-weight:700;">
+              <td style="color:var(--text-muted);">${idx + 1}</td>
+              <td>
+                <div class="name-flex-cell">
+                  <button type="button" class="toggle-arrow-btn" onclick="toggleSubCollapse('m_${idx}')"><i class="fa-solid ${arrow}"></i></button>
+                  <div class="subject-icon-box"><i class="fa-solid fa-book-open"></i></div>
+                  <span>${p.name}</span> ${subBadge}
+                </div>
+              </td>
+              <td><span class="class-tag-pill">${clsText}</span></td>
+              <td>${p.max_score}</td>
+              <td><span class="badge-coef">×${parentCoef}</span></td>
+              <td>
+                <button type="button" class="row-action-btn" onclick="addSubSubject(${idx})" title="បន្ថែមមុខវិជ្ជារង"><i class="fa-solid fa-plus"></i></button>
+                <button type="button" class="row-action-btn del" onclick="deleteMonthlySubject(${idx})" title="លុប"><i class="fa-solid fa-trash-can"></i></button>
+              </td>
+            </tr>`;
+          if (hasChildren && !isCollapsed) {
+            p.children.forEach((c, cIdx) => {
+              mHtml += `
+                <tr style="background:rgba(0,0,0,0.15);">
+                  <td style="color:var(--text-muted); font-size:12px;">${cIdx + 1}</td>
+                  <td>
+                    <div class="name-flex-cell" style="padding-left:38px;">
+                      <div class="subject-icon-box child"><i class="fa-solid fa-book-open"></i></div>
+                      <span>${c.name}</span>
+                    </div>
+                  </td>
+                  <td style="color:var(--text-muted);">—</td>
+                  <td>${c.max_score}</td>
+                  <td><span class="badge-coef" style="color:#38bdf8; background:rgba(56,189,248,0.15);">×${c.coef}</span></td>
+                  <td><button type="button" class="row-action-btn del" onclick="deleteMonthlyChild(${idx}, ${cIdx})"><i class="fa-solid fa-trash-can"></i></button></td>
+                </tr>`;
+            });
+          }
+        } else {
+          // Edit Mode
+          mHtml += `
+            <tr style="font-weight:700;">
+              <td>${idx + 1}</td>
+              <td>
+                <div class="name-flex-cell">
+                  <button type="button" class="toggle-arrow-btn" onclick="toggleSubCollapse('m_${idx}')"><i class="fa-solid ${arrow}"></i></button>
+                  <div class="subject-icon-box"><i class="fa-solid fa-book-open"></i></div>
+                  <input type="text" class="edit-input" value="${p.name}" oninput="monthlySubjects[${idx}].name=this.value">
+                </div>
+              </td>
+              <td><span class="class-tag-pill">${clsText}</span></td>
+              <td><input type="number" class="edit-input sm" value="${p.max_score}" oninput="monthlySubjects[${idx}].max_score=Number(this.value)"></td>
+              <td><span class="badge-coef">×${parentCoef}</span></td>
+              <td><button type="button" class="row-action-btn del" onclick="deleteMonthlySubject(${idx})"><i class="fa-solid fa-trash-can"></i></button></td>
+            </tr>`;
+          if (hasChildren && !isCollapsed) {
+            p.children.forEach((c, cIdx) => {
+              mHtml += `
+                <tr style="background:rgba(0,0,0,0.15);">
+                  <td>${cIdx + 1}</td>
+                  <td>
+                    <div class="name-flex-cell" style="padding-left:38px;">
+                      <div class="subject-icon-box child"><i class="fa-solid fa-book-open"></i></div>
+                      <input type="text" class="edit-input" value="${c.name}" oninput="monthlySubjects[${idx}].children[${cIdx}].name=this.value">
+                    </div>
+                  </td>
+                  <td style="color:var(--text-muted);">—</td>
+                  <td><input type="number" class="edit-input sm" value="${c.max_score}" oninput="monthlySubjects[${idx}].children[${cIdx}].max_score=Number(this.value)"></td>
+                  <td><span class="badge-coef" style="color:#38bdf8;">×${c.coef}</span></td>
+                  <td><button type="button" class="row-action-btn del" onclick="deleteMonthlyChild(${idx}, ${cIdx})"><i class="fa-solid fa-trash-can"></i></button></td>
+                </tr>`;
+            });
+          }
+        }
+      });
+      mBody.innerHTML = mHtml;
+
+      // ២. តារាងមុខវិជ្ជាឆមាស
+      const sBody = document.getElementById('tableSemesterBody');
+      let sHtml = '';
+      semesterSubjects.forEach((s, idx) => {
+        if (!isSubEditingMode) {
+          sHtml += `
+            <tr style="font-weight:700;">
+              <td style="color:var(--text-muted);">${idx + 1}</td>
+              <td>
+                <div class="name-flex-cell">
+                  <span class="toggle-arrow-btn" style="cursor:default;"><i class="fa-solid fa-chevron-right"></i></span>
+                  <div class="subject-icon-box"><i class="fa-solid fa-book-open"></i></div>
+                  <span>${s.name}</span>
+                </div>
+              </td>
+              <td><span class="class-tag-pill">${clsText}</span></td>
+              <td>${s.max_score}</td>
+              <td><span class="badge-coef">×${s.coef}</span></td>
+              <td><button type="button" class="row-action-btn del" onclick="deleteSemesterSubject(${idx})"><i class="fa-solid fa-trash-can"></i></button></td>
+            </tr>`;
+        } else {
+          sHtml += `
+            <tr style="font-weight:700;">
+              <td>${idx + 1}</td>
+              <td>
+                <div class="name-flex-cell">
+                  <span class="toggle-arrow-btn" style="cursor:default;"><i class="fa-solid fa-chevron-right"></i></span>
+                  <div class="subject-icon-box"><i class="fa-solid fa-book-open"></i></div>
+                  <input type="text" class="edit-input" value="${s.name}" oninput="semesterSubjects[${idx}].name=this.value">
+                </div>
+              </td>
+              <td><span class="class-tag-pill">${clsText}</span></td>
+              <td><input type="number" class="edit-input sm" value="${s.max_score}" oninput="semesterSubjects[${idx}].max_score=Number(this.value)"></td>
+              <td><input type="number" class="edit-input sm" value="${s.coef}" oninput="semesterSubjects[${idx}].coef=Number(this.value)"></td>
+              <td><button type="button" class="row-action-btn del" onclick="deleteSemesterSubject(${idx})"><i class="fa-solid fa-trash-can"></i></button></td>
+            </tr>`;
+        }
+      });
+      sBody.innerHTML = sHtml;
+
+      document.getElementById('badgeMonthlyCount').innerText = `${monthlySubjects.length} មុខវិជ្ជា`;
+      document.getElementById('badgeSemesterCount').innerText = `${semesterSubjects.length} មុខវិជ្ជា`;
+    }
+
+    function toggleSubjectEditMode() {
+      isSubEditingMode = true;
+      document.getElementById('subEditFooterBar').style.display = 'flex';
+      renderSubjectManagerTables();
+    }
+
+    function cancelSubjectEditMode() {
+      isSubEditingMode = false;
+      document.getElementById('subEditFooterBar').style.display = 'none';
+      const cls = cleanGrade(document.getElementById('classSelect').value || USER_CLASS);
+      loadDynamicSubjects(cls).then(renderSubjectManagerTables);
+    }
+
+    function addNewSubject(type) {
+      const name = prompt('សូមបញ្ចូលឈ្មោះមុខវិជ្ជាថ្មី៖');
+      if (!name || !name.trim()) return;
+      const code = 'sub_' + Date.now();
+      if (type === 'monthly') monthlySubjects.push({ name: name.trim(), code: code, max_score: 10, coef: 1, children: [] });
+      else semesterSubjects.push({ name: name.trim(), code: code, max_score: 10, coef: 1 });
+      renderSubjectManagerTables();
+      saveAllSubjectChanges();
+    }
+
+    function addSubSubject(pIdx) {
+      const name = prompt(`សូមបញ្ចូលឈ្មោះមុខវិជ្ជារងសម្រាប់ "${monthlySubjects[pIdx].name}" ៖`);
+      if (!name || !name.trim()) return;
+      const code = 'child_' + Date.now();
+      if (!monthlySubjects[pIdx].children) monthlySubjects[pIdx].children = [];
+      monthlySubjects[pIdx].children.push({ name: name.trim(), code: code, max_score: 10, coef: 1 });
+      renderSubjectManagerTables();
+      saveAllSubjectChanges();
+    }
+
+    function deleteMonthlySubject(idx) {
+      if (!confirm(`តើអ្នកពិតជាចង់លុបមុខវិជ្ជា "${monthlySubjects[idx].name}" មែនទេ?`)) return;
+      monthlySubjects.splice(idx, 1);
+      renderSubjectManagerTables();
+      saveAllSubjectChanges();
+    }
+
+    function deleteMonthlyChild(pIdx, cIdx) {
+      monthlySubjects[pIdx].children.splice(cIdx, 1);
+      renderSubjectManagerTables();
+      saveAllSubjectChanges();
+    }
+
+    function deleteSemesterSubject(idx) {
+      if (!confirm(`តើអ្នកពិតជាចង់លុបមុខវិជ្ជា "${semesterSubjects[idx].name}" មែនទេ?`)) return;
+      semesterSubjects.splice(idx, 1);
+      renderSubjectManagerTables();
+      saveAllSubjectChanges();
+    }
+
+    async function saveAllSubjectChanges() {
+      const cls = cleanGrade(document.getElementById('classSelect').value || USER_CLASS);
+      if (!cls) return;
+
+      try {
+        await sb.from('subjects').delete().eq('assigned_class', cls);
+
+        let sIdx = 1;
+        for (const p of monthlySubjects) {
+          const { data: insertedP, error: pErr } = await sb.from('subjects').insert([{
+            assigned_class: cls,
+            subject_type: 'monthly',
+            name: p.name,
+            code: p.code || ('m_' + sIdx),
+            max_score: p.max_score || 10,
+            coefficient: p.children?.length ? p.children.reduce((sum, c) => sum + (c.coef || 1), 0) : (p.coef || 1),
+            sort_order: sIdx++
+          }]).select().single();
+
+          if (pErr) throw pErr;
+
+          if (p.children && p.children.length > 0) {
+            let cIdx = 1;
+            const childRecords = p.children.map(c => ({
+              assigned_class: cls,
+              subject_type: 'monthly',
+              name: c.name,
+              code: c.code || ('ch_' + cIdx),
+              max_score: c.max_score || 10,
+              coefficient: c.coef || 1,
+              parent_id: insertedP.id,
+              sort_order: cIdx++
+            }));
+            await sb.from('subjects').insert(childRecords);
+          }
+        }
+
+        let semIdx = 1;
+        const semRecords = semesterSubjects.map(s => ({
+          assigned_class: cls,
+          subject_type: 'semester',
+          name: s.name,
+          code: s.code || ('sem_' + semIdx),
+          max_score: s.max_score || 10,
+          coefficient: s.coef || 1,
+          sort_order: semIdx++
+        }));
+        await sb.from('subjects').insert(semRecords);
+
+        isSubEditingMode = false;
+        document.getElementById('subEditFooterBar').style.display = 'none';
+        showToast('✅ បានរក្សាទុកមុខវិជ្ជាជោគជ័យ!');
+
+        // 🌟 សមកាលកម្មទៅតារាងស្រង់ពិន្ទុភ្លាមៗ
+        buildGroupsFromConfig();
+        renderTable();
+        renderSubjectManagerTables();
+      } catch (err) {
+        alert('❌ មិនអាចរក្សាទុកបានទេ៖ ' + err.message);
+      }
+    }
+
+    async function importFromDefaultTemplate() {
+      if (!confirm('តើអ្នកចង់នាំចូលមុខវិជ្ជាពី Template ដើម (ភាសាខ្មែរ គណិត វិទ្យាសាស្ត្រ...) មកជំនួសមែនទេ?')) return;
+      monthlySubjects = JSON.parse(JSON.stringify(DEFAULT_MONTHLY_TEMPLATE));
+      semesterSubjects = JSON.parse(JSON.stringify(DEFAULT_SEMESTER_TEMPLATE));
+      renderSubjectManagerTables();
+      await saveAllSubjectChanges();
+    }
+
+    /* =========================================================
+       9. PRINT REPORT PREVIEW
+    ========================================================= */
     function openScoreReportModal() {
       const cls = document.getElementById('classSelect').value || cleanGrade(USER_CLASS);
-      if (!cls || !displayedStudents.length) {
-        showToast('⚠️ សូមជ្រើសរើសថ្នាក់ដែលមានទិន្នន័យសិន!', true);
-        return;
-      }
+      if (!cls || !displayedStudents.length) { showToast('⚠️ សូមជ្រើសរើសថ្នាក់ដែលមានទិន្នន័យសិន!', true); return; }
       document.getElementById('scoreReportModal').style.display = 'block';
       renderScorePrintReport();
     }
-
-    function closeScoreReportModal() {
-      document.getElementById('scoreReportModal').style.display = 'none';
-    }
+    function closeScoreReportModal() { document.getElementById('scoreReportModal').style.display = 'none'; }
 
     function downloadScorePDF() {
       const element = document.getElementById('printableScorePaper');
       const cls = document.getElementById('classSelect').value || cleanGrade(USER_CLASS);
       const period = getSelectedPeriod();
       const opt = {
-        margin: [4, 6, 4, 6],
-        filename: `Score_Report_${cls}_${period}.pdf`,
-        image: { type: 'jpeg', quality: 1.0 },
-        html2canvas: { scale: 3, useCORS: true },
+        margin: [4, 6, 4, 6], filename: `Score_Report_${cls}_${period}.pdf`,
+        image: { type: 'jpeg', quality: 1.0 }, html2canvas: { scale: 3, useCORS: true },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
       };
       html2pdf().set(opt).from(element).save();
@@ -2216,31 +2057,21 @@
 
       let theadHtml = '<tr><th rowspan="2" style="width:28px;">ល.រ</th><th rowspan="2" style="width:130px;">គោត្តនាម នាម</th><th rowspan="2" style="width:34px;">ភេទ</th>';
       grps.forEach(g => {
-        if (g.cols.length > 1) {
-          theadHtml += `<th class="th-rpt-group" colspan="${g.cols.length}" style="font-size:11px; font-weight:bold;">${g.label}</th>`;
-        } else {
-          theadHtml += `<th class="th-rpt-group" rowspan="2" style="width:28px;"><div class="th-rpt-vert-box"><span class="th-rpt-vert">${g.cols[0].label}</span></div></th>`;
-        }
+        if (g.cols.length > 1) theadHtml += `<th class="th-rpt-group" colspan="${g.cols.length}" style="font-size:11px; font-weight:bold;">${g.label}</th>`;
+        else theadHtml += `<th class="th-rpt-group" rowspan="2" style="width:28px;"><div class="th-rpt-vert-box"><span class="th-rpt-vert">${g.cols[0].label}</span></div></th>`;
       });
       theadHtml += '<th class="th-rpt-group" colspan="5" style="font-size:11px; font-weight:bold;">លទ្ធផល</th><th class="th-rpt-group" rowspan="2" style="width:28px;"><div class="th-rpt-vert-box"><span class="th-rpt-vert">អវត្តមាន</span></div></th></tr><tr>';
       grps.forEach(g => {
         if (g.cols.length > 1) {
-          g.cols.forEach(c => {
-            theadHtml += `<th style="width:28px;"><div class="th-rpt-vert-box"><span class="th-rpt-vert">${c.label}</span></div></th>`;
-          });
+          g.cols.forEach(c => { theadHtml += `<th style="width:28px;"><div class="th-rpt-vert-box"><span class="th-rpt-vert">${c.label}</span></div></th>`; });
         }
       });
       theadHtml += '<th style="width:38px;">ពិ.ស</th><th style="width:38px;">មធ្យម</th><th style="width:38px;">ចំ.ថ្នាក់</th><th style="width:42px;">និទ្ទេស</th><th style="width:40px;">លទ្ធផល</th></tr>';
 
       let rowsHtml = '';
-      const totalStudents = displayedStudents.length;
-      let femaleCount = 0;
-
       displayedStudents.forEach((s, idx) => {
         const sc = savedScoresData[s.id] || {};
         const isF = s.sex === 'ស្រី' || s.sex === 'F';
-        if (isF) femaleCount++;
-
         const tot = calcTotal(s.id);
         const avg = calcAvg(s.id);
         const gr = getGradeBadge(avg);
@@ -2267,8 +2098,7 @@
             <td>${avg > 0 ? gr.label : ''}</td>
             <td style="font-weight:bold; color:${avg >= 5 ? '#16a34a' : '#dc2626'};">${avg > 0 ? (avg >= 5 ? 'ជាប់' : 'ធ្លាក់') : ''}</td>
             <td style="font-weight:bold; color:#b91c1c;">${absVal}</td>
-          </tr>
-        `;
+          </tr>`;
       });
 
       const html = `
@@ -2279,31 +2109,26 @@
           <div class="f-moul" style="font-size:16px; margin-top:8px;">${titleText}</div>
           <div style="font-size:12px; font-weight:bold;">ឆ្នាំសិក្សា ២០២៦-២០២៧</div>
         </div>
-
         <div style="text-align:left; font-weight:bold; font-size:11px; margin-bottom:6px;">
           <div>សាលាបឋមសិក្សាកំពង់ល្ពៅ</div>
           <div>ថ្នាក់ទី ${cls}</div>
         </div>
-
         <table class="print-report-table">
           <thead>${theadHtml}</thead>
           <tbody>${rowsHtml}</tbody>
         </table>
-
         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-top:20px; padding:0 30px;">
           <div style="display:inline-flex; flex-direction:column; align-items:center; text-align:center; min-width:200px; margin-top:25px;">
             <div class="f-moul" style="font-size:12.5px; color:#1e3a8a;">បានឃើញ និងឯកភាព</div>
             <div style="font-weight:bold; font-size:12.5px; color:#1e3a8a; margin-top:4px;">នាយកសាលា</div>
           </div>
-
           <div style="display:inline-flex; flex-direction:column; align-items:center; text-align:center; min-width:300px;">
             <input type="text" class="clean-lunar-input" value="${defaultLunar}">
             <div style="font-size:12px; color:#1e3a8a; margin-top:3px;">${defaultSolar}</div>
             <div class="f-moul" style="font-size:12.5px; color:#1e3a8a; margin-top:5px;">គ្រូទទួលបន្ទុកថ្នាក់</div>
             <div style="font-weight:bold; font-size:13.5px; color:#1e3a8a; margin-top:36px;">${TEACHER_NAME || ''}</div>
           </div>
-        </div>
-      `;
+        </div>`;
 
       document.getElementById('printableScorePaper').innerHTML = html;
     }
