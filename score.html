@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>ប្រព័ន្ធស្រង់ពិន្ទុ</title>
   
-  <!-- 🔤 Google Fonts Khmer (Battambang & Moul ដូចដើម) -->
+  <!-- 🔤 Google Fonts Khmer (Battambang & Moul ដើម) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;600;700;900&family=Moul&display=swap" rel="stylesheet">
@@ -66,7 +66,7 @@
       --res-bg: #312e81;   --res-txt: #c7d2fe;   --res-col: #1e1b4b; --res-brd: #3730a3;
     }
 
-    /* 🌟 ប្តូរ Font មក Khmer OS Battambang ដូចដើម */
+    /* 🌟 ប្តូរមកប្រើពុម្ពអក្សរ Khmer OS Battambang ដើម */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -416,13 +416,13 @@
       background: rgba(239, 68, 68, 0.12); color: #dc2626; border-color: rgba(239, 68, 68, 0.3);
     }
 
-    /* ── Dropdown Filter និទ្ទេស (កែសម្រួលឱ្យដំណើរការរលូន & មាន Checkmark) ── */
+    /* ── Dropdown Filter និទ្ទេស (រចនាស្អាតដូចរូបភាពទី ២) ── */
     .dropdown-relative { position: relative; display: inline-block; }
     .grade-menu-popup {
       display: none;
       position: absolute;
       top: 42px; left: 0;
-      min-width: 135px;
+      min-width: 145px;
       background: var(--surface);
       border: 1.5px solid var(--border);
       border-radius: 18px;
@@ -435,7 +435,7 @@
     @keyframes popIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
     
     .grade-menu-item {
-      padding: 7px 14px;
+      padding: 8px 14px;
       border-radius: 12px;
       font-size: 13px;
       font-weight: 700;
@@ -535,7 +535,7 @@
     .th-sub-fo { background: var(--for-col);   color: var(--for-txt); }
     .th-sub-res{ background: var(--res-col);   color: var(--res-txt); }
 
-    /* 🌟 បង្រួមក្រឡោនមេគុណតាមមុខវិជ្ជាឱ្យតូចបន្តិច (Height: 20px) */
+    /* 🌟 បង្រួមក្រឡោនមេគុណតាមមុខវិជ្ជាឱ្យនៅត្រឹម 20px */
     .coef-row {
       background: var(--surface-elevated);
       font-size: 9.5px;
@@ -748,7 +748,7 @@
     </div>
   </div>
 
-  <!-- ══════════════ 2. MAIN SCORE SPREADSHEET ══════════════ -->
+  <!-- ══════════════ 2. MAIN SCORE SPREADSHEET (ដូចរូបភាពគំរូ) ══════════════ -->
   <div id="mainForm">
     
     <!-- ── ក្បាលលើបង្ហាញប្រភេទពិន្ទុ និងចំនួនសិស្ស ── -->
@@ -812,22 +812,14 @@
           <i class="fa-solid fa-language"></i> <span id="txtGradeLang">A-F</span>
         </button>
 
-        <!-- និទ្ទេស Dropdown Filter (កែសម្រួលឱ្យដំណើរការរលូន ១០០%) -->
+        <!-- និទ្ទេស Dropdown Filter (Render តាមភាសាស្វ័យប្រវត្តិ) -->
         <div class="dropdown-relative">
           <button type="button" class="pill-btn" onclick="toggleGradeMenu(event)">
             <span id="currentGradeFilterTxt">និទ្ទេស</span> <i class="fa-solid fa-chevron-down" style="font-size:10px; margin-left:4px;"></i>
           </button>
           
           <div class="grade-menu-popup" id="gradeMenuPopup">
-            <div class="grade-menu-item active" onclick="selectGradeFilter('ALL', 'និទ្ទេស', this)">
-              <span>និទ្ទេសទាំងអស់</span> <i class="fa-solid fa-check" style="font-size:11px;"></i>
-            </div>
-            <div class="grade-menu-item" onclick="selectGradeFilter('A', 'A', this)"><span>A</span></div>
-            <div class="grade-menu-item" onclick="selectGradeFilter('B', 'B', this)"><span>B</span></div>
-            <div class="grade-menu-item" onclick="selectGradeFilter('C', 'C', this)"><span>C</span></div>
-            <div class="grade-menu-item" onclick="selectGradeFilter('D', 'D', this)"><span>D</span></div>
-            <div class="grade-menu-item" onclick="selectGradeFilter('E', 'E', this)"><span>E</span></div>
-            <div class="grade-menu-item" onclick="selectGradeFilter('F', 'F', this)"><span>F</span></div>
+            <!-- Rendered dynamically by renderGradeMenuPopup() -->
           </div>
         </div>
 
@@ -1045,6 +1037,7 @@
     let isLocked = false;
     let displayedStudents = [];
     let savedScoresData = {};
+    let savedDbAverages = {};
     let studentAbsenceData = {};
     let autoSaveTimer = null;
     let isAutoSaving = false;
@@ -1094,6 +1087,7 @@
       }
 
       updateGradeLangUI();
+      renderGradeMenuPopup(); // បង្កើតជម្រើសក្នុង Dropdown តាមភាសា
       setupArrowKeys();
     });
 
@@ -1146,36 +1140,62 @@
       document.getElementById('landingPage').style.display = 'block';
     }
 
-    /* 🌟 ប្តូរការបង្ហាញនិទ្ទេស A-F ឬ ខ្មែរ */
+    /* 🌟 ប្តូរភាសានិទ្ទេស (A-F ឬ ខ្មែរ) រួច Re-render ទាំងតារាង និង Dropdown Popup */
     function toggleGradeLang() {
-      gradeLangMode = gradeLangMode === 'EN' ? 'KH' : 'EN';
+      gradeLangMode = (gradeLangMode === 'EN') ? 'KH' : 'EN';
       localStorage.setItem('score_grade_lang', gradeLangMode);
       updateGradeLangUI();
-      renderTable();
+      renderGradeMenuPopup(); // 🌟 ប្តូរជម្រើសក្នុង Dropdown ភ្លាមៗ
+      renderTable();          // 🌟 ប្តូរការបង្ហាញនិទ្ទេសក្នុងតារាងភ្លាមៗ
     }
 
     function updateGradeLangUI() {
       document.getElementById('txtGradeLang').innerText = gradeLangMode === 'EN' ? 'A-F' : 'ខ្មែរ';
     }
 
-    /* 🌟 កែសម្រួលមុខងារច្រោះនិទ្ទេស (ដំណើរការរលូន ១០០% ជាមួយ This) */
+    /* 🌟 អនុគមន៍ Render Dropdown ច្រោះនិទ្ទេស តាមភាសាស្វ័យប្រវត្តិ */
+    function renderGradeMenuPopup() {
+      const popup = document.getElementById('gradeMenuPopup');
+      if (!popup) return;
+      const isKh = (gradeLangMode === 'KH');
+
+      const grades = [
+        { code: 'ALL', kh: 'និទ្ទេសទាំងអស់', en: 'All' },
+        { code: 'A',   kh: 'A - ល្អប្រសើរ',   en: 'A' },
+        { code: 'B',   kh: 'B - ល្អណាស់',    en: 'B' },
+        { code: 'C',   kh: 'C - ល្អ',         en: 'C' },
+        { code: 'D',   kh: 'D - បង្គួរ',       en: 'D' },
+        { code: 'E',   kh: 'E - មធ្យម',      en: 'E' },
+        { code: 'F',   kh: 'F - ខ្សោយ',     en: 'F' }
+      ];
+
+      popup.innerHTML = grades.map(g => {
+        const isActive = (currentGradeFilter === g.code);
+        const text = isKh ? g.kh : g.en;
+        const checkIcon = isActive ? '<i class="fa-solid fa-check" style="font-size:11px; color:#0284c7;"></i>' : '';
+        const labelText = g.code === 'ALL' ? 'និទ្ទេស' : (isKh ? g.kh : g.en);
+        return `<div class="grade-menu-item ${isActive ? 'active' : ''}" onclick="selectGradeFilter('${g.code}', '${labelText}', this)">
+                  <span>${text}</span> ${checkIcon}
+                </div>`;
+      }).join('');
+    }
+
     function toggleGradeMenu(e) {
       if (e) e.stopPropagation();
       document.getElementById('gradeMenuPopup').classList.toggle('show');
     }
 
+    /* 🌟 មុខងារច្រោះនិទ្ទេសដំណើរការយ៉ាងរលូន */
     function selectGradeFilter(grade, label, el) {
       currentGradeFilter = grade;
       document.getElementById('currentGradeFilterTxt').innerText = label;
 
-      // ជម្រះ Active ចាស់
       document.querySelectorAll('.grade-menu-item').forEach(item => {
         item.classList.remove('active');
         const check = item.querySelector('.fa-check');
         if (check) check.remove();
       });
 
-      // ដាក់ Active ថ្មី និងបន្ថែមសញ្ញា Checkmark
       if (el) {
         el.classList.add('active');
         const chk = document.createElement('i');
@@ -1186,7 +1206,7 @@
       }
 
       document.getElementById('gradeMenuPopup').classList.remove('show');
-      renderTable();
+      renderTable(); // ត្រងបង្ហាញសិស្សលើតារាងភ្លាមៗ
     }
 
     document.addEventListener('click', (e) => {
@@ -1299,30 +1319,27 @@
         if (scErr) console.warn("Score fetch warning:", scErr);
 
         savedScoresData = {};
+        savedDbAverages = {};
         (scList || []).forEach(row => {
           let scObj = row.scores || {};
           if (typeof scObj === 'string') {
             try { scObj = JSON.parse(scObj); } catch(e) { scObj = {}; }
           }
-          savedScoresData[String(row.student_id)] = scObj;
+          const sid = String(row.student_id);
+          savedScoresData[sid] = scObj;
+          if (row.average !== undefined && row.average !== null) {
+            savedDbAverages[sid] = Number(row.average);
+          }
         });
 
         // ទាញយកវត្តមាន
         await loadAttendanceData(curPure, period);
 
-        updateStudentCountsUI();
         renderTable();
 
       } catch (err) {
         document.getElementById('tableArea').innerHTML = `<div style="text-align:center; padding: 50px; color:#ef4444;">❌ កំហុស៖ ${err.message}</div>`;
       }
-    }
-
-    function updateStudentCountsUI() {
-      const total = displayedStudents.length;
-      const female = displayedStudents.filter(s => s.sex === 'ស្រី' || s.sex === 'F').length;
-      const male = total - female;
-      document.getElementById('badgeStudentSummary').textContent = `សិស្សសរុប ${total} • ស្រី ${female} • ប្រុស ${male}`;
     }
 
     async function loadAttendanceData(cls, period) {
@@ -1435,7 +1452,9 @@
         const v = parseFloat((savedScoresData[sid] || {})[k]);
         if (!isNaN(v)) { tot += v; count++; }
       });
-      return count > 0 ? tot / count : 0;
+      if (count > 0) return tot / count;
+      if (savedDbAverages[sid]) return savedDbAverages[sid];
+      return 0;
     }
 
     function getGradeBadge(avg) {
@@ -1446,7 +1465,7 @@
       else if (avg >= 6) { code = 'D'; khName = 'បង្គួរ';     cls = 'grade-d'; }
       else if (avg >= 5) { code = 'E'; khName = 'មធ្យម';    cls = 'grade-e'; }
       
-      const label = gradeLangMode === 'EN' ? code : khName;
+      const label = (gradeLangMode === 'EN') ? code : khName;
       return { code: code, khName: khName, label: label, c: cls };
     }
 
@@ -1506,29 +1525,39 @@
       });
     }
 
-    /* 7. TABLE RENDER (ដំណើរការត្រងនិទ្ទេស & ក្រឡោនមេគុណបង្រួមតូច) */
+    /* 7. TABLE RENDER (ដំណើរការច្រោះនិទ្ទេស ១០០% & បង្រួមមេគុណ 20px) */
     function renderTable() {
       const area = document.getElementById('tableArea');
       const grps = groups();
       const keys = allKeys();
-      const q = (document.getElementById('searchBox').value || '').trim();
+      const q = (document.getElementById('searchBox').value || '').trim().toLowerCase();
       let list = displayedStudents.slice();
 
       if (q) {
-        list = list.filter(s => (s.name || '').includes(q) || (s.id || '').includes(q));
+        list = list.filter(s => (s.name || '').toLowerCase().includes(q) || (s.id || '').toLowerCase().includes(q));
       }
 
       // 🌟 មុខងារច្រោះតាមនិទ្ទេស (A, B, C, D, E, F) ដំណើរការត្រឹមត្រូវ
       if (currentGradeFilter !== 'ALL') {
         list = list.filter(s => {
-          // ពិនិត្យថាសិស្សមានពិន្ទុបញ្ចូលយ៉ាងហោច ១ មុខវិជ្ជាឬទេ
-          const hasScores = keys.some(k => (savedScoresData[s.id] || {})[k] !== undefined && (savedScoresData[s.id] || {})[k] !== '');
-          if (!hasScores) return false;
-          
           const avg = calcAvg(s.id);
+          if (avg <= 0) return false;
           const gr = getGradeBadge(avg);
           return gr.code === currentGradeFilter;
         });
+      }
+
+      // បច្ចុប្បន្នភាពចំនួនសិស្សលើ Badge
+      const totalAll = displayedStudents.length;
+      const countSummaryEl = document.getElementById('badgeStudentSummary');
+      if (countSummaryEl) {
+        const fCount = list.filter(s => s.sex === 'ស្រី' || s.sex === 'F').length;
+        const mCount = list.length - fCount;
+        if (currentGradeFilter !== 'ALL' || q) {
+          countSummaryEl.textContent = `បង្ហាញ ${list.length}/${totalAll} • ស្រី ${fCount} • ប្រុស ${mCount}`;
+        } else {
+          countSummaryEl.textContent = `សិស្សសរុប ${totalAll} • ស្រី ${fCount} • ប្រុស ${mCount}`;
+        }
       }
 
       const ranks = computeRanks();
@@ -1566,17 +1595,17 @@
       h += '</tr>';
 
       // 🌟 បង្រួមក្រឡោនមេគុណតាមមុខវិជ្ជាឱ្យតូចល្មម (Height: 20px)
-      h += '<tr class="coef-row"><td colspan="4" class="stk stk-1" style="text-align:right; padding-right:6px; font-weight:700; font-size:10px;">មេគុណតាមមុខវិជ្ជា</td>';
+      h += '<tr class="coef-row"><td colspan="4" class="stk stk-1" style="text-align:right; padding-right:6px; font-weight:700; font-size:9.5px;">មេគុណតាមមុខវិជ្ជា</td>';
       grps.forEach(g => {
         g.cols.forEach(c => {
           h += `<td class="th-sub-${g.grp}"><span class="coef-tag coef-zero" id="ac-${c.key}">×0</span></td>`;
         });
       });
-      h += `<td class="col-res-tot" style="color:#0284c7; font-weight:bold; font-size:11px;" id="totalCoefCount">0</td><td colspan="${RES_COLS.length - 1}"></td></tr>`;
+      h += `<td class="col-res-tot" style="color:#0284c7; font-weight:bold; font-size:10px;" id="totalCoefCount">0</td><td colspan="${RES_COLS.length - 1}"></td></tr>`;
       h += '</thead><tbody>';
 
       if (!list.length) {
-        h += `<tr><td colspan="${totalCols}" style="padding:35px; color:var(--text-muted);">⚠️ មិនមានទិន្នន័យសិស្សត្រូវនឹងការត្រងឡើយ</td></tr>`;
+        h += `<tr><td colspan="${totalCols}" style="padding:35px; color:var(--text-muted); font-weight:600;">⚠️ មិនមានទិន្នន័យសិស្សត្រូវនឹងការត្រងឡើយ</td></tr>`;
       } else {
         list.forEach((s, idx) => {
           const sc = savedScoresData[s.id] || {};
@@ -1914,7 +1943,6 @@
       let rowsHtml = '';
       const totalStudents = displayedStudents.length;
       let femaleCount = 0;
-      const gradeCounts = { A: 0, B: 0, C: 0, D: 0, E: 0, F: 0 };
 
       displayedStudents.forEach((s, idx) => {
         const sc = savedScoresData[s.id] || {};
@@ -1925,10 +1953,6 @@
         const avg = calcAvg(s.id);
         const gr = getGradeBadge(avg);
         const absVal = (studentAbsenceData[s.id] !== undefined && studentAbsenceData[s.id] > 0) ? studentAbsenceData[s.id] : '';
-
-        if (avg > 0) {
-          gradeCounts[gr.code]++;
-        }
 
         let subjectCells = '';
         grps.forEach(g => {
