@@ -272,11 +272,11 @@
     .status-fail { color: #dc2626; font-weight: bold; }
 
     /* =========================================================
-       📚 ផ្ទាំងគ្រប់គ្រងមុខវិជ្ជា (SUBJECT MANAGER MODAL គាំទ្រ DARK & LIGHT)
+       📚 ផ្ទាំងគ្រប់គ្រងមុខវិជ្ជា (SUBJECT MANAGER MODAL)
     ========================================================= */
     #subjectManagerModal {
       display: none; position: fixed; inset: 0; background: var(--sub-modal-bg); backdrop-filter: blur(8px);
-      z-index: 4000; overflow-y: auto; padding: 18px 24px 160px;
+      z-index: 4000; overflow-y: auto; padding: 18px 24px 80px;
     }
     .sub-page-wrap { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
     .sub-top-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
@@ -341,32 +341,29 @@
     }
     .edit-input.sm { max-width: 70px; text-align: center; }
 
-    /* 🌟 Fixed Floating Bar (ដូចរូបភាពទី ១) */
-    .edit-footer-bar {
-      position: fixed; bottom: 0; left: 0; right: 0; background: var(--sub-footer-bg); border-top: 1.5px solid var(--sub-border);
-      padding: 14px 24px; display: none; align-items: center; justify-content: center; gap: 16px; z-index: 6000;
-      box-shadow: 0 -8px 25px rgba(0,0,0,0.35);
+    /* 🌟 ប៊ូតុង «បោះបង់ & រក្សាទុក» នៅក្រោមតារាងមុខវិជ្ជាដាច់ដោយឡែកពីគ្នា */
+    .section-edit-actions {
+      display: none; align-items: center; justify-content: center; gap: 16px;
+      padding: 16px 20px 20px; background: var(--sub-surface); border-top: 1px solid var(--sub-border);
     }
-    .btn-edit-cancel {
+    .btn-sub-cancel {
       background: #ffffff; color: #00875a; border: 1.5px solid #cbd5e1; padding: 10px 32px; border-radius: 14px;
       font-size: 14px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: all 0.15s;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: all 0.15s;
     }
-    [data-theme="dark"] .btn-edit-cancel {
-      background: #f8fafc; color: #059669; border-color: #cbd5e1;
-    }
-    .btn-edit-cancel:hover { background: #e2e8f0; }
+    [data-theme="dark"] .btn-sub-cancel { background: #f8fafc; color: #059669; border-color: #cbd5e1; }
+    .btn-sub-cancel:hover { background: #e2e8f0; }
 
-    .btn-edit-save {
-      background: linear-gradient(135deg, #0284c7, #2563eb 50%, #7c3aed 100%);
+    .btn-sub-save {
+      background: linear-gradient(135deg, #0284c7 0%, #2563eb 50%, #7c3aed 100%);
       color: #fff; border: none; padding: 10px 36px; border-radius: 14px;
       font-size: 14px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
       box-shadow: 0 4px 16px rgba(37, 99, 235, 0.4); transition: all 0.15s;
     }
-    .btn-edit-save:hover { opacity: 0.95; transform: translateY(-1px); }
+    .btn-sub-save:hover { opacity: 0.95; transform: translateY(-1px); }
 
     /* =========================================================
-       🌟 10. MODAL បន្ថែមមុខវិជ្ជាថ្មី (ដូចរូបភាពទី ២ បេះបិទ)
+       🌟 10. MODAL បន្ថែមមុខវិជ្ជាថ្មី (ដូចរូបភាព)
     ========================================================= */
     .add-sub-modal-backdrop {
       display: none; position: fixed; inset: 0; background: rgba(5, 15, 23, 0.85); backdrop-filter: blur(6px);
@@ -383,18 +380,12 @@
     }
     @keyframes popModal { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
 
-    .add-sub-modal-header {
-      padding: 16px 20px 12px; display: flex; align-items: center; justify-content: space-between;
-    }
+    .add-sub-modal-header { padding: 16px 20px 12px; display: flex; align-items: center; justify-content: space-between; }
     .add-sub-title { font-size: 17px; font-weight: 800; }
-    .add-sub-close {
-      background: none; border: none; color: #94a3b8; font-size: 16px; cursor: pointer; padding: 4px;
-    }
+    .add-sub-close { background: none; border: none; color: #94a3b8; font-size: 16px; cursor: pointer; padding: 4px; }
     .add-sub-close:hover { color: #f8fafc; }
 
-    .add-sub-modal-body {
-      padding: 6px 20px 20px; display: flex; flex-direction: column; gap: 14px;
-    }
+    .add-sub-modal-body { padding: 6px 20px 20px; display: flex; flex-direction: column; gap: 14px; }
     .add-sub-field { display: flex; flex-direction: column; gap: 6px; }
     .add-sub-field label { font-size: 12.5px; font-weight: 700; color: #94a3b8; }
     [data-theme="light"] .add-sub-field label { color: #475569; }
@@ -404,9 +395,7 @@
       background: #0c1822; color: #f8fafc; padding: 0 14px; font-size: 13px; font-weight: 700; outline: none;
       transition: all 0.15s;
     }
-    [data-theme="light"] .add-sub-input {
-      background: #f8fafc; border-color: #cbd5e1; color: #0f172a;
-    }
+    [data-theme="light"] .add-sub-input { background: #f8fafc; border-color: #cbd5e1; color: #0f172a; }
     .add-sub-input:focus { border-color: #00b894; box-shadow: 0 0 0 3px rgba(0, 184, 148, 0.2); }
     .add-sub-input.text-center { text-align: center; }
 
@@ -415,35 +404,23 @@
       background: #0f2c33; color: #2dd4bf; display: flex; align-items: center; justify-content: center;
       gap: 8px; font-size: 13.5px; font-weight: 800; cursor: pointer; user-select: none;
     }
-    [data-theme="light"] .exam-type-toggle-btn {
-      background: #e6f7f2; border-color: #bbf0e2; color: #059669;
-    }
+    [data-theme="light"] .exam-type-toggle-btn { background: #e6f7f2; border-color: #bbf0e2; color: #059669; }
 
-    .add-sub-grid-3 {
-      display: grid; grid-template-columns: 1fr 1fr 1.2fr; gap: 10px; align-items: flex-end;
-    }
+    .add-sub-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1.2fr; gap: 10px; align-items: flex-end; }
     .add-sub-coef-box {
       width: 100%; height: 42px; border-radius: 12px; border: 1.5px solid #1c3647;
       background: #0c1822; color: #38bdf8; display: flex; align-items: center; justify-content: center;
       font-size: 14px; font-weight: 800;
     }
-    [data-theme="light"] .add-sub-coef-box {
-      background: #f8fafc; border-color: #cbd5e1; color: #0284c7;
-    }
+    [data-theme="light"] .add-sub-coef-box { background: #f8fafc; border-color: #cbd5e1; color: #0284c7; }
 
-    .add-sub-footer {
-      display: grid; grid-template-columns: 1fr 1.3fr; gap: 12px; margin-top: 6px;
-    }
+    .add-sub-footer { display: grid; grid-template-columns: 1fr 1.3fr; gap: 12px; margin-top: 6px; }
     .btn-sub-modal-cancel {
-      height: 44px; border-radius: 12px; border: 1px solid #1c3647; background: #1a2f3d;
-      color: #cbd5e1; font-size: 13.5px; font-weight: 800; cursor: pointer;
+      height: 44px; border-radius: 12px; border: 1px solid #1c3647; background: #1a2f3d; color: #cbd5e1; font-size: 13.5px; font-weight: 800; cursor: pointer;
     }
-    [data-theme="light"] .btn-sub-modal-cancel {
-      background: #e2e8f0; border-color: #cbd5e1; color: #334155;
-    }
+    [data-theme="light"] .btn-sub-modal-cancel { background: #e2e8f0; border-color: #cbd5e1; color: #334155; }
     .btn-sub-modal-save {
-      height: 44px; border-radius: 12px; border: none; background: #00875a;
-      color: #ffffff; font-size: 13.5px; font-weight: 800; cursor: pointer;
+      height: 44px; border-radius: 12px; border: none; background: #00875a; color: #ffffff; font-size: 13.5px; font-weight: 800; cursor: pointer;
       box-shadow: 0 4px 14px rgba(0, 135, 90, 0.4);
     }
     .btn-sub-modal-save:hover { background: #00734c; }
@@ -581,7 +558,7 @@
           <option value="2">ប្រចាំឆមាស ២</option>
         </select>
 
-        <!-- 🌟 បញ្ជីខែ (មិនទទេស្អាតដូចមុន) -->
+        <!-- 🌟 បញ្ជីខែ (មាន Default Options មិនទទេស្អាតដូចមុន) -->
         <select id="monthSelect" class="pill-select" onchange="loadStudents()">
           <option value="វិច្ឆិកា">វិច្ឆិកា</option>
           <option value="ធ្នូ">ធ្នូ</option>
@@ -596,7 +573,6 @@
           <option value="ឆមាសទី២">ឆមាសទី 2</option>
         </select>
 
-        <!-- ប៊ូតុងបើកផ្ទាំងគ្រប់គ្រងមុខវិជ្ជា -->
         <button type="button" class="pill-btn teal" onclick="openSubjectModal()" title="គ្រប់គ្រងមុខវិជ្ជា និងមេគុណ">
           <i class="fa-solid fa-book-bookmark"></i> <span class="btn-label">មុខវិជ្ជា</span>
         </button>
@@ -661,7 +637,9 @@
             <i class="fa-solid fa-chevron-left"></i>
           </button>
           <i class="fa-solid fa-book-bookmark"></i>
-          <span>មុខវិជ្ជា (<span id="txtSubClassHeader">ថ្នាក់ទី...</span>)</span>
+          <span>មុខវិជ្ជា</span>
+          <!-- 🌟 Dropdown សម្រាប់ Admin ជ្រើសរើសថ្នាក់ដែលចង់កែប្រែ -->
+          <select id="subClassSelect" class="pill-select" onchange="onSubClassChange(this.value)" style="margin-left:8px; height:36px;"></select>
         </div>
 
         <div style="display:flex; align-items:center; gap:10px;">
@@ -686,7 +664,7 @@
             <button type="button" class="btn-action-pill teal" onclick="openAddSubjectModal('monthly')">
               <i class="fa-solid fa-plus"></i> <span>បន្ថែម</span>
             </button>
-            <button type="button" class="btn-action-pill" onclick="toggleSubjectEditMode('monthly')">
+            <button type="button" class="btn-action-pill" id="btnEditMonthly" onclick="toggleSectionEdit('monthly')">
               <i class="fa-solid fa-pen"></i> <span>កែប្រែ</span>
             </button>
           </div>
@@ -707,6 +685,16 @@
             <tbody id="tableMonthlyBody"></tbody>
           </table>
         </div>
+
+        <!-- 🌟 ប៊ូតុង «បោះបង់ & រក្សាទុក» ស្ថិតនៅក្រោមតារាងមុខវិជ្ជាខែដោយផ្ទាល់ -->
+        <div class="section-edit-actions" id="monthlyEditActions">
+          <button type="button" class="btn-sub-cancel" onclick="cancelSectionEdit('monthly')">
+            <i class="fa-solid fa-xmark"></i> <span>បោះបង់</span>
+          </button>
+          <button type="button" class="btn-sub-save" onclick="saveSectionSubjectChanges('monthly')">
+            <i class="fa-solid fa-check"></i> <span>រក្សាទុក</span>
+          </button>
+        </div>
       </div>
 
       <!-- ផ្នែកមុខវិជ្ជាឆមាស -->
@@ -721,7 +709,7 @@
             <button type="button" class="btn-action-pill teal" onclick="openAddSubjectModal('semester')">
               <i class="fa-solid fa-plus"></i> <span>បន្ថែម</span>
             </button>
-            <button type="button" class="btn-action-pill" onclick="toggleSubjectEditMode('semester')">
+            <button type="button" class="btn-action-pill" id="btnEditSemester" onclick="toggleSectionEdit('semester')">
               <i class="fa-solid fa-pen"></i> <span>កែប្រែ</span>
             </button>
           </div>
@@ -742,22 +730,22 @@
             <tbody id="tableSemesterBody"></tbody>
           </table>
         </div>
+
+        <!-- 🌟 ប៊ូតុង «បោះបង់ & រក្សាទុក» ស្ថិតនៅក្រោមតារាងមុខវិជ្ជាឆមាសដោយផ្ទាល់ -->
+        <div class="section-edit-actions" id="semesterEditActions">
+          <button type="button" class="btn-sub-cancel" onclick="cancelSectionEdit('semester')">
+            <i class="fa-solid fa-xmark"></i> <span>បោះបង់</span>
+          </button>
+          <button type="button" class="btn-sub-save" onclick="saveSectionSubjectChanges('semester')">
+            <i class="fa-solid fa-check"></i> <span>រក្សាទុក</span>
+          </button>
+        </div>
       </div>
 
     </div>
-
-    <!-- 🌟 របាររក្សាទុក (ដូចរូបភាពទី ១) -->
-    <div class="edit-footer-bar" id="subEditFooterBar">
-      <button type="button" class="btn-edit-cancel" onclick="cancelSubjectEditMode()">
-        <i class="fa-solid fa-xmark"></i> <span>បោះបង់</span>
-      </button>
-      <button type="button" class="btn-edit-save" onclick="saveAllSubjectChanges()">
-        <i class="fa-solid fa-check"></i> <span>រក្សាទុក</span>
-      </button>
-    </div>
   </div>
 
-  <!-- ══════════════ 🌟 5. MODAL បន្ថែមមុខវិជ្ជាថ្មី (ដូចរូបភាពទី ២) ══════════════ -->
+  <!-- ══════════════ 🌟 4. MODAL បន្ថែមមុខវិជ្ជាថ្មី (ដូចរូបភាពទី ២) ══════════════ -->
   <div class="add-sub-modal-backdrop" id="addSubjectModal" onclick="if(event.target===this) closeAddSubjectModal()">
     <div class="add-sub-modal-card" onclick="event.stopPropagation()">
       <div class="add-sub-modal-header">
@@ -812,7 +800,7 @@
     </div>
   </div>
 
-  <!-- ══════════════ 6. SCORE REPORT VIEWER MODAL ══════════════ -->
+  <!-- ══════════════ 5. SCORE REPORT VIEWER MODAL ══════════════ -->
   <div id="scoreReportModal">
     <div class="viewer-top-bar">
       <button class="pill-btn" onclick="closeScoreReportModal()">⬅ ត្រឡប់</button>
@@ -864,7 +852,7 @@
     const TEACHER_NAME = CURRENT_USER?.teacher_name || "";
     const IS_ADMIN     = String(USER_ROLE).toLowerCase().trim() === 'admin';
 
-    // 🌟 អថេរខែ និងលេខ
+    // 🌟 អថេរខែ (បានប្រកាសយ៉ាងត្រឹមត្រូវ)
     const KHMER_MONTHS = ['មករា','កុម្ភៈ','មីនា','មេសា','ឧសភា','មិថុនា','កក្កដា','សីហា','កញ្ញា','តុលា','វិច្ឆិកា','ធ្នូ'];
     const SEMESTER_1_MONTHS = ['វិច្ឆិកា','ធ្នូ','មករា','កុម្ភៈ','មីនា','មេសា'];
     const SEMESTER_2_MONTHS = ['ឧសភា','មិថុនា','កក្កដា','សីហា','កញ្ញា','តុលា'];
@@ -1029,6 +1017,7 @@
       const semSel = document.getElementById('semesterFilterSelect');
       if (semSel) semSel.value = isSem1 ? "1" : "2";
 
+      // 🌟 បំពេញបញ្ជីខែដោយមិនទទេស្អាត
       updateMonthOptionsBySemester(isSem1 ? "1" : "2", curKhMonth);
 
       const bTxt = document.getElementById('monthlyBadgeText');
@@ -1312,8 +1301,11 @@
     /* =========================================================
        6. LOAD CLASS LIST & STUDENTS (SUPABASE)
     ========================================================= */
+    let availableClassesList = [];
+
     async function loadClassList() {
       const sel = document.getElementById('classSelect');
+      const subSel = document.getElementById('subClassSelect');
       const cleanUserClass = cleanGrade(USER_CLASS);
       sel.innerHTML = '<option value="">កំពុងទាញយកថ្នាក់...</option>';
 
@@ -1330,7 +1322,10 @@
         if (!rawClasses.length) rawClasses = ['១', '២', '៣', '៤(ក)', '៤(ខ)', '៥', '៦'];
 
         const sorted = sortGradesAscending(rawClasses);
+        availableClassesList = sorted;
+
         sel.innerHTML = sorted.map(c => `<option value="${c}">ថ្នាក់ទី ${c}</option>`).join('');
+        if (subSel) subSel.innerHTML = sorted.map(c => `<option value="${c}">ថ្នាក់ទី ${c}</option>`).join('');
 
         if (!IS_ADMIN) {
           document.getElementById('adminClassBox').style.display = 'none';
@@ -1340,6 +1335,7 @@
             text.innerText = 'ថ្នាក់ទី ' + cleanUserClass;
             badge.style.display = 'inline-flex';
             sel.value = cleanUserClass;
+            if (subSel) subSel.value = cleanUserClass;
             await loadStudents();
           } else if (cleanUserClass) {
             text.innerText = 'ថ្នាក់ទី ' + cleanUserClass;
@@ -1351,13 +1347,11 @@
             document.getElementById('tableArea').innerHTML = '<div style="text-align:center; padding:50px; color:#f59e0b; font-weight:bold;">⚠️ គណនីរបស់អ្នកមិនទាន់មានថ្នាក់ទទួលបន្ទុកឡើយ។</div>';
           }
         } else {
+          // 🌟 សម្រាប់ Admin ជ្រើសរើសថ្នាក់ដំបូងគេបង្អស់ (ថ្នាក់ទី ១ ឬ ១(ក)) មិនជាប់ថ្នាក់ ៤(ក) ចាស់ឡើយ
           document.getElementById('teacherClassBadge').style.display = 'none';
           document.getElementById('adminClassBox').style.display = 'inline-block';
-          if (cleanUserClass && sorted.includes(cleanUserClass)) {
-            sel.value = cleanUserClass;
-          } else {
-            sel.value = sorted[0];
-          }
+          sel.value = sorted[0];
+          if (subSel) subSel.value = sorted[0];
           await loadStudents();
         }
       } catch(err) {
@@ -1924,19 +1918,30 @@
     /* =========================================================
        📚 8. គ្រប់គ្រងមុខវិជ្ជា (SUBJECT MANAGER LOGIC ដូចរូបភាព)
     ========================================================= */
-    let isSubEditingMode = false;
+    let editingSection = null; // null | 'monthly' | 'semester'
     let subCollapsedMap = {};
 
     function openSubjectModal() {
-      const cls = document.getElementById('classSelect').value || cleanGrade(USER_CLASS);
-      document.getElementById('txtSubClassHeader').innerText = `ថ្នាក់ទី ${cleanGrade(cls) || '៤(ក)'}`;
+      const curPure = cleanGrade(document.getElementById('classSelect').value || USER_CLASS);
+      const subSel = document.getElementById('subClassSelect');
+      if (subSel && availableClassesList.length > 0) {
+        subSel.innerHTML = availableClassesList.map(c => `<option value="${c}">ថ្នាក់ទី ${c}</option>`).join('');
+        subSel.value = curPure || availableClassesList[0];
+      }
       document.getElementById('subjectManagerModal').style.display = 'block';
       renderSubjectManagerTables();
     }
 
     function closeSubjectModal() {
       document.getElementById('subjectManagerModal').style.display = 'none';
-      cancelSubjectEditMode();
+      cancelSectionEdit('monthly');
+      cancelSectionEdit('semester');
+    }
+
+    async function onSubClassChange(newClass) {
+      document.getElementById('classSelect').value = newClass;
+      await loadDynamicSubjects(newClass);
+      renderSubjectManagerTables();
     }
 
     function toggleSubCollapse(key) {
@@ -1945,11 +1950,12 @@
     }
 
     function renderSubjectManagerTables() {
-      const cls = cleanGrade(document.getElementById('classSelect').value || USER_CLASS) || '៤(ក)';
+      const cls = cleanGrade(document.getElementById('subClassSelect')?.value || document.getElementById('classSelect').value || USER_CLASS) || '១';
       const clsText = 'ថ្នាក់ទី' + cls;
 
       // ១. តារាងមុខវិជ្ជាខែ
       const mBody = document.getElementById('tableMonthlyBody');
+      const isEditingMonthly = (editingSection === 'monthly');
       let mHtml = '';
 
       monthlySubjects.forEach((p, idx) => {
@@ -1960,7 +1966,7 @@
         let parentCoef = p.coef;
         if (hasChildren) parentCoef = p.children.reduce((sum, c) => sum + (Number(c.coef) || 1), 0);
 
-        if (!isSubEditingMode) {
+        if (!isEditingMonthly) {
           mHtml += `
             <tr style="font-weight:700;">
               <td style="color:var(--text-muted);">${idx + 1}</td>
@@ -1998,7 +2004,7 @@
             });
           }
         } else {
-          // Edit Mode
+          // Edit Mode សម្រាប់តែខែ
           mHtml += `
             <tr style="font-weight:700;">
               <td>${idx + 1}</td>
@@ -2036,11 +2042,12 @@
       });
       mBody.innerHTML = mHtml;
 
-      // ២. តារាងមុខវិជ្ជាឆមាស (ដូចរូបទី ១)
+      // ២. តារាងមុខវិជ្ជាឆមាស
       const sBody = document.getElementById('tableSemesterBody');
+      const isEditingSemester = (editingSection === 'semester');
       let sHtml = '';
       semesterSubjects.forEach((s, idx) => {
-        if (!isSubEditingMode) {
+        if (!isEditingSemester) {
           sHtml += `
             <tr style="font-weight:700;">
               <td style="color:var(--text-muted);">${idx + 1}</td>
@@ -2057,6 +2064,7 @@
               <td><button type="button" class="row-action-btn del" onclick="deleteSemesterSubject(${idx})"><i class="fa-solid fa-trash-can"></i></button></td>
             </tr>`;
         } else {
+          // Edit Mode សម្រាប់តែឆមាស
           sHtml += `
             <tr style="font-weight:700;">
               <td>${idx + 1}</td>
@@ -2080,24 +2088,25 @@
       document.getElementById('badgeSemesterCount').innerText = `${semesterSubjects.length} មុខវិជ្ជា`;
     }
 
-    function toggleSubjectEditMode() {
-      isSubEditingMode = true;
-      document.getElementById('subEditFooterBar').style.display = 'flex';
+    /* 🌟 ប៊ូតុងកែប្រែកំណត់ដាច់ដោយឡែកពីគ្នា និងបង្ហាញប៊ូតុងនៅក្រោមមុខវិជ្ជាផ្ទាល់ */
+    function toggleSectionEdit(sectionType) {
+      editingSection = sectionType;
+      document.getElementById('monthlyEditActions').style.display = (sectionType === 'monthly') ? 'flex' : 'none';
+      document.getElementById('semesterEditActions').style.display = (sectionType === 'semester') ? 'flex' : 'none';
       renderSubjectManagerTables();
     }
 
-    function cancelSubjectEditMode() {
-      isSubEditingMode = false;
-      document.getElementById('subEditFooterBar').style.display = 'none';
-      const cls = cleanGrade(document.getElementById('classSelect').value || USER_CLASS);
+    function cancelSectionEdit(sectionType) {
+      editingSection = null;
+      document.getElementById('monthlyEditActions').style.display = 'none';
+      document.getElementById('semesterEditActions').style.display = 'none';
+      const cls = cleanGrade(document.getElementById('subClassSelect')?.value || document.getElementById('classSelect').value || USER_CLASS);
       loadDynamicSubjects(cls).then(renderSubjectManagerTables);
     }
 
-    /* =========================================================
-       🌟 9. MODAL បន្ថែមមុខវិជ្ជាថ្មី (រូបភាពទី ២)
-    ========================================================= */
+    /* 🌟 9. MODAL បន្ថែមមុខវិជ្ជាថ្មី (រូបភាពទី ២) */
     function openAddSubjectModal(type) {
-      const cls = cleanGrade(document.getElementById('classSelect').value || USER_CLASS) || '៤(ក)';
+      const cls = cleanGrade(document.getElementById('subClassSelect')?.value || document.getElementById('classSelect').value || USER_CLASS) || '១';
       document.getElementById('addSubjectModalTitle').innerText = 'បន្ថែមមុខវិជ្ជាថ្មី';
       document.getElementById('newSubClass').value = 'ថ្នាក់ទី' + cls;
       document.getElementById('newSubParentId').value = '';
@@ -2118,7 +2127,7 @@
     }
 
     function openAddSubSubjectModal(pIdx) {
-      const cls = cleanGrade(document.getElementById('classSelect').value || USER_CLASS) || '៤(ក)';
+      const cls = cleanGrade(document.getElementById('subClassSelect')?.value || document.getElementById('classSelect').value || USER_CLASS) || '១';
       const p = monthlySubjects[pIdx];
       document.getElementById('addSubjectModalTitle').innerText = `បន្ថែមមុខវិជ្ជារង (${p.name})`;
       document.getElementById('newSubClass').value = 'ថ្នាក់ទី' + cls;
@@ -2144,7 +2153,7 @@
 
     function toggleNewSubType() {
       const pId = document.getElementById('newSubParentId').value;
-      if (pId !== '') return; // មុខវិជ្ជារង គឺសម្រាប់តែខែ
+      if (pId !== '') return;
       const cur = document.getElementById('newSubType').value;
       const next = (cur === 'monthly') ? 'semester' : 'monthly';
       document.getElementById('newSubType').value = next;
@@ -2165,14 +2174,12 @@
       const code = 'sub_' + Date.now();
 
       if (pId !== '') {
-        // បន្ថែមមុខវិជ្ជារង
         const idx = Number(pId);
         if (monthlySubjects[idx]) {
           if (!monthlySubjects[idx].children) monthlySubjects[idx].children = [];
           monthlySubjects[idx].children.push({ name: name, code: code, max_score: maxScore, coef: coef });
         }
       } else {
-        // បន្ថែមមុខវិជ្ជាធំ
         if (type === 'monthly') {
           monthlySubjects.push({ name: name, code: code, max_score: maxScore, coef: coef, children: [] });
         } else {
@@ -2182,82 +2189,92 @@
 
       closeAddSubjectModal();
       renderSubjectManagerTables();
-      saveAllSubjectChanges();
+      saveSectionSubjectChanges(type);
     }
 
     function deleteMonthlySubject(idx) {
       if (!confirm(`តើអ្នកពិតជាចង់លុបមុខវិជ្ជា "${monthlySubjects[idx].name}" មែនទេ?`)) return;
       monthlySubjects.splice(idx, 1);
       renderSubjectManagerTables();
-      saveAllSubjectChanges();
+      saveSectionSubjectChanges('monthly');
     }
 
     function deleteMonthlyChild(pIdx, cIdx) {
       monthlySubjects[pIdx].children.splice(cIdx, 1);
       renderSubjectManagerTables();
-      saveAllSubjectChanges();
+      saveSectionSubjectChanges('monthly');
     }
 
     function deleteSemesterSubject(idx) {
       if (!confirm(`តើអ្នកពិតជាចង់លុបមុខវិជ្ជា "${semesterSubjects[idx].name}" មែនទេ?`)) return;
       semesterSubjects.splice(idx, 1);
       renderSemesterTable();
-      saveAllSubjectChanges();
+      saveSectionSubjectChanges('semester');
     }
 
-    async function saveAllSubjectChanges() {
-      const cls = cleanGrade(document.getElementById('classSelect').value || USER_CLASS);
+    /* 🌟 រក្សាទុកមុខវិជ្ជាទៅ Database ដោយបំបែកតាមប្រភេទមុខវិជ្ជា */
+    async function saveSectionSubjectChanges(sectionType) {
+      const cls = cleanGrade(document.getElementById('subClassSelect')?.value || document.getElementById('classSelect').value || USER_CLASS);
       if (!cls) return;
 
       try {
-        await sb.from('subjects').delete().eq('assigned_class', cls);
+        if (sectionType === 'monthly') {
+          // ១. លុបមុខវិជ្ជាខែចាស់ក្នុងថ្នាក់នេះ
+          await sb.from('subjects').delete().eq('assigned_class', cls).eq('subject_type', 'monthly');
 
-        let sIdx = 1;
-        for (const p of monthlySubjects) {
-          const { data: insertedP, error: pErr } = await sb.from('subjects').insert([{
-            assigned_class: cls,
-            subject_type: 'monthly',
-            name: p.name,
-            code: p.code || ('m_' + sIdx),
-            max_score: p.max_score || 10,
-            coefficient: p.children?.length ? p.children.reduce((sum, c) => sum + (c.coef || 1), 0) : (p.coef || 1),
-            sort_order: sIdx++
-          }]).select().single();
-
-          if (pErr) throw pErr;
-
-          if (p.children && p.children.length > 0) {
-            let cIdx = 1;
-            const childRecords = p.children.map(c => ({
+          let sIdx = 1;
+          for (const p of monthlySubjects) {
+            const { data: insertedP, error: pErr } = await sb.from('subjects').insert([{
               assigned_class: cls,
               subject_type: 'monthly',
-              name: c.name,
-              code: c.code || ('ch_' + cIdx),
-              max_score: c.max_score || 10,
-              coefficient: c.coef || 1,
-              parent_id: insertedP.id,
-              sort_order: cIdx++
-            }));
-            await sb.from('subjects').insert(childRecords);
+              name: p.name,
+              code: p.code || ('m_' + sIdx),
+              max_score: p.max_score || 10,
+              coefficient: p.children?.length ? p.children.reduce((sum, c) => sum + (c.coef || 1), 0) : (p.coef || 1),
+              sort_order: sIdx++
+            }]).select().single();
+
+            if (pErr) throw pErr;
+
+            if (p.children && p.children.length > 0) {
+              let cIdx = 1;
+              const childRecords = p.children.map(c => ({
+                assigned_class: cls,
+                subject_type: 'monthly',
+                name: c.name,
+                code: c.code || ('ch_' + cIdx),
+                max_score: c.max_score || 10,
+                coefficient: c.coef || 1,
+                parent_id: insertedP.id,
+                sort_order: cIdx++
+              }));
+              await sb.from('subjects').insert(childRecords);
+            }
           }
+
+          document.getElementById('monthlyEditActions').style.display = 'none';
+          showToast('✅ បានរក្សាទុកមុខវិជ្ជាខែជោគជ័យ!');
+        } else if (sectionType === 'semester') {
+          // ២. លុបមុខវិជ្ជាឆមាសចាស់ក្នុងថ្នាក់នេះ
+          await sb.from('subjects').delete().eq('assigned_class', cls).eq('subject_type', 'semester');
+
+          let semIdx = 1;
+          const semRecords = semesterSubjects.map(s => ({
+            assigned_class: cls,
+            subject_type: 'semester',
+            name: s.name,
+            code: s.code || ('sem_' + semIdx),
+            max_score: s.max_score || 10,
+            coefficient: s.coef || 1,
+            sort_order: semIdx++
+          }));
+          await sb.from('subjects').insert(semRecords);
+
+          document.getElementById('semesterEditActions').style.display = 'none';
+          showToast('✅ បានរក្សាទុកមុខវិជ្ជាឆមាសជោគជ័យ!');
         }
 
-        let semIdx = 1;
-        const semRecords = semesterSubjects.map(s => ({
-          assigned_class: cls,
-          subject_type: 'semester',
-          name: s.name,
-          code: s.code || ('sem_' + semIdx),
-          max_score: s.max_score || 10,
-          coefficient: s.coef || 1,
-          sort_order: semIdx++
-        }));
-        await sb.from('subjects').insert(semRecords);
-
-        isSubEditingMode = false;
-        document.getElementById('subEditFooterBar').style.display = 'none';
-        showToast('✅ បានរក្សាទុកមុខវិជ្ជាជោគជ័យ!');
-
+        editingSection = null;
         buildGroupsFromConfig();
         renderTable();
         renderSubjectManagerTables();
@@ -2271,7 +2288,8 @@
       monthlySubjects = JSON.parse(JSON.stringify(DEFAULT_MONTHLY_TEMPLATE));
       semesterSubjects = JSON.parse(JSON.stringify(DEFAULT_SEMESTER_TEMPLATE));
       renderSubjectManagerTables();
-      await saveAllSubjectChanges();
+      await saveSectionSubjectChanges('monthly');
+      await saveSectionSubjectChanges('semester');
     }
 
     /* =========================================================
