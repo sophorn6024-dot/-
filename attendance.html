@@ -21,6 +21,7 @@
       --primary: #2563eb;
       --primary-hover: #1d4ed8;
       --primary-soft: #eff6ff;
+      --danger: #dc2626;
       --bg: #f8fafc;
       --surface: #ffffff;
       --surface-card: #ffffff;
@@ -41,6 +42,7 @@
       --primary: #3b82f6;
       --primary-hover: #60a5fa;
       --primary-soft: rgba(59, 130, 246, 0.15);
+      --danger: #f87171;
       --bg: #0b1120;
       --surface: #151f32;
       --surface-card: #151f32;
@@ -527,6 +529,9 @@
             <i class="fa-solid fa-umbrella-beach" style="color:#059669;"></i>
             <span>កំណត់ថ្ងៃឈប់សម្រាកក្នុងខែ (មិនរាប់ជាថ្ងៃរៀន)៖</span>
           </div>
+          <div style="font-size:11.5px; color:var(--text-muted); margin-bottom:4px;">
+            🏫 អនុវត្តសម្រាប់ <b id="holidayClassLabel">ថ្នាក់ទី...</b> តែប៉ុណ្ណោះ
+          </div>
           <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:10px; margin-top:10px;">
             <div style="position: relative;">
               <button class="date-trigger-btn" onclick="toggleHolidayCalPopup()">
@@ -681,6 +686,9 @@
 
     function toKhmerNum(n) { return String(n).replace(/\d/g, d => KHMER_DIGITS[d]); }
     function cleanGrade(g) { return String(g || '').replace(/^ថ្នាក់ទី\s*/, '').trim(); }
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
 
     /* 🌟 អនុគមន៍ពិនិត្យស្ថានភាពបោះបង់ការសិក្សា */
     function parseDropout(s) {
@@ -732,8 +740,7 @@
       var rptSel = document.getElementById('rptMonthSelect');
       if (rptSel) rptSel.value = curMonthName;
 
-      await loadSchoolHolidays();
-      renderHolidayConfigSection();
+      // 🌟 ថ្ងៃឈប់សម្រាកត្រូវផ្ទុកតាមថ្នាក់ → ធ្វើក្នុង loadDailyAttendanceData() តាមរយៈ ensureHolidays()
       await loadAllStudentsAndClasses();
     }
 
@@ -774,7 +781,6 @@
         </div>`;
 
       try {
-        // 🌟 កែតម្រូវ៖ Select យក dropout_semester មកជាមួយ
         const { data: stList, error: stErr } = await sb
           .from('students')
           .select('id, student_id, student_name, gender, grade, dropout_semester')
@@ -830,6 +836,10 @@
     /* 6. ទាញយកវត្តមានប្រចាំថ្ងៃ (ត្រងសិស្សបោះបង់តាមឆមាសនៃកាលបរិច្ឆេទ) */
     async function loadDailyAttendanceData() {
       if (!currentClassName) return;
+
+      // 🌟 ផ្ទុកថ្ងៃឈប់សម្រាករបស់ថ្នាក់នេះ (ឆ្នាំ + ថ្នាក់ ប្តូរទើបផ្ទុកថ្មី)
+      await ensureHolidays();
+
       var curPure = cleanGrade(currentClassName);
       var curSem = getSemesterByDate(selectedDate); // ពិនិត្យឆមាសនៃថ្ងៃបច្ចុប្បន្ន
 
@@ -1057,25 +1067,48 @@
       }
     }
 
-    /* 7. HOLIDAYS MANAGEMENT */
+    /* =========================================================
+       7. HOLIDAYS MANAGEMENT (🌟 ចែកតាមថ្នាក់ — គ្រូម្នាក់ៗកែបានតែថ្នាក់ខ្លួន)
+    ========================================================= */
+
+    /* គ្រូ = ថ្នាក់ខ្លួនជានិច្ច | Admin = ថ្នាក់ដែលកំពុងជ្រើសរើស */
+    function getHolidayClass() {
+      return cleanGrade(IS_ADMIN ? currentClassName : USER_CLASS);
+    }
+
+    var holidaysLoadedKey = '';
+    async function ensureHolidays() {
+      var key = selectedDate.getFullYear() + '|' + getHolidayClass();
+      if (key === holidaysLoadedKey) return;
+      await loadSchoolHolidays();
+      holidaysLoadedKey = key;
+      renderHolidayConfigSection();
+    }
+
     async function loadSchoolHolidays() {
       var yr = selectedDate.getFullYear();
+      var cls = getHolidayClass();
+      KHMER_MONTHS.forEach(m => monthlyHolidaysMap[m] = []);
+      if (!cls) return;
       try {
-        const { data, error } = await sb.from('school_holidays').select('*').eq('year', yr);
-        if (!error && data) {
-          KHMER_MONTHS.forEach(m => monthlyHolidaysMap[m] = []);
-          data.forEach(h => {
-            if (!monthlyHolidaysMap[h.month]) monthlyHolidaysMap[h.month] = [];
-            monthlyHolidaysMap[h.month].push({ day: Number(h.day), reason: h.reason || 'ថ្ងៃឈប់សម្រាក' });
-          });
-          KHMER_MONTHS.forEach(m => monthlyHolidaysMap[m].sort((a,b) => a.day - b.day));
-        }
-      } catch(e) {
+        const { data, error } = await sb.from('school_holidays')
+          .select('*')
+          .eq('year', yr)
+          .eq('assigned_class', cls);          // 🌟 យកតែថ្នាក់នេះ
+        if (error) throw error;
+        (data || []).forEach(h => {
+          if (!monthlyHolidaysMap[h.month]) monthlyHolidaysMap[h.month] = [];
+          monthlyHolidaysMap[h.month].push({ day: Number(h.day), reason: h.reason || 'ថ្ងៃឈប់សម្រាក' });
+        });
+        KHMER_MONTHS.forEach(m => monthlyHolidaysMap[m].sort((a, b) => a.day - b.day));
+      } catch (e) {
         console.warn('Holidays load error:', e);
       }
     }
 
     async function addHolidayForCurrentMonth() {
+      var cls = getHolidayClass();
+      if (!cls) { alert('មិនទាន់មានថ្នាក់ទទួលបន្ទុក! សូមទាក់ទង Admin។'); return; }
       var mName = document.getElementById('rptMonthSelect').value;
       var reasonInput = document.getElementById('holidayReasonInput');
       if (!selectedHolidayDay) { alert('សូមចុចលើប្រអប់ប្រតិទិន ដើម្បីជ្រើសរើសថ្ងៃឈប់សម្រាកសិន!'); return; }
@@ -1084,8 +1117,9 @@
 
       try {
         const { error } = await sb.from('school_holidays').upsert({
-          year: yr, month: mName, day: selectedHolidayDay, reason: reason
-        }, { onConflict: 'year,month,day' });
+          year: yr, month: mName, day: selectedHolidayDay, reason: reason,
+          assigned_class: cls                                   // 🌟
+        }, { onConflict: 'year,month,day,assigned_class' });    // 🌟
 
         if (error) throw error;
 
@@ -1105,16 +1139,18 @@
     }
 
     async function removeHoliday(mName, dayNum) {
+      var cls = getHolidayClass();
+      if (!cls) return;
       var yr = selectedDate.getFullYear();
       try {
-        const { error } = await sb.from('school_holidays').delete().eq('year', yr).eq('month', mName).eq('day', dayNum);
+        const { error } = await sb.from('school_holidays').delete()
+          .eq('year', yr).eq('month', mName).eq('day', dayNum)
+          .eq('assigned_class', cls);                           // 🌟 លុបតែថ្នាក់ខ្លួន
         if (error) throw error;
 
-        if (monthlyHolidaysMap[mName]) {
-          monthlyHolidaysMap[mName] = monthlyHolidaysMap[mName].filter(h => h.day !== dayNum);
-          renderHolidayTagsList();
-          showSaveToast();
-        }
+        monthlyHolidaysMap[mName] = (monthlyHolidaysMap[mName] || []).filter(h => h.day !== dayNum);
+        renderHolidayTagsList();
+        showSaveToast();
       } catch (err) {
         alert('មានបញ្ហាក្នុងការលុបថ្ងៃឈប់៖ ' + (err.message || err));
       }
@@ -1156,6 +1192,11 @@
       selectedHolidayDay = null;
       var mName = document.getElementById('rptMonthSelect').value;
       document.getElementById('selectedHolidayDateTxt').textContent = `ជ្រើសរើសថ្ងៃទី (${mName})`;
+      var lbl = document.getElementById('holidayClassLabel');
+      if (lbl) {
+        var cls = getHolidayClass();
+        lbl.textContent = cls ? ('ថ្នាក់ទី ' + cls) : 'មិនទាន់កំណត់ថ្នាក់';
+      }
       renderHolidayTagsList();
     }
 
@@ -1169,7 +1210,7 @@
       }
       var html = '';
       list.forEach(function(h) {
-        html += `<span class="holiday-tag-pill">ថ្ងៃទី${toKhmerNum(h.day)} (${h.reason}) <i class="fa-solid fa-xmark" onclick="removeHoliday('${mName}', ${h.day})"></i></span>`;
+        html += `<span class="holiday-tag-pill">ថ្ងៃទី${toKhmerNum(h.day)} (${escapeHtml(h.reason)}) <i class="fa-solid fa-xmark" onclick="removeHoliday('${mName}', ${h.day})"></i></span>`;
       });
       container.innerHTML = html;
     }
@@ -1292,7 +1333,7 @@
 
       var endOfMonthDate = new Date(currentYear, mIdx + 1, 0);
       var khDate = getFullKhmerDateString(endOfMonthDate);
-      var monthHolidays = monthlyHolidaysMap[mName] || [];
+      var monthHolidays = monthlyHolidaysMap[mName] || [];   // 🌟 ថ្ងៃឈប់របស់ថ្នាក់នេះប៉ុណ្ណោះ
       var holidayDaysList = monthHolidays.map(h => h.day);
       var curPure = cleanGrade(currentClassName);
       var curSem = getSemesterByMonthName(mName); // ពិនិត្យឆមាសនៃខែរបាយការណ៍
@@ -1373,7 +1414,7 @@
             } else if (isHol) {
               if (idx === 0) {
                 var holObj = monthHolidays.find(h => h.day === d);
-                dayCells += `<td class="holiday-cell" rowspan="${numStudents}"><div class="vertical-sun-box"><span class="vertical-sun-text">${holObj ? holObj.reason : 'ឈប់'}</span></div></td>`;
+                dayCells += `<td class="holiday-cell" rowspan="${numStudents}"><div class="vertical-sun-box"><span class="vertical-sun-text">${holObj ? escapeHtml(holObj.reason) : 'ឈប់'}</span></div></td>`;
               }
             } else {
               var code = s.days[d] || 'P';
