@@ -680,6 +680,49 @@
     .focused-row { background-color: rgba(2, 132, 199, 0.08) !important; }
     .focused-row .stk { background-color: rgba(2, 132, 199, 0.08) !important; }
 
+
+    /* =========================================================
+       📐 EQUAL COLUMN WIDTHS: ក្រឡាមុខវិជ្ជាស្មើគ្នា (មិនធំ មិនតូច)
+    ========================================================= */
+    :root { --col-w: 52px; --res-w: 68px; }
+
+    /* ក្រឡាបញ្ចូលពិន្ទុ + ក្បាលតារាងបញ្ឈរ (មុខវិជ្ជា) ទទឹងស្មើគ្នា */
+    .modern-score-table td.sc-td,
+    .modern-score-table th.th-vertical-cell:not([class*="col-res"]) {
+      width: var(--col-w);
+      min-width: var(--col-w);
+      max-width: var(--col-w);
+      padding: 3px 2px;
+    }
+    .score-box { width: 42px; height: 32px; font-size: 13px; }
+
+    /* 🌟 អក្សរបញ្ឈរមិនបង្កើនទទឹងជួរ (ចេញពី layout ដោយ absolute) */
+    .th-vertical-cell { position: relative; }
+    .th-vertical-wrap {
+      position: absolute;
+      left: 50%; top: 50%;
+      transform: translate(-50%, -50%) rotate(-90deg);
+      margin: 0;
+      font-size: 10.5px;
+      letter-spacing: 0;
+    }
+
+    /* ជួរលទ្ធផល ទទឹងស្មើគ្នាដែរ */
+    .modern-score-table .col-res-tot,
+    .modern-score-table .col-res-avg,
+    .modern-score-table .col-res-rank,
+    .modern-score-table .col-res-note,
+    .modern-score-table .col-res-abs {
+      width: var(--res-w) !important;
+      min-width: var(--res-w) !important;
+      max-width: var(--res-w) !important;
+    }
+    .modern-score-table .col-res-grade {
+      width: 78px !important;
+      min-width: 78px !important;
+      max-width: 78px !important;
+    }
+
     /* ================= PRINT REPORT MODAL ================= */
     #scoreReportModal {
       display: none; position: fixed; inset: 0;
@@ -1661,7 +1704,7 @@
       h += '<tr class="coef-row"><td colspan="4" class="stk stk-1" style="text-align:right; padding-right:6px; font-weight:700; font-size:9.5px;">មេគុណតាមមុខវិជ្ជា</td>';
       grps.forEach(g => {
         g.cols.forEach(c => {
-          h += `<td class="th-sub-${g.grp}"><span class="coef-tag coef-zero" id="ac-${c.key}">×0</span></td>`;
+          h += `<td class="th-sub-${g.grp} sc-td"><span class="coef-tag coef-zero" id="ac-${c.key}">×0</span></td>`;
         });
       });
       h += `<td class="col-res-tot" style="color:#0284c7; font-weight:bold; font-size:10px;" id="totalCoefCount">0</td><td colspan="${RES_COLS.length - 1}"></td></tr>`;
@@ -1703,7 +1746,7 @@
                 else if (numVal >= 9) colorClass = 'val-excel';
               }
 
-              h += `<td>`
+              h += `<td class="sc-td">`
                 +  `<input type="text" inputmode="decimal" autocomplete="off" value="${val}"`
                 +  ` data-sid="${s.id}" data-key="${c.key}"`
                 +  ` class="score-box ${colorClass}"`
