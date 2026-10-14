@@ -32,6 +32,18 @@
       --bg-header-sticky: #f8fafc;
       --cal-selected-bg: #f1f5f9;
       --cal-selected-text: #0f172a;
+
+      /* 🎨 Header + Control card (ដូចរូបគំរូ) */
+      --hdr-bg: linear-gradient(90deg, #d1fae5 0%, #ccfbf1 50%, #a7f3d0 100%);
+      --hdr-border: #bbf7d0;
+      --title-color: #0f766e;
+      --card-bg: linear-gradient(135deg, #e0e7ff 0%, #ccfbf1 48%, #fce7f3 100%);
+      --card-border: rgba(148, 163, 184, 0.35);
+      --ctl-bg: rgba(255, 255, 255, 0.66);
+      --ctl-border: rgba(148, 163, 184, 0.28);
+      --ctl-hover: rgba(255, 255, 255, 0.95);
+      --amber-bg: rgba(245, 158, 11, 0.18);
+      --amber-txt: #b45309;
     }
 
     [data-theme="dark"] {
@@ -47,6 +59,17 @@
       --bg-header-sticky: #162642;
       --cal-selected-bg: #1e293b;
       --cal-selected-text: #f8fafc;
+
+      --hdr-bg: linear-gradient(135deg, #09202a 0%, #0c2b3d 100%);
+      --hdr-border: #17384a;
+      --title-color: #5eead4;
+      --card-bg: linear-gradient(135deg, #101c36 0%, #0d2a33 50%, #241a33 100%);
+      --card-border: rgba(148, 163, 184, 0.22);
+      --ctl-bg: rgba(255, 255, 255, 0.05);
+      --ctl-border: rgba(148, 163, 184, 0.22);
+      --ctl-hover: rgba(255, 255, 255, 0.1);
+      --amber-bg: rgba(245, 158, 11, 0.16);
+      --amber-txt: #fbbf24;
     }
 
     * {
@@ -66,6 +89,22 @@
       -webkit-font-smoothing: antialiased;
       transition: background-color 0.25s ease, color 0.25s ease;
     }
+
+    .ic {
+      width: 18px; height: 18px; flex-shrink: 0;
+      stroke: currentColor; fill: none; stroke-width: 2;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    /* 🌟 TOAST NOTIFICATION */
+    .toast-notification {
+      position: fixed; top: 18px; right: 20px; background: #16a34a; color: #fff;
+      padding: 10px 18px; border-radius: 12px; font-size: 13px; font-weight: 700;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35); z-index: 200000;
+      transform: translateY(-60px); opacity: 0; pointer-events: none;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1); max-width: calc(100vw - 40px);
+    }
+    .toast-notification.show { transform: translateY(0); opacity: 1; }
 
     /* ══════════════ 🔒 AUTH DENIED WRAPPER ══════════════ */
     #authDeniedWrap {
@@ -121,54 +160,92 @@
     }
     .btn-login-redirect:hover { transform: translateY(-2px); }
 
+    /* =========================================================
+       🌟 HEADER BAR (ដូចរូបគំរូ)
+    ========================================================= */
     .top-nav {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 12px; gap: 8px;
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 14px; margin-bottom: 12px;
+      background: var(--hdr-bg); border: 1px solid var(--hdr-border);
+      border-radius: 18px; box-shadow: var(--card-shadow);
+      flex-wrap: nowrap; overflow: hidden; min-width: 0;
     }
-    .nav-left { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .nav-back {
+      width: 34px; height: 34px; border-radius: 50%; border: none; background: transparent;
+      color: var(--text-muted); display: flex; align-items: center; justify-content: center;
+      cursor: pointer; flex-shrink: 0; transition: background 0.15s, color 0.15s;
+    }
+    .nav-back:hover { background: var(--ctl-hover); color: var(--primary); }
     .page-title {
-      font-size: 16px; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 6px;
+      font-size: 16px; font-weight: 800; color: var(--title-color);
+      display: flex; align-items: center; gap: 8px; white-space: nowrap; flex-shrink: 0;
     }
+    .page-title .ic { color: #6366f1; width: 22px; height: 22px; }
     .badge-pill {
-      font-size: 12px; font-weight: 700; padding: 3px 12px; border-radius: 20px;
+      font-size: 13px; font-weight: 700; padding: 4px 14px; border-radius: 20px;
+      white-space: nowrap; flex-shrink: 0; display: inline-flex; align-items: center; gap: 5px;
     }
-    .badge-total { background: rgba(99, 102, 241, 0.15); color: #818cf8; }
-    .badge-female { background: rgba(236, 72, 153, 0.15); color: #f472b6; }
-    .badge-male { background: rgba(2, 132, 199, 0.15); color: #38bdf8; }
+    .badge-ic { display: none; }
+    .badge-total { background: #e0e7ff; color: #4338ca; }
+    .badge-female { background: #fce7f3; color: #be185d; }
+    .badge-male { background: #e0f2fe; color: #0369a1; }
+    [data-theme="dark"] .badge-total { background: rgba(99, 102, 241, 0.18); color: #a5b4fc; }
+    [data-theme="dark"] .badge-female { background: rgba(236, 72, 153, 0.18); color: #f9a8d4; }
+    [data-theme="dark"] .badge-male { background: rgba(2, 132, 199, 0.2); color: #7dd3fc; }
 
-    /* 🎛️ CONTROLS & TOOLBAR */
+    .lock-hint {
+      display: none; align-items: center; gap: 8px; flex-shrink: 0; white-space: nowrap;
+      background: #fefce8; border: 1px solid #fde68a; color: #b45309;
+      border-radius: 20px; padding: 5px 14px; font-size: 12.5px; font-weight: 700;
+    }
+    .lock-hint.show { display: inline-flex; }
+    [data-theme="dark"] .lock-hint { background: rgba(245, 158, 11, 0.14); border-color: rgba(245, 158, 11, 0.4); color: #fbbf24; }
+    .lock-hint .ic { width: 15px; height: 15px; }
+
+    .nav-right { margin-left: auto; flex-shrink: 1; min-width: 0; }
+    #roleBadge {
+      background: var(--ctl-bg); border: 1px solid var(--ctl-border); color: var(--primary);
+      font-weight: 700; max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block;
+    }
+
+    /* =========================================================
+       🎛️ CONTROL CARD (ដូចរូបគំរូ)
+    ========================================================= */
     .control-card {
-      background: var(--surface); border-radius: 18px; border: 1.5px solid var(--border);
-      box-shadow: var(--card-shadow); padding: 12px 14px; margin-bottom: 12px;
+      background: var(--card-bg); border-radius: 24px; border: 1.5px solid var(--card-border);
+      box-shadow: var(--card-shadow); padding: 14px 16px; margin-bottom: 12px;
+      display: flex; flex-direction: column; gap: 12px;
     }
-    .top-controls {
-      display: grid; grid-template-columns: 160px 180px 1fr auto auto; gap: 10px; align-items: center; margin-bottom: 10px;
-    }
+    .ctl-row { display: grid; gap: 12px; align-items: center; }
+    .ctl-row-1 { grid-template-columns: repeat(4, 1fr); }
+    .control-card.is-admin .ctl-row-1 { grid-template-columns: repeat(5, 1fr); }
+    .ctl-row-2 { grid-template-columns: repeat(6, 1fr); }
 
+    .ctl {
+      height: 42px; border-radius: 14px; border: 1.5px solid var(--ctl-border);
+      background: var(--ctl-bg); color: var(--text); font-size: 13px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      cursor: pointer; user-select: none; white-space: nowrap; min-width: 0;
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      transition: all 0.15s;
+    }
+    .ctl:hover { background: var(--ctl-hover); border-color: var(--primary); }
+    .ctl:active { transform: scale(0.98); }
+    .ctl .ic { color: var(--text-muted); }
+
+    #classFilterContainer { min-width: 0; }
     .pill-select-class {
-      background: var(--surface-elevated); border: 1.5px solid var(--border); border-radius: 22px;
-      height: 38px; padding: 0 14px; font-size: 12.5px; font-weight: 700; color: var(--text);
+      background: var(--ctl-bg); border: 1.5px solid var(--ctl-border); border-radius: 14px;
+      height: 42px; padding: 0 14px; font-size: 13px; font-weight: 700; color: var(--text);
       outline: none; cursor: pointer; transition: all 0.2s; width: 100%;
     }
     .pill-select-class:focus { border-color: var(--primary); }
 
-    .teacher-class-pill {
-      background: rgba(2, 132, 199, 0.12); border: 1.5px solid rgba(2, 132, 199, 0.3); border-radius: 22px;
-      height: 38px; padding: 0 14px; font-size: 12.5px; font-weight: 700; color: var(--primary);
-      display: inline-flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap;
-    }
-
-    .status-dropdown-wrapper { position: relative; width: 100%; }
-    .status-dropdown-btn {
-      background: var(--surface-elevated); border: 1.5px solid var(--border); border-radius: 22px;
-      height: 38px; padding: 0 16px; font-size: 12.5px; font-weight: 700; color: var(--text);
-      display: flex; align-items: center; justify-content: space-between; cursor: pointer;
-      user-select: none; transition: border-color 0.15s;
-    }
-    .status-dropdown-btn:hover { border-color: var(--primary); }
-
+    .status-dropdown-wrapper { position: relative; width: 100%; min-width: 0; }
+    .status-dropdown-btn { justify-content: space-between; padding: 0 16px; font-weight: 600; }
+    .status-dropdown-btn #currentStatusText { overflow: hidden; text-overflow: ellipsis; }
     .status-dropdown-menu {
-      display: none; position: absolute; top: 46px; left: 0; width: 200px;
+      display: none; position: absolute; top: 48px; left: 0; width: 210px;
       background: var(--surface); border: 1.5px solid var(--border); border-radius: 18px;
       box-shadow: 0 14px 32px rgba(0, 0, 0, 0.25); padding: 8px; z-index: 1000;
       animation: fadeIn 0.15s ease-out;
@@ -186,60 +263,55 @@
     .status-item .check-mark { display: none; font-size: 14px; font-weight: bold; color: var(--primary); }
     .status-item.active .check-mark { display: inline-block; }
 
-    .search-box {
-      background: var(--surface-elevated); border: 1.5px solid var(--border); border-radius: 22px;
-      height: 38px; padding: 0 14px; font-size: 13px; display: flex; align-items: center;
+    .search-box { cursor: text; justify-content: flex-start; padding: 0 14px; }
+    .search-box:hover { border-color: var(--ctl-border); background: var(--ctl-bg); }
+    .search-box input {
+      border: none; background: transparent; outline: none; width: 100%; min-width: 0;
+      font-size: 13px; color: var(--text); font-weight: 600;
     }
-    .search-box input { border: none; background: transparent; outline: none; width: 100%; margin-left: 6px; font-size: 13px; color: var(--text); }
+    .search-box input::placeholder { color: var(--text-muted); font-weight: 500; }
 
-    .chip-btn {
-      background: var(--surface-elevated); border: 1.5px solid var(--border); border-radius: 22px;
-      height: 38px; padding: 0 16px; display: flex; align-items: center; gap: 6px;
-      cursor: pointer; font-size: 12.5px; font-weight: 700; color: var(--text); white-space: nowrap;
-      transition: all 0.15s; user-select: none;
-    }
-    .chip-btn:hover { border-color: var(--primary); }
     .chip-btn.locked {
-      border-color: #f59e0b; color: #f59e0b; background: rgba(245, 158, 11, 0.12);
+      border-color: #f59e0b; color: var(--amber-txt); background: var(--amber-bg);
+    }
+    .chip-btn.locked .ic { color: var(--amber-txt); }
+
+    .btn-add {
+      background: linear-gradient(135deg, #059669, #047857); color: #fff; border-color: transparent;
+      padding: 0; overflow: hidden; justify-content: space-between; box-shadow: 0 6px 16px rgba(5, 150, 105, 0.25);
+    }
+    .btn-add:hover { background: linear-gradient(135deg, #10b981, #059669); border-color: transparent; }
+    .btn-add .ic { color: #fff; }
+    .btn-add .add-main { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; min-width: 0; }
+    .btn-add .count-box {
+      width: 48px; height: 100%; display: flex; align-items: center; justify-content: center;
+      border-left: 1px solid rgba(255, 255, 255, 0.28); font-size: 14px; font-weight: 800; flex-shrink: 0;
     }
 
-    .lock-hint {
-      display: none; align-items: center; gap: 8px; margin-bottom: 10px;
-      background: rgba(245, 158, 11, 0.12); border: 1.5px solid rgba(245, 158, 11, 0.35);
-      color: #f59e0b; border-radius: 12px; padding: 8px 14px; font-size: 12.5px; font-weight: 700;
+    .btn-import-roster {
+      background: linear-gradient(135deg, #0284c7, #0369a1); color: #fff; border-color: transparent;
+      box-shadow: 0 6px 16px rgba(2, 132, 199, 0.25);
     }
-    .lock-hint.show { display: flex; }
+    .btn-import-roster:hover { background: linear-gradient(135deg, #0ea5e9, #0284c7); border-color: transparent; }
+    .btn-import-roster .ic { color: #fff; }
 
-    .bottom-toolbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; position: relative; }
-    .btn-action {
-      height: 36px; padding: 0 14px; border-radius: 8px; border: none; font-size: 12.5px;
-      font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px;
-      transition: all 0.15s;
-    }
-    .btn-action:active { transform: scale(0.97); }
-    .btn-add { background: #0284c7; color: white; }
-    .btn-add .count-box { background: #0369a1; padding: 2px 8px; border-radius: 4px; margin-left: 4px; font-size: 11.5px; }
+    .btn-sort.active { background: #7c3aed; color: #fff; border-color: #7c3aed; }
+    .btn-sort.active .ic { color: #fff; }
 
-    .btn-import-roster { background: #4f46e5; color: white; }
-    .btn-import-roster:hover { background: #4338ca; }
+    .btn-excel-export { color: #059669; border-color: rgba(5, 150, 105, 0.4); }
+    .btn-excel-export .ic { color: #059669; }
+    .btn-excel-export:hover { background: rgba(5, 150, 105, 0.12); border-color: #059669; }
 
-    .btn-sort { background: rgba(124, 58, 237, 0.15); color: #a78bfa; border: 1.5px solid rgba(124, 58, 237, 0.3); }
-    .btn-sort.active { background: #7c3aed; color: white; }
-    .btn-columns { background: rgba(2, 132, 199, 0.15); color: #38bdf8; border: 1px solid var(--border); }
+    .btn-warning .ic { color: var(--text-muted); }
+    .btn-warning.active { background: #f59e0b; color: #fff; border-color: #f59e0b; }
+    .btn-warning.active .ic { color: #fff; }
 
-    .btn-excel-export { background: #059669; color: white; }
-    .btn-excel-export:hover { background: #047857; }
-
-    .btn-warning {
-      background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1.5px solid rgba(245, 158, 11, 0.3);
-    }
-    .btn-warning:hover { background: rgba(245, 158, 11, 0.25); }
-    .btn-warning.active { background: #f59e0b; color: white; }
-
+    .col-wrap { position: relative; min-width: 0; }
+    .col-wrap > .ctl { width: 100%; }
     .column-dropdown {
-      display: none; position: absolute; top: 44px; left: 210px; z-index: 1000;
+      display: none; position: absolute; top: 48px; left: 0; z-index: 1000;
       background: var(--surface); border-radius: 14px; box-shadow: 0 12px 36px rgba(0,0,0,0.3);
-      border: 1px solid var(--border); width: 220px; padding: 10px;
+      border: 1px solid var(--border); width: 230px; max-width: calc(100vw - 32px); padding: 10px;
     }
     .dropdown-title { font-size: 12px; font-weight: 700; color: var(--text-muted); padding: 4px 8px 6px; }
     .col-option {
@@ -253,7 +325,7 @@
     ========================================================= */
     .table-container {
       background: var(--surface); border-radius: 14px; border: 1px solid var(--border);
-      overflow: auto; max-height: calc(100vh - 210px);
+      overflow: auto; max-height: calc(100vh - 260px); min-height: 280px;
       -webkit-overflow-scrolling: touch; position: relative;
     }
     table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 2350px; text-align: center; }
@@ -712,6 +784,8 @@
     .missing-tag-pill{font-size:10.5px;font-weight:700;color:#ef4444;background:rgba(239,68,68,.12);border-radius:10px;padding:1px 7px}
     .btn-cancel-draft{background:none;border:none;cursor:pointer;color:#ef4444;font-size:13px;font-weight:700}
     .btn-save-row-now{background:#16a34a;color:#fff;border:none;border-radius:7px;height:28px;padding:0 10px;font-size:12px;font-weight:700;cursor:pointer}
+    .btn-action { height: 36px; padding: 0 14px; border-radius: 8px; border: none; font-size: 12.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+    .btn-add-sm { background: #0284c7; color: white; }
 
     /* EDIT MODAL */
     .em-box { max-width: 640px; border-radius: 26px; border: none; }
@@ -749,11 +823,43 @@
     .em-footer .modal-btn { height:46px; border-radius:12px; font-size:14px; }
     .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
 
-    @media (max-width: 768px) {
-      .top-controls { grid-template-columns: 1fr 1fr; }
-      .search-box { grid-column: 1 / -1; }
+    /* =========================================================
+       📱 COMPACT MODE: ពេលពង្រីក/អេក្រង់តូច → កាត់អក្សរ បង្ហាញតែ icon
+    ========================================================= */
+    @media (max-width: 1100px) {
+      .btn-label { display: none !important; }
+      .badge-ic { display: inline; }
+
+      body { padding: 8px 8px 60px; }
+      .top-nav { gap: 7px; padding: 7px 10px; }
+      .badge-pill { font-size: 12px; padding: 4px 10px; }
+      .lock-hint { padding: 5px 9px; }
+      #roleBadge { max-width: 90px; font-size: 11.5px; padding: 4px 10px; }
+
+      .control-card { padding: 10px; gap: 8px; border-radius: 20px; }
+      .ctl-row { gap: 8px; }
+      .ctl { height: 40px; border-radius: 12px; padding: 0 8px; }
+      .ctl-row-1 { grid-template-columns: 1.3fr 1.6fr 44px 44px; }
+      .control-card.is-admin .ctl-row-1 { grid-template-columns: 1.2fr 1.2fr 1.4fr 44px 44px; }
+      .ctl-row-2 { grid-template-columns: repeat(6, 1fr); }
+
+      .btn-add { padding: 0; }
+      .btn-add .add-main { gap: 0; }
+      .btn-add .count-box { width: 34px; font-size: 13px; }
+
+      .status-dropdown-btn { padding: 0 10px; font-size: 12.5px; }
+      .table-container { max-height: calc(100vh - 230px); }
+    }
+
+    @media (max-width: 600px) {
+      #roleBadge { display: none; }
+      .ctl-row-1,
+      .control-card.is-admin .ctl-row-1 { grid-template-columns: 1fr 44px 44px; }
+      .control-card.is-admin #classFilterContainer { grid-column: 1 / -1; }
+      .ctl-row-1 .search-box { grid-column: 1 / -1; order: 5; }
       .numbered-chips-grid { grid-template-columns: 1fr 1fr; }
       .form-row-2 { grid-template-columns: 1fr; }
+      .column-dropdown { left: auto; right: 0; }
     }
   </style>
 </head>
@@ -783,31 +889,39 @@
     
     <!-- 🌟 HEADER NAVIGATION -->
     <div class="top-nav">
-      <div class="nav-left">
-        <div class="page-title">
-          <span>🎓</span>
-          <span>ព័ត៌មានសិស្ស</span>
-        </div>
-        <div class="badge-pill badge-total" id="badgeTotal">សរុប 0</div>
-        <div class="badge-pill badge-female" id="badgeFemale">ស្រី 0</div>
-        <div class="badge-pill badge-male" id="badgeMale">ប្រុស 0</div>
+      <button type="button" class="nav-back" onclick="goBack()" title="ត្រឡប់ក្រោយ" aria-label="ត្រឡប់ក្រោយ">
+        <svg class="ic" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
+      </button>
+
+      <div class="page-title" title="ព័ត៌មានសិស្ស">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg>
+        <span class="btn-label">ព័ត៌មានសិស្ស</span>
       </div>
+
+      <div class="badge-pill badge-total" id="badgeTotal" title="សរុប"><span class="badge-ic">👥</span><span class="btn-label">សរុប</span> 0/0</div>
+      <div class="badge-pill badge-female" id="badgeFemale" title="ស្រី"><span class="badge-ic">♀</span><span class="btn-label">ស្រី</span> 0</div>
+      <div class="badge-pill badge-male" id="badgeMale" title="ប្រុស"><span class="badge-ic">♂</span><span class="btn-label">ប្រុស</span> 0</div>
+
+      <!-- 🔒 សារប្រាប់ពេលចាក់សោ -->
+      <div class="lock-hint" id="lockHint" title="តារាងកំពុងចាក់សោ — ចុចប៊ូតុង «បើកសោ» ដើម្បីកែប្រែ ឬបន្ថែមទិន្នន័យ">
+        <svg class="ic" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+        <span class="btn-label">ចាក់សោ · ចុច 🔒 ដើម្បីកែ</span>
+      </div>
+
       <div class="nav-right">
-        <div class="badge-pill" id="roleBadge" style="background:var(--surface); border:1px solid var(--border); color:var(--primary); font-weight:700;">
-          ...
-        </div>
+        <div class="badge-pill" id="roleBadge">...</div>
       </div>
     </div>
 
     <!-- 🎛️ CONTROL CARD -->
-    <div class="control-card">
-      <div class="top-controls">
+    <div class="control-card" id="controlCard">
+      <div class="ctl-row ctl-row-1">
         <div id="classFilterContainer"></div>
 
         <div class="status-dropdown-wrapper" id="statusDropdownWrapper">
-          <div class="status-dropdown-btn" onclick="toggleStatusDropdown(event)">
+          <div class="ctl status-dropdown-btn" onclick="toggleStatusDropdown(event)">
             <span id="currentStatusText">កំពុងសិក្សា</span>
-            <span id="statusChevronIcon" style="font-size: 11px;">⌵</span>
+            <svg class="ic" viewBox="0 0 24 24" id="statusChevronIcon"><path d="m6 9 6 6 6-6"/></svg>
           </div>
 
           <div class="status-dropdown-menu" id="statusDropdownMenu">
@@ -826,61 +940,67 @@
           </div>
         </div>
 
-        <div class="search-box">
-          <span>🔍</span>
-          <input type="text" id="searchInput" placeholder="ស្វែងរកតាមឈ្មោះ ឬអត្តលេខ..." oninput="handleSearch()">
+        <div class="ctl search-box">
+          <svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" id="searchInput" placeholder="ស្វែងរក" oninput="handleSearch()" aria-label="ស្វែងរកតាមឈ្មោះ ឬអត្តលេខ">
         </div>
 
-        <div class="chip-btn" id="syncStatus" onclick="refreshDataForce()" title="ចុចដើម្បី Refresh ទិន្នន័យឡើងវិញ">
-          <span>⚡</span> <span id="syncStatusText">ស្វ័យប្រវត្តិ</span>
+        <div class="ctl chip-btn" id="syncStatus" onclick="refreshDataForce()" title="ចុចដើម្បី Refresh ទិន្នន័យឡើងវិញ">
+          <svg class="ic" viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 0-15-6.7L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 15 6.7l3-2.7"/><path d="M16 16h5v5"/></svg>
+          <span id="syncStatusText" class="btn-label">ស្វ័យប្រវត្តិ</span>
         </div>
 
-        <div class="chip-btn" id="lockBtn" onclick="toggleLockTable()" title="ចុចដើម្បីចាក់សោតារាង (ការពារកុំឱ្យកែប្រែដោយចៃដន្យ)">
-          <span id="lockIcon">🔓</span> <span id="lockText">ចាក់សោ</span>
+        <div class="ctl chip-btn" id="lockBtn" onclick="toggleLockTable()" title="ចុចដើម្បីចាក់សោតារាង (ការពារកុំឱ្យកែប្រែដោយចៃដន្យ)">
+          <span id="lockIcon" style="display:flex;"></span>
+          <span id="lockText" class="btn-label">ចាក់សោ</span>
         </div>
       </div>
 
-      <!-- 🔒 សារប្រាប់ពេលចាក់សោ -->
-      <div class="lock-hint" id="lockHint">
-        <span>🔒</span>
-        <span>តារាងកំពុងចាក់សោ — សូមចុចប៊ូតុង «ដោះសោ» ដើម្បីកែប្រែ ឬបន្ថែមទិន្នន័យ។</span>
-      </div>
-
-      <div class="bottom-toolbar">
-        <button class="btn-action btn-add" id="btnAddRow" onclick="addNewRow()">
-          <span>➕</span> <span>បន្ថែមជួរ</span>
+      <div class="ctl-row ctl-row-2">
+        <button type="button" class="ctl btn-add" id="btnAddRow" onclick="addNewRow()" title="បន្ថែមជួរថ្មី">
+          <span class="add-main">
+            <svg class="ic" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+            <span class="btn-label">បន្ថែមជួរ</span>
+          </span>
           <span class="count-box" id="newRowCount">1</span>
         </button>
 
-        <button class="btn-action btn-import-roster" onclick="openImportModal()">
-          <span>📥</span> <span>បញ្ចូលបញ្ជីសិស្ស</span>
+        <button type="button" class="ctl btn-sort" id="sortBtn" onclick="sortStudentsAlphabetical()" title="តម្រៀបតាមត្រកូល">
+          <svg class="ic" viewBox="0 0 24 24"><path d="M7 4v16m0 0-3-3m3 3 3-3"/><path d="M15 6h6M15 12h4M15 18h2"/></svg>
+          <span id="sortBtnText" class="btn-label">តម្រៀប</span>
         </button>
 
-        <button class="btn-action btn-sort" id="sortBtn" onclick="sortStudentsAlphabetical()">
-          <span>⇅</span> <span id="sortBtnText">តម្រៀបតាមត្រកូល (ក-អ)</span>
-        </button>
+        <div class="col-wrap">
+          <button type="button" class="ctl" onclick="toggleColumnMenu(event)" title="ជ្រើសជួរឈរ">
+            <svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 12h18M12 3v18"/></svg>
+            <span class="btn-label">ជួរឈរ</span>
+          </button>
 
-        <button class="btn-action btn-columns" onclick="toggleColumnMenu(event)">
-          <span>⊞</span> <span>ជួរឈរ</span>
-        </button>
-
-        <div class="column-dropdown" id="columnDropdown" onclick="event.stopPropagation()">
-          <div class="dropdown-title">ជ្រើសជួរឈរ</div>
-          <label class="col-option"><input type="checkbox" checked onchange="toggleColumn('col-photo', this.checked)"> រូបថត</label>
-          <label class="col-option"><input type="checkbox" checked onchange="toggleColumn('col-id', this.checked)"> អត្តលេខ</label>
-          <label class="col-option"><input type="checkbox" checked onchange="toggleColumn('col-gender', this.checked)"> ភេទ</label>
-          <label class="col-option"><input type="checkbox" checked onchange="toggleColumn('col-info', this.checked)"> ព័ត៌មានសិស្ស</label>
-          <label class="col-option"><input type="checkbox" checked onchange="toggleColumn('col-pob', this.checked)"> ទីកន្លែងកំណើត</label>
-          <label class="col-option"><input type="checkbox" checked onchange="toggleColumn('col-address', this.checked)"> អាសយដ្ឋានបច្ចុប្បន្ន</label>
-          <label class="col-option"><input type="checkbox" checked onchange="toggleColumn('col-parent', this.checked)"> ឪពុកម្តាយ</label>
+          <div class="column-dropdown" id="columnDropdown" onclick="event.stopPropagation()">
+            <div class="dropdown-title">ជ្រើសជួរឈរ</div>
+            <label class="col-option"><input type="checkbox" checked onchange="toggleColumn('col-photo', this.checked)"> រូបថត</label>
+            <label class="col-option"><input type="checkbox" checked onchange="toggleColumn('col-id', this.checked)"> អត្តលេខ</label>
+            <label class="col-option"><input type="checkbox" checked onchange="toggleColumn('col-gender', this.checked)"> ភេទ</label>
+            <label class="col-option"><input type="checkbox" checked onchange="toggleColumn('col-info', this.checked)"> ព័ត៌មានសិស្ស</label>
+            <label class="col-option"><input type="checkbox" checked onchange="toggleColumn('col-pob', this.checked)"> ទីកន្លែងកំណើត</label>
+            <label class="col-option"><input type="checkbox" checked onchange="toggleColumn('col-address', this.checked)"> អាសយដ្ឋានបច្ចុប្បន្ន</label>
+            <label class="col-option"><input type="checkbox" checked onchange="toggleColumn('col-parent', this.checked)"> ឪពុកម្តាយ</label>
+          </div>
         </div>
 
-        <button class="btn-action btn-excel-export" id="exportExcelBtn" onclick="exportStudentsToExcel()" title="ទាញយកបញ្ជីឈ្មោះសិស្សជា File Excel">
-          <span>📊</span> <span>ទាញយក Excel</span>
+        <button type="button" class="ctl btn-import-roster" onclick="openImportModal()" title="បញ្ចូលបញ្ជីសិស្ស">
+          <svg class="ic" viewBox="0 0 24 24"><path d="M12 3v12m0 0-4-4m4 4 4-4"/><path d="M4 17v3h16v-3"/></svg>
+          <span class="btn-label">នាំចូល</span>
         </button>
 
-        <button class="btn-action btn-warning" id="missingInfoBtn" onclick="handleMissingInfoClick()">
-          <span>⚠️</span> <span id="missingBtnText">ខ្វះព័ត៌មាន</span>
+        <button type="button" class="ctl btn-excel-export" id="exportExcelBtn" onclick="exportStudentsToExcel()" title="ទាញយកបញ្ជីឈ្មោះសិស្សជា File Excel">
+          <svg class="ic" viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h8"/></svg>
+          <span class="btn-label">ទាញយក</span>
+        </button>
+
+        <button type="button" class="ctl btn-warning" id="missingInfoBtn" onclick="handleMissingInfoClick()" title="សិស្សខ្វះព័ត៌មាន">
+          <svg class="ic" viewBox="0 0 24 24"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+          <span id="missingBtnText" class="btn-label">ខ្វះព័ត៌មាន</span>
         </button>
       </div>
     </div>
@@ -1246,6 +1366,14 @@
       window.location.href = 'index.html';
     }
 
+    /* ◀ ប៊ូតុងត្រឡប់ក្រោយ (ក្បាលលើ) */
+    function goBack() {
+      if (window.parent && window.parent !== window) {
+        try { window.parent.postMessage({ type: 'GO_BACK' }, '*'); } catch(err) {}
+      }
+      if (window.history.length > 1) window.history.back();
+    }
+
     const USER_ROLE  = CURRENT_USER?.role || "teacher";
     const USER_CLASS = CURRENT_USER?.assigned_classes || CURRENT_USER?.assigned_class || "";
     const IS_ADMIN   = String(USER_ROLE).toLowerCase().trim() === 'admin';
@@ -1275,12 +1403,14 @@
     applyTheme(localStorage.getItem('krou_theme_manual') || 'dark');
     window.addEventListener('message', e => { if (e.data?.type === 'THEME_CHANGE') applyTheme(e.data.theme); });
 
+    let toastTimer = null;
     function showToast(msg, isError) {
       const toast = document.getElementById('toastNotification');
       toast.innerText = msg;
       toast.style.background = isError ? '#dc2626' : '#16a34a';
       toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 3500);
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
     }
 
     function esc(v) { return String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
@@ -1339,12 +1469,15 @@
     /* =========================================================
        🔒 LOCK SYSTEM
     ========================================================= */
+    const SVG_LOCK = '<svg class="ic" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
+    const SVG_UNLOCK = '<svg class="ic" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.5-2"/></svg>';
+
     let lastLockToast = 0;
     function showLockMessage() {
       const now = Date.now();
       if (now - lastLockToast < 1500) return;
       lastLockToast = now;
-      showToast('🔒 តារាងកំពុងចាក់សោ — សូមចុច «ដោះសោ» ជាមុនសិន ដើម្បីកែប្រែ!', true);
+      showToast('🔒 តារាងកំពុងចាក់សោ — សូមចុច «បើកសោ» ជាមុនសិន ដើម្បីកែប្រែ!', true);
     }
 
     function guardLocked() {
@@ -1354,11 +1487,11 @@
 
     function updateLockUI() {
       const btn = document.getElementById('lockBtn');
-      document.getElementById('lockIcon').innerText = isTableLocked ? '🔒' : '🔓';
-      document.getElementById('lockText').innerText = isTableLocked ? 'ដោះសោ' : 'ចាក់សោ';
+      document.getElementById('lockIcon').innerHTML = isTableLocked ? SVG_LOCK : SVG_UNLOCK;
+      document.getElementById('lockText').innerText = isTableLocked ? 'បើកសោ' : 'ចាក់សោ';
       btn.classList.toggle('locked', isTableLocked);
       btn.title = isTableLocked
-        ? 'តារាងកំពុងចាក់សោ — ចុចដើម្បីដោះសោ ហើយកែប្រែបាន'
+        ? 'តារាងកំពុងចាក់សោ — ចុចដើម្បីបើកសោ ហើយកែប្រែបាន'
         : 'ចុចដើម្បីចាក់សោតារាង (ការពារកុំឱ្យកែប្រែដោយចៃដន្យ)';
       document.getElementById('lockHint').classList.toggle('show', isTableLocked);
       document.getElementById('tableContainer').classList.toggle('is-locked', isTableLocked);
@@ -1379,9 +1512,9 @@
       else if (studentsList.some(s => s.isDraft)) showBottomNavBar();
       applyLockState();
       if (isTableLocked) {
-        showToast('🔒 បានចាក់សោ — ដោះសោដើម្បីកែប្រែព័ត៌មាន');
+        showToast('🔒 បានចាក់សោ — បើកសោដើម្បីកែប្រែព័ត៌មាន');
       } else {
-        showToast('🔓 បានដោះសោ — អ្នកអាចកែប្រែព័ត៌មានបានហើយ');
+        showToast('🔓 បានបើកសោ — អ្នកអាចកែប្រែព័ត៌មានបានហើយ');
       }
     }
 
@@ -1500,7 +1633,7 @@
         }));
 
         applyFilterAndRender();
-        document.getElementById('syncStatusText').innerText = "⚡ ស្វ័យប្រវត្តិ";
+        document.getElementById('syncStatusText').innerText = "ស្វ័យប្រវត្តិ";
         loadClassesWithData();
       } catch (err) {
         console.error(err);
@@ -1564,7 +1697,7 @@
           if (error) throw error;
           s.db_id = data.id;
         }
-        document.getElementById('syncStatusText').innerText = "⚡ រក្សាទុករួចរាល់";
+        document.getElementById('syncStatusText').innerText = "រក្សាទុករួចរាល់";
       } catch (err) {
         document.getElementById('syncStatusText').innerText = "⚠️ រក្សាទុកមិនបាន";
         showToast("❌ " + err.message, true);
@@ -1880,10 +2013,12 @@
       applyLockState();
     }
 
+    /* 🌟 Badge ក្បាលលើ: សរុប (បង្ហាញ/ទាំងអស់) • ស្រី • ប្រុស — ពេល compact បង្ហាញតែ icon + លេខ */
     function updateCounters(total, female) {
-      document.getElementById('badgeTotal').innerText = `សរុប ${total}`;
-      document.getElementById('badgeFemale').innerText = `ស្រី ${female}`;
-      document.getElementById('badgeMale').innerText = `ប្រុស ${total - female}`;
+      const all = studentsList.length;
+      document.getElementById('badgeTotal').innerHTML = `<span class="badge-ic">👥</span><span class="btn-label">សរុប</span> ${total}/${all}`;
+      document.getElementById('badgeFemale').innerHTML = `<span class="badge-ic">♀</span><span class="btn-label">ស្រី</span> ${female}`;
+      document.getElementById('badgeMale').innerHTML = `<span class="badge-ic">♂</span><span class="btn-label">ប្រុស</span> ${total - female}`;
     }
 
     function addNewRow() {
@@ -2379,7 +2514,7 @@
             <b>${esc(s.name || 'គ្មានឈ្មោះ')}</b> (${esc(s.id) || 'គ្មានអត្តលេខ'})
             <div style="margin-top:4px;">${getMissingFields(s).map(f => `<span class="missing-tag-pill">ខ្វះ${f}</span>`).join(' ')}</div>
           </div>
-          <button class="btn-action btn-add" style="height:30px;" onclick="closeMissingModal(); openEditModal(${studentsList.indexOf(s)})">✏️ បំពេញ</button>
+          <button class="btn-action btn-add-sm" style="height:30px;" onclick="closeMissingModal(); openEditModal(${studentsList.indexOf(s)})">✏️ បំពេញ</button>
         </div>
       `).join('') || `<div style="text-align:center;padding:20px;color:#16a34a;">🎉 ព័ត៌មានសិស្សទាំងអស់ពេញលេញ!</div>`;
 
@@ -2417,7 +2552,9 @@
         const cmp = (a.name || '').localeCompare(b.name || '', 'km');
         return sortDirectionAsc ? cmp : -cmp;
       });
-      document.getElementById('sortBtnText').innerText = sortDirectionAsc ? 'តម្រៀបតាមត្រកូល (ក-អ)' : 'តម្រៀបតាមត្រកូល (អ-ក)';
+      document.getElementById('sortBtnText').innerText = sortDirectionAsc ? 'តម្រៀប ក-អ' : 'តម្រៀប អ-ក';
+      document.getElementById('sortBtn').title = sortDirectionAsc ? 'តម្រៀបតាមត្រកូល (ក-អ)' : 'តម្រៀបតាមត្រកូល (អ-ក)';
+      document.getElementById('sortBtn').classList.add('active');
       applyFilterAndRender();
     }
 
@@ -2496,12 +2633,14 @@
 
       const filterBox = document.getElementById('classFilterContainer');
       if (IS_ADMIN) {
+        document.getElementById('controlCard').classList.add('is-admin');
         filterBox.innerHTML = `
           <select class="pill-select-class" id="classFilterSelect" onchange="onClassFilterChange(this.value)">
             <option value="">គ្រប់ថ្នាក់ទាំងអស់</option>
           </select>`;
       } else {
-        filterBox.innerHTML = `<div class="teacher-class-pill">🏫 ថ្នាក់ទី ${esc(currentSelectedClass) || 'មិនទាន់កំណត់'}</div>`;
+        // គ្រូ៖ ថ្នាក់បង្ហាញក្នុង Badge ខាងស្តាំលើរួចហើយ
+        filterBox.style.display = 'none';
       }
 
       loadStudentsFromSupabase();
