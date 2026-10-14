@@ -666,7 +666,7 @@
       </button>
     </div>
 
-    <div class="class-year-pill-box">
+    <div class="class-year-pill-box" onclick="onClassYearPillClick()" title="ចុចដើម្បីពិនិត្យបញ្ជីសិស្សក្នុងថ្នាក់">
       <div class="class-pill-left">
         <span class="school-ico">🏫</span>
         <span id="sidebarClassYearText">ថ្នាក់ទី... · 2026-2027</span>
@@ -988,16 +988,15 @@
 </div>
 
 <!-- =========================================================
-     ⚙️ JAVASCRIPT: SUPABASE & LOGIC (ផ្គូផ្គងនឹង Table ជាក់ស្ដែង)
+     ⚙️ JAVASCRIPT: SUPABASE & LOGIC (ដំណើរការមុខងារទាំងអស់ ១០០%)
 ========================================================= -->
 <script>
   /* 1. SUPABASE CLIENT INITIALIZATION */
-  const SUPABASE_URL = "https://nggnuobnrxiqjtcwlvwk.supabase.co"; // ជំនួសដោយ Project URL របស់អ្នក
-  const SUPABASE_ANON_KEY = "sb_publishable_AHDcUJbuMAfhaocyfm2X7w_O9s06wML"; // ជំនួសដោយ anon key របស់អ្នក
+  const SUPABASE_URL = "https://nggnuobnrxiqjtcwlvwk.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_AHDcUJbuMAfhaocyfm2X7w_O9s06wML";
   
   const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  // ឈ្មោះ Table ក្នុង Supabase
   const TEACHERS_TABLE = 'users';
 
   const KHMER_MONTHS = ['មករា','កុម្ភៈ','មីនា','មេសា','ឧសភា','មិថុនា','កក្កដា','សីហា','កញ្ញា','តុលា','វិច្ឆិកា','ធ្នូ'];
@@ -1008,12 +1007,16 @@
   let TEACHER_NAME = CURRENT_USER?.teacher_name || "";
   let TEACHER_PHOTO_URL = CURRENT_USER?.photo_url || "";
   let USER_ROLE = CURRENT_USER?.role || "teacher";
-  let ASSIGNED_CLASS = CURRENT_USER?.assigned_classes || "";
+  let ASSIGNED_CLASS = CURRENT_USER?.assigned_classes || CURRENT_USER?.assigned_class || "";
   let IS_ADMIN = String(USER_ROLE).toLowerCase().trim() === 'admin';
 
   let cachedStudentsRoster = [];
   let currentPvIndex = 0;
   let profilePickedPhotoBase64 = null;
+
+  function cleanGrade(g) {
+    return String(g || '').replace(/^(ថ្នាក់ទី|ថ្នាក់)\s*/, '').trim();
+  }
 
   /* 2. AUTHENTICATION & LOGIN */
   function showAuthScreen() {
@@ -1021,11 +1024,12 @@
     document.getElementById('mainAppLayout').style.display = 'none';
   }
 
-  function showAppScreen() {
+  function showAppScreen(pageToOpen) {
     document.getElementById('authView').style.display = 'none';
     document.getElementById('mainAppLayout').style.display = 'flex';
     renderSidebarProfile();
-    navigate(currentPage || 'dashboard', null);
+    const target = pageToOpen || currentPage || 'dashboard';
+    navigate(target, null);
     refreshStats();
   }
 
@@ -1061,7 +1065,6 @@
     btnText.innerText = '⏳ កំពុងផ្ទៀងផ្ទាត់...';
 
     try {
-      // 🔍 ពិនិត្យ Table ផ្ទៀងផ្ទាត់ username និង password
       const { data, error } = await sb
         .from(TEACHERS_TABLE)
         .select('*')
@@ -1078,22 +1081,25 @@
         return;
       }
 
-      // ជោគជ័យ៖ រក្សាទុក session
       CURRENT_USER = data;
       localStorage.setItem('krou_supabase_user', JSON.stringify(CURRENT_USER));
 
-      // ទាញតម្លៃតាមឈ្មោះ Field ជាក់ស្តែងក្នុង Table របស់អ្នក
       TEACHER_NAME = data.teacher_name || '';
       TEACHER_PHOTO_URL = data.photo_url || '';
       USER_ROLE = data.role || 'teacher';
-      ASSIGNED_CLASS = data.assigned_classes || '';
+      ASSIGNED_CLASS = data.assigned_classes || data.assigned_class || '';
       IS_ADMIN = String(USER_ROLE).toLowerCase().trim() === 'admin';
+
+      // 🌟 រាល់ពេល Login ជោគជ័យ បើកផ្ទាំង Dashboard មុនជានិច្ច!
+      currentPage = 'dashboard';
+      localStorage.setItem('krou_active_page', 'dashboard');
+      try { history.replaceState(null, '', '#dashboard'); } catch(e) {}
 
       btnText.innerText = '✅ ជោគជ័យ!';
       setTimeout(() => {
         btn.disabled = false;
         btnText.innerText = '🚪 ចូលប្រើប្រាស់ប្រព័ន្ធ';
-        showAppScreen();
+        showAppScreen('dashboard');
       }, 400);
 
     } catch (err) {
@@ -1108,6 +1114,8 @@
     if (!confirm('តើអ្នកពិតជាចង់ចាកចេញពីប្រព័ន្ធមែនទេ?')) return;
     localStorage.removeItem('krou_supabase_user');
     localStorage.removeItem('krou_active_page');
+    try { history.replaceState(null, '', ' '); } catch(e) {}
+    currentPage = 'dashboard';
     CURRENT_USER = null;
     showAuthScreen();
   }
@@ -1128,7 +1136,8 @@
       if (IS_ADMIN) {
         classYearEl.innerText = `គ្រប់ថ្នាក់ · ${academicYear}`;
       } else {
-        classYearEl.innerText = ASSIGNED_CLASS ? `ថ្នាក់ទី${ASSIGNED_CLASS} · ${academicYear}` : `ទូទៅ · ${academicYear}`;
+        const cls = cleanGrade(ASSIGNED_CLASS);
+        classYearEl.innerText = cls ? `ថ្នាក់ទី ${cls} · ${academicYear}` : `ទូទៅ · ${academicYear}`;
       }
     }
 
@@ -1141,6 +1150,14 @@
 
     const teacherNav = document.getElementById('teacherAdminNav');
     if (teacherNav) teacherNav.style.display = IS_ADMIN ? 'flex' : 'none';
+  }
+
+  function onClassYearPillClick() {
+    if (IS_ADMIN) {
+      navigate('attendance', null);
+    } else {
+      navigate('addStudent', null);
+    }
   }
 
   /* 4. THEME CONTROL */
@@ -1170,12 +1187,13 @@
 
   applyTheme(localStorage.getItem('krou_theme_manual') || 'dark');
 
-  /* 5. NAVIGATION */
+  /* 5. NAVIGATION & REFRESH PERSISTENCE */
   let currentPage = window.location.hash.replace('#', '') || localStorage.getItem('krou_active_page') || 'dashboard';
 
   function navigate(page, el) {
     if (!page) return;
     currentPage = page;
+    
     localStorage.setItem('krou_active_page', page);
     try { history.replaceState(null, '', '#' + page); } catch(e) {}
 
@@ -1229,6 +1247,13 @@
     syncThemeToIframe(document.documentElement.getAttribute('data-theme') || 'dark');
   });
 
+  window.addEventListener('hashchange', () => {
+    const h = window.location.hash.replace('#', '');
+    if (h && h !== currentPage && CURRENT_USER && CURRENT_USER.username) {
+      navigate(h, null);
+    }
+  });
+
   function toggleSidebarCollapse() {
     document.getElementById('sidebar').classList.toggle('collapsed');
   }
@@ -1241,32 +1266,37 @@
     document.getElementById('mobileBackdrop').style.display = 'none';
   }
 
-  /* 6. STATS & SUPABASE */
+  /* 6. STATS & SUPABASE DASHBOARD LOGIC */
   async function refreshStats() {
     if (!CURRENT_USER) return;
     try {
+      // 🌟 ទាញយកទិន្នន័យពីតារាង students ដោយប្រើឈ្មោះ Column ត្រឹមត្រូវ (student_name, gender, grade)
       const { data: students, error } = await sb
         .from('students')
-        .select('id, name, grade, sex');
+        .select('id, student_id, student_name, grade, gender, dropout_semester')
+        .order('id', { ascending: true });
 
-      if (error && error.code !== 'PGRST116') {
-        console.warn("Students query:", error.message);
+      if (error) {
+        console.warn("Students query error:", error.message);
       }
 
       const totalStudents = students ? students.length : 0;
       
       const classMap = {};
       (students || []).forEach(s => {
-        const cls = s.grade || 'ទូទៅ';
+        const cls = cleanGrade(s.grade) || 'ទូទៅ';
         if (!classMap[cls]) classMap[cls] = { className: cls, count: 0, female: 0 };
         classMap[cls].count++;
-        if (s.sex && s.sex.includes('ស្រី')) classMap[cls].female++;
+        const g = String(s.gender || '').trim().toLowerCase();
+        if (g === 'ស្រី' || g === 'f' || g === 'female' || g.includes('ស្រី')) {
+          classMap[cls].female++;
+        }
       });
       const classBreakdown = Object.values(classMap);
       const totalClasses = classBreakdown.length;
 
       let studentCountForView = totalStudents;
-      let targetClassName = ASSIGNED_CLASS || (classBreakdown[0] ? classBreakdown[0].className : "៤ក");
+      let targetClassName = cleanGrade(ASSIGNED_CLASS) || (classBreakdown[0] ? classBreakdown[0].className : "១");
 
       const pvClassSelect = document.getElementById('pvClassSelect');
       if (pvClassSelect && classBreakdown.length > 0) {
@@ -1274,7 +1304,7 @@
         classBreakdown.forEach(c => {
           pvClassSelect.innerHTML += `<option value="${c.className}">ថ្នាក់ទី ${c.className}</option>`;
         });
-        if (!IS_ADMIN && ASSIGNED_CLASS) pvClassSelect.value = ASSIGNED_CLASS;
+        if (!IS_ADMIN && ASSIGNED_CLASS) pvClassSelect.value = cleanGrade(ASSIGNED_CLASS);
       }
 
       if (IS_ADMIN) {
@@ -1291,7 +1321,7 @@
           adminGrid.innerHTML = '';
           classBreakdown.forEach(c => {
             adminGrid.innerHTML += `
-              <div class="admin-class-card" onclick="ASSIGNED_CLASS='${c.className}'; navigate('attendance', null)">
+              <div class="admin-class-card" onclick="onAdminClassCardClick('${c.className}')">
                 <div>
                   <div style="font-weight:700;">ថ្នាក់ទី ${c.className}</div>
                   <div style="font-size:11.5px; opacity:0.8;">ស្រី: ${c.female} នាក់</div>
@@ -1305,11 +1335,10 @@
         document.getElementById('dashRoleTopTag').innerText = "ផ្ទាំងគ្រូបង្រៀន";
         document.getElementById('dashHeroGreeting').innerText = `សួស្ដី ${TEACHER_NAME || 'លោកគ្រូ/អ្នកគ្រូ'}`;
 
-        const myClassObj = classBreakdown.find(c => c.className === ASSIGNED_CLASS);
+        const myClassObj = classBreakdown.find(c => c.className === targetClassName);
         studentCountForView = myClassObj ? myClassObj.count : (classBreakdown[0] ? classBreakdown[0].count : totalStudents);
-        targetClassName = ASSIGNED_CLASS || (classBreakdown[0] ? classBreakdown[0].className : "៤ក");
 
-        document.getElementById('dashHeroSubMeta').innerText = `ថ្នាក់ទី${targetClassName} · សិស្ស ${studentCountForView} នាក់`;
+        document.getElementById('dashHeroSubMeta').innerText = `ថ្នាក់ទី ${targetClassName} · សិស្ស ${studentCountForView} នាក់`;
         document.getElementById('dashStudentSubLabel').innerText = "ក្នុងថ្នាក់របស់អ្នក";
 
         const adminPanel = document.getElementById('adminClassesPanel');
@@ -1319,31 +1348,41 @@
       document.getElementById('dashStudentCountDigit').innerText = studentCountForView;
 
       const now = new Date();
-      const currentMonth = KHMER_MONTHS[now.getMonth()];
+      const currentMonthKhmer = KHMER_MONTHS[now.getMonth()];
       const todayDay = now.getDate();
-      checkDashboardTasks(targetClassName, currentMonth, todayDay, studentCountForView);
+      
+      checkDashboardTasks(targetClassName, currentMonthKhmer, todayDay, studentCountForView);
 
     } catch (e) {
       console.warn("Refresh stats error:", e);
     }
   }
 
+  function onAdminClassCardClick(className) {
+    navigate('attendance', null);
+  }
+
+  /* 🌟 មុខងារឆែកមើលកិច្ចការវត្តមាន និងពិន្ទុថ្ងៃនេះឱ្យដើរត្រឹមត្រូវ ១០០% */
   async function checkDashboardTasks(targetCls, currentMonth, todayDay, totalClassStudents) {
     try {
       const now = new Date();
       document.getElementById('taskCalMonth').innerText = ENG_MONTHS[now.getMonth()];
-      document.getElementById('taskCalDay').innerText = now.getDate();
+      document.getElementById('taskCalDay').innerText = todayDay;
 
-      const { data: attList } = await sb
-        .from('attendance')
-        .select('*')
-        .eq('grade', targetCls)
-        .eq('month', currentMonth);
+      const curPure = cleanGrade(targetCls);
+      const todayIso = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
 
-      let isAttRecordedToday = false;
-      if (attList && attList.length > 0) {
-        isAttRecordedToday = attList.some(r => r.days && r.days[todayDay - 1] && r.days[todayDay - 1] !== '-');
+      // ១. ឆែកមើលតារាង attendance តាម attendance_date = ថ្ងៃនេះ
+      let attQuery = sb.from('attendance')
+        .select('id, status')
+        .eq('attendance_date', todayIso);
+
+      if (curPure && !IS_ADMIN) {
+        attQuery = attQuery.eq('assigned_class', curPure);
       }
+
+      const { data: todayAtt } = await attQuery;
+      const isAttRecordedToday = Boolean(todayAtt && todayAtt.length > 0);
 
       const attDescEl = document.getElementById('taskAttendanceDesc');
       const todayStatusEl = document.getElementById('dashTodayStatus');
@@ -1359,11 +1398,17 @@
         if (todaySubEl) { todaySubEl.style.color = ""; todaySubEl.innerText = "ត្រូវកត់វត្តមាន"; }
       }
 
-      const { data: scoreData } = await sb
-        .from('scores')
-        .select('*')
-        .eq('grade', targetCls)
-        .eq('month', currentMonth);
+      // ២. ឆែកមើលតារាង scores តាម assigned_class និង period (ខែបច្ចុប្បន្ន)
+      let scoreQuery = sb.from('scores')
+        .select('student_id, total, average')
+        .eq('score_type', 'monthly')
+        .eq('period', currentMonth);
+
+      if (curPure) {
+        scoreQuery = scoreQuery.eq('assigned_class', curPure);
+      }
+
+      const { data: scoreData } = await scoreQuery;
 
       let scoredCount = scoreData ? scoreData.length : 0;
       const totalStudentsCount = totalClassStudents || 1;
@@ -1391,14 +1436,10 @@
     }
   }
 
-  /* 7. STUDENT PROFILE VIEWER */
+  /* 7. STUDENT PROFILE VIEWER (កែតម្រូវឱ្យបង្ហាញព័ត៌មានសិស្សពេញលេញ) */
   async function openStudentProfileViewer() {
     document.getElementById('studentProfileModal').style.display = 'flex';
-    if (!cachedStudentsRoster.length) {
-      await loadStudentsForProfileViewer();
-    } else {
-      populateStudentDropdown();
-    }
+    await loadStudentsForProfileViewer();
   }
 
   function closeStudentProfileViewer() {
@@ -1410,11 +1451,15 @@
     studentSelect.innerHTML = '<option value="">កំពុងទាញទិន្នន័យ...</option>';
 
     try {
-      const targetCls = IS_ADMIN ? (document.getElementById('pvClassSelect').value || '') : (ASSIGNED_CLASS || '');
-      let query = sb.from('students').select('*');
-      if (targetCls) query = query.eq('grade', targetCls);
+      const targetCls = IS_ADMIN ? (document.getElementById('pvClassSelect').value || '') : (cleanGrade(ASSIGNED_CLASS) || '');
+      let query = sb.from('students').select('*').order('id', { ascending: true });
 
-      const { data, error } = await query.order('id', { ascending: true });
+      if (targetCls) {
+        const clean = cleanGrade(targetCls);
+        query = query.in('grade', [clean, `ថ្នាក់ទី${clean}`, `ថ្នាក់ទី ${clean}`]);
+      }
+
+      const { data, error } = await query;
       if (error) throw error;
 
       cachedStudentsRoster = data || [];
@@ -1435,7 +1480,9 @@
     }
 
     cachedStudentsRoster.forEach((s, idx) => {
-      select.innerHTML += `<option value="${idx}">${idx + 1}. ${s.name || 'គ្មានឈ្មោះ'} (${s.grade || 'គ្មានថ្នាក់'})</option>`;
+      const name = s.student_name || s.name || 'គ្មានឈ្មោះ';
+      const grade = cleanGrade(s.grade) || 'គ្មានថ្នាក់';
+      select.innerHTML += `<option value="${idx}">${idx + 1}. ${name} (ថ្នាក់ទី ${grade})</option>`;
     });
 
     currentPvIndex = 0;
@@ -1465,24 +1512,29 @@
     const now = new Date();
     let age = now.getFullYear() - b.getFullYear();
     if (now.getMonth() < b.getMonth() || (now.getMonth() === b.getMonth() && now.getDate() < b.getDate())) age--;
-    return age > 0 ? `${age} ឆ្នាំ` : '';
+    return age >= 0 ? `${age} ឆ្នាំ` : '';
   }
 
   function renderSelectedStudentProfile(idx) {
     const s = cachedStudentsRoster[idx];
     if (!s) { renderEmptyStudentProfile(); return; }
 
-    document.getElementById('pvStudentName').innerText = s.name || 'គ្មានឈ្មោះ';
-    document.getElementById('pvTagId').innerText = `អត្តលេខ: ${s.id || '-'}`;
-    document.getElementById('pvTagGrade').innerText = `ថ្នាក់ទី: ${s.grade || '-'}`;
-    document.getElementById('pvTagGender').innerText = `ភេទ: ${s.sex || '-'}`;
+    const name = s.student_name || s.name || 'គ្មានឈ្មោះ';
+    const sId = s.student_id || s.id || '-';
+    const grade = cleanGrade(s.grade) || '-';
+    const gender = s.gender || s.sex || '-';
+
+    document.getElementById('pvStudentName').innerText = name;
+    document.getElementById('pvTagId').innerText = `អត្តលេខ: ${sId}`;
+    document.getElementById('pvTagGrade').innerText = `ថ្នាក់ទី: ${grade}`;
+    document.getElementById('pvTagGender').innerText = `ភេទ: ${gender}`;
 
     const avatarBox = document.getElementById('pvAvatarBox');
     const photo = s.photo_url || s.photoUrl;
     if (photo && String(photo).trim() !== "") {
-      avatarBox.innerHTML = `<img src="${photo}" alt="photo" onerror="this.outerHTML='<span>${(s.name || 'ស').charAt(0)}</span>'">`;
+      avatarBox.innerHTML = `<img src="${photo}" alt="photo" onerror="this.outerHTML='<span>${name.charAt(0)}</span>'">`;
     } else {
-      avatarBox.innerHTML = `<span>${s.name ? s.name.trim().charAt(0) : 'ស'}</span>`;
+      avatarBox.innerHTML = `<span>${name.trim().charAt(0) || 'ស'}</span>`;
     }
 
     document.getElementById('pvDob').innerText = s.dob || '-';
@@ -1490,9 +1542,9 @@
     document.getElementById('pvPhone').innerText = s.phone || '-';
     document.getElementById('pvPob').innerText = s.pob || '-';
     document.getElementById('pvAddress').innerText = s.address || '-';
-    document.getElementById('pvFather').innerText = s.father || '-';
+    document.getElementById('pvFather').innerText = s.father_name || s.father || '-';
     document.getElementById('pvFatherJob').innerText = s.father_job || s.fatherJob || '-';
-    document.getElementById('pvMother').innerText = s.mother || '-';
+    document.getElementById('pvMother').innerText = s.mother_name || s.mother || '-';
     document.getElementById('pvMotherJob').innerText = s.mother_job || s.motherJob || '-';
   }
 
@@ -1513,7 +1565,7 @@
     document.getElementById('pvMotherJob').innerText = '-';
   }
 
-  /* 8. TEACHER PROFILE EDIT (ប្រើ teacher_name, gender, etc.) */
+  /* 8. TEACHER PROFILE EDIT */
   function openProfileModal() {
     if (!CURRENT_USER) return;
     document.getElementById('profileModalBackdrop').classList.add('show');
@@ -1557,7 +1609,6 @@
     btn.innerText = '⏳ កំពុងរក្សា...';
     btn.disabled = true;
 
-    // ផ្គូផ្គងនឹង Field ក្នុង Table ជាក់ស្តែង
     const updates = {
       teacher_name: document.getElementById('pfName').value.trim(),
       gender: document.getElementById('pfSex').value,
@@ -1601,12 +1652,14 @@
     return false;
   }
 
-  /* 9. BOOTSTRAP */
+  /* 9. BOOTSTRAP INITIALIZATION */
   document.getElementById('loginYear').innerText = new Date().getFullYear();
 
   window.addEventListener('DOMContentLoaded', () => {
     if (CURRENT_USER && CURRENT_USER.username) {
-      showAppScreen();
+      const savedPage = window.location.hash.replace('#', '') || localStorage.getItem('krou_active_page') || 'dashboard';
+      currentPage = savedPage;
+      showAppScreen(savedPage);
     } else {
       showAuthScreen();
     }
