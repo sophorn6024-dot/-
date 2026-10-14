@@ -188,13 +188,7 @@
     .section-title { color: #0284c7; font-size: 14.5px; display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
     [data-theme="dark"] .section-title { color: #38bdf8; }
     .controls { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; background: var(--surface-elevated); padding: 12px 16px; border-radius: 14px; border: 1px solid var(--border); }
-    .col { flex: 1 1 180px; min-width: 0; display: flex; flex-direction: column; gap: 5px; }
-
-    /* កំណត់ចំនួនក្រុម/វេន៖ ប្រអប់តូច និងរៀបជាជួរដូចរូបគំរូ */
-    #tabGroup > .card .controls { display: flex; flex-direction: row; align-items: flex-end; gap: 10px; padding: 10px 12px; }
-    #tabGroup > .card .controls .col { flex: 0 1 210px; min-width: 145px; }
-    #tabGroup > .card .controls #splitValue { width: 100%; max-width: 210px; text-align: center; font-size: 15px; font-weight: 700; }
-    #tabGroup > .card .controls .btn { flex: 0 0 auto; }
+    .col { flex: 1; min-width: 160px; display: flex; flex-direction: column; gap: 5px; }
     label.lbl { font-weight: 700; font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 5px; }
     #tabGroup select, #tabGroup input[type=number] { padding: 7px 11px; border: 1.5px solid var(--input-border); border-radius: 8px; font-size: 12.5px; font-weight: 600; background: var(--input-bg); color: var(--text-main); outline: none; height: 36px; width: 100%; }
     #tabGroup select:focus, #tabGroup input[type=number]:focus { border-color: var(--input-focus); }
@@ -228,6 +222,38 @@
     .role-sub { background: rgba(2, 132, 199, 0.15); color: #0284c7; border: 1px solid rgba(2, 132, 199, 0.35); }
     [data-theme="dark"] .role-sub { color: #38bdf8; }
 
+
+    /* ការកំណត់ចំនួនវេន — រចនាតាមរូបគំរូ */
+    .split-panel { width:100%; display:flex; flex-direction:column; gap:14px; }
+    .split-tabs { display:flex; gap:4px; padding:6px; width:min(100%, 560px); border-radius:18px; background:var(--surface-elevated); border:1px solid var(--border); }
+    .split-tab { flex:1; min-height:42px; padding:8px 14px; border:0; border-radius:14px; background:transparent; color:var(--text-muted); font-size:14px; font-weight:700; font-family:inherit; cursor:pointer; }
+    .split-tab.active { background:var(--surface); color:var(--text-main); box-shadow:0 2px 8px rgba(0,0,0,.08); }
+    .split-workspace { display:grid; grid-template-columns:minmax(210px, 278px) minmax(0,1fr); min-height:150px; border:1px solid var(--border); border-radius:22px; overflow:hidden; background:var(--surface-card); }
+    .split-entry { padding:22px 26px; border-right:1px solid var(--border); display:flex; flex-direction:column; gap:12px; justify-content:flex-start; }
+    .split-label { color:var(--text-muted); font-size:13px; font-weight:700; }
+    .split-input-line { display:flex; align-items:center; gap:12px; }
+    #tabGroup .split-input-line input[type=number] { width: min(100%, 168px); height:64px; padding:4px 12px; border:2px solid var(--input-border); border-radius:18px; background:var(--input-bg); color:var(--text-main); text-align:center; font-size:30px; font-weight:800; }
+    .split-input-line span { font-size:15px; font-weight:700; white-space:nowrap; }
+    .split-preview { padding:22px 28px; min-width:0; }
+    .split-preview-main { margin-top:22px; font-size:19px; font-weight:800; color:var(--text-main); }
+    .split-preview-main span { font-size:14px; font-weight:500; color:var(--text-muted); }
+    .split-chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; }
+    .split-chip { min-width:36px; height:36px; padding:0 10px; border-radius:50px; background:#edb5f2; color:#1e293b; display:inline-flex; align-items:center; justify-content:center; font-size:13px; }
+    .split-mode-hidden { position:absolute!important; width:1px!important; height:1px!important; opacity:0!important; pointer-events:none!important; }
+    .split-actions { display:flex; align-items:center; justify-content:flex-end; gap:10px; flex-wrap:wrap; }
+    #tabGroup .split-main-btn { min-height:68px; height:auto; min-width:300px; justify-content:center; border-radius:22px; padding:14px 32px; font-size:19px; }
+    @media(max-width:768px) {
+      .split-tabs { width:100%; }
+      .split-tab { font-size:12px; padding:8px 6px; }
+      .split-workspace { grid-template-columns:minmax(0, 1fr); }
+      .split-entry { border-right:0; border-bottom:1px solid var(--border); padding:16px; }
+      .split-preview { padding:16px; }
+      .split-preview-main { margin-top:12px; font-size:17px; }
+      #tabGroup .split-input-line input[type=number] { height:56px; font-size:26px; }
+      .split-actions { justify-content:stretch; }
+      #tabGroup .split-main-btn { width:100%; min-width:0; min-height:58px; font-size:16px; }
+    }
+
     .print-header, .print-footer { display: none; }
 
     /* ══════════════ 🏆 WINNER MODAL ══════════════ */
@@ -256,10 +282,6 @@
       .roles-grid { grid-template-columns: 1fr; }
       .controls { flex-direction: column; align-items: stretch; gap: 8px; }
       .col { width: 100%; min-width: 0; }
-      #tabGroup > .card .controls { flex-direction: row; align-items: flex-end; gap: 8px; }
-      #tabGroup > .card .controls .col { flex: 1 1 135px; min-width: 0; }
-      #tabGroup > .card .controls #splitValue { max-width: 100%; }
-      #tabGroup > .card .controls .btn { flex: 1 1 auto; justify-content: center; }
       .seg { padding: 9px 14px; font-size: 13px; }
       .stage { padding-right: 18px; }
       .pointer { right: -14px; border-top-width: 12px; border-bottom-width: 12px; border-right-width: 22px; }
@@ -424,21 +446,34 @@
         <div class="card no-print">
           <div class="section-title khmer-moul"><i class="fa-solid fa-broom" style="color:#10b981;"></i> បែងចែកសិស្សសម្រាប់វេនសម្អាត</div>
 
-          <div class="controls">
-            <div class="col">
-              <label class="lbl"><i class="fa-solid fa-sliders"></i> របៀបបែងចែក ៖</label>
-              <select id="splitMode" onchange="toggleModeInput()">
-                <option value="numGroups">កំណត់ចំនួនវេន</option>
-                <option value="groupSize">កំណត់ចំនួនសិស្សក្នុង១វេន</option>
-              </select>
+          <div class="split-panel">
+            <div class="split-tabs" role="tablist" aria-label="របៀបបែងចែក">
+              <button type="button" class="split-tab active" id="splitTabGroups" onclick="setSplitMode('numGroups')">ចំនួនក្រុម</button>
+              <button type="button" class="split-tab" id="splitTabSize" onclick="setSplitMode('groupSize')">ចំនួនសិស្សក្នុងក្រុម</button>
             </div>
-            <div class="col">
-              <label class="lbl" id="inputLabel"><i class="fa-solid fa-hashtag"></i> ចំនួនវេន ៖</label>
-              <input type="number" id="splitValue" min="1" value="4">
+            <div class="split-workspace">
+              <div class="split-entry">
+                <label class="split-label" id="inputLabel" for="splitValue">ចំនួនក្រុម · បញ្ចូល</label>
+                <div class="split-input-line">
+                  <input type="number" id="splitValue" min="1" value="1" oninput="updateSplitPreview()" aria-label="ចំនួនវេន">
+                  <span id="splitUnit">ក្រុម</span>
+                </div>
+              </div>
+              <div class="split-preview">
+                <div class="split-label">លទ្ធផល</div>
+                <div class="split-preview-main" id="splitPreviewMain">1 ក្រុម <span>· សិស្សដែលត្រូវបែងចែក</span></div>
+                <div class="split-chips" id="splitPreviewChips"><span class="split-chip">1</span></div>
+              </div>
             </div>
-            <button type="button" class="btn btn-group" onclick="generateGroups()"><i class="fa-solid fa-dice"></i> បែងចែកវេន</button>
-            <button type="button" class="btn btn-save" id="saveBtn" onclick="saveGroupsToSupabase()"><i class="fa-solid fa-floppy-disk"></i> រក្សាទុកវេន</button>
-            <button type="button" class="btn btn-print" id="printBtn" onclick="window.print()"><i class="fa-solid fa-print"></i> បោះពុម្ព</button>
+            <select id="splitMode" class="split-mode-hidden" onchange="toggleModeInput()" aria-hidden="true" tabindex="-1">
+              <option value="numGroups" selected>កំណត់ចំនួនវេន</option>
+              <option value="groupSize">កំណត់ចំនួនសិស្សក្នុង១វេន</option>
+            </select>
+            <div class="split-actions">
+              <button type="button" class="btn btn-group split-main-btn" onclick="generateGroups()"><i class="fa-solid fa-shuffle"></i> បែងចែកក្រុម</button>
+              <button type="button" class="btn btn-save" id="saveBtn" onclick="saveGroupsToSupabase()"><i class="fa-solid fa-floppy-disk"></i> រក្សាទុកវេន</button>
+              <button type="button" class="btn btn-print" id="printBtn" onclick="window.print()"><i class="fa-solid fa-print"></i> បោះពុម្ព</button>
+            </div>
           </div>
 
           <div id="countInfo" class="count-info"></div>
@@ -639,6 +674,7 @@
       const c = document.getElementById('classSelect').value || cleanGrade(USER_CLASS);
       curClass = cleanGrade(c);
       updateSubline();
+      if (typeof updateSplitPreview === 'function') updateSplitPreview();
 
       // reset group tab
       currentGroups = [];
@@ -678,7 +714,7 @@
           }));
 
         // 🎡 កង់
-        loadSt(); rebuild(); renderSpinUI();
+        loadSt(); rebuild(); renderSpinUI(); updateSplitPreview();
 
         // 👥 តួនាទី
         populateRoles();
@@ -1285,12 +1321,38 @@
       } catch (e) { gStatus('❌ ' + e.message, '#ef4444'); }
     }
 
+    function setSplitMode(mode) {
+      document.getElementById('splitMode').value = mode;
+      document.getElementById('splitTabGroups').classList.toggle('active', mode === 'numGroups');
+      document.getElementById('splitTabSize').classList.toggle('active', mode === 'groupSize');
+      const input = document.getElementById('splitValue');
+      input.value = mode === 'numGroups' ? 1 : 5;
+      toggleModeInput();
+    }
     function toggleModeInput() {
       const m = document.getElementById('splitMode').value;
-      document.getElementById('inputLabel').innerHTML = m === 'numGroups'
-        ? '<i class="fa-solid fa-hashtag"></i> ចំនួនវេន ៖'
-        : '<i class="fa-solid fa-users"></i> ចំនួនសិស្ស/វេន ៖';
-      document.getElementById('splitValue').value = m === 'numGroups' ? 4 : 5;
+      document.getElementById('splitTabGroups').classList.toggle('active', m === 'numGroups');
+      document.getElementById('splitTabSize').classList.toggle('active', m === 'groupSize');
+      document.getElementById('inputLabel').textContent = m === 'numGroups' ? 'ចំនួនក្រុម · បញ្ចូល' : 'ចំនួនសិស្សក្នុងក្រុម · បញ្ចូល';
+      document.getElementById('splitUnit').textContent = m === 'numGroups' ? 'ក្រុម' : 'នាក់';
+      updateSplitPreview();
+    }
+    function updateSplitPreview() {
+      const mode = document.getElementById('splitMode').value;
+      const n = Math.max(1, parseInt(document.getElementById('splitValue').value, 10) || 1);
+      const available = Math.max(0, students.length - getExcludedKeys().length);
+      const groups = mode === 'numGroups' ? Math.min(n, Math.max(1, available || 1)) : Math.max(1, Math.ceil(available / n));
+      const countText = available + ' នាក់';
+      document.getElementById('splitPreviewMain').innerHTML = mode === 'numGroups'
+        ? `${n} ក្រុម <span>· ${countText}</span>`
+        : `${groups} វេន <span>· ${countText} (ប្រហែល ${n} នាក់/វេន)</span>`;
+      const chips = document.getElementById('splitPreviewChips');
+      chips.innerHTML = '';
+      const chipCount = Math.min(groups, 12);
+      for (let i = 1; i <= chipCount; i++) {
+        const chip = document.createElement('span'); chip.className = 'split-chip'; chip.textContent = i; chips.appendChild(chip);
+      }
+      if (groups > 12) { const more = document.createElement('span'); more.className='split-chip'; more.textContent='…'; chips.appendChild(more); }
     }
     function getExcludedKeys() {
       return ['presidentSelect', 'deputy1Select', 'deputy2Select'].map(id => document.getElementById(id).value).filter(Boolean);
