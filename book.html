@@ -296,27 +296,37 @@
       display: inline-flex; align-items: center; gap: 6px; cursor: pointer; user-select: none;
     }
     .bar-pill:hover { background: #334155; }
-    .bar-pill select, .bar-pill input[type="date"] {
+    .bar-pill select {
       background: transparent; border: none; color: #fff; outline: none; font-size: 12.5px; font-weight: 700; cursor: pointer;
     }
     .nav-btn-green { background: #059669; color: #fff; border: none; }
     .nav-btn-green:hover { background: #047857; }
 
-    /* Paper A4 Landscape Container */
+    /* Dynamic Page Setup Variables for Paper Sheet */
+    :root {
+      --sheet-w: 297mm;
+      --sheet-h: 210mm;
+      --sheet-pad: 5mm;
+      --sheet-font-size: 11px;
+      --row-height: 22px;
+    }
+
     .print-paper-sheet {
-      width: 297mm;
+      width: var(--sheet-w);
       max-width: 100%;
-      min-height: 210mm;
+      min-height: var(--sheet-h);
       background: #ffffff !important;
       color: #000000 !important;
       margin: 0 auto;
-      padding: 10mm 14mm 14mm;
+      padding: var(--sheet-pad);
       border-radius: 4px;
       box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
       font-family: 'Khmer OS Battambang', 'Battambang', sans-serif !important;
+      font-size: var(--sheet-font-size);
+      box-sizing: border-box;
     }
 
-    .print-header-top { text-align: center; margin-bottom: 10px; }
+    .print-header-top { text-align: center; margin-bottom: 8px; }
     .print-kingdom { font-size: 15px; margin-bottom: 2px; }
     .print-motto { font-size: 13.5px; margin-bottom: 4px; }
     .print-divider { font-size: 12px; letter-spacing: 4px; margin-bottom: 6px; }
@@ -331,35 +341,35 @@
     .print-doc-title {
       text-align: center;
       font-size: 16.5px;
-      margin: 10px 0 3px;
+      margin: 8px 0 3px;
       color: #000;
     }
     .print-sub-legend {
       text-align: center;
       font-size: 11.5px;
       font-weight: bold;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     table.print-report-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 11px;
+      font-size: inherit;
       text-align: center;
       border: 1px solid #000 !important;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       background: #ffffff !important;
     }
     table.print-report-table th, table.print-report-table td {
       border: 1px solid #000 !important;
-      padding: 4px 2px;
+      padding: 3px 2px;
+      height: var(--row-height);
       vertical-align: middle;
       color: #000 !important;
     }
     table.print-report-table thead th {
       background: #f8fafc !important;
       font-weight: bold;
-      font-size: 11.5px;
     }
     table.print-report-table td.col-name {
       text-align: left;
@@ -371,13 +381,12 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-top: 14px;
+      margin-top: 12px;
       font-size: 12px;
     }
     .sig-left-block { text-align: center; min-width: 180px; margin-top: 36px; font-weight: bold; }
     .sig-right-block { text-align: center; min-width: 330px; }
 
-    /* ── Signature Visual Box (គ្មានហត្ថលេខាគំរូ ទុកទំនេរស្អាត) ── */
     .signature-interactive-box {
       min-height: 52px;
       height: 52px;
@@ -397,7 +406,118 @@
     }
 
     /* =========================================================
-       ✍️ SIGNATURE MODAL (CANVAS PAD + UPLOAD)
+       📄 3. MODAL ការរៀបចំទំព័រ (ដូចរូបថត)
+    ========================================================= */
+    .page-setup-modal-backdrop {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(5px);
+      z-index: 10005; align-items: center; justify-content: center; padding: 14px;
+    }
+    .page-setup-card {
+      background: #182230; color: #f8fafc; border-radius: 20px;
+      border: 1.5px solid #28374a; box-shadow: 0 25px 60px rgba(0,0,0,0.55);
+      width: 440px; max-width: 100%; padding: 20px 22px; display: flex; flex-direction: column; gap: 14px;
+      animation: popSetup 0.16s ease-out;
+    }
+    @keyframes popSetup { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+
+    .setup-header {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .setup-title { font-size: 16px; font-weight: 800; }
+    .btn-reset-setup {
+      background: transparent; border: none; color: #94a3b8; font-size: 13px; font-weight: 700; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 5px;
+    }
+    .btn-reset-setup:hover { color: #f8fafc; }
+
+    .setup-section-title {
+      font-size: 12px; font-weight: 700; color: #94a3b8; display: flex; align-items: center; gap: 6px;
+      margin-bottom: 8px;
+    }
+    .setup-section-title::after {
+      content: ""; flex: 1; height: 1px; background: #28374a; margin-left: 6px;
+    }
+
+    .setup-grid-4 {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 8px;
+    }
+    .setup-choice-btn {
+      background: #212e40; border: 1.5px solid #2d3e54; border-radius: 12px; padding: 10px 6px;
+      text-align: center; cursor: pointer; transition: all 0.15s; user-select: none;
+    }
+    .setup-choice-btn:hover { border-color: #059669; }
+    .setup-choice-btn.active {
+      background: #059669; border-color: #059669; color: #ffffff !important;
+      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.4);
+    }
+    .setup-choice-main { font-size: 13px; font-weight: 800; }
+    .setup-choice-sub { font-size: 10px; opacity: 0.8; margin-top: 2px; }
+
+    .setup-stepper-row {
+      display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700;
+    }
+    .stepper-label { width: 65px; color: #cbd5e1; }
+    .stepper-box {
+      display: inline-flex; align-items: center; background: #212e40; border: 1px solid #2d3e54; border-radius: 10px; overflow: hidden;
+    }
+    .stepper-btn {
+      width: 32px; height: 32px; background: transparent; border: none; color: #cbd5e1; font-size: 16px; font-weight: bold; cursor: pointer;
+    }
+    .stepper-btn:hover { background: #28374a; color: #fff; }
+    .stepper-val-wrap {
+      padding: 0 10px; display: inline-flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 800; min-width: 70px; justify-content: center;
+    }
+    .stepper-val-wrap span.unit { font-size: 11px; opacity: 0.75; font-weight: 600; }
+    .stepper-info-side { font-size: 11px; color: #94a3b8; margin-left: 6px; font-weight: 600; }
+
+    .setup-footer-bar {
+      display: flex; align-items: center; justify-content: space-between; border-top: 1px solid #28374a; padding-top: 10px;
+    }
+    .page-count-badge {
+      font-size: 13px; font-weight: 800; color: #a78bfa;
+    }
+
+    /* =========================================================
+       📅 4. KHMER CALENDAR POPUP (ដូចទំព័រមុនៗ)
+    ========================================================= */
+    .khmer-cal-popup {
+      display: none; position: fixed; z-index: 10010;
+      background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: 20px; box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45);
+      width: 310px; padding: 16px; animation: calPop 0.16s ease-out;
+      user-select: none; color: var(--text);
+    }
+    @keyframes calPop { from { opacity: 0; transform: scale(0.96) translateY(-6px); } to { opacity: 1; transform: scale(1); } }
+
+    .cal-header-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+    .cal-select {
+      background: var(--surface-elevated); border: 1.5px solid var(--border); border-radius: 10px;
+      height: 36px; padding: 0 8px; font-size: 12.5px; font-weight: 700; color: var(--text); outline: none; cursor: pointer; width: 100%;
+    }
+    .cal-subtitle { text-align: center; font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 10px; }
+    .cal-grid-weekdays {
+      display: grid; grid-template-columns: repeat(7, 1fr); text-align: center;
+      font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px;
+    }
+    .cal-grid-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px 2px; }
+    .cal-day-cell {
+      height: 34px; display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 600; border-radius: 8px; cursor: pointer;
+      color: var(--text); transition: background 0.12s;
+    }
+    .cal-day-cell:hover { background: rgba(5, 150, 105, 0.15); color: #059669; }
+    .cal-day-other { opacity: 0.3; color: var(--text-muted); }
+    .cal-day-selected {
+      background: #059669 !important; color: #ffffff !important; font-weight: 800 !important; border-radius: 10px !important;
+    }
+    .cal-footer-box { border-top: 1px solid var(--border); margin-top: 10px; padding-top: 8px; display: flex; justify-content: space-between; }
+    .cal-btn-action {
+      background: none; border: none; color: #059669; font-size: 12.5px; font-weight: 700; cursor: pointer; padding: 3px 6px;
+    }
+
+    /* =========================================================
+       ✍️ 5. SIGNATURE MODAL
     ========================================================= */
     .sig-modal-backdrop {
       display: none; position: fixed; inset: 0;
@@ -447,12 +567,11 @@
       display: flex; align-items: center; justify-content: space-between; background: var(--surface-card);
     }
 
-    @page { size: A4 landscape; margin: 6mm; }
     @media print {
       body { background: #fff !important; color: #000 !important; padding: 0 !important; }
-      #authDeniedWrap, #manageView, .preview-nav-bar, .sig-modal-backdrop { display: none !important; }
+      #authDeniedWrap, #manageView, .preview-nav-bar, .sig-modal-backdrop, .page-setup-modal-backdrop, .khmer-cal-popup { display: none !important; }
       #printPreviewModal { display: block !important; position: static !important; background: transparent !important; padding: 0 !important; }
-      .print-paper-sheet { width: 100% !important; box-shadow: none !important; padding: 0 !important; }
+      .print-paper-sheet { width: 100% !important; box-shadow: none !important; border-radius: 0 !important; }
       .signature-interactive-box { border: none !important; background: transparent !important; }
     }
   </style>
@@ -556,7 +675,7 @@
 
   </div>
 
-  <!-- ══════════════ 📄 2. PRINT PREVIEW MODAL (ដូចរូបទី១) ══════════════ -->
+  <!-- ══════════════ 📄 2. PRINT PREVIEW MODAL ══════════════ -->
   <div id="printPreviewModal">
     <div class="preview-nav-bar">
       <!-- ផ្នែកខាងឆ្វេង៖ ត្រឡប់ & ឈ្មោះសៀវភៅ -->
@@ -568,27 +687,26 @@
         <input type="text" id="rptSubjectNames" value="ភាសាខ្មែរ, គណិតវិទ្យា, វិទ្យាសាស្ត្រ, សិក្សាសង្គម" style="background:#0f172a; border:1px solid #475569; color:#fff; padding:6px 10px; border-radius:8px; font-size:12px; min-width:240px; outline:none;">
       </div>
 
-      <!-- ផ្នែកខាងស្តាំ៖ ទាញយក Excel, ថ្ងៃអ្នកធ្វើ, ថ្ងៃនាយក, ហត្ថលេខា, PDF, Print -->
+      <!-- ផ្នែកខាងស្តាំ៖ ទាញយក Excel, ថ្ងៃអ្នកធ្វើ, ថ្ងៃនាយក, ហត្ថលេខា, កំណត់ទំព័រ, PDF, Print -->
       <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
         <button type="button" class="bar-pill" onclick="exportToExcel()">
           <i class="fa-solid fa-file-excel" style="color:#10b981;"></i> ទាញយក Excel
         </button>
 
-        <!-- ថ្ងៃអ្នកធ្វើចុះហត្ថលេខា -->
-        <div class="bar-pill" title="ជ្រើសរើសថ្ងៃអ្នកធ្វើចុះហត្ថលេខា">
+        <!-- ថ្ងៃអ្នកធ្វើចុះហត្ថលេខា (ចុចបើកប្រតិទិនខ្មែរស្អាត) -->
+        <button type="button" class="bar-pill" id="btnTeacherSignDateTrigger" onclick="openKhmerCalForTeacher(event)">
           <span>ថ្ងៃអ្នកធ្វើចុះហត្ថលេខា</span>
-          <input type="date" id="inputSignDate" onchange="onSignDateChange(this.value)">
-        </div>
+          <span id="txtTeacherSignDate" style="color:#38bdf8; font-weight:bold;">[ ជ្រើសថ្ងៃ 📅 ]</span>
+        </button>
 
         <!-- ថ្ងៃនាយកចុះហត្ថលេខា -->
-        <div class="bar-pill" title="កំណត់ថ្ងៃនាយកចុះហត្ថលេខា">
+        <div class="bar-pill">
           <span>ថ្ងៃនាយកចុះហត្ថលេខា</span>
-          <select id="selDirectorDateOpt" onchange="onDirectorDateOptChange(this.value)">
+          <select id="selDirectorDateOpt" onchange="onDirectorDateOptChange(this.value, event)">
             <option value="none" selected>មិនដាក់</option>
             <option value="same">ដូចថ្ងៃអ្នកធ្វើ</option>
             <option value="custom">ជ្រើសថ្ងៃ</option>
           </select>
-          <input type="date" id="inputDirectorDate" style="display:none; margin-left:4px;" onchange="updateDirectorSignDateDisplay()">
         </div>
 
         <!-- 🖊️ មុខងារហត្ថលេខា -->
@@ -596,7 +714,8 @@
           <i class="fa-solid fa-signature"></i> <span>ហត្ថលេខា</span>
         </button>
 
-        <button type="button" class="bar-pill" onclick="openPageSetupAlert()" title="កំណត់ទំព័រ">
+        <!-- ⚙️ ប៊ូតុងកំណត់ទំព័រ (បើកផ្ទាំងដូចរូបថត) -->
+        <button type="button" class="bar-pill" onclick="openPageSetupModal()" title="កំណត់ទំព័រ (ក្រដាស កែម អក្សរ កម្ពស់ជួរ)">
           <i class="fa-solid fa-sliders"></i> <span>កំណត់ទំព័រ</span>
         </button>
 
@@ -609,7 +728,7 @@
       </div>
     </div>
 
-    <!-- Paper Sheet A4 Landscape -->
+    <!-- Paper Sheet Document -->
     <div class="print-paper-sheet" id="printableReportPaper">
       <div class="print-header-top">
         <div class="f-moul print-kingdom">ព្រះរាជាណាចក្រកម្ពុជា</div>
@@ -668,7 +787,7 @@
           </div>
           <div class="f-moul" style="font-size:12px; color:#1e40af; margin-top:4px;">គ្រូទទួលបន្ទុកថ្នាក់</div>
           
-          <!-- 🌟 ប្រអប់ហត្ថលេខា (ទុកទំនេរស្អាត ប្រសិនមិនទាន់បានគូរ/Upload) -->
+          <!-- 🌟 ប្រអប់ហត្ថលេខា (គ្មានហត្ថលេខាគំរូ ទុកទំនេរស្អាត) -->
           <div class="signature-interactive-box" id="sigImageBox" onclick="openSignatureModal()" title="ចុចដើម្បីគូរ ឬ Upload ហត្ថលេខាផ្ទាល់ខ្លួន">
             <img id="teacherSigImg" src="" alt="ហត្ថលេខាគ្រូ" style="display:none;">
           </div>
@@ -679,7 +798,122 @@
     </div>
   </div>
 
-  <!-- ══════════════ ✍️ 3. SIGNATURE MODAL (CANVAS + UPLOAD) ══════════════ -->
+  <!-- ══════════════ 📄 3. MODAL ការរៀបចំទំព័រ (ដូចរូបថត) ══════════════ -->
+  <div class="page-setup-modal-backdrop" id="pageSetupModal" onclick="if(event.target===this) closePageSetupModal()">
+    <div class="page-setup-card" onclick="event.stopPropagation()">
+      <div class="setup-header">
+        <div class="setup-title">ការរៀបចំទំព័រ</div>
+        <button type="button" class="btn-reset-setup" onclick="resetPageSetup()">
+          <i class="fa-solid fa-rotate-left"></i> ដើមវិញ
+        </button>
+      </div>
+
+      <!-- ផ្នែកក្រដាស -->
+      <div>
+        <div class="setup-section-title"><i class="fa-solid fa-file"></i> ក្រដាស</div>
+        
+        <div class="setup-grid-4">
+          <div class="setup-choice-btn active" id="btnSizeA4" onclick="setPaperSize('A4')">
+            <div class="setup-choice-main">A4</div>
+            <div class="setup-choice-sub">210×297</div>
+          </div>
+          <div class="setup-choice-btn" id="btnSizeF4" onclick="setPaperSize('F4')">
+            <div class="setup-choice-main">F4</div>
+            <div class="setup-choice-sub">216×330</div>
+          </div>
+          <div class="setup-choice-btn" id="btnOriPort" onclick="setOrientation('portrait')">
+            <div class="setup-choice-main">▯ បញ្ឈរ</div>
+            <div class="setup-choice-sub">&nbsp;</div>
+          </div>
+          <div class="setup-choice-btn active" id="btnOriLand" onclick="setOrientation('landscape')">
+            <div class="setup-choice-main">▭ ផ្ដេក</div>
+            <div class="setup-choice-sub">&nbsp;</div>
+          </div>
+        </div>
+
+        <div class="setup-grid-4">
+          <div class="setup-choice-btn" id="btnMargin2" onclick="setMarginPreset(2)">
+            <div class="setup-choice-main">តូច</div>
+            <div class="setup-choice-sub">2</div>
+          </div>
+          <div class="setup-choice-btn active" id="btnMargin5" onclick="setMarginPreset(5)">
+            <div class="setup-choice-main">មធ្យម</div>
+            <div class="setup-choice-sub">5</div>
+          </div>
+          <div class="setup-choice-btn" id="btnMargin10" onclick="setMarginPreset(10)">
+            <div class="setup-choice-main">ធំ</div>
+            <div class="setup-choice-sub">10</div>
+          </div>
+          <div class="setup-choice-btn" id="btnMargin15" onclick="setMarginPreset(15)">
+            <div class="setup-choice-main">ធំបំផុត</div>
+            <div class="setup-choice-sub">15</div>
+          </div>
+        </div>
+
+        <div class="setup-stepper-row" style="margin-top:6px;">
+          <span class="stepper-label">កែម</span>
+          <div class="stepper-box">
+            <button type="button" class="stepper-btn" onclick="stepMargin(-1)">−</button>
+            <div class="stepper-val-wrap"><span id="valMarginMm">5</span> <span class="unit">mm</span></div>
+            <button type="button" class="stepper-btn" onclick="stepMargin(1)">+</button>
+          </div>
+          <span class="stepper-info-side" id="txtUsableArea">ផ្ទៃប្រើ 287×200mm</span>
+        </div>
+      </div>
+
+      <!-- ផ្នែកអក្សរ និងក្រឡា -->
+      <div>
+        <div class="setup-section-title"><i class="fa-solid fa-layer-group"></i> អក្សរ និងក្រឡា</div>
+
+        <div class="setup-stepper-row" style="margin-bottom:8px;">
+          <span class="stepper-label">អក្សរ</span>
+          <div class="stepper-box">
+            <button type="button" class="stepper-btn" onclick="stepFontScale(-5)">−</button>
+            <div class="stepper-val-wrap"><span id="valFontPercent">100</span> <span class="unit">%</span></div>
+            <button type="button" class="stepper-btn" onclick="stepFontScale(5)">+</button>
+          </div>
+          <span class="stepper-info-side" id="txtFontScaleLabel">ធម្មតា</span>
+        </div>
+
+        <div class="setup-stepper-row">
+          <span class="stepper-label">កម្ពស់ជួរ</span>
+          <div class="stepper-box">
+            <button type="button" class="stepper-btn" onclick="stepRowHeight(-0.5)">−</button>
+            <div class="stepper-val-wrap"><span id="valRowHeightMm">7.1</span> <span class="unit">mm</span></div>
+            <button type="button" class="stepper-btn" onclick="stepRowHeight(0.5)">+</button>
+          </div>
+          <span class="stepper-info-side" id="txtRowHeightLabel">តាមអក្សរ</span>
+        </div>
+      </div>
+
+      <!-- Footer Indicator -->
+      <div class="setup-footer-bar">
+        <span class="page-count-badge" id="lblPageCountIndicator">1 សន្លឹក</span>
+        <button type="button" class="bar-pill nav-btn-green" style="padding:6px 18px;" onclick="closePageSetupModal()">
+          រួចរាល់
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ 📅 4. KHMER CALENDAR POPUP ══════════════ -->
+  <div class="khmer-cal-popup" id="khmerCalPopup" onclick="event.stopPropagation()">
+    <div class="cal-header-controls">
+      <select class="cal-select" id="calMonthSelect" onchange="onCalMonthYearChange()"></select>
+      <select class="cal-select" id="calYearSelect" onchange="onCalMonthYearChange()"></select>
+    </div>
+    <div class="cal-subtitle" id="calSubtitle">តុលា 2026</div>
+    <div class="cal-grid-weekdays">
+      <span>អា</span><span>ច</span><span>អ</span><span>ព</span><span>ព្រ</span><span>សុ</span><span>ស</span>
+    </div>
+    <div class="cal-grid-days" id="calGridDays"></div>
+    <div class="cal-footer-box">
+      <button type="button" class="cal-btn-action" onclick="selectCalToday()">ថ្ងៃនេះ</button>
+      <button type="button" class="cal-btn-action" style="color:var(--text-muted);" onclick="closeKhmerCalendar()">បិទ</button>
+    </div>
+  </div>
+
+  <!-- ══════════════ ✍️ 5. SIGNATURE MODAL ══════════════ -->
   <div class="sig-modal-backdrop" id="signatureModal" onclick="if(event.target===this) closeSignatureModal()">
     <div class="sig-modal-card">
       <div class="sig-modal-header">
@@ -786,9 +1020,8 @@
     const KHMER_MONTHS = ['មករា','កុម្ភៈ','មីនា','មេសា','ឧសភា','មិថុនា','កក្កដា','សីហា','កញ្ញា','តុលា','វិច្ឆិកា','ធ្នូ'];
     function toKhmerNum(n) { return String(n).replace(/\d/g, d => KHMER_DIGITS[d]); }
 
-    /* 🌟 អនុគមន៍តម្រៀបថ្នាក់ពីតូចទៅធំ (១ < ២ < ៣ < ៤(ក) < ៤(ខ) < ៥ < ៦...) */
+    /* 🌟 អនុគមន៍តម្រៀបថ្នាក់ពីតូចទៅធំ */
     const KHMER_DIGITS_MAP = { '០': 0, '១': 1, '២': 2, '៣': 3, '៤': 4, '៥': 5, '៦': 6, '៧': 7, '៨': 8, '៩': 9 };
-
     function parseGradeValue(gradeStr) {
       const clean = cleanGrade(gradeStr);
       const match = clean.match(/^([០-៩\d]+)(.*)$/);
@@ -803,24 +1036,17 @@
 
     function sortGradesAscending(gradesArray) {
       const standardGrades = ['១', '២', '៣', '៤', '៤(ក)', '៤(ខ)', '៥', '៦'];
-
       return gradesArray.sort((a, b) => {
         const cleanA = cleanGrade(a);
         const cleanB = cleanGrade(b);
-
         const idxA = standardGrades.indexOf(cleanA);
         const idxB = standardGrades.indexOf(cleanB);
-
         if (idxA !== -1 && idxB !== -1) return idxA - idxB;
         if (idxA !== -1) return -1;
         if (idxB !== -1) return 1;
-
         const parsedA = parseGradeValue(cleanA);
         const parsedB = parseGradeValue(cleanB);
-
-        if (parsedA.num !== parsedB.num) {
-          return parsedA.num - parsedB.num;
-        }
+        if (parsedA.num !== parsedB.num) return parsedA.num - parsedB.num;
         return parsedA.suffix.localeCompare(parsedB.suffix, 'km');
       });
     }
@@ -835,10 +1061,12 @@
     let rawStudentsList = [];
     let bookRecordsMap = {};
 
-    // ── Signature Management (គ្មានហត្ថលេខាគំរូឡើយ ទុកជាចន្លោះទំនេរ) ──
     let savedSignatureDataUrl = localStorage.getItem('krou_teacher_signature') || '';
     let activeSigTab = 'draw';
     let uploadedSigBase64 = null;
+
+    let selectedTeacherDateIso = new Date().toISOString().split('T')[0];
+    let selectedDirectorDateIso = '';
 
     function showToast(msg) {
       const t = document.getElementById('toastNotif');
@@ -850,42 +1078,46 @@
     function applyTheme(th) { document.documentElement.setAttribute('data-theme', th || 'dark'); }
     applyTheme(localStorage.getItem('krou_theme_manual') || 'dark');
 
-    /* 3. INITIALIZATION */
+    /* =========================================================
+       3. INITIALIZATION
+    ========================================================= */
     window.addEventListener('DOMContentLoaded', async () => {
       if (!checkAuthentication()) return;
       
       initSignDates();
       initSignatureCanvas();
       loadDisplaySignature();
+      initKhmerCalendarComponent();
+      initPageSetupValues();
       await initClassSelection();
     });
 
     function initSignDates() {
       const now = new Date();
-      const isoToday = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
-      const inputSign = document.getElementById('inputSignDate');
-      if (inputSign) inputSign.value = isoToday;
-      onSignDateChange(isoToday);
+      selectedTeacherDateIso = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+      updateTeacherSignDateDisplay(selectedTeacherDateIso);
     }
 
-    function onSignDateChange(val) {
-      if (!val) return;
-      const d = new Date(val);
+    function updateTeacherSignDateDisplay(isoDateStr) {
+      const d = new Date(isoDateStr);
       const solarTxt = `កំពង់ល្ពៅ ថ្ងៃទី${toKhmerNum(d.getDate())} ខែ${KHMER_MONTHS[d.getMonth()]} ឆ្នាំ${toKhmerNum(d.getFullYear())}`;
       document.getElementById('rptSolarDate').innerText = solarTxt;
+      document.getElementById('txtTeacherSignDate').innerText = `${toKhmerNum(d.getDate())} ${KHMER_MONTHS[d.getMonth()]} ${toKhmerNum(d.getFullYear())}`;
       updateDirectorSignDateDisplay();
     }
 
-    function onDirectorDateOptChange(opt) {
-      const inp = document.getElementById('inputDirectorDate');
+    function onDirectorDateOptChange(opt, event) {
       const line = document.getElementById('directorDateLine');
-      if (opt === 'custom') {
-        inp.style.display = 'inline-block';
-        inp.value = document.getElementById('inputSignDate').value;
-      } else {
-        inp.style.display = 'none';
+      if (opt === 'none') {
+        line.style.display = 'none';
+        return;
       }
-      updateDirectorSignDateDisplay();
+      if (opt === 'same') {
+        selectedDirectorDateIso = selectedTeacherDateIso;
+        updateDirectorSignDateDisplay();
+      } else if (opt === 'custom') {
+        openKhmerCalForDirector(event);
+      }
     }
 
     function updateDirectorSignDateDisplay() {
@@ -895,18 +1127,259 @@
         line.style.display = 'none';
         return;
       }
-      let targetDateStr = (opt === 'custom') ? document.getElementById('inputDirectorDate').value : document.getElementById('inputSignDate').value;
-      if (!targetDateStr) targetDateStr = new Date().toISOString().split('T')[0];
-      const d = new Date(targetDateStr);
+      const targetStr = (opt === 'same') ? selectedTeacherDateIso : (selectedDirectorDateIso || selectedTeacherDateIso);
+      const d = new Date(targetStr);
       line.innerText = `ថ្ងៃទី${toKhmerNum(d.getDate())} ខែ${KHMER_MONTHS[d.getMonth()]} ឆ្នាំ${toKhmerNum(d.getFullYear())}`;
       line.style.display = 'block';
     }
 
-    function openPageSetupAlert() {
-      alert('📄 កំណត់ទំព័រ៖\n- ទំហំក្រដាស៖ A4 Landscape\n- Margins សម្រាប់បោះពុម្ព៖ 5mm ទៅ 6mm (Default)');
+    /* =========================================================
+       4. 📅 KHMER CALENDAR LOGIC (ដូចទំព័រមុនៗ)
+    ========================================================= */
+    let calCurrentYear = 2026;
+    let calCurrentMonth = 9;
+    let calCallback = null;
+
+    function initKhmerCalendarComponent() {
+      const mSel = document.getElementById('calMonthSelect');
+      const ySel = document.getElementById('calYearSelect');
+      mSel.innerHTML = KHMER_MONTHS.map((m, idx) => `<option value="${idx}">${m}</option>`).join('');
+      let yearsHtml = '';
+      for (let y = 2035; y >= 2020; y--) yearsHtml += `<option value="${y}">${y}</option>`;
+      ySel.innerHTML = yearsHtml;
     }
 
-    /* 4. SIGNATURE CANVAS & MODAL */
+    function renderKhmerCalendarGrid() {
+      const mSel = document.getElementById('calMonthSelect');
+      const ySel = document.getElementById('calYearSelect');
+      const subTitle = document.getElementById('calSubtitle');
+      const grid = document.getElementById('calGridDays');
+
+      mSel.value = calCurrentMonth;
+      ySel.value = calCurrentYear;
+      subTitle.innerText = `${KHMER_MONTHS[calCurrentMonth]} ${calCurrentYear}`;
+      grid.innerHTML = '';
+
+      const firstDay = new Date(calCurrentYear, calCurrentMonth, 1).getDay();
+      const daysInMonth = new Date(calCurrentYear, calCurrentMonth + 1, 0).getDate();
+
+      for (let i = 0; i < firstDay; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'cal-day-cell cal-day-other';
+        grid.appendChild(cell);
+      }
+
+      for (let d = 1; d <= daysInMonth; d++) {
+        const cell = document.createElement('div');
+        cell.className = 'cal-day-cell';
+        cell.innerText = d;
+        cell.onclick = () => {
+          const dateStr = `${calCurrentYear}-${String(calCurrentMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+          if (calCallback) calCallback(dateStr);
+          closeKhmerCalendar();
+        };
+        grid.appendChild(cell);
+      }
+    }
+
+    function onCalMonthYearChange() {
+      calCurrentMonth = Number(document.getElementById('calMonthSelect').value);
+      calCurrentYear = Number(document.getElementById('calYearSelect').value);
+      renderKhmerCalendarGrid();
+    }
+
+    function selectCalToday() {
+      const now = new Date();
+      calCurrentYear = now.getFullYear();
+      calCurrentMonth = now.getMonth();
+      const dateStr = `${calCurrentYear}-${String(calCurrentMonth + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+      if (calCallback) calCallback(dateStr);
+      closeKhmerCalendar();
+    }
+
+    function openKhmerCalendarAtElement(targetEl, initialDate, callback) {
+      calCallback = callback;
+      if (initialDate) {
+        const parts = initialDate.split('-');
+        if (parts.length === 3) {
+          calCurrentYear = Number(parts[0]);
+          calCurrentMonth = Number(parts[1]) - 1;
+        }
+      }
+      renderKhmerCalendarGrid();
+      const popup = document.getElementById('khmerCalPopup');
+      popup.style.display = 'block';
+      const rect = targetEl.getBoundingClientRect();
+      popup.style.top = `${Math.max(8, Math.min(window.innerHeight - 340, rect.bottom + 6))}px`;
+      popup.style.left = `${Math.max(8, Math.min(window.innerWidth - 320, rect.left))}px`;
+    }
+
+    function closeKhmerCalendar() {
+      document.getElementById('khmerCalPopup').style.display = 'none';
+    }
+
+    function openKhmerCalForTeacher(e) {
+      e.stopPropagation();
+      openKhmerCalendarAtElement(e.currentTarget, selectedTeacherDateIso, (newDate) => {
+        selectedTeacherDateIso = newDate;
+        updateTeacherSignDateDisplay(newDate);
+      });
+    }
+
+    function openKhmerCalForDirector(e) {
+      if (e) e.stopPropagation();
+      const targetEl = document.getElementById('selDirectorDateOpt');
+      openKhmerCalendarAtElement(targetEl, selectedDirectorDateIso || selectedTeacherDateIso, (newDate) => {
+        selectedDirectorDateIso = newDate;
+        updateDirectorSignDateDisplay();
+      });
+    }
+
+    document.addEventListener('click', () => { closeKhmerCalendar(); });
+
+    /* =========================================================
+       ⚙️ 5. PAGE SETUP MODAL (ដូចក្នុងរូបថត)
+    ========================================================= */
+    const pageSetup = {
+      size: 'A4',            // 'A4' | 'F4'
+      orientation: 'landscape', // 'portrait' | 'landscape'
+      marginMm: 5,
+      fontPercent: 100,
+      rowHeightMm: 7.1
+    };
+
+    function initPageSetupValues() {
+      applyPageSetupStyles();
+    }
+
+    function openPageSetupModal() {
+      document.getElementById('pageSetupModal').style.display = 'flex';
+      updatePageSetupUI();
+    }
+
+    function closePageSetupModal() {
+      document.getElementById('pageSetupModal').style.display = 'none';
+    }
+
+    function setPaperSize(sz) {
+      pageSetup.size = sz;
+      updatePageSetupUI();
+      applyPageSetupStyles();
+    }
+
+    function setOrientation(ori) {
+      pageSetup.orientation = ori;
+      updatePageSetupUI();
+      applyPageSetupStyles();
+    }
+
+    function setMarginPreset(m) {
+      pageSetup.marginMm = m;
+      updatePageSetupUI();
+      applyPageSetupStyles();
+    }
+
+    function stepMargin(delta) {
+      pageSetup.marginMm = Math.max(1, Math.min(25, pageSetup.marginMm + delta));
+      updatePageSetupUI();
+      applyPageSetupStyles();
+    }
+
+    function stepFontScale(delta) {
+      pageSetup.fontPercent = Math.max(70, Math.min(140, pageSetup.fontPercent + delta));
+      updatePageSetupUI();
+      applyPageSetupStyles();
+    }
+
+    function stepRowHeight(delta) {
+      pageSetup.rowHeightMm = Math.max(4.5, Math.min(14, +(pageSetup.rowHeightMm + delta).toFixed(1)));
+      updatePageSetupUI();
+      applyPageSetupStyles();
+    }
+
+    function resetPageSetup() {
+      pageSetup.size = 'A4';
+      pageSetup.orientation = 'landscape';
+      pageSetup.marginMm = 5;
+      pageSetup.fontPercent = 100;
+      pageSetup.rowHeightMm = 7.1;
+      updatePageSetupUI();
+      applyPageSetupStyles();
+    }
+
+    function updatePageSetupUI() {
+      // Paper size buttons
+      document.getElementById('btnSizeA4').classList.toggle('active', pageSetup.size === 'A4');
+      document.getElementById('btnSizeF4').classList.toggle('active', pageSetup.size === 'F4');
+      // Orientation buttons
+      document.getElementById('btnOriPort').classList.toggle('active', pageSetup.orientation === 'portrait');
+      document.getElementById('btnOriLand').classList.toggle('active', pageSetup.orientation === 'landscape');
+
+      // Margin presets
+      [2, 5, 10, 15].forEach(m => {
+        const b = document.getElementById('btnMargin' + m);
+        if (b) b.classList.toggle('active', pageSetup.marginMm === m);
+      });
+
+      document.getElementById('valMarginMm').innerText = pageSetup.marginMm;
+
+      // Usable area calculation
+      let wMm = (pageSetup.size === 'A4') ? 210 : 216;
+      let hMm = (pageSetup.size === 'A4') ? 297 : 330;
+      if (pageSetup.orientation === 'landscape') {
+        const tmp = wMm; wMm = hMm; hMm = tmp;
+      }
+      const useW = wMm - (pageSetup.marginMm * 2);
+      const useH = hMm - (pageSetup.marginMm * 2);
+      document.getElementById('txtUsableArea').innerText = `ផ្ទៃប្រើ ${useW}×${useH}mm`;
+
+      // Font Scale Stepper
+      document.getElementById('valFontPercent').innerText = pageSetup.fontPercent;
+      let fontLabel = 'ធម្មតា';
+      if (pageSetup.fontPercent < 95) fontLabel = 'តូច';
+      else if (pageSetup.fontPercent > 105) fontLabel = 'ធំ';
+      document.getElementById('txtFontScaleLabel').innerText = fontLabel;
+
+      // Row Height Stepper
+      document.getElementById('valRowHeightMm').innerText = pageSetup.rowHeightMm;
+      document.getElementById('txtRowHeightLabel').innerText = pageSetup.rowHeightMm === 7.1 ? 'តាមអក្សរ' : 'ផ្ទាល់ខ្លួន';
+
+      updateEstimatedPageCount();
+    }
+
+    function applyPageSetupStyles() {
+      let wMm = (pageSetup.size === 'A4') ? 210 : 216;
+      let hMm = (pageSetup.size === 'A4') ? 297 : 330;
+      if (pageSetup.orientation === 'landscape') {
+        const tmp = wMm; wMm = hMm; hMm = tmp;
+      }
+
+      document.documentElement.style.setProperty('--sheet-w', `${wMm}mm`);
+      document.documentElement.style.setProperty('--sheet-h', `${hMm}mm`);
+      document.documentElement.style.setProperty('--sheet-pad', `${pageSetup.marginMm}mm`);
+      document.documentElement.style.setProperty('--sheet-font-size', `${(11 * (pageSetup.fontPercent / 100)).toFixed(1)}px`);
+      document.documentElement.style.setProperty('--row-height', `${(pageSetup.rowHeightMm * 3.78).toFixed(1)}px`);
+
+      updateEstimatedPageCount();
+    }
+
+    function updateEstimatedPageCount() {
+      const paper = document.getElementById('printableReportPaper');
+      const badge = document.getElementById('lblPageCountIndicator');
+      if (!paper || !badge) return;
+
+      setTimeout(() => {
+        let sheetHeightMm = (pageSetup.size === 'A4' ? (pageSetup.orientation === 'landscape' ? 210 : 297) : (pageSetup.orientation === 'landscape' ? 216 : 330));
+        let actualHeightPx = paper.scrollHeight;
+        let sheetHeightPx = sheetHeightMm * 3.78; // approx mm to px
+        let count = Math.max(1, Math.ceil(actualHeightPx / sheetHeightPx));
+        badge.innerText = `${toKhmerNum(count)} សន្លឹក`;
+      }, 50);
+    }
+
+    /* =========================================================
+       ✍️ 6. SIGNATURE CANVAS & MODAL
+    ========================================================= */
     let canvas, ctx, isDrawing = false;
 
     function initSignatureCanvas() {
@@ -916,7 +1389,7 @@
       ctx.lineWidth = 2.4;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
-      ctx.strokeStyle = '#1d4ed8'; // ទឹកប៊ិកខៀវ
+      ctx.strokeStyle = '#1d4ed8';
 
       function getPos(e) {
         const rect = canvas.getBoundingClientRect();
@@ -1032,7 +1505,9 @@
       }
     }
 
-    /* 5. CLASS & STUDENT DATA LOADER (🌟 ទាញយកថ្នាក់ផ្ទាល់ពី Database និងតម្រៀបពីតូចទៅធំ) */
+    /* =========================================================
+       7. CLASS & STUDENT DATA LOADER
+    ========================================================= */
     async function initClassSelection() {
       const adminBox = document.getElementById('adminClassBox');
       const teacherBadge = document.getElementById('teacherClassBadge');
@@ -1042,7 +1517,6 @@
       sel.innerHTML = '<option value="">កំពុងទាញយកថ្នាក់...</option>';
 
       try {
-        // 🌟 ១. ទាញយកបញ្ជីថ្នាក់ទាំងអស់ផ្ទាល់ពី Table: students ក្នុង Supabase Database
         const { data, error } = await sb.from('students').select('grade').limit(5000);
         if (error) throw error;
 
@@ -1060,10 +1534,7 @@
           rawClasses = ['១', '២', '៣', '៤(ក)', '៤(ខ)', '៥', '៦'];
         }
 
-        // 🌟 ២. តម្រៀបថ្នាក់ពីតូចទៅធំ (១, ២, ៣, ៤(ក), ៤(ខ), ៥, ៦...)
         const sortedClasses = sortGradesAscending(rawClasses);
-
-        // បង្កើត Options ក្នុង Select
         sel.innerHTML = sortedClasses.map(c => `<option value="${c}">ថ្នាក់ទី ${c}</option>`).join('');
 
         if (!IS_ADMIN) {
@@ -1086,7 +1557,7 @@
           if (cleanUserClass && sortedClasses.includes(cleanUserClass)) {
             sel.value = cleanUserClass;
           } else {
-            sel.value = sortedClasses[0]; // ជ្រើសថ្នាក់តូចជាងគេជាមុនស្វ័យប្រវត្តិ
+            sel.value = sortedClasses[0];
           }
           currentClassName = sel.value;
           await loadStudentsAndBookData();
@@ -1153,7 +1624,7 @@
       }
     }
 
-    /* 6. SWITCH TABS & TABLE RENDER */
+    /* 8. SWITCH TABS & TABLE RENDER */
     function switchActionTab(tab) {
       activeTab = tab;
       document.getElementById('btnTabBorrow').classList.toggle('active', tab === 'borrow');
@@ -1280,7 +1751,7 @@
       });
     }
 
-    /* 7. SAVE TO SUPABASE */
+    /* 9. SAVE TO SUPABASE */
     async function saveLoanData() {
       const curPure = cleanGrade(currentClassName);
       if (!curPure || !rawStudentsList.length) return;
@@ -1307,7 +1778,7 @@
       }
     }
 
-    /* 8. PRINT PREVIEW (ដូចរូបទី ១) */
+    /* 10. PRINT PREVIEW (A4 LANDSCAPE) */
     function openPrintPreview() {
       document.getElementById('printPreviewModal').style.display = 'block';
 
@@ -1359,6 +1830,7 @@
       tbody.innerHTML = html;
       applySubjectVisibility();
       loadDisplaySignature();
+      applyPageSetupStyles();
     }
 
     function closePrintPreview() {
@@ -1368,12 +1840,13 @@
     function downloadPDF() {
       const element = document.getElementById('printableReportPaper');
       const curPure = cleanGrade(currentClassName);
+      const isLandscape = pageSetup.orientation === 'landscape';
       const opt = {
-        margin: [4, 6, 4, 6],
+        margin: [pageSetup.marginMm, pageSetup.marginMm, pageSetup.marginMm, pageSetup.marginMm],
         filename: `Book_Report_${curPure}.pdf`,
         image: { type: 'jpeg', quality: 1.0 },
         html2canvas: { scale: 3, useCORS: true },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+        jsPDF: { unit: 'mm', format: pageSetup.size.toLowerCase(), orientation: isLandscape ? 'landscape' : 'portrait' }
       };
       html2pdf().from(element).set(opt).save();
     }
