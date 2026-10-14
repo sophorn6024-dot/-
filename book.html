@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="km" data-theme="dark">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>ការខ្ចី-សងសៀវភៅសិក្សា - សាលាបឋមសិក្សាកំពង់ល្ពៅ</title>
+
+  <!-- 🔤 Google Fonts Khmer & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;600;700;900&family=Kantumruy+Pro:wght@400;500;600;700&family=Moul&family=Noto+Serif+Khmer:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- 📊 Excel & PDF Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <!-- ⚡ Supabase JS Client (v2) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root, [data-theme="light"] {
+      --bg: #e6f7f2;
+      --surface: #ffffff;
+      --surface-card: #f8fafc;
+      --surface-elevated: #ebf9f5;
+      --border: #bbf0e2;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --primary: #059669;
+      --primary-dark: #047857;
+      --primary-soft: rgba(5, 150, 105, 0.12);
+      --card-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+
+      --color-returned: #0284c7;
+      --bg-returned: #e0f2fe;
+      --color-damaged: #d97706;
+      --bg-damaged: #fef3c7;
+      --color-lost: #dc2626;
+      --bg-lost: #fee2e2;
+    }
+
+    [data-theme="dark"] {
+      --bg: #061e1b;
+      --surface: #0a2924;
+      --surface-card: #0e342e;
+      --surface-elevated: #113d36;
+      --border: #164f45;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary: #10b981;
+      --primary-dark: #059669;
+      --primary-soft: rgba(16, 185, 129, 0.15);
+      --card-shadow: 0 8px 25px rgba(0, 0, 0, 0.45);
+
+      --color-returned: #38bdf8;
+      --bg-returned: rgba(56, 189, 248, 0.15);
+      --color-damaged: #fbbf24;
+      --bg-damaged: rgba(251, 191, 36, 0.15);
+      --color-lost: #f87171;
+      --bg-lost: rgba(248, 113, 113, 0.15);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Kantumruy Pro', 'Battambang', sans-serif; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-size: 13.5px;
+      line-height: 1.5;
+      min-height: 100vh;
+      padding: 14px 18px 60px;
+      transition: background .25s, color .25s;
+    }
+    .f-moul { font-family: 'Khmer OS Muol Light', 'Moul', cursive !important; font-weight: normal; }
+
+    /* ══════════════ 🔒 AUTH WRAPPER ══════════════ */
+    #authDeniedWrap {
+      display: none; flex-direction: column; align-items: center; justify-content: center;
+      min-height: 85vh; text-align: center; padding: 30px 20px;
+    }
+    .auth-card {
+      background: var(--surface); border: 1.5px solid var(--border); border-radius: 24px;
+      padding: 40px 28px; max-width: 440px; width: 100%; box-shadow: var(--card-shadow);
+    }
+    .auth-icon { width: 68px; height: 68px; border-radius: 20px; background: rgba(220, 38, 38, 0.15); color: #dc2626; font-size: 32px; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; }
+    .btn-login-redirect {
+      background: linear-gradient(135deg, #0284c7, #059669); color: #fff; padding: 10px 24px;
+      border-radius: 12px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; border: none; cursor: pointer;
+    }
+
+    /* ── Toast ── */
+    #toastNotif {
+      position: fixed; top: 18px; right: 20px; background: #059669; color: white;
+      padding: 10px 18px; border-radius: 12px; font-size: 13px; font-weight: 700;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35); z-index: 99999; transform: translateY(-50px);
+      opacity: 0; pointer-events: none; transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    #toastNotif.show { transform: translateY(0); opacity: 1; }
+
+    /* =========================================================
+       1. MANAGE VIEW (ផ្ទាំងបញ្ចូលទិន្នន័យ ដូចរូបទី ២ និង ៣)
+    ========================================================= */
+    #manageView { display: flex; flex-direction: column; gap: 14px; max-width: 1400px; margin: 0 auto; }
+
+    .top-hero-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: var(--card-shadow);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .hero-left { display: flex; align-items: center; gap: 14px; }
+    .hero-icon-box {
+      width: 46px; height: 46px; border-radius: 14px; background: var(--primary-soft);
+      color: var(--primary); display: flex; align-items: center; justify-content: center;
+      font-size: 22px; flex-shrink: 0; border: 1px solid var(--border);
+    }
+    .hero-title { font-size: 17px; font-weight: 800; color: var(--text); }
+    .hero-subtitle { font-size: 12.5px; color: var(--text-muted); margin-top: 2px; }
+
+    .action-tabs-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      width: 100%;
+      margin-top: 6px;
+    }
+    .tab-pill-btn {
+      padding: 8px 16px; border-radius: 12px; font-size: 13px; font-weight: 700;
+      border: 1.5px solid var(--border); background: var(--surface-card); color: var(--text-muted);
+      cursor: pointer; display: inline-flex; align-items: center; gap: 7px; transition: all .15s;
+    }
+    .tab-pill-btn:hover { border-color: var(--primary); color: var(--text); }
+    .tab-pill-btn.active {
+      background: var(--primary); color: #ffffff !important; border-color: var(--primary);
+      box-shadow: 0 4px 14px rgba(5, 150, 105, 0.3);
+    }
+
+    .btn-save-main {
+      padding: 8px 20px; border-radius: 12px; font-size: 13px; font-weight: 800;
+      background: var(--primary); color: #fff; border: none; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 4px 14px rgba(5, 150, 105, 0.3);
+    }
+    .btn-save-main:hover { background: var(--primary-dark); }
+
+    /* Filter Subject Bar */
+    .subject-filter-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      box-shadow: var(--card-shadow);
+    }
+    .filter-label { font-size: 12.5px; font-weight: 700; color: var(--text-muted); }
+    .sub-chip-check {
+      display: inline-flex; align-items: center; gap: 7px; background: var(--surface-card);
+      border: 1.5px solid var(--border); border-radius: 20px; padding: 4px 12px;
+      font-size: 12.5px; font-weight: 700; cursor: pointer; user-select: none;
+    }
+    .sub-chip-check input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--primary); cursor: pointer; }
+
+    /* Student Table Card */
+    .table-panel-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: var(--card-shadow);
+      display: flex;
+      flex-direction: column;
+    }
+    .table-scroll {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      text-align: center;
+      min-width: 880px;
+    }
+    table.data-table th, table.data-table td {
+      padding: 10px 8px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+    table.data-table thead th {
+      background: var(--surface-card);
+      color: var(--text);
+      font-weight: 800;
+      font-size: 13px;
+    }
+    table.data-table td.col-name {
+      text-align: left;
+      padding-left: 14px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    /* Checkbox / Return Status Buttons */
+    .book-checkbox {
+      width: 20px; height: 20px;
+      accent-color: var(--primary);
+      cursor: pointer;
+      vertical-align: middle;
+    }
+
+    .status-toggle-btn {
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 800;
+      border: 1.5px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 68px;
+      transition: all .15s ease;
+      background: var(--surface-card);
+      color: var(--text-muted);
+      border-color: var(--border);
+    }
+    .status-toggle-btn.st-none { color: var(--text-muted); opacity: 0.6; }
+    .status-toggle-btn.st-returned { background: var(--bg-returned); color: var(--color-returned); border-color: var(--color-returned); }
+    .status-toggle-btn.st-damaged  { background: var(--bg-damaged); color: var(--color-damaged); border-color: var(--color-damaged); }
+    .status-toggle-btn.st-lost     { background: var(--bg-lost); color: var(--color-lost); border-color: var(--color-lost); }
+
+    .note-input {
+      border: 1px solid var(--border);
+      background: var(--surface-card);
+      color: var(--text);
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      outline: none;
+      width: 140px;
+    }
+    .note-input:focus { border-color: var(--primary); }
+
+    /* =========================================================
+       2. PRINT PREVIEW (ដូចរូបទី១ បេះបិទ)
+    ========================================================= */
+    #printPreviewModal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: #334155;
+      z-index: 2000;
+      overflow-y: auto;
+      padding: 12px 14px 60px;
+    }
+    .preview-nav-bar {
+      position: sticky; top: 0;
+      background: rgba(30, 41, 59, 0.95);
+      border-bottom: 1px solid #475569;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      z-index: 100;
+      color: #fff;
+      border-radius: 14px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .nav-btn-icon {
+      background: #1e293b; color: #fff; border: 1px solid #475569;
+      padding: 7px 14px; border-radius: 10px; font-weight: 700; font-size: 12.5px;
+      cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+    }
+    .nav-btn-icon:hover { background: #334155; }
+    .nav-btn-green { background: #059669; color: #fff; border: none; }
+    .nav-btn-green:hover { background: #047857; }
+
+    /* Paper A4 Landscape Container */
+    .print-paper-sheet {
+      width: 297mm;
+      max-width: 100%;
+      min-height: 210mm;
+      background: #ffffff !important;
+      color: #000000 !important;
+      margin: 0 auto;
+      padding: 12mm 14mm;
+      border-radius: 4px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+      font-family: 'Noto Serif Khmer', 'Kantumruy Pro', sans-serif !important;
+    }
+
+    .print-header-top { text-align: center; margin-bottom: 12px; }
+    .print-kingdom { font-size: 15px; margin-bottom: 2px; }
+    .print-motto { font-size: 13.5px; margin-bottom: 4px; }
+    .print-divider { font-size: 12px; letter-spacing: 4px; margin-bottom: 8px; }
+
+    .print-school-meta {
+      text-align: left;
+      font-size: 12px;
+      font-weight: bold;
+      line-height: 1.5;
+      margin-bottom: 6px;
+    }
+    .print-doc-title {
+      text-align: center;
+      font-size: 16px;
+      margin: 12px 0 4px;
+      color: #000;
+    }
+    .print-sub-legend {
+      text-align: center;
+      font-size: 11.5px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    /* Print Table */
+    table.print-report-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      text-align: center;
+      border: 1px solid #000 !important;
+      margin-bottom: 14px;
+    }
+    table.print-report-table th, table.print-report-table td {
+      border: 1px solid #000 !important;
+      padding: 4px 2px;
+      vertical-align: middle;
+      color: #000 !important;
+    }
+    table.print-report-table thead th {
+      background: #f8fafc !important;
+      font-weight: bold;
+      font-size: 11.5px;
+    }
+    table.print-report-table td.col-name {
+      text-align: left;
+      padding-left: 8px;
+      font-weight: bold;
+    }
+
+    /* Footer Signatures */
+    .print-signatures-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-top: 18px;
+      font-size: 12px;
+    }
+    .sig-left-block { text-align: center; min-width: 180px; margin-top: 40px; font-weight: bold; }
+    .sig-right-block { text-align: center; min-width: 320px; }
+    .sig-digital-img { width: 110px; height: 50px; object-fit: contain; margin-top: 4px; }
+
+    @page { size: A4 landscape; margin: 6mm; }
+    @media print {
+      body { background: #fff !important; color: #000 !important; padding: 0 !important; }
+      #authDeniedWrap, #manageView, .preview-nav-bar { display: none !important; }
+      #printPreviewModal { display: block !important; position: static !important; background: transparent !important; padding: 0 !important; }
+      .print-paper-sheet { width: 100% !important; box-shadow: none !important; padding: 0 !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 🌟 Toast Notification -->
+  <div id="toastNotif">✅ បានរក្សាទុកដោយជោគជ័យ!</div>
+
+  <!-- ══════════════ 🔒 0. AUTH DENIED WRAPPER ══════════════ -->
+  <div id="authDeniedWrap">
+    <div class="auth-card">
+      <div class="auth-icon">🔒</div>
+      <h2 class="f-moul" style="font-size: 16px; margin-bottom: 8px;">សូមចូលប្រើប្រាស់ជាមុនសិន!</h2>
+      <p>លោកអ្នកមិនទាន់បាន Login ចូលក្នុងប្រព័ន្ធនៅឡើយទេ។ សូម Login ដើម្បីគ្រប់គ្រងការខ្ចី-សងសៀវភៅ។</p>
+      <a href="index.html" target="_top" class="btn-login-redirect" onclick="goToIndex(event)">
+        <span>🔑</span> <span>ទៅកាន់ទំព័រដើម (Login)</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- ══════════════ 🌟 1. MANAGE VIEW ══════════════ -->
+  <div id="manageView" style="display:none;">
+    
+    <!-- Top Hero Card (ដូចរូបទី ២ និង ៣) -->
+    <div class="top-hero-card">
+      <div class="hero-left">
+        <div class="hero-icon-box"><i class="fa-solid fa-book-open"></i></div>
+        <div>
+          <h2 class="hero-title">ការខ្ចី-សងសៀវភៅសិក្សា</h2>
+          <p class="hero-subtitle" id="heroSubtitle">សៀវភៅសិក្សាគោល ១ ក្បាល/មុខ ៖ ធីក ✓ សិស្សដែលបានទទួល</p>
+        </div>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:8px;">
+        <div id="adminClassBox" style="display:none;">
+          <select id="classSelect" class="sub-chip-check" style="height:38px; outline:none;" onchange="onClassChange()"></select>
+        </div>
+        <div id="teacherClassBadge" class="sub-chip-check" style="display:none; color:var(--primary); font-weight:bold;">
+          <i class="fa-solid fa-chalkboard-user"></i> <span id="teacherClassText">ថ្នាក់ទី...</span>
+        </div>
+
+        <button type="button" class="btn-save-main" onclick="saveLoanData()">
+          <i class="fa-solid fa-circle-check"></i> <span>រក្សាទុក</span>
+        </button>
+      </div>
+
+      <!-- Action Tabs Bar -->
+      <div class="action-tabs-row">
+        <button type="button" class="tab-pill-btn active" id="btnTabBorrow" onclick="switchActionTab('borrow')">
+          <i class="fa-solid fa-box"></i> <span>តារាងឱ្យសិស្សខ្ចី</span>
+        </button>
+        <button type="button" class="tab-pill-btn" id="btnTabReturn" onclick="switchActionTab('return')">
+          <i class="fa-solid fa-rotate-left"></i> <span>តារាងប្រមូលសៀវភៅមកវិញ</span>
+        </button>
+        <button type="button" class="tab-pill-btn" onclick="bulkActionAllStudents()">
+          <i class="fa-solid fa-boxes-stacked"></i> <span id="txtBulkBtn">ចែកទាំងថ្នាក់</span>
+        </button>
+        <button type="button" class="tab-pill-btn" onclick="openPrintPreview()">
+          <i class="fa-solid fa-print"></i> <span>បោះពុម្ព</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Filter Subject Checkbox Bar -->
+    <div class="subject-filter-card">
+      <span class="filter-label">មុខវិជ្ជា៖</span>
+      <label class="sub-chip-check"><input type="checkbox" id="chk_kh" checked onchange="toggleSubjectColumn('kh')"> ភាសាខ្មែរ</label>
+      <label class="sub-chip-check"><input type="checkbox" id="chk_math" checked onchange="toggleSubjectColumn('math')"> គណិតវិទ្យា</label>
+      <label class="sub-chip-check"><input type="checkbox" id="chk_sci" checked onchange="toggleSubjectColumn('sci')"> វិទ្យាសាស្ត្រ</label>
+      <label class="sub-chip-check"><input type="checkbox" id="chk_soc" checked onchange="toggleSubjectColumn('soc')"> សិក្សាសង្គម</label>
+      <label class="sub-chip-check"><input type="checkbox" id="chk_pe" onchange="toggleSubjectColumn('pe')"> អប់រំកាយសុខភាព សិល្បៈ</label>
+      <label class="sub-chip-check"><input type="checkbox" id="chk_for" onchange="toggleSubjectColumn('for')"> ភាសាបរទេស</label>
+    </div>
+
+    <!-- Student Table Card -->
+    <div class="table-panel-card">
+      <div class="table-scroll">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th style="width: 50px;">ល.រ</th>
+              <th style="width: 220px; text-align: left; padding-left: 14px;">គោត្តនាម និងនាម</th>
+              <th style="width: 70px;">ភេទ</th>
+              <th class="col-sub col-kh">ភាសាខ្មែរ</th>
+              <th class="col-sub col-math">គណិតវិទ្យា</th>
+              <th class="col-sub col-sci">វិទ្យាសាស្ត្រ</th>
+              <th class="col-sub col-soc">សិក្សាសង្គម</th>
+              <th class="col-sub col-pe" style="display:none;">អប់រំកាយសុខភាព សិល្បៈ</th>
+              <th class="col-sub col-for" style="display:none;">ភាសាបរទេស</th>
+              <th style="width: 75px;">សរុប</th>
+              <th style="width: 160px;">ផ្សេងៗ</th>
+            </tr>
+          </thead>
+          <tbody id="studentTableBody">
+            <tr><td colspan="11" style="padding:40px; color:var(--text-muted);">⏳ កំពុងទាញយកទិន្នន័យ...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══════════════ 📄 2. PRINT PREVIEW MODAL (ដូចរូបទី១) ══════════════ -->
+  <div id="printPreviewModal">
+    <div class="preview-nav-bar">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <button type="button" class="nav-btn-icon" onclick="closePrintPreview()">
+          <i class="fa-solid fa-chevron-left"></i> ត្រឡប់
+        </button>
+        <span style="font-size:13px; font-weight:700;">សៀវភៅ៖</span>
+        <input type="text" id="rptSubjectNames" value="ភាសាខ្មែរ, គណិតវិទ្យា, វិទ្យាសាស្ត្រ, សិក្សាសង្គម" style="background:#0f172a; border:1px solid #475569; color:#fff; padding:6px 10px; border-radius:8px; font-size:12px; min-width:240px; outline:none;">
+      </div>
+
+      <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+        <button type="button" class="nav-btn-icon" onclick="exportToExcel()">
+          <i class="fa-solid fa-file-excel" style="color:#10b981;"></i> ទាញយក Excel
+        </button>
+        <button type="button" class="nav-btn-icon" onclick="downloadPDF()">
+          <i class="fa-solid fa-file-pdf" style="color:#ef4444;"></i> ទាញយក PDF
+        </button>
+        <button type="button" class="nav-btn-icon nav-btn-green" onclick="window.print()">
+          <i class="fa-solid fa-print"></i> បោះពុម្ព
+        </button>
+      </div>
+    </div>
+
+    <!-- Paper Sheet A4 -->
+    <div class="print-paper-sheet" id="printableReportPaper">
+      <div class="print-header-top">
+        <div class="f-moul print-kingdom">ព្រះរាជាណាចក្រកម្ពុជា</div>
+        <div class="f-moul print-motto">ជាតិ សាសនា ព្រះមហាក្សត្រ</div>
+        <div class="print-divider">─────── ❖ ───────</div>
+      </div>
+
+      <div class="print-school-meta">
+        <div>ការិយាល័យអប់រំ យុវជន និងកីឡា</div>
+        <div>សាលាបឋមសិក្សាកំពង់ល្ពៅ</div>
+        <div id="rptPrintGradeTag">ថ្នាក់ទី...</div>
+      </div>
+
+      <div class="f-moul print-doc-title" id="rptPrintDocTitle">បញ្ជីប្រមូលសៀវភៅសិក្សាតាមថ្នាក់</div>
+      <div class="print-sub-legend" id="rptPrintLegend">
+        ឆ្នាំសិក្សា ២០២៦-២០២៧ • សិស្សសរុប <span id="rptTotalStudents">0</span>នាក់ • <span style="color:#0284c7;">✓ = បានសង</span> • <span style="color:#d97706;">✓ ខូច = សងខូច</span> • <span style="color:#dc2626;">✗ បាត់ = មិនបានសង</span>
+      </div>
+
+      <table class="print-report-table">
+        <thead>
+          <tr id="printTableHeadRow">
+            <th style="width: 32px;">ល.រ</th>
+            <th style="width: 170px;">គោត្តនាម និងនាម</th>
+            <th style="width: 46px;">ភេទ</th>
+            <th class="col-sub col-kh">ភាសាខ្មែរ</th>
+            <th class="col-sub col-math">គណិតវិទ្យា</th>
+            <th class="col-sub col-sci">វិទ្យាសាស្ត្រ</th>
+            <th class="col-sub col-soc">សិក្សាសង្គម</th>
+            <th class="col-sub col-pe" style="display:none;">អប់រំកាយសុខភាព សិល្បៈ</th>
+            <th class="col-sub col-for" style="display:none;">ភាសាបរទេស</th>
+            <th style="width: 50px;">សរុប</th>
+            <th style="width: 90px;">ផ្សេងៗ</th>
+          </tr>
+        </thead>
+        <tbody id="printTableBody"></tbody>
+      </table>
+
+      <!-- Signatures Footer -->
+      <div class="print-signatures-row">
+        <div class="sig-left-block">
+          <div class="f-moul" style="font-size:12px;">បានឃើញ និងឯកភាព</div>
+          <div class="f-moul" style="font-size:12px; margin-top:4px;">នាយកសាលា</div>
+        </div>
+
+        <div class="sig-right-block">
+          <div style="font-size:11.5px;" id="rptLunarDate">ថ្ងៃពុធ ៣កើត ខែអស្សុជ ឆ្នាំមមី អដ្ឋស័ក ពុទ្ធសករាជ ២៥៧០</div>
+          <div style="font-size:11.5px; margin-top:2px;" id="rptSolarDate">កំពង់ល្ពៅ ថ្ងៃទី១៤ ខែតុលា ឆ្នាំ២០២៦</div>
+          <div class="f-moul" style="font-size:12px; color:#1e40af; margin-top:4px;">គ្រូទទួលបន្ទុកថ្នាក់</div>
+          <div style="margin-top:6px;">
+            <svg width="85" height="42" viewBox="0 0 120 60" fill="none" stroke="#1d4ed8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 40 Q30 5, 55 35 T90 20 Q105 10, 115 45 M35 48 L85 48"/>
+            </svg>
+          </div>
+          <div style="font-size:12px; font-weight:bold; color:#1e40af; margin-top:2px;" id="rptTeacherName">សេង សុភាស់</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       ⚙️ JAVASCRIPT LOGIC & SUPABASE SYNC
+  ========================================================= -->
+  <script>
+    /* 1. SUPABASE CLIENT CONFIG */
+    const SUPABASE_URL = "https://nggnuobnrxiqjtcwlvwk.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_AHDcUJbuMAfhaocyfm2X7w_O9s06wML";
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    /* 2. AUTH & SESSION */
+    function readSession() {
+      try { return JSON.parse(localStorage.getItem('krou_supabase_user') || 'null'); } catch(e) { return null; }
+    }
+    const CURRENT_USER = readSession();
+
+    function checkAuthentication() {
+      if (!CURRENT_USER || !CURRENT_USER.username) {
+        document.getElementById('manageView').style.display = 'none';
+        document.getElementById('authDeniedWrap').style.display = 'flex';
+        return false;
+      }
+      document.getElementById('authDeniedWrap').style.display = 'none';
+      document.getElementById('manageView').style.display = 'flex';
+      return true;
+    }
+
+    function goToIndex(e) {
+      if (e) e.preventDefault();
+      if (window.parent && window.parent !== window) {
+        try {
+          window.parent.postMessage({ type: 'OPEN_LOGIN', action: 'LOGIN' }, '*');
+          window.parent.location.href = 'index.html';
+          return;
+        } catch(err) {}
+      }
+      window.location.href = 'index.html';
+    }
+
+    const USER_ROLE    = CURRENT_USER?.role || "teacher";
+    const USER_CLASS   = CURRENT_USER?.assigned_classes || CURRENT_USER?.assigned_class || "";
+    const TEACHER_NAME = CURRENT_USER?.teacher_name || "";
+    const IS_ADMIN     = String(USER_ROLE).toLowerCase().trim() === 'admin';
+
+    function cleanGrade(g) { return String(g || '').replace(/^(ថ្នាក់ទី|ថ្នាក់)\s*/, '').trim(); }
+    const KHMER_DIGITS = ['០','១','២','៣','៤','៥','៦','៧','៨','៩'];
+    function toKhmerNum(n) { return String(n).replace(/\d/g, d => KHMER_DIGITS[d]); }
+
+    // ── Application State ──
+    const SUBJECT_KEYS = ['kh', 'math', 'sci', 'soc', 'pe', 'for'];
+    const SUBJECT_NAMES = {
+      kh: 'ភាសាខ្មែរ', math: 'គណិតវិទ្យា', sci: 'វិទ្យាសាស្ត្រ', soc: 'សិក្សាសង្គម', pe: 'អប់រំកាយសុខភាព សិល្បៈ', for: 'ភាសាបរទេស'
+    };
+
+    let activeTab = 'borrow'; // 'borrow' (ខ្ចី) or 'return' (សង)
+    let currentClassName = '';
+    let rawStudentsList = [];
+    let bookRecordsMap = {}; // sid -> { borrow: { kh: true, ... }, returnStatus: { kh: 'returned'|'damaged'|'lost'|'none' }, note: '' }
+
+    function showToast(msg) {
+      const t = document.getElementById('toastNotif');
+      t.innerText = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2800);
+    }
+
+    function applyTheme(th) { document.documentElement.setAttribute('data-theme', th || 'dark'); }
+    applyTheme(localStorage.getItem('krou_theme_manual') || 'dark');
+    window.addEventListener('message', ev => { if (ev.data?.type === 'THEME_CHANGE') applyTheme(ev.data.theme); });
+
+    /* 3. INITIALIZATION */
+    window.addEventListener('DOMContentLoaded', async () => {
+      if (!checkAuthentication()) return;
+      await initClassSelection();
+    });
+
+    async function initClassSelection() {
+      const adminBox = document.getElementById('adminClassBox');
+      const teacherBadge = document.getElementById('teacherClassBadge');
+      const sel = document.getElementById('classSelect');
+      const cleanUserClass = cleanGrade(USER_CLASS);
+
+      if (!IS_ADMIN) {
+        adminBox.style.display = 'none';
+        if (cleanUserClass) {
+          document.getElementById('teacherClassText').innerText = 'ថ្នាក់ទី ' + cleanUserClass;
+          teacherBadge.style.display = 'inline-flex';
+          currentClassName = cleanUserClass;
+          await loadStudentsAndBookData();
+        } else {
+          teacherBadge.style.display = 'inline-flex';
+          document.getElementById('teacherClassText').innerText = 'មិនទាន់កំណត់ថ្នាក់';
+          document.getElementById('studentTableBody').innerHTML = '<tr><td colspan="11" style="padding:40px; color:#f59e0b; font-weight:bold;">⚠️ គណនីរបស់អ្នកមិនទាន់មានថ្នាក់ទទួលបន្ទុកឡើយ។</td></tr>';
+        }
+        return;
+      }
+
+      teacherBadge.style.display = 'none';
+      adminBox.style.display = 'inline-flex';
+
+      try {
+        const { data, error } = await sb.from('students').select('grade');
+        let classes = [];
+        if (!error && data) {
+          classes = [...new Set(data.map(d => cleanGrade(d.grade)).filter(Boolean))];
+        }
+        if (!classes.length) classes = ['១', '២', '៣', '៤(ក)', '៤(ខ)', '៥', '៦'];
+
+        sel.innerHTML = classes.map(c => `<option value="${c}">ថ្នាក់ទី ${c}</option>`).join('');
+        if (cleanUserClass && classes.includes(cleanUserClass)) sel.value = cleanUserClass;
+        currentClassName = sel.value;
+        await loadStudentsAndBookData();
+      } catch (e) {
+        sel.innerHTML = '<option value="">កំហុសទាញយកថ្នាក់</option>';
+      }
+    }
+
+    function onClassChange() {
+      currentClassName = document.getElementById('classSelect').value;
+      loadStudentsAndBookData();
+    }
+
+    /* 4. LOAD STUDENTS & SAVED BOOK LOAN DATA (SUPABASE) */
+    async function loadStudentsAndBookData() {
+      if (!currentClassName) return;
+      const curPure = cleanGrade(currentClassName);
+
+      document.getElementById('studentTableBody').innerHTML = '<tr><td colspan="11" style="padding:40px; color:var(--text-muted);"><i class="fa-solid fa-spinner fa-spin fa-2x"></i><p style="margin-top:10px;">កំពុងទាញយកទិន្នន័យ...</p></td></tr>';
+
+      try {
+        // ក. ទាញយកសិស្សក្នុងថ្នាក់
+        const { data: stList, error: stErr } = await sb
+          .from('students')
+          .select('id, student_id, student_name, gender, grade, dropout_semester')
+          .order('id', { ascending: true });
+
+        if (stErr) throw stErr;
+
+        rawStudentsList = (stList || []).filter(s => cleanGrade(s.grade) === curPure);
+
+        // ខ. ទាញយកកំណត់ត្រាការខ្ចី-សង (table: book_loans)
+        const studentIds = rawStudentsList.map(s => String(s.student_id || s.id));
+        bookRecordsMap = {};
+
+        // លំនាំដើម
+        rawStudentsList.forEach(s => {
+          const sid = String(s.student_id || s.id);
+          bookRecordsMap[sid] = {
+            borrow: { kh: true, math: true, sci: true, soc: true, pe: false, for: false },
+            returnStatus: { kh: 'returned', math: 'returned', sci: 'returned', soc: 'returned', pe: 'none', for: 'none' },
+            note: ''
+          };
+        });
+
+        const { data: bookLoans, error: bErr } = await sb
+          .from('book_loans')
+          .select('*')
+          .eq('assigned_class', curPure)
+          .in('student_id', studentIds);
+
+        if (!bErr && bookLoans) {
+          bookLoans.forEach(row => {
+            const sid = String(row.student_id);
+            bookRecordsMap[sid] = {
+              borrow: row.borrow_data || { kh: true, math: true, sci: true, soc: true, pe: false, for: false },
+              returnStatus: row.return_data || { kh: 'returned', math: 'returned', sci: 'returned', soc: 'returned', pe: 'none', for: 'none' },
+              note: row.note || ''
+            };
+          });
+        }
+
+        renderTable();
+      } catch (err) {
+        document.getElementById('studentTableBody').innerHTML = `<tr><td colspan="11" style="padding:40px; color:#ef4444;">❌ កំហុស៖ ${err.message}</td></tr>`;
+      }
+    }
+
+    /* 5. SWITCH TABS (ខ្ចី vs សង) */
+    function switchActionTab(tab) {
+      activeTab = tab;
+      document.getElementById('btnTabBorrow').classList.toggle('active', tab === 'borrow');
+      document.getElementById('btnTabReturn').classList.toggle('active', tab === 'return');
+
+      const subTitle = document.getElementById('heroSubtitle');
+      const bulkBtnTxt = document.getElementById('txtBulkBtn');
+
+      if (tab === 'borrow') {
+        subTitle.innerText = "សៀវភៅសិក្សាគោល ១ ក្បាល/មុខ ៖ ធីក ✓ សិស្សដែលបានទទួល";
+        bulkBtnTxt.innerText = "ចែកទាំងថ្នាក់";
+      } else {
+        subTitle.innerText = "ចុចត្រឡប់ម្តងៗ ៖ ✓ សង ➔ ✓ ខូច ➔ ✗ បាត់ ➔ មិនទាន់សង";
+        bulkBtnTxt.innerText = "ប្រមូលទាំងថ្នាក់";
+      }
+
+      renderTable();
+    }
+
+    /* 6. RENDER DATA TABLE */
+    function renderTable() {
+      const tbody = document.getElementById('studentTableBody');
+      if (!rawStudentsList.length) {
+        tbody.innerHTML = '<tr><td colspan="11" style="padding:40px; color:var(--text-muted);">មិនមានទិន្នន័យសិស្សក្នុងថ្នាក់នេះឡើយ</td></tr>';
+        return;
+      }
+
+      let html = '';
+      rawStudentsList.forEach((s, idx) => {
+        const sid = String(s.student_id || s.id);
+        const rec = bookRecordsMap[sid] || { borrow: {}, returnStatus: {}, note: '' };
+
+        let totalBorrowed = 0;
+        let cellsHtml = '';
+
+        SUBJECT_KEYS.forEach(k => {
+          const isBorrowed = Boolean(rec.borrow[k]);
+          if (isBorrowed) totalBorrowed++;
+
+          if (activeTab === 'borrow') {
+            // Checkbox ខ្ចី
+            cellsHtml += `
+              <td class="col-sub col-${k}">
+                <input type="checkbox" class="book-checkbox" ${isBorrowed ? 'checked' : ''} onchange="toggleStudentBorrow('${sid}', '${k}', this.checked)">
+              </td>`;
+          } else {
+            // Button សង
+            const st = rec.returnStatus[k] || 'none';
+            let btnClass = 'st-none', btnText = '-';
+            if (st === 'returned') { btnClass = 'st-returned'; btnText = '✓ សង'; }
+            else if (st === 'damaged') { btnClass = 'st-damaged'; btnText = '✓ ខូច'; }
+            else if (st === 'lost') { btnClass = 'st-lost'; btnText = '✗ បាត់'; }
+
+            cellsHtml += `
+              <td class="col-sub col-${k}">
+                <button type="button" class="status-toggle-btn ${btnClass}" onclick="cycleReturnStatus('${sid}', '${k}')">${btnText}</button>
+              </td>`;
+          }
+        });
+
+        html += `
+          <tr id="row_${sid}">
+            <td>${idx + 1}</td>
+            <td class="col-name">${s.student_name}</td>
+            <td>${s.gender || 'ប្រុស'}</td>
+            ${cellsHtml}
+            <td><strong id="tot_${sid}" style="font-size:14px; color:var(--primary);">${totalBorrowed}</strong></td>
+            <td>
+              <input type="text" class="note-input" placeholder="ចំណាំ..." value="${rec.note || ''}" oninput="bookRecordsMap['${sid}'].note = this.value">
+            </td>
+          </tr>
+        `;
+      });
+
+      tbody.innerHTML = html;
+      applySubjectVisibility();
+    }
+
+    function toggleStudentBorrow(sid, key, checked) {
+      if (!bookRecordsMap[sid]) bookRecordsMap[sid] = { borrow: {}, returnStatus: {}, note: '' };
+      bookRecordsMap[sid].borrow[key] = checked;
+      
+      let tot = 0;
+      SUBJECT_KEYS.forEach(k => { if (bookRecordsMap[sid].borrow[k]) tot++; });
+      document.getElementById('tot_' + sid).innerText = tot;
+    }
+
+    function cycleReturnStatus(sid, key) {
+      if (!bookRecordsMap[sid]) bookRecordsMap[sid] = { borrow: {}, returnStatus: {}, note: '' };
+      const current = bookRecordsMap[sid].returnStatus[key] || 'none';
+      let next = 'returned';
+      if (current === 'returned') next = 'damaged';
+      else if (current === 'damaged') next = 'lost';
+      else if (current === 'lost') next = 'none';
+      else next = 'returned';
+
+      bookRecordsMap[sid].returnStatus[key] = next;
+      renderTable();
+    }
+
+    function bulkActionAllStudents() {
+      const activeSubjects = SUBJECT_KEYS.filter(k => document.getElementById('chk_' + k).checked);
+      if (activeTab === 'borrow') {
+        const msg = confirm('តើអ្នកពិតជាចង់ចែកសៀវភៅមុខវិជ្ជាសកម្មទាំងនេះ ជូនសិស្សទាំងអស់ក្នុងថ្នាក់មែនទេ?');
+        if (!msg) return;
+        rawStudentsList.forEach(s => {
+          const sid = String(s.student_id || s.id);
+          activeSubjects.forEach(k => { bookRecordsMap[sid].borrow[k] = true; });
+        });
+      } else {
+        const msg = confirm('តើអ្នកពិតជាចង់កំណត់ថា "បានសងគ្រប់គ្នា" សម្រាប់មុខវិជ្ជាសកម្មមែនទេ?');
+        if (!msg) return;
+        rawStudentsList.forEach(s => {
+          const sid = String(s.student_id || s.id);
+          activeSubjects.forEach(k => { bookRecordsMap[sid].returnStatus[k] = 'returned'; });
+        });
+      }
+      renderTable();
+      showToast('🎉 បានអនុវត្តទាំងថ្នាក់ជោគជ័យ!');
+    }
+
+    function toggleSubjectColumn(key) {
+      applySubjectVisibility();
+    }
+
+    function applySubjectVisibility() {
+      SUBJECT_KEYS.forEach(k => {
+        const isShow = document.getElementById('chk_' + k).checked;
+        document.querySelectorAll('.col-' + k).forEach(el => {
+          el.style.display = isShow ? '' : 'none';
+        });
+      });
+    }
+
+    /* 7. SAVE TO SUPABASE */
+    async function saveLoanData() {
+      const curPure = cleanGrade(currentClassName);
+      if (!curPure || !rawStudentsList.length) return;
+
+      const records = rawStudentsList.map(s => {
+        const sid = String(s.student_id || s.id);
+        const rec = bookRecordsMap[sid] || {};
+        return {
+          student_id: sid,
+          assigned_class: curPure,
+          borrow_data: rec.borrow || {},
+          return_data: rec.returnStatus || {},
+          note: rec.note || '',
+          updated_at: new Date().toISOString()
+        };
+      });
+
+      try {
+        const { error } = await sb.from('book_loans').upsert(records, { onConflict: 'student_id,assigned_class' });
+        if (error) throw error;
+        showToast('✅ បានរក្សាទុកទិន្នន័យក្នុង Supabase ជោគជ័យ!');
+      } catch (err) {
+        alert('❌ មិនអាចរក្សាទុកបានទេ៖ ' + err.message);
+      }
+    }
+
+    /* 8. PRINT PREVIEW (ដូចរូបទី ១ បេះបិទ) */
+    function openPrintPreview() {
+      document.getElementById('printPreviewModal').style.display = 'block';
+
+      const curPure = cleanGrade(currentClassName);
+      document.getElementById('rptPrintGradeTag').innerText = `ថ្នាក់ទី ${toKhmerNum(curPure)}`;
+      document.getElementById('rptTotalStudents').innerText = toKhmerNum(rawStudentsList.length);
+      document.getElementById('rptTeacherName').innerText = TEACHER_NAME || 'សេង សុភាស់';
+
+      // បង្កើតបញ្ជីឈ្មោះមុខវិជ្ជាដែលបានជ្រើស
+      const activeSubjects = SUBJECT_KEYS.filter(k => document.getElementById('chk_' + k).checked);
+      document.getElementById('rptSubjectNames').value = activeSubjects.map(k => SUBJECT_NAMES[k]).join(', ');
+
+      const tbody = document.getElementById('printTableBody');
+      let html = '';
+
+      rawStudentsList.forEach((s, idx) => {
+        const sid = String(s.student_id || s.id);
+        const rec = bookRecordsMap[sid] || { borrow: {}, returnStatus: {}, note: '' };
+
+        let totalValidCount = 0;
+        let subCellsHtml = '';
+
+        SUBJECT_KEYS.forEach(k => {
+          if (activeTab === 'borrow') {
+            const isB = Boolean(rec.borrow[k]);
+            if (isB) totalValidCount++;
+            subCellsHtml += `<td class="col-sub col-${k}">${isB ? '✓' : ''}</td>`;
+          } else {
+            const st = rec.returnStatus[k] || 'none';
+            let mark = '';
+            if (st === 'returned') { mark = '✓'; totalValidCount++; }
+            else if (st === 'damaged') { mark = '✓ ខូច'; totalValidCount++; }
+            else if (st === 'lost') { mark = '✗'; }
+            subCellsHtml += `<td class="col-sub col-${k}">${mark}</td>`;
+          }
+        });
+
+        html += `
+          <tr>
+            <td>${toKhmerNum(idx + 1)}</td>
+            <td class="col-name">${s.student_name}</td>
+            <td>${s.gender || 'ប្រុស'}</td>
+            ${subCellsHtml}
+            <td style="font-weight:bold;">${toKhmerNum(totalValidCount)}</td>
+            <td>${rec.note || ''}</td>
+          </tr>
+        `;
+      });
+
+      tbody.innerHTML = html;
+      applySubjectVisibility();
+    }
+
+    function closePrintPreview() {
+      document.getElementById('printPreviewModal').style.display = 'none';
+    }
+
+    function downloadPDF() {
+      const element = document.getElementById('printableReportPaper');
+      const curPure = cleanGrade(currentClassName);
+      const opt = {
+        margin: [4, 6, 4, 6],
+        filename: `Book_Report_${curPure}.pdf`,
+        image: { type: 'jpeg', quality: 1.0 },
+        html2canvas: { scale: 3, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+      };
+      html2pdf().from(element).set(opt).save();
+    }
+
+    function exportToExcel() {
+      const activeSubjects = SUBJECT_KEYS.filter(k => document.getElementById('chk_' + k).checked);
+      const headers = ['ល.រ', 'គោត្តនាម និងនាម', 'ភេទ', ...activeSubjects.map(k => SUBJECT_NAMES[k]), 'សរុប', 'ផ្សេងៗ'];
+
+      const rows = rawStudentsList.map((s, idx) => {
+        const sid = String(s.student_id || s.id);
+        const rec = bookRecordsMap[sid] || { borrow: {}, returnStatus: {}, note: '' };
+        let tot = 0;
+        const subVals = activeSubjects.map(k => {
+          if (activeTab === 'borrow') {
+            return rec.borrow[k] ? '✓' : '';
+          } else {
+            const st = rec.returnStatus[k] || 'none';
+            if (st === 'returned') { tot++; return '✓'; }
+            if (st === 'damaged') { tot++; return '✓ ខូច'; }
+            if (st === 'lost') return '✗';
+            return '';
+          }
+        });
+        return [idx + 1, s.student_name, s.gender, ...subVals, tot, rec.note || ''];
+      });
+
+      const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "បញ្ជីសៀវភៅ");
+      XLSX.writeFile(wb, `បញ្ជីសៀវភៅ_ថ្នាក់ទី${currentClassName}.xlsx`);
+    }
+  </script>
+</body>
+</html>
