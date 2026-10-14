@@ -418,8 +418,6 @@
     /* ── Dropdown Filter និទ្ទេស ── */
     .dropdown-relative { position: relative; display: inline-block; }
 
-    /* 🌟 FIX: ប្រើ position: fixed ដើម្បីកុំឱ្យ .top-toolbar (overflow-x:auto) កាត់ Popup
-       ទីតាំង (top/left) ត្រូវបានគណនាដោយ JS (positionGradeMenu) */
     .grade-menu-popup {
       display: none;
       position: fixed;
@@ -453,7 +451,6 @@
     .grade-menu-item:hover { background: var(--surface-elevated); }
     .grade-menu-item.active { background: rgba(2, 132, 199, 0.12); color: var(--primary); }
 
-
     /* =========================================================
        📱 COMPACT MODE: ពេលពង្រីក/អេក្រង់តូច → បង្ហាញតែ icon
     ========================================================= */
@@ -463,22 +460,18 @@
       .btn-label { display: none !important; }
       .btn-icon-only { display: inline-block; }
 
-      /* ប៊ូតុង pill → រង្វង់ icon */
       .pill-btn {
         padding: 0;
         width: 34px;
         justify-content: center;
         gap: 0;
       }
-      /* ប៊ូតុងប្តូរភាសានិទ្ទេស (A-F) រក្សាអក្សរខ្លី */
       #btnToggleGradeLang { width: auto; padding: 0 10px; gap: 4px; }
       #btnGradeFilter { width: 34px; }
       #btnGradeFilter .fa-chevron-down { display: none; }
 
       .pill-select { padding: 4px 8px; font-size: 12px; max-width: 110px; }
-
       .search-input-wrap { min-width: 0; width: 120px; padding: 4px 10px; }
-
       .save-status-pill { padding: 0; width: 34px; justify-content: center; }
       .tag-title-badge { padding: 4px 9px; }
 
@@ -544,8 +537,7 @@
       z-index: 20;
     }
 
-    /* 📐 ជួរជាប់ឆ្វេង៖ ល.រ | ឈ្មោះសិស្ស (ទទឹងតាមឈ្មោះវែងជាងគេ) | ភេទ
-       --w2 ត្រូវបានគណនាដោយ JS (fixStickyOffsets) តាមទទឹងពិតនៃជួរឈ្មោះ */
+    /* 📐 ជួរជាប់ឆ្វេង៖ ល.រ | ឈ្មោះសិស្ស | ភេទ */
     :root { --w1: 44px; --w2: 110px; --w2b: 110px; --w3: 50px; }
     .stk-1 { left: 0; min-width: var(--w1); max-width: var(--w1); }
     .stk-2 {
@@ -702,13 +694,11 @@
     .focused-row { background-color: rgba(2, 132, 199, 0.08) !important; }
     .focused-row .stk { background-color: rgba(2, 132, 199, 0.08) !important; }
 
-
     /* =========================================================
-       📐 EQUAL COLUMN WIDTHS: ក្រឡាមុខវិជ្ជាស្មើគ្នា (មិនធំ មិនតូច)
+       📐 EQUAL COLUMN WIDTHS: ក្រឡាមុខវិជ្ជាស្មើគ្នា
     ========================================================= */
     :root { --col-w: 52px; --res-w: 68px; --bw: 42px; }
 
-    /* ក្រឡាបញ្ចូលពិន្ទុ + ក្បាលតារាងបញ្ឈរ (មុខវិជ្ជា) ទទឹងស្មើគ្នា */
     .modern-score-table td.sc-td,
     .modern-score-table th.th-vertical-cell:not([class*="col-res"]) {
       width: var(--col-w);
@@ -718,7 +708,6 @@
     }
     .score-box { width: var(--bw); height: 32px; font-size: 13px; }
 
-    /* 🌟 អក្សរបញ្ឈរមិនបង្កើនទទឹងជួរ (ចេញពី layout ដោយ absolute) */
     .th-vertical-cell { position: relative; }
     .th-vertical-wrap {
       position: absolute;
@@ -729,7 +718,6 @@
       letter-spacing: 0;
     }
 
-    /* ជួរលទ្ធផល ទទឹងស្មើគ្នាដែរ */
     .modern-score-table .col-res-tot,
     .modern-score-table .col-res-avg,
     .modern-score-table .col-res-rank,
@@ -766,7 +754,7 @@
     .modern-score-table td.sc-td.lk .score-box { padding-left: 11px; }
     body.is-locked .score-box { opacity: 0.85; cursor: not-allowed; }
 
-    /* 📱 ទូរសព្ទ៖ ឱ្យសល់កន្លែងបញ្ចូលពិន្ទុច្រើន */
+    /* 📱 ទូរសព្ទ */
     @media (max-width: 700px) {
       :root { --w1: 28px; --w2b: 0px; --w3: 34px; --col-w: 46px; --res-w: 62px; --bw: 40px; }
       .stk-2 { font-size: 11.5px; padding: 3px 8px 3px 5px !important; min-width: 70px; }
@@ -1054,6 +1042,33 @@
     function toKhmerNum(n) { return String(n).replace(/\d/g, d => KHMER_DIGITS[d]); }
     function cleanGrade(g) { return String(g || '').replace(/^(ថ្នាក់ទី|ថ្នាក់)\s*/, '').trim(); }
 
+    /* 🌟 អនុគមន៍តម្រៀបថ្នាក់ពីតូចទៅធំ ដោយមិនកំណត់ថ្នាក់រឹងឡើយ (១ < ២ < ៣ < ៤ < ៥ < ៦...) */
+    const KHMER_DIGITS_MAP = { '០': 0, '១': 1, '២': 2, '៣': 3, '៤': 4, '៥': 5, '៦': 6, '៧': 7, '៨': 8, '៩': 9 };
+
+    function parseGradeValue(gradeStr) {
+      const clean = cleanGrade(gradeStr);
+      const match = clean.match(/^([០-៩\d]+)(.*)$/);
+      if (match) {
+        const rawNum = match[1].replace(/[០-៩]/g, d => KHMER_DIGITS_MAP[d] !== undefined ? KHMER_DIGITS_MAP[d] : d);
+        const num = parseInt(rawNum, 10);
+        const suffix = (match[2] || '').trim();
+        return { num: isNaN(num) ? 999 : num, suffix: suffix };
+      }
+      return { num: 999, suffix: clean };
+    }
+
+    function sortGradesAscending(gradesArray) {
+      return gradesArray.sort((a, b) => {
+        const parsedA = parseGradeValue(a);
+        const parsedB = parseGradeValue(b);
+
+        if (parsedA.num !== parsedB.num) {
+          return parsedA.num - parsedB.num;
+        }
+        return parsedA.suffix.localeCompare(parsedB.suffix, 'km');
+      });
+    }
+
     let toastTimer = null;
     function showToast(msg, isError) {
       const toast = document.getElementById('toastNotification');
@@ -1163,7 +1178,10 @@
     ];
 
     let scoreType = 'monthly';
-    let isLocked = false;
+    
+    // 🌟 មុខងារចាក់សោ៖ ទាញពី localStorage ពេលបើកទំព័រឡើងវិញ ដើម្បីរក្សាសភាពចាក់សោដដែល
+    let isLocked = localStorage.getItem('krou_score_locked') === 'true';
+
     let displayedStudents = [];
     let savedScoresData = {};
     let savedDbAverages = {};
@@ -1171,8 +1189,7 @@
     let autoSaveTimer = null;
     let isAutoSaving = false;
 
-    // 🌟 ការកំណត់ភាសានិទ្ទេស (A-F ឬ ខ្មែរ) & ត្រងនិទ្ទេស
-    let gradeLangMode = localStorage.getItem('score_grade_lang') || 'EN'; // 'EN' or 'KH'
+    let gradeLangMode = localStorage.getItem('score_grade_lang') || 'EN';
     let currentGradeFilter = 'ALL';
 
     function groups() { return scoreType === 'monthly' ? MONTHLY_GROUPS : SEMESTER_GROUPS; }
@@ -1192,20 +1209,17 @@
 
     /* 4. INITIALIZATION */
     window.addEventListener('DOMContentLoaded', () => {
-      // 🌟 បិទ Popup និទ្ទេសពេល Toolbar scroll ឬអេក្រង់ប្តូរទំហំ (ដាក់មុន auth check)
       document.getElementById('topToolbar')?.addEventListener('scroll', closeGradeMenu);
       let lastMobile = isMobileLayout();
       window.addEventListener('resize', () => {
         closeGradeMenu();
         const nowMobile = isMobileLayout();
-        // ប្តូររវាងទូរសព្ទ ↔ កុំព្យូទ័រ → គូរតារាងឡើងវិញ (ឈ្មោះ ១ ជួរ ↔ គោត្តនាម+នាម)
         if (nowMobile !== lastMobile) {
           lastMobile = nowMobile;
           if (displayedStudents.length && document.getElementById('mainForm').style.display === 'flex') renderTable();
         }
         fixStickyOffsets();
       });
-      // ពេលហ្វុង Khmer ផ្ទុករួច ទទឹងឈ្មោះអាចប្តូរ → គណនាម្តងទៀត
       if (document.fonts && document.fonts.ready) document.fonts.ready.then(fixStickyOffsets);
 
       if (!checkAuthentication()) return;
@@ -1231,6 +1245,7 @@
         }
       }
 
+      updateLockUI();
       updateGradeLangUI();
       renderGradeMenuPopup();
       setupArrowKeys();
@@ -1325,7 +1340,6 @@
       }).join('');
     }
 
-    /* 🌟 FIX: បើក/បិទ Popup (position: fixed) + គណនាទីតាំងតាមប៊ូតុង */
     function toggleGradeMenu(e) {
       if (e) e.stopPropagation();
       const popup = document.getElementById('gradeMenuPopup');
@@ -1336,7 +1350,7 @@
         popup.classList.remove('show');
         return;
       }
-      popup.classList.add('show');          // បង្ហាញជាមុន ដើម្បីអាចវាស់ offsetWidth
+      popup.classList.add('show');
       positionGradeMenu(btn, popup);
     }
 
@@ -1345,14 +1359,12 @@
       const margin = 8;
       const pw = popup.offsetWidth;
 
-      // មិនឱ្យលើសគែមអេក្រង់ឆ្វេង/ស្តាំ
       let left = Math.min(r.left, window.innerWidth - pw - margin);
       left = Math.max(margin, left);
 
       const top = r.bottom + 6;
       popup.style.left = left + 'px';
       popup.style.top = top + 'px';
-      // កំណត់កម្ពស់អតិបរមាតាមទំហំអេក្រង់ដែលនៅសល់
       popup.style.maxHeight = Math.max(120, window.innerHeight - top - margin) + 'px';
     }
 
@@ -1360,7 +1372,6 @@
       document.getElementById('gradeMenuPopup')?.classList.remove('show');
     }
 
-    /* 🌟 មុខងារច្រោះនិទ្ទេស */
     function selectGradeFilter(grade, label, el) {
       currentGradeFilter = grade;
       document.getElementById('currentGradeFilterTxt').innerText = label;
@@ -1384,20 +1395,26 @@
       renderTable();
     }
 
-    // ចុចក្រៅ Popup → បិទ
     document.addEventListener('click', (e) => {
       if (!e.target.closest('.dropdown-relative')) closeGradeMenu();
     });
 
-    /* 🌟 ចាក់សោ / ដោះសោ (មានរូបសោពីមុខពិន្ទុដែលបានបញ្ចូល) */
-    function toggleLock() {
-      isLocked = !isLocked;
+    /* 🌟 អាប់ដេត UI សោ (ប្រើរួមទាំងពេល load & toggle) */
+    function updateLockUI() {
       const btn = document.getElementById('btnLock');
       const icon = document.getElementById('lockIcon');
+      if (!btn || !icon) return;
       btn.classList.toggle('locked', isLocked);
       icon.className = isLocked ? 'fa-solid fa-lock' : 'fa-solid fa-lock-open';
       btn.title = isLocked ? 'តារាងកំពុងចាក់សោ (ចុចដើម្បីដោះសោ)' : 'តារាងកំពុងបើក (ចុចដើម្បីចាក់សោ)';
       document.body.classList.toggle('is-locked', isLocked);
+    }
+
+    /* 🌟 ចាក់សោ / ដោះសោ (រក្សាទុកក្នុង localStorage ពេល Refresh មិនបាត់សោ) */
+    function toggleLock() {
+      isLocked = !isLocked;
+      localStorage.setItem('krou_score_locked', isLocked ? 'true' : 'false');
+      updateLockUI();
 
       document.querySelectorAll('.score-box').forEach(el => {
         el.disabled = isLocked;
@@ -1407,12 +1424,10 @@
       showToast(isLocked ? '🔒 បានចាក់សោ — រារាំងមិនឱ្យកែប្រែ' : '🔓 បានដោះសោ — អ្នកអាចកែប្រែបាន');
     }
 
-    /* 📐 គណនាទទឹងជួរឈ្មោះ ដើម្បីឱ្យជួរ "ភេទ" ជាប់ត្រូវទីតាំង (ឈ្មោះវែង → ជួរវែងតាម) */
     function isMobileLayout() {
       return window.matchMedia('(max-width: 700px)').matches;
     }
 
-    // បំបែកឈ្មោះ → [គោត្តនាម, នាម]
     function splitName(full) {
       const parts = String(full || '').trim().split(/\s+/);
       return parts.length > 1 ? [parts[0], parts.slice(1).join(' ')] : ['', parts[0] || ''];
@@ -1430,52 +1445,76 @@
         const wb = Math.ceil(thb.getBoundingClientRect().width);
         if (wb > 0) root.style.setProperty('--w2b', wb + 'px');
       } else {
-        root.style.setProperty('--w2b', '0px');   // ទូរសព្ទ៖ គ្មានជួរនាមដាច់ដោយឡែក
+        root.style.setProperty('--w2b', '0px');
       }
     }
 
     /* =========================================================
-       🏫 LOAD CLASS LIST (SUPABASE)
+       🏫 LOAD CLASS LIST (🌟 ទាញពី Database និងតម្រៀបពីតូចទៅធំ)
     ========================================================= */
     async function loadClassList() {
       const sel = document.getElementById('classSelect');
       const cleanUserClass = cleanGrade(USER_CLASS);
 
-      if (!IS_ADMIN) {
-        document.getElementById('adminClassBox').style.display = 'none';
-        const badge = document.getElementById('teacherClassBadge');
-        const text = document.getElementById('teacherClassText');
-
-        if (cleanUserClass) {
-          text.innerText = 'ថ្នាក់ទី ' + cleanUserClass;
-          badge.style.display = 'inline-flex';
-          sel.innerHTML = `<option value="${cleanUserClass}">ថ្នាក់ទី ${cleanUserClass}</option>`;
-          sel.value = cleanUserClass;
-          loadStudents();
-        } else {
-          badge.style.display = 'inline-flex';
-          text.innerText = 'មិនទាន់កំណត់ថ្នាក់';
-          document.getElementById('tableArea').innerHTML = '<div style="text-align:center; padding: 50px; color:#f59e0b; font-weight:bold;">⚠️ គណនីរបស់អ្នកមិនទាន់មានថ្នាក់ទទួលបន្ទុកឡើយ។ សូមទាក់ទង Admin។</div>';
-        }
-        return;
-      }
-
-      document.getElementById('teacherClassBadge').style.display = 'none';
-      document.getElementById('adminClassBox').style.display = 'inline-block';
-      sel.innerHTML = '<option value="">កំពុងទាញយក...</option>';
+      sel.innerHTML = '<option value="">កំពុងទាញយកថ្នាក់...</option>';
 
       try {
-        const { data, error } = await sb.from('students').select('grade');
-        let classes = [];
-        if (!error && data) {
-          classes = [...new Set(data.map(d => cleanGrade(d.grade)).filter(Boolean))];
-        }
-        if (!classes.length) classes = ['១', '២', '៣', '៤(ក)', '៤(ខ)', '៥', '៦'];
+        // 🌟 ទាញយកថ្នាក់ពី Table: students ក្នុង Database ដោយមិនកំណត់ថ្នាក់រឹងឡើយ
+        const { data, error } = await sb.from('students').select('grade').limit(5000);
+        if (error) throw error;
 
-        sel.innerHTML = classes.map(c => `<option value="${c}">ថ្នាក់ទី ${c}</option>`).join('');
-        if (cleanUserClass && classes.includes(cleanUserClass)) sel.value = cleanUserClass;
-        loadStudents();
+        let rawClasses = [];
+        if (data && data.length > 0) {
+          const uniqueSet = new Set();
+          data.forEach(d => {
+            const g = cleanGrade(d.grade);
+            if (g) uniqueSet.add(g);
+          });
+          rawClasses = Array.from(uniqueSet);
+        }
+
+        if (!rawClasses.length) {
+          sel.innerHTML = '<option value="">មិនមានថ្នាក់ក្នុង Database ទេ</option>';
+          document.getElementById('tableArea').innerHTML = '<div style="text-align:center; padding: 50px; color:var(--text-muted);">មិនទាន់មានទិន្នន័យសិស្ស ឬថ្នាក់ក្នុង Database ឡើយ</div>';
+          return;
+        }
+
+        // 🌟 តម្រៀបថ្នាក់ពីតូចទៅធំដោយស្វ័យប្រវត្តិតាមលេខ និងអក្សរ (១ < ២ < ៣ < ៤(ក) < ៤(ខ) < ៥ < ៦...)
+        const sortedClasses = sortGradesAscending(rawClasses);
+        sel.innerHTML = sortedClasses.map(c => `<option value="${c}">ថ្នាក់ទី ${c}</option>`).join('');
+
+        if (!IS_ADMIN) {
+          document.getElementById('adminClassBox').style.display = 'none';
+          const badge = document.getElementById('teacherClassBadge');
+          const text = document.getElementById('teacherClassText');
+
+          if (cleanUserClass && sortedClasses.includes(cleanUserClass)) {
+            text.innerText = 'ថ្នាក់ទី ' + cleanUserClass;
+            badge.style.display = 'inline-flex';
+            sel.value = cleanUserClass;
+            await loadStudents();
+          } else if (cleanUserClass) {
+            text.innerText = 'ថ្នាក់ទី ' + cleanUserClass;
+            badge.style.display = 'inline-flex';
+            await loadStudents();
+          } else {
+            badge.style.display = 'inline-flex';
+            text.innerText = 'មិនទាន់កំណត់ថ្នាក់';
+            document.getElementById('tableArea').innerHTML = '<div style="text-align:center; padding: 50px; color:#f59e0b; font-weight:bold;">⚠️ គណនីរបស់អ្នកមិនទាន់មានថ្នាក់ទទួលបន្ទុកឡើយ។ សូមទាក់ទង Admin។</div>';
+          }
+        } else {
+          document.getElementById('teacherClassBadge').style.display = 'none';
+          document.getElementById('adminClassBox').style.display = 'inline-block';
+
+          if (cleanUserClass && sortedClasses.includes(cleanUserClass)) {
+            sel.value = cleanUserClass;
+          } else {
+            sel.value = sortedClasses[0]; // ជ្រើសថ្នាក់តូចជាងគេជាមុនស្វ័យប្រវត្តិ
+          }
+          await loadStudents();
+        }
       } catch (err) {
+        console.error('Error fetching classes:', err);
         sel.innerHTML = '<option value="">កំហុសទាញយកថ្នាក់</option>';
       }
     }
@@ -1546,14 +1585,13 @@
       }
     }
 
-    /* 📅 លេខខែប្រតិទិនពិត (មករា=1 … ធ្នូ=12) — ALL_MONTHS ជាលំដាប់ឆ្នាំសិក្សា មិនមែនប្រតិទិនទេ */
+    /* 📅 លេខខែប្រតិទិនពិត (មករា=1 … ធ្នូ=12) */
     const CAL_MONTH = {
       'មករា':1,'កុម្ភៈ':2,'មីនា':3,'មេសា':4,'ឧសភា':5,'មិថុនា':6,
       'កក្កដា':7,'សីហា':8,'កញ្ញា':9,'តុលា':10,'វិច្ឆិកា':11,'ធ្នូ':12
     };
     const pad2 = n => String(n).padStart(2, '0');
 
-    // ឆ្នាំនៃខែនោះ៖ ខែដែលនៅមិនទាន់មកដល់ក្នុងឆ្នាំនេះ → ឆ្នាំមុន
     function yearOfMonth(m) {
       const now = new Date();
       return CAL_MONTH[m] > now.getMonth() + 1 ? now.getFullYear() - 1 : now.getFullYear();
@@ -1568,17 +1606,18 @@
       if (scoreType === 'monthly') {
         return CAL_MONTH[period] ? monthBounds(period) : null;
       }
-      if (period === 'ឆមាសទី១') {            // វិច្ឆិកា → មេសា (ឆ្នាំបន្ទាប់)
+      if (period === 'ឆមាសទី១') {
         const y = yearOfMonth('វិច្ឆិកា');
         return [monthBounds('វិច្ឆិកា', y)[0], monthBounds('មេសា', y + 1)[1]];
       }
-      if (period === 'ឆមាសទី២') {            // ឧសភា → តុលា (ឆ្នាំតែមួយ)
+      if (period === 'ឆមាសទី២') {
         const y = yearOfMonth('តុលា');
         return [monthBounds('ឧសភា', y)[0], monthBounds('តុលា', y)[1]];
       }
       return null;
     }
 
+    /* 🌟 LOAD ATTENDANCE DATA (ដកចោលសារ Toast រំខានទាំងស្រុង) */
     async function loadAttendanceData(cls, period) {
       studentAbsenceData = {};
       try {
@@ -1586,7 +1625,6 @@
         const PAGE = 1000;
         let from = 0, all = [];
 
-        // assigned_class អាចរក្សាទុកជា "៣" ឬ "ថ្នាក់ទី ៣" ឬ "ថ្នាក់ទី៣" → ស្វែងរកទាំងអស់
         const classVariants = [cls, 'ថ្នាក់ទី ' + cls, 'ថ្នាក់ទី' + cls, 'ថ្នាក់ ' + cls, 'ថ្នាក់' + cls];
 
         while (true) {
@@ -1603,32 +1641,19 @@
           from += PAGE;
         }
 
-        // កូដអវត្តមាន (មានច្បាប់/អត់ច្បាប់) — ច្រោះនៅ client ដើម្បីទទួលតម្លៃច្រើនទម្រង់
         const ABSENT_CODES = ['C','A','ច','អ','ច្បាប់','មានច្បាប់','អត់ច្បាប់','អវត្តមាន','ឈប់',
                               'ABSENT','EXCUSED','UNEXCUSED','PERMISSION'];
         const isAbsent = st => ABSENT_CODES.includes(String(st || '').trim().toUpperCase());
 
-        let counted = 0;
         all.forEach(r => {
           if (!isAbsent(r.status)) return;
           const sid = String(r.student_id).trim();
           studentAbsenceData[sid] = (studentAbsenceData[sid] || 0) + 1;
-          counted++;
         });
 
-        // 🔎 សារជំនួយ ពេលរកអវត្តមានមិនឃើញ
-        if (!all.length) {
-          const rg = range ? ` (${range[0]} ដល់ ${range[1]})` : '';
-          console.warn('Attendance: គ្មានទិន្នន័យ', { cls, classVariants, range });
-          showToast('ℹ️ មិនមានកំណត់ត្រាវត្តមានសម្រាប់ថ្នាក់ ' + cls + rg, true);
-        } else if (!counted) {
-          const seen = [...new Set(all.map(r => String(r.status)))].slice(0, 6).join(', ');
-          console.warn('Attendance: status មិនស្គាល់', seen);
-          showToast('ℹ️ រកឃើញវត្តមាន តែ status ជា: ' + seen + ' — ប្រាប់ខ្ញុំតម្លៃណាជាអវត្តមាន', true);
-        }
       } catch (e) {
-        console.warn('Attendance load error:', e);
-        showToast('⚠️ ទាញយកអវត្តមានមិនបាន៖ ' + (e.message || e), true);
+        // កត់ត្រាក្នុង Console ស្ងាត់ៗ មិនឱ្យលោតសារ Toast រំខានលើអេក្រង់ឡើយ
+        console.warn('Attendance load background notice:', e);
       }
     }
 
@@ -1824,7 +1849,7 @@
 
       const ranks = computeRanks();
       const mobile = isMobileLayout();
-      const nameCols = mobile ? 3 : 4;   // ល.រ + (ឈ្មោះ | គោត្តនាម+នាម) + ភេទ
+      const nameCols = mobile ? 3 : 4;
       const totalCols = nameCols + keys.length + RES_COLS.length;
 
       let h = '<table class="modern-score-table"><thead>';
@@ -1928,6 +1953,7 @@
       area.innerHTML = h;
       updateAutoCoef();
       fixStickyOffsets();
+      updateLockUI();
     }
 
     function setupArrowKeys() {
@@ -2199,7 +2225,9 @@
       theadHtml += '<th class="th-rpt-group" colspan="5" style="font-size:11px; font-weight:bold;">លទ្ធផល</th><th class="th-rpt-group" rowspan="2" style="width:28px;"><div class="th-rpt-vert-box"><span class="th-rpt-vert">អវត្តមាន</span></div></th></tr><tr>';
       grps.forEach(g => {
         if (g.cols.length > 1) {
-          g.cols.forEach(c => { theadHtml += `<th style="width:28px;"><div class="th-rpt-vert-box"><span class="th-rpt-vert">${c.label}</span></div></th>`; });
+          g.cols.forEach(c => {
+            theadHtml += `<th style="width:28px;"><div class="th-rpt-vert-box"><span class="th-rpt-vert">${c.label}</span></div></th>`;
+          });
         }
       });
       theadHtml += '<th style="width:38px;">ពិ.ស</th><th style="width:38px;">មធ្យម</th><th style="width:38px;">ចំ.ថ្នាក់</th><th style="width:42px;">និទ្ទេស</th><th style="width:40px;">លទ្ធផល</th></tr>';
