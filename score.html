@@ -543,10 +543,24 @@
       color: var(--text);
       z-index: 20;
     }
-    .stk-1 { left: 0; min-width: 44px; max-width: 44px; }
-    .stk-2 { left: 44px; min-width: 85px; max-width: 85px; text-align: left; padding-left: 8px; }
-    .stk-3 { left: 129px; min-width: 95px; max-width: 95px; text-align: left; padding-left: 8px; font-weight: bold; }
-    .stk-4 { left: 224px; min-width: 50px; max-width: 50px; box-shadow: 3px 0 6px -2px rgba(0,0,0,0.12); }
+
+    /* 📐 ជួរជាប់ឆ្វេង៖ ល.រ | ឈ្មោះសិស្ស (ទទឹងតាមឈ្មោះវែងជាងគេ) | ភេទ
+       --w2 ត្រូវបានគណនាដោយ JS (fixStickyOffsets) តាមទទឹងពិតនៃជួរឈ្មោះ */
+    :root { --w1: 44px; --w2: 150px; --w3: 50px; }
+    .stk-1 { left: 0; min-width: var(--w1); max-width: var(--w1); }
+    .stk-2 {
+      left: var(--w1);
+      min-width: 90px;
+      text-align: left;
+      padding: 3px 12px 3px 8px !important;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+    .stk-3 {
+      left: calc(var(--w1) + var(--w2));
+      min-width: var(--w3); max-width: var(--w3);
+      box-shadow: 3px 0 6px -2px rgba(0,0,0,0.12);
+    }
 
     .modern-score-table thead th.stk { z-index: 40; background: var(--surface-elevated) !important; }
 
@@ -684,7 +698,7 @@
     /* =========================================================
        📐 EQUAL COLUMN WIDTHS: ក្រឡាមុខវិជ្ជាស្មើគ្នា (មិនធំ មិនតូច)
     ========================================================= */
-    :root { --col-w: 52px; --res-w: 68px; }
+    :root { --col-w: 52px; --res-w: 68px; --bw: 42px; }
 
     /* ក្រឡាបញ្ចូលពិន្ទុ + ក្បាលតារាងបញ្ឈរ (មុខវិជ្ជា) ទទឹងស្មើគ្នា */
     .modern-score-table td.sc-td,
@@ -694,7 +708,7 @@
       max-width: var(--col-w);
       padding: 3px 2px;
     }
-    .score-box { width: 42px; height: 32px; font-size: 13px; }
+    .score-box { width: var(--bw); height: 32px; font-size: 13px; }
 
     /* 🌟 អក្សរបញ្ឈរមិនបង្កើនទទឹងជួរ (ចេញពី layout ដោយ absolute) */
     .th-vertical-cell { position: relative; }
@@ -721,6 +735,35 @@
       width: 78px !important;
       min-width: 78px !important;
       max-width: 78px !important;
+    }
+
+    /* =========================================================
+       🔒 រូបសោនៅពីមុខពិន្ទុដែលបានបញ្ចូល (ពេលចាក់សោ)
+    ========================================================= */
+    .modern-score-table td.sc-td { position: relative; }
+    .modern-score-table td.sc-td.lk::before {
+      content: "\f023";
+      font-family: "Font Awesome 6 Free";
+      font-weight: 900;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin-left: calc(var(--bw) / -2 + 5px);
+      transform: translateY(-50%);
+      font-size: 8px;
+      color: #dc2626;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .modern-score-table td.sc-td.lk .score-box { padding-left: 11px; }
+    body.is-locked .score-box { opacity: 0.85; cursor: not-allowed; }
+
+    /* 📱 ទូរសព្ទ៖ ឱ្យសល់កន្លែងបញ្ចូលពិន្ទុច្រើន */
+    @media (max-width: 700px) {
+      :root { --w1: 28px; --w3: 34px; --col-w: 46px; --res-w: 62px; --bw: 40px; }
+      .stk-2 { font-size: 11.5px; padding: 3px 8px 3px 5px !important; min-width: 70px; }
+      .score-box { height: 30px; font-size: 12.5px; }
+      .modern-score-table th, .modern-score-table td { padding-left: 1px; padding-right: 1px; }
     }
 
     /* ================= PRINT REPORT MODAL ================= */
@@ -1143,7 +1186,9 @@
     window.addEventListener('DOMContentLoaded', () => {
       // 🌟 បិទ Popup និទ្ទេសពេល Toolbar scroll ឬអេក្រង់ប្តូរទំហំ (ដាក់មុន auth check)
       document.getElementById('topToolbar')?.addEventListener('scroll', closeGradeMenu);
-      window.addEventListener('resize', closeGradeMenu);
+      window.addEventListener('resize', () => { closeGradeMenu(); fixStickyOffsets(); });
+      // ពេលហ្វុង Khmer ផ្ទុករួច ទទឹងឈ្មោះអាចប្តូរ → គណនាម្តងទៀត
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(fixStickyOffsets);
 
       if (!checkAuthentication()) return;
 
@@ -1326,7 +1371,7 @@
       if (!e.target.closest('.dropdown-relative')) closeGradeMenu();
     });
 
-    /* 🌟 ចាក់សោ / ដោះសោ */
+    /* 🌟 ចាក់សោ / ដោះសោ (មានរូបសោពីមុខពិន្ទុដែលបានបញ្ចូល) */
     function toggleLock() {
       isLocked = !isLocked;
       const btn = document.getElementById('btnLock');
@@ -1334,9 +1379,22 @@
       btn.classList.toggle('locked', isLocked);
       icon.className = isLocked ? 'fa-solid fa-lock' : 'fa-solid fa-lock-open';
       btn.title = isLocked ? 'តារាងកំពុងចាក់សោ (ចុចដើម្បីដោះសោ)' : 'តារាងកំពុងបើក (ចុចដើម្បីចាក់សោ)';
+      document.body.classList.toggle('is-locked', isLocked);
 
-      document.querySelectorAll('.score-box').forEach(el => { el.disabled = isLocked; });
+      document.querySelectorAll('.score-box').forEach(el => {
+        el.disabled = isLocked;
+        const td = el.closest('td');
+        if (td) td.classList.toggle('lk', isLocked && el.value !== '');
+      });
       showToast(isLocked ? '🔒 បានចាក់សោ — រារាំងមិនឱ្យកែប្រែ' : '🔓 បានដោះសោ — អ្នកអាចកែប្រែបាន');
+    }
+
+    /* 📐 គណនាទទឹងជួរឈ្មោះ ដើម្បីឱ្យជួរ "ភេទ" ជាប់ត្រូវទីតាំង (ឈ្មោះវែង → ជួរវែងតាម) */
+    function fixStickyOffsets() {
+      const th = document.querySelector('.modern-score-table thead th.stk-2');
+      if (!th) return;
+      const w = Math.ceil(th.getBoundingClientRect().width);
+      if (w > 0) document.documentElement.style.setProperty('--w2', w + 'px');
     }
 
     /* =========================================================
@@ -1668,15 +1726,14 @@
       }
 
       const ranks = computeRanks();
-      const totalCols = 4 + keys.length + RES_COLS.length;
+      const totalCols = 3 + keys.length + RES_COLS.length;
 
       let h = '<table class="modern-score-table"><thead>';
 
       h += '<tr>'
         +  '<th class="stk stk-1" rowspan="2">ល.រ</th>'
-        +  '<th class="stk stk-2" rowspan="2">គោត្តនាម</th>'
-        +  '<th class="stk stk-3" rowspan="2">នាម</th>'
-        +  '<th class="stk stk-4" rowspan="2">ភេទ</th>';
+        +  '<th class="stk stk-2" rowspan="2">ឈ្មោះសិស្ស</th>'
+        +  '<th class="stk stk-3" rowspan="2">ភេទ</th>';
       
       grps.forEach(g => {
         if (g.cols.length > 1) {
@@ -1701,7 +1758,7 @@
       });
       h += '</tr>';
 
-      h += '<tr class="coef-row"><td colspan="4" class="stk stk-1" style="text-align:right; padding-right:6px; font-weight:700; font-size:9.5px;">មេគុណតាមមុខវិជ្ជា</td>';
+      h += '<tr class="coef-row"><td colspan="3" class="stk" style="left:0; text-align:right; padding-right:6px; font-weight:700; font-size:9.5px;">មេគុណតាមមុខវិជ្ជា</td>';
       grps.forEach(g => {
         g.cols.forEach(c => {
           h += `<td class="th-sub-${g.grp} sc-td"><span class="coef-tag coef-zero" id="ac-${c.key}">×0</span></td>`;
@@ -1716,10 +1773,6 @@
         list.forEach((s, idx) => {
           const sc = savedScoresData[s.id] || {};
           const isF = s.sex === 'ស្រី' || s.sex === 'F';
-          
-          const parts = (s.name || '').trim().split(/\s+/);
-          const lastName = parts.length > 1 ? parts[0] : '';
-          const firstName = parts.length > 1 ? parts.slice(1).join(' ') : parts[0];
 
           const avg = calcAvg(s.id);
           const tot = calcTotal(s.id);
@@ -1728,9 +1781,8 @@
 
           h += `<tr class="dr" data-id="${s.id}">`
             +  `<td class="stk stk-1" style="color:var(--text-muted); font-weight:700;">${idx + 1}</td>`
-            +  `<td class="stk stk-2">${lastName}</td>`
-            +  `<td class="stk stk-3">${firstName}</td>`
-            +  `<td class="stk stk-4" style="font-weight:bold; color:${isF ? '#ec4899' : '#0284c7'};">${isF ? 'ស្រី' : 'ប្រុស'}</td>`;
+            +  `<td class="stk stk-2">${s.name}</td>`
+            +  `<td class="stk stk-3" style="font-weight:bold; color:${isF ? '#ec4899' : '#0284c7'};">${isF ? 'ស្រី' : 'ប្រុស'}</td>`;
 
           grps.forEach(g => {
             g.cols.forEach(c => {
@@ -1746,7 +1798,9 @@
                 else if (numVal >= 9) colorClass = 'val-excel';
               }
 
-              h += `<td class="sc-td">`
+              const lkClass = (isLocked && val !== '') ? ' lk' : '';
+
+              h += `<td class="sc-td${lkClass}">`
                 +  `<input type="text" inputmode="decimal" autocomplete="off" value="${val}"`
                 +  ` data-sid="${s.id}" data-key="${c.key}"`
                 +  ` class="score-box ${colorClass}"`
@@ -1770,6 +1824,7 @@
       h += '</tbody></table>';
       area.innerHTML = h;
       updateAutoCoef();
+      fixStickyOffsets();
     }
 
     function setupArrowKeys() {
