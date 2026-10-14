@@ -21,7 +21,7 @@
 
   <style>
     /* =========================================================
-       🎨 THEME VARIABLES & DESIGN SYSTEM
+       🎨 THEME VARIABLES & DESIGN SYSTEM (LIGHT & DARK)
     ========================================================= */
     :root, [data-theme="light"] {
       --primary: #0284c7;
@@ -36,13 +36,25 @@
       --toolbar-bg: rgba(220, 252, 231, 0.65);
       --toolbar-border: #bbf7d0;
 
-      --khmer-bg: #dbeafe; --khmer-txt: #1e40af; --khmer-col: #eff6ff; --khmer-brd: #bfdbfe;
-      --math-bg: #f3e8ff;  --math-txt: #6b21a8;  --math-col: #faf5ff; --math-brd: #e9d5ff;
-      --sci-bg: #dcfce7;   --sci-txt: #15803d;   --sci-col: #f0fdf4; --sci-brd: #bbf7d0;
-      --soc-bg: #fef3c7;   --soc-txt: #b45309;   --soc-col: #fffbeb; --soc-brd: #fde68a;
-      --art-bg: #ffe4e6;   --art-txt: #be123c;   --art-col: #fff1f2; --art-brd: #fecdd3;
-      --for-bg: #cffafe;   --for-txt: #0e7490;   --for-col: #ecfeff; --for-brd: #a5f3fc;
-      --res-bg: #e0e7ff;   --res-txt: #3730a3;   --res-col: #eef2ff; --res-brd: #c7d2fe;
+      --khmer-bg: #dbeafe; --khmer-txt: #1e40af; --khmer-col: #eff6ff;
+      --math-bg: #f3e8ff;  --math-txt: #6b21a8;  --math-col: #faf5ff;
+      --sci-bg: #dcfce7;   --sci-txt: #15803d;   --sci-col: #f0fdf4;
+      --soc-bg: #fef3c7;   --soc-txt: #b45309;   --soc-col: #fffbeb;
+      --art-bg: #ffe4e6;   --art-txt: #be123c;   --art-col: #fff1f2;
+      --for-bg: #cffafe;   --for-txt: #0e7490;   --for-col: #ecfeff;
+      --res-bg: #e0e7ff;   --res-txt: #3730a3;   --res-col: #eef2ff;
+
+      /* Subject Modal Tokens - Light */
+      --sub-modal-bg: rgba(15, 23, 42, 0.7);
+      --sub-surface: #ffffff;
+      --sub-card: #f8fafc;
+      --sub-hover: #f1f5f9;
+      --sub-border: #cbd5e1;
+      --sub-head-bg: #e2e8f0;
+      --sub-text: #0f172a;
+      --sub-teal: #059669;
+      --sub-teal-soft: rgba(5, 150, 105, 0.12);
+      --sub-input-bg: #ffffff;
     }
 
     [data-theme="dark"] {
@@ -57,13 +69,25 @@
       --toolbar-bg: #0d2331;
       --toolbar-border: #16384c;
 
-      --khmer-bg: #1e3a8a; --khmer-txt: #bfdbfe; --khmer-col: #172554; --khmer-brd: #1e40af;
-      --math-bg: #581c87;  --math-txt: #f3e8ff;  --math-col: #3b0764; --math-brd: #6b21a8;
-      --sci-bg: #14532d;   --sci-txt: #bbf7d0;   --sci-col: #052e16; --sci-brd: #15803d;
-      --soc-bg: #78350f;   --soc-txt: #fde68a;   --soc-col: #451a03; --soc-brd: #b45309;
-      --art-bg: #881337;   --art-txt: #fecdd3;   --art-col: #4c0519; --art-brd: #be123c;
-      --for-bg: #164e63;   --for-txt: #a5f3fc;   --for-col: #083344; --for-brd: #0e7490;
-      --res-bg: #312e81;   --res-txt: #c7d2fe;   --res-col: #1e1b4b; --res-brd: #3730a3;
+      --khmer-bg: #1e3a8a; --khmer-txt: #bfdbfe; --khmer-col: #172554;
+      --math-bg: #581c87;  --math-txt: #f3e8ff;  --math-col: #3b0764;
+      --sci-bg: #14532d;   --sci-txt: #bbf7d0;   --sci-col: #052e16;
+      --soc-bg: #78350f;   --soc-txt: #fde68a;   --soc-col: #451a03;
+      --art-bg: #881337;   --art-txt: #fecdd3;   --art-col: #4c0519;
+      --for-bg: #164e63;   --for-txt: #a5f3fc;   --for-col: #083344;
+      --res-bg: #312e81;   --res-txt: #c7d2fe;   --res-col: #1e1b4b;
+
+      /* Subject Modal Tokens - Dark */
+      --sub-modal-bg: rgba(5, 15, 23, 0.92);
+      --sub-surface: #0e1e28;
+      --sub-card: #122430;
+      --sub-hover: #172d3c;
+      --sub-border: #1c3647;
+      --sub-head-bg: #0d2836;
+      --sub-text: #f8fafc;
+      --sub-teal: #00b894;
+      --sub-teal-soft: rgba(0, 184, 148, 0.15);
+      --sub-input-bg: #0a1721;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Khmer OS Battambang', 'Battambang', sans-serif; }
@@ -105,9 +129,7 @@
     }
 
     /* ================= LANDING PAGE CARDS ================= */
-    #landingPage {
-      max-width: 920px; margin: 0 auto; padding: 30px 20px; height: 100%; overflow-y: auto;
-    }
+    #landingPage { max-width: 960px; margin: 0 auto; padding: 30px 20px; height: 100%; overflow-y: auto; }
     .landing-header { margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end; }
     .landing-header h1 { font-size: 22px; color: var(--primary); margin-bottom: 4px; }
     .assigned-class-badge {
@@ -248,81 +270,82 @@
     .status-fail { color: #dc2626; font-weight: bold; }
 
     /* =========================================================
-       📚 ផ្ទាំងគ្រប់គ្រងមុខវិជ្ជា (SUBJECT MANAGER MODAL ដូចរូបភាព)
+       📚 ផ្ទាំងគ្រប់គ្រងមុខវិជ្ជា (SUBJECT MANAGER MODAL គាំទ្រ DARK & LIGHT)
     ========================================================= */
     #subjectManagerModal {
-      display: none; position: fixed; inset: 0; background: rgba(5, 15, 23, 0.92); backdrop-filter: blur(8px);
+      display: none; position: fixed; inset: 0; background: var(--sub-modal-bg); backdrop-filter: blur(8px);
       z-index: 4000; overflow-y: auto; padding: 18px 24px 100px;
     }
     .sub-page-wrap { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
     .sub-top-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
-    .sub-title { font-size: 20px; font-weight: 800; color: #38bdf8; display: flex; align-items: center; gap: 10px; }
+    .sub-title { font-size: 20px; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 10px; }
     
     .btn-template-import {
-      background: #00b894; color: #fff; border: none; padding: 8px 18px; border-radius: 12px;
+      background: var(--sub-teal); color: #fff; border: none; padding: 8px 18px; border-radius: 12px;
       font-size: 13px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
     }
-    .btn-template-import:hover { background: #00a383; }
+    .btn-template-import:hover { opacity: 0.9; }
 
     .subject-section-card {
-      background: #0e1e28; border: 1.5px solid #1c3647; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column;
+      background: var(--sub-surface); border: 1.5px solid var(--sub-border); border-radius: 20px; overflow: hidden; display: flex; flex-direction: column;
+      box-shadow: var(--card-shadow);
     }
     .section-top-bar {
       padding: 14px 18px; display: flex; align-items: center; justify-content: space-between;
-      border-bottom: 1.5px solid #1c3647; background: #122430; flex-wrap: wrap; gap: 10px;
+      border-bottom: 1.5px solid var(--sub-border); background: var(--sub-card); flex-wrap: wrap; gap: 10px;
     }
     .sec-left { display: flex; align-items: center; gap: 10px; }
-    .sec-title { font-size: 15px; font-weight: 800; color: #fff; }
+    .sec-title { font-size: 15px; font-weight: 800; color: var(--text); }
     .sec-count-badge {
-      background: rgba(0, 184, 148, 0.15); color: #00b894; border: 1px solid rgba(0,184,148,0.3);
+      background: var(--sub-teal-soft); color: var(--sub-teal); border: 1px solid rgba(0,184,148,0.3);
       padding: 2px 10px; border-radius: 20px; font-size: 11.5px; font-weight: 700;
     }
     .btn-action-pill {
-      background: #172d3c; color: #f8fafc; border: 1px solid #1c3647;
+      background: var(--surface-elevated); color: var(--text); border: 1px solid var(--sub-border);
       padding: 6px 14px; border-radius: 10px; font-size: 12.5px; font-weight: 700; cursor: pointer;
       display: inline-flex; align-items: center; gap: 6px;
     }
-    .btn-action-pill.teal { background: #00b894; color: #fff; border: none; }
+    .btn-action-pill.teal { background: var(--sub-teal); color: #fff; border: none; }
 
     table.subject-table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: center; }
     table.subject-table thead th {
-      background: #0d2836; color: #38bdf8; font-weight: 800; padding: 12px 10px; border-bottom: 1.5px solid #1c3647;
+      background: var(--sub-head-bg); color: var(--primary); font-weight: 800; padding: 12px 10px; border-bottom: 1.5px solid var(--sub-border);
     }
-    table.subject-table tbody td { padding: 10px 8px; border-bottom: 1px solid #1c3647; vertical-align: middle; }
-    table.subject-table tbody tr:hover { background: #172d3c; }
+    table.subject-table tbody td { padding: 10px 8px; border-bottom: 1px solid var(--sub-border); vertical-align: middle; color: var(--text); }
+    table.subject-table tbody tr:hover { background: var(--sub-hover); }
 
     .name-flex-cell { display: flex; align-items: center; gap: 10px; text-align: left; padding-left: 10px; }
     .toggle-arrow-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 12px; width: 18px; }
     .subject-icon-box {
-      width: 28px; height: 28px; border-radius: 7px; background: #00b894; color: #fff;
+      width: 28px; height: 28px; border-radius: 7px; background: var(--sub-teal); color: #fff;
       display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0;
     }
     .subject-icon-box.child { background: #0284c7; }
     .badge-sub-count {
-      font-size: 11px; font-weight: 700; background: rgba(255, 255, 255, 0.08);
-      color: #00b894; border: 1px solid rgba(0, 184, 148, 0.3); padding: 1px 7px; border-radius: 8px;
+      font-size: 11px; font-weight: 700; background: var(--surface-elevated);
+      color: var(--sub-teal); border: 1px solid rgba(0, 184, 148, 0.3); padding: 1px 7px; border-radius: 8px;
     }
     .class-tag-pill { background: #1e3a8a; color: #93c5fd; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px; }
     .badge-coef {
-      background: rgba(0, 184, 148, 0.15); color: #00b894; font-weight: 800; padding: 3px 10px; border-radius: 8px;
+      background: var(--sub-teal-soft); color: var(--sub-teal); font-weight: 800; padding: 3px 10px; border-radius: 8px;
     }
     .row-action-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 13px; padding: 5px 8px; }
-    .row-action-btn:hover { color: #fff; }
+    .row-action-btn:hover { color: var(--text); }
     .row-action-btn.del:hover { color: #f87171; }
 
     .edit-input {
-      background: #0a1721; border: 1px solid #1c3647; color: #fff; border-radius: 8px;
+      background: var(--sub-input-bg); border: 1.5px solid var(--sub-border); color: var(--text); border-radius: 8px;
       padding: 6px 10px; font-size: 13px; font-weight: 700; outline: none; width: 100%; max-width: 220px;
     }
     .edit-input.sm { max-width: 70px; text-align: center; }
 
     .edit-footer-bar {
-      position: fixed; bottom: 0; left: 0; right: 0; background: #0c1c27; border-top: 1.5px solid #1c3647;
+      position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-top: 1.5px solid var(--sub-border);
       padding: 12px 24px; display: none; align-items: center; justify-content: center; gap: 16px; z-index: 5000;
-      box-shadow: 0 -8px 25px rgba(0,0,0,0.45);
+      box-shadow: 0 -8px 25px rgba(0,0,0,0.3);
     }
     .btn-edit-cancel {
-      background: #f8fafc; color: #0f172a; border: none; padding: 10px 28px; border-radius: 12px; font-weight: 800; cursor: pointer;
+      background: var(--surface-elevated); color: var(--text); border: 1px solid var(--sub-border); padding: 10px 28px; border-radius: 12px; font-weight: 800; cursor: pointer;
     }
     .btn-edit-save {
       background: linear-gradient(135deg, #8b5cf6, #6d28d9); color: #fff; border: none; padding: 10px 32px;
@@ -469,7 +492,7 @@
           <option value="ឆមាសទី២">ឆមាសទី 2</option>
         </select>
 
-        <!-- 🌟 ប៊ូតុងបើកផ្ទាំងគ្រប់គ្រងមុខវិជ្ជា -->
+        <!-- 🌟 ប៊ូតុងបើកផ្ទាំងគ្រប់គ្រងមុខវិជ្ជាលើ Toolbar -->
         <button type="button" class="pill-btn teal" onclick="openSubjectModal()" title="គ្រប់គ្រងមុខវិជ្ជា និងមេគុណ">
           <i class="fa-solid fa-book-bookmark"></i> <span class="btn-label">មុខវិជ្ជា</span>
         </button>
@@ -530,7 +553,7 @@
       
       <div class="sub-top-header">
         <div class="sub-title">
-          <button type="button" class="btn-back-arrow" onclick="closeSubjectModal()" style="background:#172d3c; color:#fff; border-color:#1c3647; width:34px; height:34px;">
+          <button type="button" class="btn-back-arrow" onclick="closeSubjectModal()" style="background:var(--surface-elevated); color:var(--text); border-color:var(--border); width:34px; height:34px;">
             <i class="fa-solid fa-chevron-left"></i>
           </button>
           <i class="fa-solid fa-book-bookmark"></i>
@@ -547,11 +570,11 @@
         </div>
       </div>
 
-      <!-- ផ្នែកមុខវិជ្ជាខែ -->
+      <!-- ផ្នែកមុខវិជ្ជាខែ (៦ មុខវិជ្ជា) -->
       <div class="subject-section-card">
         <div class="section-top-bar">
           <div class="sec-left">
-            <i class="fa-solid fa-calendar-days" style="color:#00b894;"></i>
+            <i class="fa-solid fa-calendar-days" style="color:var(--sub-teal);"></i>
             <span class="sec-title">មុខវិជ្ជាខែ</span>
             <span class="sec-count-badge" id="badgeMonthlyCount">6 មុខវិជ្ជា</span>
           </div>
@@ -582,7 +605,7 @@
         </div>
       </div>
 
-      <!-- ផ្នែកមុខវិជ្ជាឆមាស -->
+      <!-- ផ្នែកមុខវិជ្ជាឆមាស (១១ មុខវិជ្ជា) -->
       <div class="subject-section-card">
         <div class="section-top-bar">
           <div class="sec-left">
@@ -1033,7 +1056,6 @@
     const GROUP_STYLES = ['kh', 'ma', 'sc', 'so', 'ar', 'fo'];
 
     function buildGroupsFromConfig() {
-      // 1. បង្កើត Monthly Groups
       MONTHLY_GROUPS = [];
       monthlySubjects.forEach((p, idx) => {
         const grpCode = GROUP_STYLES[idx % GROUP_STYLES.length];
@@ -1052,7 +1074,6 @@
         }
       });
 
-      // 2. បង្កើត Semester Groups
       SEMESTER_GROUPS = [];
       const semMap = {
         'read': 'kh', 'listen': 'kh', 'dictation': 'kh', 'essay': 'kh',
@@ -1060,7 +1081,6 @@
         'homeArts': 'ar', 'pe': 'ar', 'ethics': 'ar', 'foreign': 'fo'
       };
       
-      // ចាត់ក្រុមតាមមុខវិជ្ជាធំ
       const groupedSem = {};
       semesterSubjects.forEach(s => {
         const gKey = semMap[s.code] || 'kh';
@@ -1709,7 +1729,8 @@
         try {
           const data = new Uint8Array(e.target.result);
           const workbook = XLSX.read(data, { type: 'array' });
-          const json = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], { header: 1 });
+          const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+          const json = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
           if (json.length < 2) { showToast('⚠️ ឯកសារគ្មានទិន្នន័យឡើយ!', true); return; }
 
           const keys = allKeys();
@@ -1815,7 +1836,7 @@
             });
           }
         } else {
-          // Edit Mode
+          // Edit Mode (ដូចរូបទី ៣)
           mHtml += `
             <tr style="font-weight:700;">
               <td>${idx + 1}</td>
@@ -1946,7 +1967,7 @@
     function deleteSemesterSubject(idx) {
       if (!confirm(`តើអ្នកពិតជាចង់លុបមុខវិជ្ជា "${semesterSubjects[idx].name}" មែនទេ?`)) return;
       semesterSubjects.splice(idx, 1);
-      renderSubjectManagerTables();
+      renderSemesterTable();
       saveAllSubjectChanges();
     }
 
