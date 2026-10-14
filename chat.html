@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>សារសន្ទនា</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- ⚡ Supabase JS Client (v2) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: #05131b;
+      color: #e2e8f0;
+      font-family: 'Kantumruy Pro', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .chat-app-wrapper {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: #05131b;
+    }
+
+    .icon {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+      flex-shrink: 0;
+      display: inline-block;
+    }
+
+    /* ══════════════ 🔒 AUTH DENIED WRAPPER ══════════════ */
+    .auth-wrapper {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+      padding: 30px 20px;
+      background: #05131b;
+    }
+    .auth-card {
+      background: #0e202c;
+      border: 1.5px solid #162f40;
+      border-radius: 24px;
+      padding: 40px 28px;
+      max-width: 440px;
+      width: 100%;
+      box-shadow: 0 10px 35px rgba(0,0,0,0.5);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .auth-icon {
+      width: 68px;
+      height: 68px;
+      border-radius: 20px;
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      margin-bottom: 16px;
+    }
+    .auth-card h2 { font-size: 18px; margin-bottom: 8px; color: #ef4444; font-weight: 700; }
+    .auth-card p { font-size: 13px; color: #94a3b8; line-height: 1.6; margin-bottom: 24px; }
+    .btn-login-redirect {
+      background: linear-gradient(135deg, #0284c7, #7c3aed);
+      color: #ffffff;
+      padding: 10px 24px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 13.5px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
+      cursor: pointer;
+      border: none;
+    }
+
+    /* ============ 1. ROOM HEADER ============ */
+    .room-header-wrap {
+      flex: 0 0 auto;
+      padding: 8px 14px 4px 14px;
+      z-index: 30;
+      background: #05131b;
+    }
+    .room-header-card {
+      background: #0e202c;
+      border: 1px solid #162f40;
+      border-radius: 9999px;
+      padding: 6px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    }
+    .room-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+    .room-badge-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+    .room-badge-logo svg { width: 22px; height: 22px; }
+    .room-title-text {
+      font-size: 14px;
+      font-weight: 700;
+      color: #f8fafc;
+      letter-spacing: 0.2px;
+    }
+
+    .room-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .room-action-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #cbd5e1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      touch-action: manipulation;
+    }
+    .room-action-btn:hover, .room-action-btn:active {
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.25);
+      border-color: #38bdf8;
+      transform: scale(1.06);
+    }
+
+    /* Search Bar */
+    .search-bar-inline {
+      display: none;
+      padding: 8px 16px;
+      background: #0a1824;
+      border-bottom: 1px solid #162f40;
+      align-items: center;
+      gap: 10px;
+      flex: 0 0 auto;
+      z-index: 30;
+    }
+    .search-input-field {
+      flex: 1;
+      background: #0e202c;
+      border: 1.5px solid #1d3a50;
+      border-radius: 20px;
+      padding: 7px 16px;
+      color: #fff;
+      font-size: 13.5px;
+      outline: none;
+      font-family: inherit;
+    }
+
+    /* ============ 2. CHAT MESSAGES BODY ============ */
+    .chat-messages {
+      flex: 1 1 auto;
+      min-height: 0;
+      padding: 12px 16px 80px 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .chat-messages::-webkit-scrollbar { width: 5px; }
+    .chat-messages::-webkit-scrollbar-thumb { background: #132a38; border-radius: 4px; }
+
+    .msg-group {
+      display: flex;
+      gap: 10px;
+      max-width: 86%;
+      align-items: flex-start;
+    }
+    .msg-group.incoming { align-self: flex-start; }
+    .msg-group.outgoing { align-self: flex-end; flex-direction: row-reverse; }
+
+    .msg-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 13.5px;
+      color: #ffffff;
+      flex-shrink: 0;
+      margin-top: 2px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    }
+    .msg-avatar.purple-s { background: #9333ea; }
+    .msg-avatar.green-l  { background: #059669; }
+
+    .msg-content-wrap { display: flex; flex-direction: column; gap: 3px; }
+    .msg-sender-label { font-size: 11.5px; font-weight: 700; line-height: 1.3; }
+    .msg-sender-label.owner-gold { color: #facc15; }
+    .msg-sender-label.teacher-grey { color: #94a3b8; }
+    .msg-group.outgoing .msg-sender-label { text-align: right; color: #38bdf8; }
+
+    .msg-bubble {
+      background: #11222e;
+      border: 1px solid #162f40;
+      border-radius: 14px;
+      border-top-left-radius: 3px;
+      padding: 9px 14px;
+      font-size: 13.5px;
+      line-height: 1.55;
+      color: #e2e8f0;
+      word-break: break-word;
+    }
+    .msg-group.outgoing .msg-bubble {
+      background: #0d3856;
+      border-color: #175480;
+      border-top-left-radius: 14px;
+      border-top-right-radius: 3px;
+    }
+
+    .msg-bubble a { color: #38bdf8; text-decoration: underline; word-break: break-all; }
+    
+    .msg-footer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .msg-time { font-size: 10px; color: #64748b; }
+    .msg-group.outgoing .msg-time { color: #94a3b8; }
+
+    .btn-delete-msg {
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      font-size: 11px;
+      padding: 2px 4px;
+      border-radius: 4px;
+      opacity: 0.7;
+      transition: all 0.15s;
+    }
+    .btn-delete-msg:hover {
+      opacity: 1;
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.15);
+      transform: scale(1.15);
+    }
+
+    .chat-img-thumb { max-width: 250px; max-height: 250px; border-radius: 8px; display: block; margin-bottom: 4px; cursor: pointer; }
+    .chat-audio-player { width: 220px; height: 34px; margin-top: 4px; outline: none; }
+
+    /* ============ 3. BOTTOM INPUT BAR ============ */
+    .chat-bottom-bar {
+      position: fixed !important;
+      bottom: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      width: 100% !important;
+      height: 64px !important;
+      padding: 8px 14px 10px 14px !important;
+      background: #05131b !important;
+      border-top: 2px solid #102a3a !important;
+      z-index: 9999 !important;
+      display: flex !important;
+      align-items: center !important;
+      box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.7) !important;
+    }
+    .input-capsule {
+      width: 100%;
+      background: #0e202c;
+      border: 1.5px solid #183345;
+      border-radius: 9999px;
+      padding: 4px 6px 4px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+    }
+    .input-capsule:focus-within { border-color: #0284c7; }
+
+    .left-actions { display: flex; align-items: center; gap: 8px; color: #94a3b8; }
+    .left-action-btn {
+      background: transparent; border: none; color: inherit; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; padding: 5px;
+      border-radius: 50%; transition: color 0.15s;
+    }
+    .left-action-btn:hover { color: #38bdf8; }
+
+    .chat-input-field {
+      flex: 1; background: transparent; border: none; outline: none;
+      color: #f8fafc; font-family: 'Kantumruy Pro', sans-serif;
+      font-size: 14px; padding: 6px 2px;
+    }
+    .chat-input-field::placeholder { color: #64748b; }
+
+    .right-circle-btn {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: #0284c7; border: none; color: #ffffff; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      transition: all 0.15s ease; box-shadow: 0 2px 8px rgba(2, 132, 199, 0.4);
+    }
+    .right-circle-btn:hover { background: #0369a1; transform: scale(1.04); }
+    .right-circle-btn.recording { background: #ef4444; animation: pulseRec 1s infinite; }
+    @keyframes pulseRec { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+
+    .recording-banner { display: none; align-items: center; gap: 8px; color: #ef4444; font-size: 12.5px; font-weight: 700; flex: 1; }
+
+    /* Emoji Picker Drawer */
+    .emoji-picker-drawer {
+      position: fixed;
+      bottom: 72px;
+      left: 16px;
+      width: min(360px, calc(100% - 32px));
+      background: #0e202c;
+      border: 1.5px solid #183345;
+      border-radius: 18px;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.7);
+      z-index: 10000;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .emoji-drawer-header {
+      padding: 8px 12px; background: #0a1824; border-bottom: 1px solid #162f40;
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 11.5px; font-weight: 700; color: #94a3b8;
+    }
+    .emoji-drawer-grid {
+      display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px;
+      padding: 10px; max-height: 220px; overflow-y: auto;
+      font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
+    }
+    .emoji-btn {
+      font-size: 24px; background: transparent; border: none; cursor: pointer;
+      border-radius: 8px; padding: 4px; display: flex; align-items: center; justify-content: center;
+    }
+    .emoji-btn:hover, .emoji-btn:active { background: rgba(56, 189, 248, 0.15); transform: scale(1.2); }
+
+    /* ============ 👥 4. MEMBERS MODAL DIALOG ============ */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(4px); display: none; align-items: center;
+      justify-content: center; z-index: 10000; padding: 16px;
+    }
+    .modal-card {
+      width: 100%; max-width: 420px; background: #0e202c; border: 1px solid #1a354a;
+      border-radius: 18px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+      display: flex; flex-direction: column; max-height: 80vh; overflow: hidden;
+    }
+    .modal-head {
+      padding: 14px 18px; border-bottom: 1px solid #162f40;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .modal-head-title { font-size: 14.5px; font-weight: 700; color: #fff; }
+    .modal-close-btn { background: none; border: none; color: #94a3b8; font-size: 18px; cursor: pointer; padding: 4px; }
+    .members-list { padding: 12px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+
+    .member-item {
+      display: flex; align-items: center; gap: 12px; padding: 10px 12px;
+      background: #11222e; border-radius: 12px; border: 1px solid #162f40;
+    }
+    .member-item.is-current-user {
+      background: #092c42 !important;
+      border: 1.5px solid #0ea5e9 !important;
+      box-shadow: 0 0 14px rgba(14, 165, 233, 0.35) !important;
+    }
+    .member-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: #0284c7; color: #fff; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; font-size: 14px;
+      flex-shrink: 0;
+    }
+    .member-info { flex: 1; min-width: 0; }
+    .member-info .m-name {
+      font-size: 13.5px; font-weight: 700; color: #f8fafc;
+      display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+    }
+    .member-info .m-sub { font-size: 11px; color: #38bdf8; margin-top: 2px; }
+
+    .badge-current-user {
+      background: #059669; color: #ffffff;
+      font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════ 🔒 AUTH DENIED WRAPPER ══════════════ -->
+  <div class="auth-wrapper" id="authDeniedWrap">
+    <div class="auth-card">
+      <div class="auth-icon">🔒</div>
+      <h2>សូមចូលប្រើប្រាស់ជាមុនសិន!</h2>
+      <p>លោកអ្នកមិនទាន់បាន Login ចូលក្នុងប្រព័ន្ធនៅឡើយទេ។ សូម Login គណនីរបស់អ្នកដើម្បីចូលរួមការសន្ទនា។</p>
+      <a href="index.html" target="_top" class="btn-login-redirect" onclick="goToIndex(event)">
+        <span>🔑</span> <span>ទៅកាន់ទំព័រដើម (Login)</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="chat-app-wrapper" id="chatApp" style="display:none;">
+
+    <!-- 1. FLOATING ROOM HEADER -->
+    <div class="room-header-wrap">
+      <div class="room-header-card">
+        <div class="room-left" onclick="openMembersModal()" title="មើលសមាជិក">
+          <div class="room-badge-logo">
+            <svg viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="10" stroke="#0284c7" stroke-width="2"/>
+              <path d="M8 12l3 3 5-5" stroke="#059669" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <span class="room-title-text" id="roomTitle">បន្ទប់សន្ទនារួម (គ្រូបង្រៀន)</span>
+        </div>
+
+        <div class="room-right">
+          <button type="button" class="room-action-btn" onclick="toggleSearch()" title="ស្វែងរកសារ">
+            <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
+
+          <button type="button" class="room-action-btn" onclick="openMembersModal()" title="សមាជិកក្រុម">
+            <svg class="icon" viewBox="0 0 24 24">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-bar-inline" id="searchBar">
+      <input type="text" id="searchInput" class="search-input-field" placeholder="វាយពាក្យស្វែងរកសារ..." oninput="filterMessages(this.value)">
+      <button type="button" onclick="toggleSearch()" style="background:none; border:none; color:#ef4444; font-size:16px; cursor:pointer; padding:4px;">✕</button>
+    </div>
+
+    <!-- 2. CHAT MESSAGES BODY -->
+    <div class="chat-messages" id="chatBox">
+      <div style="text-align:center; padding:30px; color:#64748b;">⏳ កំពុងទាញយកសារ...</div>
+    </div>
+
+    <!-- Emoji Picker Drawer -->
+    <div class="emoji-picker-drawer" id="emojiDrawer">
+      <div class="emoji-drawer-header">
+        <span>😀 រូបសញ្ញា EMOJI</span>
+        <button type="button" onclick="toggleEmojiPicker()" style="background:none; border:none; color:#94a3b8; cursor:pointer; font-size:14px;">✕</button>
+      </div>
+      <div class="emoji-drawer-grid" id="emojiGrid"></div>
+    </div>
+
+    <!-- 3. BOTTOM INPUT BAR -->
+    <div class="chat-bottom-bar" id="chatBottomBar">
+      <div class="input-capsule">
+        <div class="left-actions">
+          <button class="left-action-btn" type="button" onclick="toggleEmojiPicker()" title="Emoji">
+            <svg class="icon" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+              <line x1="9" y1="9" x2="9.01" y2="9"/>
+              <line x1="15" y1="9" x2="15.01" y2="9"/>
+            </svg>
+          </button>
+
+          <button class="left-action-btn" type="button" onclick="document.getElementById('imageFileInput').click()" title="ផ្ញើរូបភាព">
+            <svg class="icon" viewBox="0 0 24 24">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <polyline points="21 15 16 10 5 21"/>
+            </svg>
+          </button>
+          <input type="file" id="imageFileInput" accept="image/*" style="display:none" onchange="handleImageUpload(this)">
+        </div>
+
+        <div class="recording-banner" id="recIndicator">
+          <span>🔴 កំពុងថតសំឡេង... (<span id="recTimer">0:00</span>)</span>
+          <button type="button" onclick="cancelRecording()" style="background:transparent; border:none; color:#94a3b8; cursor:pointer; font-size:11px;">[បោះបង់]</button>
+        </div>
+
+        <input type="text" id="msgInput" class="chat-input-field" placeholder="ផ្ញើសារ..." onfocus="closeEmojiPicker()" oninput="handleInputState(this.value)" onkeydown="if(event.key==='Enter') sendMsg()">
+
+        <button class="right-circle-btn" id="mainActionBtn" type="button" onclick="handleMainAction()" title="ផ្ញើសារ / ថតសំឡេង">
+          <svg class="icon" id="micIcon" viewBox="0 0 24 24">
+            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+            <line x1="12" y1="19" x2="12" y2="23"/>
+            <line x1="8" y1="23" x2="16" y2="23"/>
+          </svg>
+
+          <svg class="icon" id="sendIcon" style="display:none;" viewBox="0 0 24 24">
+            <line x1="22" y1="2" x2="11" y2="13"/>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 👥 MEMBERS MODAL DIALOG -->
+  <div class="modal-overlay" id="membersModal" onclick="if(event.target===this) closeMembersModal()">
+    <div class="modal-card">
+      <div class="modal-head">
+        <span class="modal-head-title">👥 សមាជិកគ្រូទាំងអស់</span>
+        <button type="button" class="modal-close-btn" onclick="closeMembersModal()">✕</button>
+      </div>
+      <div class="members-list" id="membersListArea">
+        <div style="text-align:center; padding:20px; color:#94a3b8; font-size:12px;">⏳ កំពុងទាញយកសមាជិក...</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* 1. SUPABASE CLIENT CONFIG */
+    const SUPABASE_URL = "https://nggnuobnrxiqjtcwlvwk.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_AHDcUJbuMAfhaocyfm2X7w_O9s06wML";
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const CURRENT_ROOM = 'global';
+
+    /* 2. AUTH GUARD */
+    function readSession() {
+      try { return JSON.parse(localStorage.getItem('krou_supabase_user') || 'null'); } catch(e) { return null; }
+    }
+    const CURRENT_USER = readSession();
+
+    function checkAuthentication() {
+      if (!CURRENT_USER || !CURRENT_USER.username) {
+        document.getElementById('chatApp').style.display = 'none';
+        document.getElementById('authDeniedWrap').style.display = 'flex';
+        return false;
+      }
+      document.getElementById('authDeniedWrap').style.display = 'none';
+      document.getElementById('chatApp').style.display = 'flex';
+      return true;
+    }
+
+    function goToIndex(e) {
+      if (e) e.preventDefault();
+      if (window.parent && window.parent !== window) {
+        try {
+          window.parent.postMessage({ type: 'OPEN_LOGIN', action: 'LOGIN' }, '*');
+          window.parent.location.href = 'index.html';
+          return;
+        } catch(err) {}
+      }
+      window.location.href = 'index.html';
+    }
+
+    let allCachedMessages = [];
+
+    const NATIVE_EMOJIS = [
+      "😀","😃","😄","😁","😆","😅","😂","🤣","🙂","🙃","😉","😊","😇","🥰","😍","🤩","😘","😗","😚","😋","😛","😜","🤪","😝","🤗","🤭","🤫","🤔","🤐","🤨","😐","😑","😶","😏","😒","🙄","😬","🤥","😌","😔","😪","🤤","😴","😷","🤒","🤕","🤢","🤮","🤧","🥵","🥶","🥴","😵","🤯","🤠","🥳","😎","🤓","🧐","👍","👎","👏","🙌","🤝","👊","✊","🤛","🤜","🤞","✌️","🤟","🤘","👌","🤏","👈","👉","👆","👇","☝️","✋","🤚","🖐️","🖖","👋","🤙","💪","🙏","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","❣️","💕","💞","💓","💗","💖","💘","💝","💟","🔥","💯","✨","🎉","🎊","⭐","🌟","💡","☕","✅","❌","❓","❗"
+    ];
+
+    function initNativeEmojiGrid() {
+      const grid = document.getElementById('emojiGrid');
+      if (!grid) return;
+      grid.innerHTML = NATIVE_EMOJIS.map(em => `<button type="button" class="emoji-btn" onclick="selectEmoji('${em}')">${em}</button>`).join('');
+    }
+
+    function toggleEmojiPicker() {
+      const drawer = document.getElementById('emojiDrawer');
+      drawer.style.display = (drawer.style.display === 'flex') ? 'none' : 'flex';
+    }
+
+    function closeEmojiPicker() {
+      const drawer = document.getElementById('emojiDrawer');
+      if (drawer) drawer.style.display = 'none';
+    }
+
+    function selectEmoji(em) {
+      const input = document.getElementById('msgInput');
+      input.value += em;
+      handleInputState(input.value);
+      input.focus();
+    }
+
+    /* 3. INITIALIZATION & REALTIME SYNC */
+    window.addEventListener('DOMContentLoaded', () => {
+      if (!checkAuthentication()) return;
+      initNativeEmojiGrid();
+      loadMessages();
+
+      // 🌟 Supabase Realtime Listener (សារលោតភ្លាមៗស្វ័យប្រវត្តិកុំឱ្យពិបាក Refresh)
+      try {
+        sb.channel('realtime_chat')
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'chat_messages' }, () => {
+            loadMessages();
+          })
+          .subscribe();
+      } catch(e) {
+        console.warn('Realtime error:', e);
+      }
+
+      // Polling fallback រៀងរាល់ ៦ វិនាទី
+      setInterval(loadMessages, 6000);
+    });
+
+    function toggleSearch() {
+      const bar = document.getElementById('searchBar');
+      const input = document.getElementById('searchInput');
+      if (bar.style.display === 'flex') {
+        bar.style.display = 'none';
+        renderMessages(allCachedMessages);
+      } else {
+        bar.style.display = 'flex';
+        input.value = '';
+        input.focus();
+      }
+    }
+
+    function filterMessages(query) {
+      if (!query || !query.trim()) {
+        renderMessages(allCachedMessages);
+        return;
+      }
+      const q = query.toLowerCase().trim();
+      const filtered = allCachedMessages.filter(m => 
+        (m.content && m.content.toLowerCase().includes(q)) ||
+        (m.sender_name && m.sender_name.toLowerCase().includes(q))
+      );
+      renderMessages(filtered);
+    }
+
+    /* 4. LOAD & RENDER MESSAGES */
+    async function loadMessages() {
+      try {
+        const { data, error } = await sb
+          .from('chat_messages')
+          .select('*')
+          .eq('room_id', CURRENT_ROOM)
+          .order('created_at', { ascending: true })
+          .limit(100);
+
+        if (error) throw error;
+        allCachedMessages = data || [];
+        renderMessages(allCachedMessages);
+      } catch (err) {
+        console.warn('loadMessages error:', err);
+      }
+    }
+
+    function renderMessages(messages) {
+      const box = document.getElementById('chatBox');
+      if (!messages || messages.length === 0) {
+        box.innerHTML = '<div style="text-align:center; padding:30px; color:#64748b;">មិនទាន់មានសារសន្ទនានៅឡើយទេ<br><small style="color:#475569;">វាយបញ្ចូលសារខាងក្រោមដើម្បីចាប់ផ្តើម</small></div>';
+        return;
+      }
+
+      const myCode = CURRENT_USER?.username || CURRENT_USER?.teacher_id || '';
+      const myName = CURRENT_USER?.teacher_name || '';
+      const isAdmUser = String(CURRENT_USER?.role || '').toLowerCase() === 'admin';
+
+      let html = '';
+      messages.forEach(m => {
+        const isMe = (m.sender_code && m.sender_code === myCode) || (m.sender_name === myName);
+        const rowClass = isMe ? 'outgoing' : 'incoming';
+        const senderIsAdm = (String(m.sender_role || '').toLowerCase() === 'admin');
+        const avatarClass = senderIsAdm ? 'purple-s' : 'green-l';
+        const senderClass = senderIsAdm ? 'owner-gold' : 'teacher-grey';
+        const initial = m.sender_name ? m.sender_name.charAt(0) : 'U';
+
+        let senderTitle = m.sender_name;
+        if (m.caption && m.type === 'image') {
+          senderTitle += ' • ' + m.caption;
+        } else if (senderIsAdm) {
+          senderTitle += ' • Admin';
+        }
+
+        let contentHtml = '';
+        if (m.type === 'image') {
+          contentHtml = `
+            <a href="${m.content}" target="_blank">
+              <img src="${m.content}" class="chat-img-thumb" alt="រូបភាព">
+            </a>
+            ${m.caption ? `<div>${escapeHtml(m.caption)}</div>` : ''}
+          `;
+        } else if (m.type === 'audio') {
+          contentHtml = `
+            <div style="font-size:12px; margin-bottom:2px;">🎙️ សារជាសំឡេង</div>
+            <audio src="${m.content}" controls class="chat-audio-player"></audio>
+          `;
+        } else {
+          contentHtml = formatLinks(escapeHtml(m.content));
+        }
+
+        let deleteBtnHtml = '';
+        if (isMe || isAdmUser) {
+          deleteBtnHtml = `
+            <button type="button" class="btn-delete-msg" onclick="deleteMsg(${m.id})" title="លុបសារនេះ">
+              🗑️
+            </button>
+          `;
+        }
+
+        const timeStr = m.created_at ? formatTime(m.created_at) : '';
+
+        html += `
+          <div class="msg-group ${rowClass}" id="msg_${m.id}">
+            <div class="msg-avatar ${avatarClass}">${initial}</div>
+            <div class="msg-content-wrap">
+              <div class="msg-sender-label ${senderClass}">${escapeHtml(senderTitle)}</div>
+              <div class="msg-bubble">
+                ${contentHtml}
+                <div class="msg-footer">
+                  ${deleteBtnHtml}
+                  <span class="msg-time">${timeStr}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+
+      box.innerHTML = html;
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function formatTime(isoStr) {
+      try {
+        const d = new Date(isoStr);
+        return d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+      } catch(e) { return ''; }
+    }
+
+    /* 5. SEND MESSAGE & ACTIONS */
+    function handleInputState(val) {
+      const hasText = val.trim().length > 0;
+      document.getElementById('micIcon').style.display = hasText ? 'none' : 'inline-block';
+      document.getElementById('sendIcon').style.display = hasText ? 'inline-block' : 'none';
+    }
+
+    function handleMainAction() {
+      const text = document.getElementById('msgInput').value.trim();
+      if (text) {
+        sendMsg();
+      } else {
+        toggleVoiceRecording();
+      }
+    }
+
+    async function sendMsg() {
+      const input = document.getElementById('msgInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      input.value = '';
+      handleInputState('');
+      closeEmojiPicker();
+
+      try {
+        const payload = {
+          room_id: CURRENT_ROOM,
+          sender_name: CURRENT_USER?.teacher_name || 'លោកគ្រូ/អ្នកគ្រូ',
+          sender_code: CURRENT_USER?.username || CURRENT_USER?.teacher_id || 'USER',
+          sender_role: CURRENT_USER?.role || 'teacher',
+          type: 'text',
+          content: text
+        };
+
+        const { error } = await sb.from('chat_messages').insert([payload]);
+        if (error) throw error;
+        loadMessages();
+      } catch (err) {
+        alert('មិនអាចផ្ញើសារបានទេ៖ ' + err.message);
+      }
+    }
+
+    function handleImageUpload(inputEl) {
+      const file = inputEl.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = async function(e) {
+        const base64 = e.target.result;
+        const caption = prompt('បញ្ចូលចំណងជើងរូបភាព (ប្រសិនបើមាន)៖') || '';
+        
+        try {
+          const payload = {
+            room_id: CURRENT_ROOM,
+            sender_name: CURRENT_USER?.teacher_name || 'លោកគ្រូ/អ្នកគ្រូ',
+            sender_code: CURRENT_USER?.username || CURRENT_USER?.teacher_id || 'USER',
+            sender_role: CURRENT_USER?.role || 'teacher',
+            type: 'image',
+            content: base64,
+            caption: caption
+          };
+
+          const { error } = await sb.from('chat_messages').insert([payload]);
+          if (error) throw error;
+          loadMessages();
+        } catch (err) {
+          alert('កំហុសផ្ញើរូបភាព៖ ' + err.message);
+        } finally {
+          inputEl.value = '';
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    async function deleteMsg(messageId) {
+      if (!messageId) return;
+      if (!confirm('តើអ្នកពិតជាចង់លុបសារនេះមែនទេ?')) return;
+
+      try {
+        const { error } = await sb.from('chat_messages').delete().eq('id', messageId);
+        if (error) throw error;
+        loadMessages();
+      } catch (err) {
+        alert('កំហុសក្នុងការលុបសារ៖ ' + err.message);
+      }
+    }
+
+    /* 6. VOICE RECORDING */
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let recInterval = null;
+    let recSeconds = 0;
+
+    async function toggleVoiceRecording() {
+      const btn = document.getElementById('mainActionBtn');
+      if (mediaRecorder && mediaRecorder.state === 'recording') {
+        mediaRecorder.stop();
+        btn.classList.remove('recording');
+        clearInterval(recInterval);
+        document.getElementById('recIndicator').style.display = 'none';
+        document.getElementById('msgInput').style.display = 'block';
+      } else {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          alert('ឧបករណ៍របស់អ្នកមិនគាំទ្រការថតសំឡេងឡើយ');
+          return;
+        }
+
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          audioChunks = [];
+          mediaRecorder = new MediaRecorder(stream);
+
+          mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+          mediaRecorder.onstop = async () => {
+            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+            const reader = new FileReader();
+            reader.onloadend = async () => {
+              const base64Audio = reader.result;
+              try {
+                const payload = {
+                  room_id: CURRENT_ROOM,
+                  sender_name: CURRENT_USER?.teacher_name || 'លោកគ្រូ/អ្នកគ្រូ',
+                  sender_code: CURRENT_USER?.username || CURRENT_USER?.teacher_id || 'USER',
+                  sender_role: CURRENT_USER?.role || 'teacher',
+                  type: 'audio',
+                  content: base64Audio
+                };
+                const { error } = await sb.from('chat_messages').insert([payload]);
+                if (error) throw error;
+                loadMessages();
+              } catch (err) {
+                alert('កំហុសផ្ញើសំឡេង៖ ' + err.message);
+              }
+            };
+            reader.readAsDataURL(audioBlob);
+          };
+
+          mediaRecorder.start();
+          btn.classList.add('recording');
+          document.getElementById('msgInput').style.display = 'none';
+          document.getElementById('recIndicator').style.display = 'flex';
+
+          recSeconds = 0;
+          recInterval = setInterval(() => {
+            recSeconds++;
+            const mins = Math.floor(recSeconds / 60);
+            const secs = recSeconds % 60;
+            document.getElementById('recTimer').textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+          }, 1000);
+
+        } catch (err) {
+          alert('សូមអនុញ្ញាតសិទ្ធិប្រើប្រាស់ Microphone៖ ' + err.message);
+        }
+      }
+    }
+
+    function cancelRecording() {
+      if (mediaRecorder && mediaRecorder.state === 'recording') {
+        mediaRecorder.ondataavailable = null;
+        mediaRecorder.onstop = null;
+        mediaRecorder.stop();
+      }
+      document.getElementById('mainActionBtn').classList.remove('recording');
+      clearInterval(recInterval);
+      document.getElementById('recIndicator').style.display = 'none';
+      document.getElementById('msgInput').style.display = 'block';
+    }
+
+    /* 7. MEMBERS MODAL (FETCH FROM USERS TABLE) */
+    async function openMembersModal() {
+      const modal = document.getElementById('membersModal');
+      const area = document.getElementById('membersListArea');
+      modal.style.display = 'flex';
+      area.innerHTML = '<div style="text-align:center; padding:20px; color:#94a3b8; font-size:12px;">⏳ កំពុងទាញយកសមាជិក...</div>';
+
+      try {
+        const { data: teachers, error } = await sb
+          .from('users')
+          .select('id, teacher_id, teacher_name, username, role, assigned_classes')
+          .order('id', { ascending: true });
+
+        if (error) throw error;
+
+        if (!teachers || teachers.length === 0) {
+          area.innerHTML = '<div style="text-align:center; padding:20px; color:#94a3b8;">មិនមានបញ្ជីសមាជិកឡើយ</div>';
+          return;
+        }
+
+        const myUsername = CURRENT_USER?.username || '';
+        let currentUserCard = '';
+        let otherTeachersCards = '';
+
+        teachers.forEach(t => {
+          const isAdm = String(t.role).toLowerCase() === 'admin';
+          const initial = t.teacher_name ? t.teacher_name.charAt(0) : (t.username ? t.username.charAt(0) : 'U');
+          const isCurrent = (t.username && t.username.toLowerCase() === myUsername.toLowerCase());
+
+          const roleSub = isAdm 
+            ? 'អ្នកគ្រប់គ្រងប្រព័ន្ធ (Admin)' 
+            : (t.assigned_classes ? 'គ្រូថ្នាក់ទី ' + t.assigned_classes : 'គ្រូបង្រៀន');
+
+          const itemHtml = `
+            <div class="member-item ${isCurrent ? 'is-current-user' : ''}">
+              <div class="member-avatar" style="background:${isAdm ? '#9333ea' : '#059669'};">${initial}</div>
+              <div class="member-info">
+                <div class="m-name" style="${isAdm ? 'color:#facc15;' : ''}">
+                  ${escapeHtml(t.teacher_name || t.username)}
+                  ${isCurrent ? '<span class="badge-current-user">🟢 គណនីរបស់អ្នក</span>' : ''}
+                </div>
+                <div class="m-sub">${roleSub}</div>
+              </div>
+            </div>
+          `;
+
+          if (isCurrent) currentUserCard = itemHtml;
+          else otherTeachersCards += itemHtml;
+        });
+
+        area.innerHTML = currentUserCard + otherTeachersCards;
+      } catch (err) {
+        area.innerHTML = `<div style="text-align:center; color:#ef4444; padding:15px;">កំហុស៖ ${err.message}</div>`;
+      }
+    }
+
+    function closeMembersModal() {
+      document.getElementById('membersModal').style.display = 'none';
+    }
+
+    function formatLinks(text) {
+      const urlPattern = /(https?:\/\/[^\s]+)/g;
+      return text.replace(urlPattern, url => `<a href="${url}" target="_blank">${url}</a>`);
+    }
+
+    function escapeHtml(t) {
+      if (!t) return '';
+      return String(t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+  </script>
+</body>
+</html>
