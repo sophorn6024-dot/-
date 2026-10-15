@@ -40,6 +40,7 @@
       --art-bg: #ffe4e6;   --art-txt: #be123c;   --art-col: #fff1f2; --art-brd: #fecdd3;
       --for-bg: #cffafe;   --for-txt: #0e7490;   --for-col: #ecfeff; --for-brd: #a5f3fc;
       --res-bg: #e0e7ff;   --res-txt: #3730a3;   --res-col: #eef2ff; --res-brd: #c7d2fe;
+      --teal: #00b894;
     }
 
     [data-theme="dark"] {
@@ -61,6 +62,7 @@
       --art-bg: #881337;   --art-txt: #fecdd3;   --art-col: #4c0519; --art-brd: #be123c;
       --for-bg: #164e63;   --for-txt: #a5f3fc;   --for-col: #083344; --for-brd: #0e7490;
       --res-bg: #312e81;   --res-txt: #c7d2fe;   --res-col: #1e1b4b; --res-brd: #3730a3;
+      --teal: #00b894;
     }
 
     * {
@@ -161,9 +163,33 @@
     }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-    .landing-header { margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end; }
+    .landing-header { margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end; gap: 14px; flex-wrap: wrap; }
     .landing-header h1 { font-size: 22px; color: var(--primary); margin-bottom: 4px; }
     .landing-header p { font-size: 13px; color: var(--text-muted); }
+
+    /* 🌟 ប៊ូតុងរុករកទៅកាន់ Subject នៅជាប់ Title */
+    .btn-subject-nav {
+      background: rgba(0, 184, 148, 0.12);
+      color: var(--teal);
+      border: 1.5px solid rgba(0, 184, 148, 0.35);
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      height: 32px;
+    }
+    .btn-subject-nav:hover {
+      background: var(--teal);
+      color: #ffffff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(0, 184, 148, 0.3);
+    }
+
     .assigned-class-badge {
       background: var(--surface-elevated);
       border: 1.5px solid var(--border);
@@ -640,9 +666,16 @@
   <div id="landingPage">
     <div class="landing-header">
       <div>
-        <h1 class="f-moul">ស្រង់ពិន្ទុ</h1>
+        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:4px;">
+          <h1 class="f-moul" style="margin-bottom:0;">ស្រង់ពិន្ទុ</h1>
+          <!-- 🌟 ប៊ូតុងរុករកទៅកាន់ Subject នៅជាប់ចំណងជើង ស្រង់ពិន្ទុ -->
+          <button type="button" class="btn-subject-nav" onclick="openSubjectManagement()" title="ទៅកាន់ទំព័រគ្រប់គ្រងមុខវិជ្ជា">
+            <i class="fa-solid fa-book-bookmark"></i> <span>គ្រប់គ្រងមុខវិជ្ជា</span>
+          </button>
+        </div>
         <p>បញ្ចូលពិន្ទុសិស្សប្រចាំខែ និងឆមាស (ភ្ជាប់ជាមួយមុខវិជ្ជាស្វ័យប្រវត្តិ)</p>
       </div>
+
       <div class="assigned-class-badge" id="landingClassBadge">
         <span>🏫</span> <span id="landingClassBadgeTxt">ថ្នាក់ទី...</span>
       </div>
@@ -717,6 +750,11 @@
           <option value="ឆមាសទី១">ឆមាសទី 1</option>
           <option value="ឆមាសទី២">ឆមាសទី 2</option>
         </select>
+
+        <!-- 🌟 ប៊ូតុងបើកគ្រប់គ្រងមុខវិជ្ជា នៅលើ Toolbar -->
+        <button type="button" class="pill-btn" onclick="openSubjectManagement()" title="គ្រប់គ្រងមុខវិជ្ជា" style="border-color: rgba(0, 184, 148, 0.4); color: var(--teal);">
+          <i class="fa-solid fa-book-bookmark"></i> <span class="btn-label">មុខវិជ្ជា</span>
+        </button>
 
         <button type="button" class="pill-btn" onclick="downloadExcelTemplate()">
           <i class="fa-solid fa-download"></i> <span class="btn-label">ទាញយកគំរូ</span>
@@ -808,6 +846,18 @@
     function goToIndex(e) {
       if (e) e.preventDefault();
       window.location.href = 'index.html';
+    }
+
+    /* 🌟 អនុគមន៍បើកទំព័រគ្រប់គ្រងមុខវិជ្ជា (subject) */
+    function openSubjectManagement() {
+      // ផ្ញើសញ្ញាទៅ Parent Window ប្រសិនបើប្រើ Iframe/Tab
+      if (window.parent && window.parent !== window) {
+        try {
+          window.parent.postMessage({ type: 'NAVIGATE', page: 'subject', target: 'subject.html' }, '*');
+        } catch(e) {}
+      }
+      // រុករកទៅកាន់ subject.html
+      window.location.href = 'subject.html';
     }
 
     const SEMESTER_1_MONTHS = ['វិច្ឆិកា','ធ្នូ','មករា','កុម្ភៈ','មីនា','មេសា'];
