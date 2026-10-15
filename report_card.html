@@ -27,6 +27,12 @@
       font-family: 'Khmer OS Battambang', 'Battambang', sans-serif;
     }
 
+    /* 🌟 បង្ខំឱ្យ SELECT & OPTION ទាំងអស់ប្រើ Font Battambang ដិតស្អាត */
+    select, option, input, button {
+      font-family: 'Khmer OS Battambang', 'Battambang', sans-serif !important;
+      font-weight: 700 !important;
+    }
+
     body {
       background: #1e293b;
       color: #0f172a;
@@ -84,7 +90,7 @@
     }
 
     /* =========================================================
-       🎛️ TOP TOOLBAR (ក្បាលលើរៀបជា ២ ជួរលើទូរសព្ទ)
+       🎛️ TOP TOOLBAR (រៀបជា ២ ជួរលើទូរសព្ទ)
     ========================================================= */
     .top-toolbar {
       position: sticky;
@@ -134,6 +140,18 @@
     .pill-btn:hover, .pill-select:hover {
       background: #334155;
       border-color: #64748b;
+    }
+
+    /* 🌟 រចនាប្រអប់ជ្រើសរើសខែឱ្យលេចធ្លោស្អាត */
+    .custom-month-select {
+      color: #38bdf8 !important;
+      border-color: #0284c7 !important;
+      background: #0b1f33 !important;
+    }
+    .custom-month-select option {
+      background: #0f172a !important;
+      color: #f8fafc !important;
+      padding: 8px;
     }
 
     .pill-btn.primary {
@@ -395,7 +413,7 @@
       margin-top: 10px;
     }
 
-    /* 2 នាក់ • សន្លឹកផ្តេក A4 (Landscape Mode) */
+    /* 2 នាក់ • សន្លឹកផ្តេក A4 */
     .paper-stage.layout-2col .report-sheet-container-2col {
       background: #ffffff;
       width: 297mm;
@@ -497,7 +515,7 @@
   </div>
 
   <!-- =========================================================
-       1. TOOLBAR ផ្នែកខាងលើ (រៀបជា ២ ជួរស្អាតលើទូរសព្ទ)
+       1. TOOLBAR ផ្នែកខាងលើ
   ========================================================= -->
   <div class="top-toolbar" id="mainToolbar" style="display:none;">
     
@@ -544,15 +562,15 @@
 
     <!-- ជួរទី២ (ជួរក្រោម) -->
     <div class="tb-row-2">
-      <!-- 🌟 ជ្រើសរើសប្រភេទព្រឹត្តិបត្រ: ខែ ឬ ឆមាស -->
+      <!-- ជ្រើសរើសប្រភេទព្រឹត្តិបត្រ: ខែ ឬ ឆមាស -->
       <select id="reportTypeSelect" class="pill-select" onchange="onReportTypeChange(this.value)" style="flex:1;">
         <option value="monthly">ព្រឹត្តិបត្រខែ</option>
         <option value="semester">ព្រឹត្តិបត្រឆមាស</option>
       </select>
 
-      <!-- ជ្រើសរើសខែ (បង្ហាញតែពេលជ្រើសរើសព្រឹត្តិបត្រខែ) -->
-      <select id="monthSelectPill" class="pill-select" onchange="onMonthChange(this.value)" style="flex:1;">
-        <!-- បញ្ចូលខែតាម JS -->
+      <!-- 🌟 ជ្រើសរើសខែ រចនា Font Battambang យ៉ាងស្រស់ស្អាត -->
+      <select id="monthSelectPill" class="pill-select custom-month-select" onchange="onMonthChange(this.value)" style="flex:1;">
+        <!-- Populated via JS -->
       </select>
 
       <!-- និទ្ទេស -->
@@ -619,8 +637,13 @@
     }
     const CURRENT_USER = readSession();
     const USER_ROLE = CURRENT_USER?.role || "teacher";
-    const USER_CLASS = CURRENT_USER?.assigned_classes || CURRENT_USER?.assigned_class || "";
     const IS_ADMIN = String(USER_ROLE).toLowerCase().trim() === 'admin';
+
+    /* 🌟 អនុគមន៍ស្វែងរកថ្នាក់របស់គ្រូឱ្យប្រាកដប្រជា ១០០% */
+    function getTeacherClass() {
+      const c = CURRENT_USER?.assigned_classes || CURRENT_USER?.assigned_class || CURRENT_USER?.grade || CURRENT_USER?.class || "";
+      return cleanGrade(c);
+    }
 
     function checkAuthentication() {
       if (!CURRENT_USER || !CURRENT_USER.username) {
@@ -655,7 +678,56 @@
       'កក្កដា': 7, 'សីហា': 8, 'កញ្ញា': 9, 'តុលា': 10, 'វិច្ឆិកា': 11, 'ធ្នូ': 12
     };
 
-    let reportMode = 'monthly'; // 'monthly' | 'semester'
+    /* 🌟 TEMPLATES ស្តង់ដារ (FALLBACK ធានាថាមិនបាត់មុខវិជ្ជាឡើយ) */
+    const DEFAULT_MONTHLY_TEMPLATE = [
+      {
+        parentName: 'ភាសាខ្មែរ', isGroup: true,
+        children: [
+          { name: 'សមត្ថភាពស្ដាប់', code: 'kh_listen', max: 10 },
+          { name: 'សមត្ថភាពសរសេរ', code: 'kh_write',  max: 10 },
+          { name: 'សមត្ថភាពអាន',   code: 'kh_read',   max: 10 },
+          { name: 'សមត្ថភាពនិយាយ', code: 'kh_speak',  max: 10 }
+        ]
+      },
+      {
+        parentName: 'គណិតវិទ្យា', isGroup: true,
+        children: [
+          { name: 'ចំនួន',          code: 'm_num',     max: 10 },
+          { name: 'រង្វាស់រង្វាល់', code: 'm_measure', max: 10 },
+          { name: 'ធរណីមាត្រ',     code: 'm_geo',     max: 10 },
+          { name: 'ពិជគណិត',       code: 'm_algebra', max: 10 },
+          { name: 'ស្ថិតិ',          code: 'm_stat',    max: 10 }
+        ]
+      },
+      { parentName: 'វិទ្យាសាស្ត្រ', isGroup: false, code: 'science', max: 10 },
+      { parentName: 'សិក្សាសង្គម',   isGroup: false, code: 'social',  max: 10 },
+      {
+        parentName: 'អប់រំកាយសុខភាព សិល្បៈ', isGroup: true,
+        children: [
+          { name: 'គេហវិទ្យា-អប់រំសិល្បៈ', code: 'a_craft',  max: 10 },
+          { name: 'អប់រំកាយ-កីឡា',         code: 'a_pe',     max: 10 },
+          { name: 'សុខភាព-អនាម័យ',         code: 'a_health', max: 10 },
+          { name: 'អប់រំបំណិនជីវិត',       code: 'a_env',    max: 10 }
+        ]
+      },
+      { parentName: 'ភាសាបរទេស', isGroup: false, code: 'foreign', max: 10 }
+    ];
+
+    const DEFAULT_SEMESTER_TEMPLATE = [
+      { name: 'អំណាន',                  code: 'read',      max: 10 },
+      { name: 'ស្ដាប់ និងនិយាយ',         code: 'listen',    max: 10 },
+      { name: 'សរសេរតាមអាន',            code: 'dictation', max: 10 },
+      { name: 'តែងសេចក្ដី',              code: 'essay',     max: 10 },
+      { name: 'គណិតវិទ្យា',              code: 'math',      max: 10 },
+      { name: 'វិទ្យាសាស្ត្រ',            code: 'science',   max: 10 },
+      { name: 'សិក្សាសង្គម',              code: 'social',    max: 10 },
+      { name: 'គេហវិទ្យា-អប់រំសិល្បៈ',  code: 'homeArts',  max: 10 },
+      { name: 'អប់រំកាយ-សុខភាព',        code: 'pe',        max: 10 },
+      { name: 'អប់រំបំណិនជីវិត',        code: 'ethics',    max: 10 },
+      { name: 'ភាសាបរទេស',              code: 'foreign',   max: 10 }
+    ];
+
+    let reportMode = 'monthly';
     let selectedMonth = 'តុលា';
     let layoutMode = '1_portrait';
     let gradeMode = 'AF';
@@ -671,7 +743,6 @@
     const KHMER_DIGITS = ['០','១','២','៣','៤','៥','៦','៧','៨','៩'];
     function toKhmerNum(n) { return String(n).replace(/\d/g, d => KHMER_DIGITS[d]); }
 
-    /* 🌟 គណនាថ្ងៃដាច់ខែសុរិយគតិស្វ័យប្រវត្តិតាមខែដែលបានជ្រើសរើស */
     function getAutoSolarDate(mName) {
       const year = currentYear;
       const mNum = CAL_MONTH[mName] || 10;
@@ -707,6 +778,26 @@
       if (avg >= 6) return 'D';
       if (avg >= 5) return 'E';
       return 'F';
+    }
+
+    /* 🌟 HELPER ស្វែងរកពិន្ទុឆ្លាតវៃតាមគ្រប់ KEY (code, key, id, name) ធានាមិនបាត់ពិន្ទុឡើយ */
+    function getSubjectScore(scoreObj, sub) {
+      if (!scoreObj || typeof scoreObj !== 'object') return null;
+      const candidates = [
+        sub.code,
+        sub.key,
+        sub.id ? String(sub.id) : null,
+        sub.id ? `sub_${sub.id}` : null,
+        sub.name
+      ].filter(Boolean);
+
+      for (const k of candidates) {
+        if (scoreObj[k] !== undefined && scoreObj[k] !== null && scoreObj[k] !== '') {
+          const num = parseFloat(scoreObj[k]);
+          if (!isNaN(num)) return num;
+        }
+      }
+      return null;
     }
 
     function toggleDropdown(id, btn) {
@@ -773,7 +864,7 @@
       const sel = document.getElementById('classSelectPill');
       const mSel = document.getElementById('monthSelectPill');
       
-      // បញ្ចូលជម្រើសខែ
+      // បញ្ចូលជម្រើសខែជាមួយ Font Battambang
       mSel.innerHTML = ALL_MONTHS.map(m => `<option value="${m}" ${m==='តុលា'?'selected':''}>ខែ ${m}</option>`).join('');
 
       sel.innerHTML = '<option value="">កំពុងទាញយកថ្នាក់...</option>';
@@ -785,15 +876,18 @@
         let rawClasses = Array.from(new Set((data || []).map(d => cleanGrade(d.grade)).filter(Boolean)));
         rawClasses.sort((a,b) => a.localeCompare(b, 'km', { numeric: true }));
 
-        sel.innerHTML = rawClasses.map(c => `<option value="${c}">ថ្នាក់ទី ${c}</option>`).join('');
+        const teacherClass = getTeacherClass();
 
-        const cleanUserClass = cleanGrade(USER_CLASS);
-        if (!IS_ADMIN && cleanUserClass) {
-          sel.value = cleanUserClass;
+        // បើជាគ្រូធម្មតា ត្រូវប្រាកដថាថ្នាក់របស់គាត់ត្រូវបានបញ្ចូលជានិច្ច
+        if (!IS_ADMIN && teacherClass) {
+          if (!rawClasses.includes(teacherClass)) rawClasses.unshift(teacherClass);
+          sel.innerHTML = `<option value="${teacherClass}">ថ្នាក់ទី ${teacherClass}</option>`;
+          sel.value = teacherClass;
           sel.disabled = true;
-          currentClassName = cleanUserClass;
+          currentClassName = teacherClass;
         } else {
-          sel.value = (cleanUserClass && rawClasses.includes(cleanUserClass)) ? cleanUserClass : (rawClasses[0] || '');
+          sel.innerHTML = rawClasses.map(c => `<option value="${c}">ថ្នាក់ទី ${c}</option>`).join('');
+          sel.value = (teacherClass && rawClasses.includes(teacherClass)) ? teacherClass : (rawClasses[0] || '');
           currentClassName = sel.value;
         }
 
@@ -810,8 +904,10 @@
     }
 
     async function loadRealDataForClass(cls) {
-      const pure = cleanGrade(cls);
+      const pure = cleanGrade(cls) || getTeacherClass();
       if (!pure) return;
+
+      currentClassName = pure;
 
       document.getElementById('paperWorkspace').innerHTML = `
         <div class="empty-state-card">
@@ -821,12 +917,10 @@
 
       try {
         // ១. ទាញយកសិស្សពិត
-        const { data: stData, error: stErr } = await sb
-          .from('students')
-          .select('*')
-          .in('grade', [pure, `ថ្នាក់ទី${pure}`, `ថ្នាក់ទី ${pure}`])
-          .order('id', { ascending: true });
+        const { data: allSt, error: stErr } = await sb.from('students').select('*').order('id', { ascending: true });
         if (stErr) throw stErr;
+
+        const stData = (allSt || []).filter(s => cleanGrade(s.grade) === pure);
 
         if (!stData || stData.length === 0) {
           studentsList = [];
@@ -839,24 +933,22 @@
           return;
         }
 
-        // ២. ទាញយកមុខវិជ្ជាពិតពី table subjects
-        const { data: subData } = await sb
+        // ២. ទាញយកមុខវិជ្ជាពិតពី table subjects (បើគ្មាន Fallback ទៅ Template ស្វ័យប្រវត្តិ)
+        const { data: dbSubData } = await sb
           .from('subjects')
           .select('*')
-          .eq('assigned_class', pure)
+          .or(`assigned_class.eq.${pure},assigned_class.eq.all`)
           .eq('subject_type', reportMode)
           .order('sort_order', { ascending: true })
           .order('id', { ascending: true });
 
         // ៣. ទាញយកពិន្ទុពិត
-        const targetPeriod = (reportMode === 'monthly') ? selectedMonth : 'ឆមាស';
-        let scoreQuery = sb.from('scores').select('*').eq('assigned_class', pure).eq('score_type', reportMode);
-        
-        if (reportMode === 'monthly') {
-          scoreQuery = scoreQuery.eq('period', selectedMonth);
-        }
-
-        const { data: scData } = await scoreQuery;
+        const classVariants = [pure, 'ថ្នាក់ទី' + pure, 'ថ្នាក់ទី ' + pure, 'ថ្នាក់' + pure, 'ថ្នាក់ ' + pure];
+        const { data: scData } = await sb
+          .from('scores')
+          .select('*')
+          .in('assigned_class', classVariants)
+          .eq('score_type', reportMode);
 
         const scoreMap = {};
         const scoreMapS1 = {};
@@ -867,9 +959,11 @@
           if (typeof scObj === 'string') {
             try { scObj = JSON.parse(scObj); } catch(e) { scObj = {}; }
           }
-          const sid = String(row.student_id);
+          const sid = String(row.student_id).trim();
           if (reportMode === 'monthly') {
-            scoreMap[sid] = scObj;
+            if (row.period === selectedMonth) {
+              scoreMap[sid] = scObj;
+            }
           } else {
             if (row.period === 'ឆមាសទី១') scoreMapS1[sid] = scObj;
             if (row.period === 'ឆមាសទី២') scoreMapS2[sid] = scObj;
@@ -880,7 +974,7 @@
         const { data: attData } = await sb
           .from('attendance')
           .select('student_id, status')
-          .eq('assigned_class', pure);
+          .in('assigned_class', classVariants);
 
         const unexcusedMap = {};
         const excusedMap = {};
@@ -888,69 +982,81 @@
         const excusedCodes = ['C', 'ច', 'ច្បាប់', 'មានច្បាប់', 'EXCUSED', 'PERMISSION'];
 
         (attData || []).forEach(a => {
-          const sid = String(a.student_id);
+          const sid = String(a.student_id).trim();
           const st = String(a.status || '').trim().toUpperCase();
           if (unexcusedCodes.includes(st)) unexcusedMap[sid] = (unexcusedMap[sid] || 0) + 1;
           if (excusedCodes.includes(st)) excusedMap[sid] = (excusedMap[sid] || 0) + 1;
         });
 
-        // ៥. រៀបចំទិន្នន័យ (🌟 ច្រោះចោលមុខវិជ្ជាណាដែលគ្មានពិន្ទុ)
+        // ៥. រៀបចំទិន្នន័យ (🌟 បើគ្មានពិន្ទុ មិនបង្ហាញមុខវិជ្ជាឡើយ)
         studentsList = stData.map(st => {
-          const sid = String(st.student_id || st.id);
-          const sc = scoreMap[sid] || {};
-          const sc1 = scoreMapS1[sid] || {};
-          const sc2 = scoreMapS2[sid] || {};
+          const sid1 = String(st.student_id || '').trim();
+          const sid2 = String(st.id || '').trim();
+          
+          const sc = scoreMap[sid1] || scoreMap[sid2] || {};
+          const sc1 = scoreMapS1[sid1] || scoreMapS1[sid2] || {};
+          const sc2 = scoreMapS2[sid1] || scoreMapS2[sid2] || {};
 
           let totalScore = 0;
           let activeSubjectCount = 0;
 
           if (reportMode === 'monthly') {
-            // បែងចែកជាមុខវិជ្ជាមេ និងមុខវិជ្ជារង
-            const parents = (subData || []).filter(s => !s.parent_id);
+            // រៀបចំ Groups មុខវិជ្ជាខែ (Fallback ទៅ DEFAULT_MONTHLY_TEMPLATE បើគ្មានក្នុង DB)
+            let rawGroups = [];
+            if (dbSubData && dbSubData.length > 0) {
+              const parents = dbSubData.filter(s => !s.parent_id);
+              parents.forEach(p => {
+                const children = dbSubData.filter(c => String(c.parent_id) === String(p.id));
+                rawGroups.push({
+                  parentName: p.name,
+                  isGroup: children.length > 0,
+                  children: children.map(c => ({ name: c.name, code: c.code || `sub_${c.id}`, id: c.id, max: Number(c.max_score)||10 })),
+                  code: p.code || `sub_${p.id}`,
+                  id: p.id,
+                  max: Number(p.max_score) || 10
+                });
+              });
+            } else {
+              rawGroups = JSON.parse(JSON.stringify(DEFAULT_MONTHLY_TEMPLATE));
+            }
+
             const activeGroups = [];
 
-            parents.forEach(p => {
-              const children = (subData || []).filter(c => String(c.parent_id) === String(p.id));
-              
-              if (children.length > 0) {
-                // 🌟 ច្រោះយកតែជំនាញរងណាដែលមានពិន្ទុ
+            rawGroups.forEach(g => {
+              if (g.isGroup) {
                 const activeChildren = [];
-                children.forEach(c => {
-                  const val = sc[c.code || `sub_${c.id}`];
-                  const num = parseFloat(val);
-                  if (!isNaN(num) && val !== '' && val !== null) {
+                (g.children || []).forEach(c => {
+                  const scoreVal = getSubjectScore(sc, c);
+                  if (scoreVal !== null) {
                     activeChildren.push({
                       name: c.name,
-                      code: c.code || `sub_${c.id}`,
-                      max: Number(c.max_score) || 10,
-                      score: num,
-                      grade: calculateGrade(num)
+                      max: c.max || 10,
+                      score: scoreVal,
+                      grade: calculateGrade(scoreVal)
                     });
-                    totalScore += num;
+                    totalScore += scoreVal;
                     activeSubjectCount++;
                   }
                 });
 
                 if (activeChildren.length > 0) {
                   activeGroups.push({
-                    parentName: p.name,
+                    parentName: g.parentName,
                     isGroup: true,
                     children: activeChildren
                   });
                 }
               } else {
-                // មុខវិជ្ជាទោល (គ្មានរង)
-                const val = sc[p.code || `sub_${p.id}`];
-                const num = parseFloat(val);
-                if (!isNaN(num) && val !== '' && val !== null) {
+                const scoreVal = getSubjectScore(sc, g);
+                if (scoreVal !== null) {
                   activeGroups.push({
-                    parentName: p.name,
+                    parentName: g.parentName,
                     isGroup: false,
-                    max: Number(p.max_score) || 10,
-                    score: num,
-                    grade: calculateGrade(num)
+                    max: g.max || 10,
+                    score: scoreVal,
+                    grade: calculateGrade(scoreVal)
                   });
-                  totalScore += num;
+                  totalScore += scoreVal;
                   activeSubjectCount++;
                 }
               }
@@ -966,23 +1072,26 @@
               totalScore: totalScore,
               avgScore: avgScore,
               gradeLabel: avgScore > 0 ? calculateGrade(avgScore) : '-',
-              absentUnexcused: unexcusedMap[sid] || 0,
-              absentExcused: excusedMap[sid] || 0,
+              absentUnexcused: unexcusedMap[sid1] || unexcusedMap[sid2] || 0,
+              absentExcused: excusedMap[sid1] || excusedMap[sid2] || 0,
               monthlyGroups: activeGroups
             };
 
           } else {
             // ព្រឹត្តិបត្រឆមាស
+            let semList = (dbSubData && dbSubData.length > 0) 
+              ? dbSubData.map(s => ({ name: s.name, code: s.code || `sub_${s.id}`, id: s.id, max: Number(s.max_score)||10 }))
+              : JSON.parse(JSON.stringify(DEFAULT_SEMESTER_TEMPLATE));
+
             let sem1Total = 0, sem1Count = 0;
             let sem2Total = 0, sem2Count = 0;
             const activeSemSubjects = [];
 
-            (subData || []).forEach(sub => {
-              const code = sub.code || `sub_${sub.id}`;
-              const v1 = parseFloat(sc1[code]);
-              const v2 = parseFloat(sc2[code]);
-              const has1 = !isNaN(v1);
-              const has2 = !isNaN(v2);
+            semList.forEach(sub => {
+              const v1 = getSubjectScore(sc1, sub);
+              const v2 = getSubjectScore(sc2, sub);
+              const has1 = v1 !== null;
+              const has2 = v2 !== null;
 
               // 🌟 បើគ្មានពិន្ទុទាំងឆមាស១ និង២ ទេ មិនបាច់បង្ហាញឡើយ
               if (!has1 && !has2) return;
@@ -997,7 +1106,7 @@
 
               activeSemSubjects.push({
                 name: sub.name,
-                max: Number(sub.max_score) || 10,
+                max: sub.max || 10,
                 s1: has1 ? v1 : '-',
                 s2: has2 ? v2 : '-',
                 avg: (subAvg !== '-') ? subAvg.toFixed(2).replace(/\.00$/, '') : '-',
@@ -1021,8 +1130,8 @@
               avgSem2: avg2,
               avgYear: yearAvg,
               yearGrade: yearAvg > 0 ? calculateGrade(yearAvg) : '-',
-              absentUnexcused: unexcusedMap[sid] || 0,
-              absentExcused: excusedMap[sid] || 0,
+              absentUnexcused: unexcusedMap[sid1] || unexcusedMap[sid2] || 0,
+              absentExcused: excusedMap[sid1] || excusedMap[sid2] || 0,
               semSubjects: activeSemSubjects
             };
           }
@@ -1100,13 +1209,15 @@
       const isMonthly = (reportMode === 'monthly');
       const docTitle = isMonthly ? `ព្រឹត្តិបត្រពិន្ទុ ខែ ${selectedMonth}` : `ព្រឹត្តិបត្រពិន្ទុ ${academicYearStr}`;
       const solarDateStr = isMonthly ? getAutoSolarDate(selectedMonth) : getAutoSolarDate('តុលា');
+      
+      // 🌟 ថ្នាក់ទីបង្ហាញច្បាស់លាស់ជានិច្ច ទាំងសម្រាប់គ្រូ និង Admin
+      const displayGrade = cleanGrade(st.grade) || cleanGrade(currentClassName) || getTeacherClass() || '...';
 
       let theadHtml = '';
       let tbodyHtml = '';
       let summaryRowsHtml = '';
 
       if (isMonthly) {
-        // ── ព្រឹត្តិបត្រខែ ──
         theadHtml = `
           <tr>
             <th style="width: 32px;">ល.រ</th>
@@ -1120,38 +1231,42 @@
         `;
 
         let rowCounter = 1;
-        (st.monthlyGroups || []).forEach(g => {
-          if (g.isGroup) {
-            // មានជំនាញរង
-            g.children.forEach((c, idx) => {
-              const grClass = `gr-${c.grade}`;
+        const groups = st.monthlyGroups || [];
+
+        if (groups.length === 0) {
+          tbodyHtml = `<tr><td colspan="8" style="padding: 24px; color:#ef4444; font-weight:bold;">⚠️ សិស្សនេះមិនទាន់មានពិន្ទុក្នុងខែ ${selectedMonth} នៅឡើយទេ</td></tr>`;
+        } else {
+          groups.forEach(g => {
+            if (g.isGroup) {
+              g.children.forEach((c, idx) => {
+                const grClass = `gr-${c.grade}`;
+                tbodyHtml += `<tr>`;
+                tbodyHtml += `<td>${rowCounter++}</td>`;
+                if (idx === 0) {
+                  tbodyHtml += `<td rowspan="${g.children.length}" style="font-weight:700; background:#fcfcfc;">${g.parentName}</td>`;
+                }
+                tbodyHtml += `<td style="text-align:left; padding-left:8px;">${c.name}</td>`;
+                tbodyHtml += `<td>${c.max}</td>`;
+                tbodyHtml += `<td class="bold-val">${c.score}</td>`;
+                tbodyHtml += `<td style="color:#dc2626; font-weight:800;">${st.rank}</td>`;
+                tbodyHtml += `<td class="${grClass}">${formatGrade(c.grade)}</td>`;
+                tbodyHtml += `<td></td>`;
+                tbodyHtml += `</tr>`;
+              });
+            } else {
+              const grClass = `gr-${g.grade}`;
               tbodyHtml += `<tr>`;
               tbodyHtml += `<td>${rowCounter++}</td>`;
-              if (idx === 0) {
-                tbodyHtml += `<td rowspan="${g.children.length}" style="font-weight:700; background:#fcfcfc;">${g.parentName}</td>`;
-              }
-              tbodyHtml += `<td style="text-align:left; padding-left:8px;">${c.name}</td>`;
-              tbodyHtml += `<td>${c.max}</td>`;
-              tbodyHtml += `<td class="bold-val">${c.score}</td>`;
+              tbodyHtml += `<td colspan="2" style="font-weight:700;">${g.parentName}</td>`;
+              tbodyHtml += `<td>${g.max}</td>`;
+              tbodyHtml += `<td class="bold-val">${g.score}</td>`;
               tbodyHtml += `<td style="color:#dc2626; font-weight:800;">${st.rank}</td>`;
-              tbodyHtml += `<td class="${grClass}">${formatGrade(c.grade)}</td>`;
+              tbodyHtml += `<td class="${grClass}">${formatGrade(g.grade)}</td>`;
               tbodyHtml += `<td></td>`;
               tbodyHtml += `</tr>`;
-            });
-          } else {
-            // មុខវិជ្ជាទោល
-            const grClass = `gr-${g.grade}`;
-            tbodyHtml += `<tr>`;
-            tbodyHtml += `<td>${rowCounter++}</td>`;
-            tbodyHtml += `<td colspan="2" style="font-weight:700;">${g.parentName}</td>`;
-            tbodyHtml += `<td>${g.max}</td>`;
-            tbodyHtml += `<td class="bold-val">${g.score}</td>`;
-            tbodyHtml += `<td style="color:#dc2626; font-weight:800;">${st.rank}</td>`;
-            tbodyHtml += `<td class="${grClass}">${formatGrade(g.grade)}</td>`;
-            tbodyHtml += `<td></td>`;
-            tbodyHtml += `</tr>`;
-          }
-        });
+            }
+          });
+        }
 
         summaryRowsHtml = `
           <tr style="background:#f8fafc;">
@@ -1179,7 +1294,6 @@
         `;
 
       } else {
-        // ── ព្រឹត្តិបត្រឆមាស ──
         theadHtml = `
           <tr>
             <th style="width: 32px;">ល.រ</th>
@@ -1192,20 +1306,25 @@
           </tr>
         `;
 
-        (st.semSubjects || []).forEach((row, i) => {
-          const grClass = row.grade !== '-' ? `gr-${row.grade}` : '';
-          tbodyHtml += `
-            <tr>
-              <td>${i + 1}</td>
-              <td class="sub-name">${row.name}</td>
-              <td>${row.max}</td>
-              <td>${row.s1}</td>
-              <td>${row.s2}</td>
-              <td class="bold-val">${row.avg}</td>
-              <td class="${grClass}">${formatGrade(row.grade)}</td>
-            </tr>
-          `;
-        });
+        const semSubs = st.semSubjects || [];
+        if (semSubs.length === 0) {
+          tbodyHtml = `<tr><td colspan="7" style="padding: 24px; color:#ef4444; font-weight:bold;">⚠️ សិស្សនេះមិនទាន់មានពិន្ទុប្រឡងឆមាសនៅឡើយទេ</td></tr>`;
+        } else {
+          semSubs.forEach((row, i) => {
+            const grClass = row.grade !== '-' ? `gr-${row.grade}` : '';
+            tbodyHtml += `
+              <tr>
+                <td>${i + 1}</td>
+                <td class="sub-name">${row.name}</td>
+                <td>${row.max}</td>
+                <td>${row.s1}</td>
+                <td>${row.s2}</td>
+                <td class="bold-val">${row.avg}</td>
+                <td class="${grClass}">${formatGrade(row.grade)}</td>
+              </tr>
+            `;
+          });
+        }
 
         summaryRowsHtml = `
           <tr style="background:#f8fafc;">
@@ -1245,7 +1364,7 @@
             <div class="left-dept-info">
               <div>ការិយាល័យអប់រំ យុវជន និងកីឡា</div>
               <div style="font-weight:700;">សាលាបឋមសិក្សាកំពង់ល្ពៅ</div>
-              <div>ថ្នាក់ទី${st.grade}</div>
+              <div>ថ្នាក់ទី ${displayGrade}</div>
             </div>
 
             <div class="center-doc-title">
