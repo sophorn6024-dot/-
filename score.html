@@ -22,16 +22,16 @@
   <style>
     :root, [data-theme="light"] {
       --primary: #0284c7;
-      --bg: #f0fdf4;
+      --bg: #f8fafc;
       --surface: #ffffff;
-      --surface-elevated: #f8fafc;
+      --surface-elevated: #f1f5f9;
       --border: #cbd5e1;
       --text: #0f172a;
       --text-muted: #64748b;
-      --card-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
+      --card-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
 
-      --toolbar-bg: rgba(220, 252, 231, 0.65);
-      --toolbar-border: #bbf7d0;
+      --toolbar-bg: rgba(241, 245, 249, 0.95);
+      --toolbar-border: #cbd5e1;
 
       --khmer-bg: #dbeafe; --khmer-txt: #1e40af; --khmer-col: #eff6ff; --khmer-brd: #bfdbfe;
       --math-bg: #f3e8ff;  --math-txt: #6b21a8;  --math-col: #faf5ff; --math-brd: #e9d5ff;
@@ -40,10 +40,11 @@
       --art-bg: #ffe4e6;   --art-txt: #be123c;   --art-col: #fff1f2; --art-brd: #fecdd3;
       --for-bg: #cffafe;   --for-txt: #0e7490;   --for-col: #ecfeff; --for-brd: #a5f3fc;
       --res-bg: #e0e7ff;   --res-txt: #3730a3;   --res-col: #eef2ff; --res-brd: #c7d2fe;
-      --teal: #00b894;
+      --teal: #059669;
     }
 
     [data-theme="dark"] {
+      --primary: #0284c7;
       --bg: #090e17;
       --surface: #0f172a;
       --surface-elevated: #162642;
@@ -154,7 +155,7 @@
 
     /* ══════════════ 1. LANDING PAGE CARDS ══════════════ */
     #landingPage {
-      max-width: 1040px; /* ពង្រីកដើម្បីដាក់ Card ទាំង ៣ នៅជួរទន្ទឹមគ្នា */
+      max-width: 1040px;
       margin: 0 auto;
       padding: 36px 20px;
       height: 100%;
@@ -167,6 +168,26 @@
     .landing-header h1 { font-size: 24px; color: var(--primary); margin-bottom: 4px; }
     .landing-header p { font-size: 13.5px; color: var(--text-muted); }
 
+    .header-right-tools { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+    /* 🌟 ប៊ូតុង Toggle Theme */
+    .btn-theme-pill {
+      background: var(--surface-elevated);
+      border: 1.5px solid var(--border);
+      color: var(--text);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      height: 34px;
+    }
+    .btn-theme-pill:hover { border-color: var(--primary); transform: translateY(-1px); }
+
     .assigned-class-badge {
       background: var(--surface-elevated);
       border: 1.5px solid var(--border);
@@ -178,9 +199,9 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      height: 34px;
     }
 
-    /* 🌟 ប្លង់តម្រៀប Card ទាំង ៣ នៅទន្ទឹមគ្នា */
     .cards-wrapper {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -201,10 +222,9 @@
     }
     .score-card:hover {
       transform: translateY(-4px);
-      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
     }
 
-    /* ពណ៌ឆ្នូតខាងឆ្វេងកាតនីមួយៗ */
     .score-card.subject  { border-left: 6px solid var(--teal); }
     .score-card.monthly  { border-left: 6px solid #0284c7; }
     .score-card.semester { border-left: 6px solid #7c3aed; }
@@ -548,7 +568,7 @@
       background: var(--surface);
       color: var(--text);
     }
-    .score-box:focus { border-color: #0284c7 !important; background: #ffffff !important; }
+    .score-box:focus { border-color: #0284c7 !important; background: var(--surface) !important; }
     .score-box.val-low    { background: #fee2e2 !important; color: #dc2626 !important; }
     .score-box.val-medium { background: #ffedd5 !important; color: #ea580c !important; }
     .score-box.val-fair   { background: #fef3c7 !important; color: #d97706 !important; }
@@ -631,6 +651,17 @@
       .report-paper-container { width: 100% !important; box-shadow: none !important; }
     }
   </style>
+
+  <!-- 🌟 INITIALIZE THEME IMMEDIATELY TO PREVENT FLICKER -->
+  <script>
+    (function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlTheme = urlParams.get('theme');
+      const savedTheme = localStorage.getItem('krou_theme_manual');
+      const finalTheme = urlTheme || savedTheme || 'dark';
+      document.documentElement.setAttribute('data-theme', finalTheme);
+    })();
+  </script>
 </head>
 <body>
 
@@ -656,12 +687,19 @@
         <p>បញ្ចូលពិន្ទុសិស្សប្រចាំខែ និងឆមាស (ភ្ជាប់ជាមួយមុខវិជ្ជាស្វ័យប្រវត្តិ)</p>
       </div>
 
-      <div class="assigned-class-badge" id="landingClassBadge">
-        <span>🏫</span> <span id="landingClassBadgeTxt">ថ្នាក់ទី...</span>
+      <div class="header-right-tools">
+        <!-- 🌟 ប៊ូតុងប្តូរ Dark / Light នៅលើ Landing Page -->
+        <button type="button" class="btn-theme-pill" id="btnThemeLanding" onclick="toggleTheme()" title="ប្តូរពន្លឺ / ងងឹត">
+          <i class="fa-solid fa-moon"></i> <span id="txtThemeLanding">ងងឹត</span>
+        </button>
+
+        <div class="assigned-class-badge" id="landingClassBadge">
+          <span>🏫</span> <span id="landingClassBadgeTxt">ថ្នាក់ទី...</span>
+        </div>
       </div>
     </div>
 
-    <!-- 🌟 កាតទាំង ៣ នៅទន្ទឹមគ្នា ដោយ «គ្រប់គ្រងមុខវិជ្ជា» នៅមុខគេ -->
+    <!-- កាតទាំង ៣ នៅទន្ទឹមគ្នា ដោយ «គ្រប់គ្រងមុខវិជ្ជា» នៅមុខគេ -->
     <div class="cards-wrapper">
       
       <!-- កាតទី១៖ គ្រប់គ្រងមុខវិជ្ជា (នៅមុខគេបង្អស់) -->
@@ -769,6 +807,11 @@
           <i class="fa-solid fa-language"></i> <span id="txtGradeLang">A-F</span>
         </button>
 
+        <!-- 🌟 ប៊ូតុង Toggle Theme លើ Toolbar -->
+        <button type="button" class="pill-btn" id="btnThemeToolbar" onclick="toggleTheme()" title="ប្តូរ Dark / Light">
+          <i class="fa-solid fa-moon"></i> <span class="btn-label" id="txtThemeToolbar">ងងឹត</span>
+        </button>
+
         <div class="dropdown-relative">
           <button type="button" class="pill-btn" id="btnGradeFilter" onclick="toggleGradeMenu(event)">
             <i class="fa-solid fa-filter"></i> <span id="currentGradeFilterTxt">និទ្ទេស</span>
@@ -820,7 +863,59 @@
   </div>
 
   <script>
-    /* 1. SUPABASE CLIENT CONFIG */
+    /* =========================================================
+       🌟 THEME ENGINE (Dark / Light Mode ដំណើរការ ១០០%)
+    ========================================================= */
+    function applyTheme(th) {
+      const theme = (th === 'light') ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('krou_theme_manual', theme);
+
+      // ប្តូរ Icon និងអក្សរលើប៊ូតុង
+      const iconClass = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+      const labelText = theme === 'dark' ? 'ពន្លឺ' : 'ងងឹត';
+
+      const landingIcon = document.querySelector('#btnThemeLanding i');
+      const landingTxt = document.getElementById('txtThemeLanding');
+      if (landingIcon) landingIcon.className = iconClass;
+      if (landingTxt) landingTxt.innerText = labelText;
+
+      const tbIcon = document.querySelector('#btnThemeToolbar i');
+      const tbTxt = document.getElementById('txtThemeToolbar');
+      if (tbIcon) tbIcon.className = iconClass;
+      if (tbTxt) tbTxt.innerText = labelText;
+    }
+
+    function toggleTheme() {
+      const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+      const next = cur === 'dark' ? 'light' : 'dark';
+      applyTheme(next);
+
+      // ប្រាប់ផ្ទាំងមេ (index.html) ប្រសិនបើនៅក្នុង Iframe
+      if (window.parent && window.parent !== window) {
+        try {
+          window.parent.postMessage({ type: 'THEME_CHANGE', theme: next }, '*');
+        } catch(e) {}
+      }
+    }
+
+    // ស្ដាប់សញ្ញាពេលផ្ទាំងមេ (index.html) ប្ដូរ Theme
+    window.addEventListener('message', (ev) => {
+      if (ev.data && ev.data.type === 'THEME_CHANGE' && ev.data.theme) {
+        applyTheme(ev.data.theme);
+      }
+    });
+
+    // ស្ដាប់ពេលមានការប្ដូរ Theme លើ Tab ផ្សេង
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'krou_theme_manual' && e.newValue) {
+        applyTheme(e.newValue);
+      }
+    });
+
+    /* =========================================================
+       1. SUPABASE CLIENT CONFIG
+    ========================================================= */
     const SUPABASE_URL = "https://nggnuobnrxiqjtcwlvwk.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_AHDcUJbuMAfhaocyfm2X7w_O9s06wML";
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -1008,6 +1103,9 @@
 
     /* 3. INITIALIZATION */
     window.addEventListener('DOMContentLoaded', () => {
+      // ធ្វើបច្ចុប្បន្នភាព UI លើប៊ូតុង Theme តាមតម្លៃជាក់ស្ដែង
+      applyTheme(document.documentElement.getAttribute('data-theme') || 'dark');
+
       document.getElementById('topToolbar')?.addEventListener('scroll', closeGradeMenu);
       window.addEventListener('resize', () => { closeGradeMenu(); fixStickyOffsets(); });
       if (document.fonts && document.fonts.ready) document.fonts.ready.then(fixStickyOffsets);
@@ -1034,7 +1132,7 @@
       renderGradeMenuPopup();
       setupArrowKeys();
 
-      // 🌟 REALTIME LISTENER: ពេល Form មុខវិជ្ជាកែប្រែ
+      // REALTIME LISTENER: ពេល Form មុខវិជ្ជាកែប្រែ
       window.addEventListener('storage', (e) => {
         if (e.key === 'krou_subjects_updated') {
           showToast('🔄 មុខវិជ្ជាត្រូវបានផ្លាស់ប្តូរ! កំពុង Update តារាង...');
