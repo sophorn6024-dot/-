@@ -13,16 +13,28 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
-:root{--app-bg:#f8fafc;--tb-bg:rgba(255,255,255,.96);--tb-border:#e2e8f0;--card:#fff;--text:#0f172a;--muted:#64748b;--in-bg:#fff;--in-border:#cbd5e1;--focus:#0284c7;--grp:#f1f5f9;--sh:0 4px 16px rgba(15,23,42,.06);--sw:1122px;--sht:793px;color-scheme:light}
-[data-theme="dark"]{--app-bg:#090e17;--tb-bg:rgba(15,23,42,.95);--tb-border:#1e293b;--card:#111e33;--text:#f8fafc;--muted:#94a3b8;--in-bg:#162642;--in-border:#233f66;--focus:#38bdf8;--grp:#0e1a2d;--sh:0 8px 24px rgba(0,0,0,.45);color-scheme:dark}
+/* ===== 🎨 Theme: Light ===== */
+:root{
+  --app-bg:#f8fafc;--tb-bg:rgba(255,255,255,.96);--tb-border:#e2e8f0;--card:#fff;--text:#0f172a;--muted:#64748b;
+  --in-bg:#fff;--in-border:#cbd5e1;--focus:#0891b2;--grp:#f1f5f9;--sh:0 4px 16px rgba(15,23,42,.06);
+  --pop-bg:#ffffff;--pop-line:#e2e8f0;--chip:#f1f5f9;--chip-hover:#e2e8f0;--accent:#0891b2;--accent-soft:rgba(8,145,178,.12);
+  --pop-shadow:0 18px 44px rgba(15,23,42,.20);
+  --pw:297mm;--ph:210mm;--mg:5mm;--fs:1;--rowh:auto;color-scheme:light}
+/* ===== 🌙 Theme: Dark ===== */
+[data-theme="dark"]{
+  --app-bg:#090e17;--tb-bg:rgba(15,23,42,.95);--tb-border:#1e293b;--card:#111e33;--text:#f8fafc;--muted:#9aa3b2;
+  --in-bg:#162642;--in-border:#233f66;--focus:#22d3ee;--grp:#0e1a2d;--sh:0 8px 24px rgba(0,0,0,.45);
+  --pop-bg:#25282e;--pop-line:#3a3f48;--chip:#33363d;--chip-hover:#3e424a;--accent:#0894b3;--accent-soft:rgba(34,211,238,.14);
+  --pop-shadow:0 18px 48px rgba(0,0,0,.6);color-scheme:dark}
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{width:100%;min-height:100vh;background:var(--app-bg);color:var(--text);font-family:'Battambang',sans-serif;padding-bottom:50px;overflow-x:auto}
+html,body{width:100%;min-height:100vh;background:var(--app-bg);color:var(--text);font-family:'Battambang',sans-serif;padding-bottom:50px;overflow-x:auto;transition:background .25s,color .25s}
 
 .auth-wrapper{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:80vh;text-align:center;padding:30px 20px}
 .auth-card{background:var(--card);border:1.5px solid var(--tb-border);border-radius:24px;padding:40px 28px;max-width:440px;width:100%;box-shadow:var(--sh)}
 .auth-card h2{font-size:18px;margin-bottom:8px;color:#ef4444}
 .auth-card p{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:22px}
 
+/* ===== Toolbar ===== */
 .toolbar{position:sticky;top:0;z-index:1000;background:var(--tb-bg);backdrop-filter:blur(14px);padding:10px 16px;display:none;flex-direction:column;gap:8px;box-shadow:var(--sh);border-bottom:1.5px solid var(--tb-border);margin-bottom:16px}
 .row{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
 .pill{background:var(--grp);border:1px solid var(--tb-border);border-radius:10px;padding:4px 8px;display:inline-flex;align-items:center;gap:6px}
@@ -31,49 +43,95 @@ html,body{width:100%;min-height:100vh;background:var(--app-bg);color:var(--text)
 .fc:focus{border-color:var(--focus)}
 .btn{padding:5px 12px;font-family:'Battambang',sans-serif;font-size:12.5px;font-weight:700;border-radius:8px;border:1px solid var(--tb-border);cursor:pointer;display:inline-flex;align-items:center;gap:6px;height:32px;white-space:nowrap;background:var(--grp);color:var(--text)}
 .btn:active{transform:scale(.96)}
-.btn-primary{background:linear-gradient(135deg,#0284c7,#2563eb);color:#fff;border-color:transparent}
+.btn-primary{background:linear-gradient(135deg,#0891b2,#2563eb);color:#fff;border-color:transparent}
 .btn-green{background:linear-gradient(135deg,#10b981,#059669);color:#fff;border-color:transparent}
 .btn-login{background:linear-gradient(135deg,#0284c7,#7c3aed);color:#fff;border:none;padding:10px 24px;height:auto;font-size:13.5px;border-radius:12px;text-decoration:none}
+.date-btn{display:inline-flex;align-items:center;gap:8px;height:32px;padding:4px 10px;font-family:'Battambang',sans-serif;font-size:13px;color:var(--text);background:var(--in-bg);border:1.5px solid var(--in-border);border-radius:8px;cursor:pointer;white-space:nowrap}
+.date-btn i{color:var(--muted)}
+.date-btn.empty span{color:var(--muted)}
+.date-btn.open{border-color:var(--focus)}
 
-.settings{display:none;background:var(--grp);border:1px solid var(--tb-border);border-radius:10px;padding:8px 10px;gap:8px;flex-wrap:wrap}
-.settings.open{display:flex}
-.settings .pill{background:var(--card)}
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;padding:8px 16px;border-radius:10px;font-size:13px;z-index:3000;display:none}
+/* ===== Popover (date + page setup) ===== */
+.pop{display:none;position:fixed;z-index:2500;background:var(--pop-bg);color:var(--text);border:1px solid var(--pop-line);border-radius:16px;box-shadow:var(--pop-shadow);overflow:auto;font-family:'Battambang',sans-serif}
+.pop select{font-family:'Battambang',sans-serif;font-size:15px;height:40px;padding:0 10px;border-radius:10px;border:1px solid var(--pop-line);background:var(--chip);color:var(--text);outline:none;flex:1;min-width:0}
+#dpPop{width:min(340px,calc(100vw - 16px));padding:14px}
+.dp-top{display:flex;gap:8px;margin-bottom:10px}
+.dp-title{text-align:center;font-weight:700;font-size:14px;margin:6px 0 8px}
+.dp-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center}
+.dp-wd{font-size:12px;color:var(--muted);padding:6px 0}
+.dp-day{height:38px;border:none;background:transparent;color:var(--text);font-family:'Battambang',sans-serif;font-size:14px;border-radius:9px;cursor:pointer}
+.dp-day:hover{background:var(--chip-hover)}
+.dp-day.out{color:var(--muted);opacity:.45}
+.dp-day.today{background:var(--chip);font-weight:700}
+.dp-day.sel{background:var(--accent);color:#fff;font-weight:700;opacity:1}
+.dp-foot{display:flex;justify-content:space-between;border-top:1px solid var(--pop-line);margin-top:8px;padding-top:10px;font-size:13px}
+.dp-foot a{color:var(--accent);cursor:pointer;font-weight:700}
+.dp-foot a.clr{color:var(--muted)}
 
-/* ===== ក្រដាសរបាយការណ៍ (A4) ===== */
+#pgPop{width:min(430px,calc(100vw - 16px));padding:18px 18px 8px}
+.pg-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.pg-head h3{font-size:17px}
+.pg-reset{background:none;border:none;color:var(--muted);font-family:'Battambang',sans-serif;font-size:13px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.pg-sec{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:13px;margin:14px 0 10px}
+.pg-sec hr{flex:1;border:none;border-top:1px solid var(--pop-line)}
+.opt-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:8px}
+.opt{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:62px;padding:6px 4px;background:var(--chip);color:var(--text);border:1.5px solid transparent;border-radius:12px;font-family:'Battambang',sans-serif;font-size:13.5px;cursor:pointer}
+.opt small{font-size:12px;color:var(--muted)}
+.opt b{font-family:'Kantumruy Pro',sans-serif;font-size:15px}
+.opt.on{background:var(--accent);border-color:#22d3ee;color:#fff}
+.opt.on small{color:rgba(255,255,255,.85)}
+.ico-p,.ico-l{display:block;border:2px solid currentColor;border-radius:3px}
+.ico-p{width:11px;height:17px}.ico-l{width:17px;height:11px}
+.step-row{display:flex;align-items:center;gap:8px;margin:10px 0}
+.step-row>span:first-child{width:62px;font-size:14px}
+.step-row>small{font-size:12.5px;color:var(--muted);flex:1}
+.stepper{display:flex;align-items:center;gap:6px}
+.stepper button{width:38px;height:38px;border:none;border-radius:10px;background:var(--chip);color:var(--text);font-size:18px;cursor:pointer}
+.stepper button:active{transform:scale(.94)}
+.stepper .val{min-width:104px;height:38px;border-radius:10px;background:var(--chip);display:flex;align-items:center;justify-content:center;gap:6px;font-weight:700;font-size:15px;padding:0 8px}
+.stepper .val em{font-style:normal;color:var(--muted);font-weight:400;font-size:13px}
+.stepper .val.auto{color:var(--muted);font-weight:400;font-size:13px}
+.pg-info{border-top:1px solid var(--pop-line);margin-top:12px;padding:6px 0 10px}
+.pg-info label{display:block;font-size:12.5px;color:var(--muted);margin:8px 0 3px}
+.pg-info .fc{width:100%}
+.pg-info .chk{display:flex;align-items:center;gap:8px;color:var(--text);margin-top:12px;cursor:pointer;font-size:13px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;padding:8px 16px;border-radius:10px;font-size:13px;z-index:3000;display:none;border:1px solid #334155}
+
+/* ===== ក្រដាសរបាយការណ៍ ===== */
 .sheet-wrap{display:flex;justify-content:center;transform-origin:top center}
-.sheet{width:var(--sw);height:var(--sht);background:#fff;color:#000;padding:34px 48px;box-shadow:0 10px 30px rgba(0,0,0,.3);overflow:hidden;flex-shrink:0;font-family:'Battambang',sans-serif;position:relative}
+.sheet{width:var(--pw);height:calc(var(--ph) - .6mm);background:#fff;color:#000;padding:var(--mg);box-shadow:0 10px 30px rgba(0,0,0,.3);overflow:hidden;flex-shrink:0;font-family:'Battambang',sans-serif;font-size:calc(13.5px * var(--fs));position:relative}
 .moul{font-family:'Moul',serif;font-weight:400}
-.kingdom{text-align:center;font-size:16px;line-height:1.8}
-.motto{text-align:center;font-size:13px;line-height:1.8}
+.kingdom{text-align:center;font-size:1.185em;line-height:1.8}
+.motto{text-align:center;font-size:.96em;line-height:1.8}
 .divider{display:flex;align-items:center;justify-content:center;gap:6px;margin:2px 0 6px}
 .divider span{width:60px;height:1px;background:#000}
-.hdr-left{font-size:13px;line-height:1.7;margin-top:6px}
-.title{text-align:center;font-size:21px;margin-top:8px;line-height:1.7}
-.subtitle{text-align:center;font-size:13.5px;margin:2px 0 10px}
-table.stat{width:100%;border-collapse:collapse;font-size:13.5px}
-table.stat th,table.stat td{border:1px solid #000;padding:7px 4px;text-align:center}
+.hdr-left{font-size:.96em;line-height:1.7;margin-top:6px}
+.title{text-align:center;font-size:1.56em;margin-top:8px;line-height:1.7}
+.subtitle{text-align:center;margin:2px 0 .75em}
+table.stat{width:100%;border-collapse:collapse}
+table.stat th,table.stat td{border:1px solid #000;padding:.5em .3em;text-align:center}
 table.stat th{background:#eef2ff;font-weight:700}
+table.stat tbody td{height:var(--rowh)}
 table.stat td.tot{background:#f3f6ff;font-weight:700}
-table.stat td.rm{text-align:left;font-size:12px;padding:4px 8px;line-height:1.5}
-.foot{display:flex;justify-content:space-between;align-items:flex-start;margin-top:14px;font-size:13.5px}
-.sig-l{text-align:center;min-width:240px;line-height:1.8}
-.sig-r{text-align:center;min-width:380px;line-height:1.8}
+table.stat td.rm{text-align:left;font-size:.89em;padding:.3em .6em;line-height:1.5}
+.foot{display:flex;justify-content:space-between;align-items:flex-start;margin-top:1em}
+.sig-l{text-align:center;min-width:18em;line-height:1.8}
+.sig-r{text-align:center;min-width:28em;line-height:1.8}
 .sig-r .role{color:#1d4ed8}
-.sig-space{height:64px}
-.sig-name{color:#1d4ed8;font-family:'Moul',serif;font-size:13px}
+.sig-space{height:4.7em}
+.sig-name{color:#1d4ed8;font-family:'Moul',serif;font-size:.96em}
 
-@media screen and (max-width:768px){.fc,.btn{height:28px;font-size:11.5px;padding:3px 6px}.toolbar{padding:8px 10px}}
+@media screen and (max-width:768px){.fc,.btn,.date-btn{height:28px;font-size:11.5px;padding:3px 6px}.toolbar{padding:8px 10px}}
 
 @media print{
   html,body{background:#fff!important;padding:0!important;margin:0!important;overflow:visible!important}
-  .toolbar,.auth-wrapper,.toast{display:none!important}
+  .toolbar,.auth-wrapper,.toast,.pop{display:none!important}
   .sheet-wrap{zoom:1!important;transform:none!important;display:block!important}
-  .sheet{box-shadow:none!important;margin:0!important;page-break-after:avoid;break-after:avoid}
+  .sheet{box-shadow:none!important;margin:0!important;break-after:avoid;page-break-after:avoid}
   .sheet,.sheet *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
 }
 </style>
-<style id="pageStyle">@page{size:A4 landscape;margin:0}</style>
+<style id="pageStyle">@page{size:297mm 210mm;margin:0}</style>
 </head>
 <body>
 
@@ -91,13 +149,14 @@ table.stat td.rm{text-align:left;font-size:12px;padding:4px 8px;line-height:1.5}
     <button class="btn" onclick="goBack()"><i class="fa-solid fa-arrow-left"></i> ត្រឡប់</button>
 
     <div class="pill" id="adminClassBox" style="display:none">
-      <span class="lbl"><i class="fa-solid fa-graduation-cap" style="color:#0284c7"></i> ថ្នាក់ទី៖</span>
+      <span class="lbl"><i class="fa-solid fa-graduation-cap" style="color:#0891b2"></i> ថ្នាក់ទី៖</span>
       <select id="selectClass" class="fc" onchange="loadData()"><option value="">កំពុងទាញយក...</option></select>
     </div>
 
     <div class="pill">
       <span class="lbl">អាយុគិតត្រឹម</span>
-      <input type="date" id="inAsOf" class="fc" onchange="render()">
+      <input type="hidden" id="inAsOf">
+      <button type="button" class="date-btn" id="btn_inAsOf" data-ph="ជ្រើសថ្ងៃ" onclick="openDatePicker(event,'inAsOf',false)"><i class="fa-regular fa-calendar"></i><span></span></button>
     </div>
 
     <button class="btn btn-green" onclick="downloadExcel()"><i class="fa-solid fa-file-excel"></i> ទាញយក Excel</button>
@@ -108,25 +167,32 @@ table.stat td.rm{text-align:left;font-size:12px;padding:4px 8px;line-height:1.5}
   <div class="row">
     <div class="pill">
       <span class="lbl">ថ្ងៃអ្នកធ្វើចុះហត្ថលេខា</span>
-      <input type="date" id="inTeacherDate" class="fc" onchange="render()">
+      <input type="hidden" id="inTeacherDate">
+      <button type="button" class="date-btn" id="btn_inTeacherDate" data-ph="ជ្រើសថ្ងៃ" onclick="openDatePicker(event,'inTeacherDate',true)"><i class="fa-regular fa-calendar"></i><span></span></button>
     </div>
     <div class="pill">
       <span class="lbl">ថ្ងៃនាយកចុះហត្ថលេខា</span>
-      <input type="date" id="inDirectorDate" class="fc" onchange="render()">
+      <input type="hidden" id="inDirectorDate">
+      <button type="button" class="date-btn" id="btn_inDirectorDate" data-ph="មិនដាក់" onclick="openDatePicker(event,'inDirectorDate',true)"><i class="fa-regular fa-calendar"></i><span></span></button>
     </div>
-    <button class="btn" onclick="document.getElementById('settings').classList.toggle('open')"><i class="fa-solid fa-sliders"></i> កំណត់ទំព័រ</button>
+    <button class="btn" id="btnPage" onclick="togglePagePanel(event)"><i class="fa-solid fa-sliders"></i> កំណត់ទំព័រ</button>
   </div>
+</div>
 
-  <div class="settings" id="settings">
-    <div class="pill"><span class="lbl">ការិយាល័យ៖</span><input id="inOffice" class="fc" style="width:230px" value="ការិយាល័យអប់រំ យុវជន និងកីឡា" oninput="render()"></div>
-    <div class="pill"><span class="lbl">សាលា៖</span><input id="inSchool" class="fc" style="width:210px" value="សាលាបឋមសិក្សាកំពង់ល្ពៅ" oninput="render()"></div>
-    <div class="pill"><span class="lbl">ឆ្នាំសិក្សា៖</span><input id="inYear" class="fc" style="width:120px" placeholder="ស្វ័យប្រវត្តិ" oninput="render()"></div>
-    <div class="pill"><span class="lbl">ទីកន្លែង៖</span><input id="inPlace" class="fc" style="width:120px" value="កំពង់ល្ពៅ" oninput="render()"></div>
-    <div class="pill" style="flex:1;min-width:260px"><span class="lbl">ចន្ទគតិ៖</span><input id="inLunar" class="fc" style="width:100%" value="ថ្ងៃព្រហស្បតិ៍ ៤កើត ខែអស្សុជ ឆ្នាំមមី អដ្ឋស័ក ពុទ្ធសករាជ ២៥៧០" oninput="render()"></div>
-    <div class="pill"><span class="lbl">ទំព័រ៖</span>
-      <select id="inOrient" class="fc" onchange="applyOrientation()"><option value="landscape">A4 ផ្ដេក</option><option value="portrait">A4 ឈរ</option></select>
-    </div>
-    <label class="pill lbl" style="cursor:pointer"><input type="checkbox" id="inSkipDrop" onchange="render()"> មិនរាប់សិស្សបោះបង់ការសិក្សា</label>
+<!-- Date picker popover -->
+<div class="pop" id="dpPop"></div>
+
+<!-- Page setup popover -->
+<div class="pop" id="pgPop">
+  <div id="pgDyn"></div>
+  <div class="pg-info">
+    <div class="pg-sec" style="margin-top:4px"><i class="fa-solid fa-pen-to-square"></i><span>ព័ត៌មានរបាយការណ៍</span><hr></div>
+    <label>ការិយាល័យ</label><input id="inOffice" class="fc" value="ការិយាល័យអប់រំ យុវជន និងកីឡា" oninput="render()">
+    <label>សាលារៀន</label><input id="inSchool" class="fc" value="សាលាបឋមសិក្សាកំពង់ល្ពៅ" oninput="render()">
+    <label>ឆ្នាំសិក្សា (ទុកទទេ = ស្វ័យប្រវត្តិ)</label><input id="inYear" class="fc" placeholder="ឧ. 2026-2027" oninput="render()">
+    <label>ទីកន្លែង</label><input id="inPlace" class="fc" value="កំពង់ល្ពៅ" oninput="render()">
+    <label>ចន្ទគតិ</label><input id="inLunar" class="fc" value="ថ្ងៃព្រហស្បតិ៍ ៤កើត ខែអស្សុជ ឆ្នាំមមី អដ្ឋស័ក ពុទ្ធសករាជ ២៥៧០" oninput="render()">
+    <label class="chk"><input type="checkbox" id="inSkipDrop" onchange="render()"> មិនរាប់សិស្សបោះបង់ការសិក្សា</label>
   </div>
 </div>
 
@@ -146,6 +212,7 @@ const USER_CLASS = USER?.assigned_classes || USER?.assigned_class || '';
 
 const KD=['០','១','២','៣','៤','៥','៦','៧','៨','៩'];
 const MONTHS=['មករា','កុម្ភៈ','មីនា','មេសា','ឧសភា','មិថុនា','កក្កដា','សីហា','កញ្ញា','តុលា','វិច្ឆិកា','ធ្នូ'];
+const WD=['អា','ច','អ','ព','ព្រ','សុ','ស'];
 const AGES=[6,7,8,9,10,11,12];
 const toKh=v=>String(v??'').replace(/[0-9]/g,d=>KD[d]);
 const fromKh=v=>String(v??'').replace(/[០-៩]/g,d=>KD.indexOf(d));
@@ -154,15 +221,141 @@ const esc=t=>String(t||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const pad=n=>String(n).padStart(2,'0');
 const isoLocal=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
 
-function applyTheme(t){document.documentElement.setAttribute('data-theme',t||'dark')}
+/* Theme (Dark / Light) */
+function applyTheme(t){document.documentElement.setAttribute('data-theme',t==='light'?'light':'dark')}
 applyTheme(localStorage.getItem('krou_theme_manual')||'dark');
 window.addEventListener('message',e=>{if(e.data&&(e.data.type==='THEME_CHANGE'||e.data.theme))applyTheme(e.data.theme||e.data)});
+window.addEventListener('storage',e=>{if(e.key==='krou_theme_manual')applyTheme(e.newValue)});
 
 function goToIndex(e){if(e)e.preventDefault();try{if(window.parent!==window){window.parent.postMessage({type:'OPEN_LOGIN',action:'LOGIN'},'*');window.parent.location.href='index.html';return}}catch(x){}location.href='index.html'}
 function goBack(){if(history.length>1)history.back();else location.href='index.html'}
-function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';setTimeout(()=>t.style.display='none',3500)}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';clearTimeout(t._t);t._t=setTimeout(()=>t.style.display='none',3500)}
 
-/* ---------- ទិន្នន័យ ---------- */
+/* ================= Popover helpers ================= */
+function placePop(pop,anchor){
+  pop.style.display='block';
+  const r=anchor.getBoundingClientRect(), w=pop.offsetWidth;
+  const left=Math.min(Math.max(8,r.left),window.innerWidth-w-8), top=r.bottom+6;
+  pop.style.left=left+'px'; pop.style.top=top+'px';
+  pop.style.maxHeight=Math.max(220,window.innerHeight-top-12)+'px';
+}
+function closePops(){
+  ['dpPop','pgPop'].forEach(id=>document.getElementById(id).style.display='none');
+  document.querySelectorAll('.date-btn.open').forEach(b=>b.classList.remove('open'));
+}
+document.addEventListener('click',closePops);
+['dpPop','pgPop'].forEach(id=>document.getElementById(id).addEventListener('click',e=>e.stopPropagation()));
+window.addEventListener('resize',closePops);
+
+/* ================= Date picker ================= */
+const DP={id:null,clearable:false,vy:0,vm:0};
+function dateLabel(iso){
+  const m=String(iso||'').match(/^(\d{4})-(\d{2})-(\d{2})$/); if(!m)return '';
+  return (+m[3])+' '+MONTHS[+m[2]-1]+' '+m[1];
+}
+function setDateValue(id,iso){
+  document.getElementById(id).value=iso||'';
+  const b=document.getElementById('btn_'+id);
+  b.classList.toggle('empty',!iso);
+  b.querySelector('span').textContent=iso?dateLabel(iso):b.dataset.ph;
+}
+function openDatePicker(e,id,clearable){
+  e.stopPropagation(); const btn=document.getElementById('btn_'+id);
+  const wasOpen=btn.classList.contains('open'); closePops(); if(wasOpen)return;
+  DP.id=id; DP.clearable=clearable;
+  const v=document.getElementById(id).value, base=v?new Date(v+'T00:00:00'):new Date();
+  DP.vy=base.getFullYear(); DP.vm=base.getMonth();
+  btn.classList.add('open'); renderDp(); placePop(document.getElementById('dpPop'),btn);
+}
+function renderDp(){
+  const sel=document.getElementById(DP.id).value, today=isoLocal(new Date()), ny=new Date().getFullYear();
+  const y0=Math.min(DP.vy,ny)-8, y1=Math.max(DP.vy,ny)+4;
+  let years='';for(let y=y0;y<=y1;y++)years+=`<option value="${y}" ${y===DP.vy?'selected':''}>${y}</option>`;
+  const months=MONTHS.map((m,i)=>`<option value="${i}" ${i===DP.vm?'selected':''}>${m}</option>`).join('');
+  const first=new Date(DP.vy,DP.vm,1).getDay();
+  let cells='';
+  for(let i=0;i<42;i++){
+    const d=new Date(DP.vy,DP.vm,1-first+i), iso=isoLocal(d);
+    const cls=['dp-day']; if(d.getMonth()!==DP.vm)cls.push('out'); if(iso===today)cls.push('today'); if(iso===sel)cls.push('sel');
+    cells+=`<button type="button" class="${cls.join(' ')}" onclick="pickDate('${iso}')">${d.getDate()}</button>`;
+  }
+  document.getElementById('dpPop').innerHTML=`
+    <div class="dp-top"><select onchange="DP.vm=+this.value;renderDp()">${months}</select><select onchange="DP.vy=+this.value;renderDp()">${years}</select></div>
+    <div class="dp-title">${MONTHS[DP.vm]} ${DP.vy}</div>
+    <div class="dp-grid">${WD.map(w=>`<div class="dp-wd">${w}</div>`).join('')}${cells}</div>
+    <div class="dp-foot"><a onclick="pickDate('${today}')">ថ្ងៃនេះ</a>${DP.clearable?'<a class="clr" onclick="pickDate(\'\')">លុប</a>':''}</div>`;
+}
+function pickDate(iso){setDateValue(DP.id,iso);closePops();render()}
+
+/* ================= Page setup ================= */
+const PAPERS={A4:[210,297],F4:[216,330]};
+const PAGE_DEFAULT={paper:'A4',orient:'landscape',margin:5,font:100,rowh:0};
+let PAGE={...PAGE_DEFAULT};
+try{Object.assign(PAGE,JSON.parse(localStorage.getItem('krou_age_stats_page')||'{}'))}catch(e){}
+
+function pageDims(){
+  const [a,b]=PAPERS[PAGE.paper]||PAPERS.A4;
+  return PAGE.orient==='landscape'?[b,a]:[a,b];
+}
+function applyPage(){
+  const [w,h]=pageDims(), r=document.documentElement.style;
+  r.setProperty('--pw',w+'mm'); r.setProperty('--ph',h+'mm'); r.setProperty('--mg',PAGE.margin+'mm');
+  r.setProperty('--fs',PAGE.font/100); r.setProperty('--rowh',PAGE.rowh?PAGE.rowh+'mm':'auto');
+  document.getElementById('pageStyle').textContent=`@page{size:${w}mm ${h}mm;margin:0}`;
+  try{localStorage.setItem('krou_age_stats_page',JSON.stringify(PAGE))}catch(e){}
+  fitZoom();
+}
+function renderPagePanel(){
+  const [w,h]=pageDims(), uw=w-2*PAGE.margin, uh=h-2*PAGE.margin;
+  const on=c=>c?' on':'';
+  const fontNote=PAGE.font===100?'ធម្មតា':(PAGE.font<100?'តូចជាងធម្មតា':'ធំជាងធម្មតា');
+  document.getElementById('pgDyn').innerHTML=`
+    <div class="pg-head"><h3>ការរៀបចំទំព័រ</h3><button class="pg-reset" onclick="resetPage()"><i class="fa-solid fa-rotate-left"></i> ដើមវិញ</button></div>
+    <div class="pg-sec"><i class="fa-regular fa-file-lines"></i><span>ក្រដាស</span><hr></div>
+    <div class="opt-grid">
+      <button class="opt${on(PAGE.paper==='A4')}" onclick="setPage('paper','A4')"><b>A4</b><small>210×297</small></button>
+      <button class="opt${on(PAGE.paper==='F4')}" onclick="setPage('paper','F4')"><b>F4</b><small>216×330</small></button>
+      <button class="opt${on(PAGE.orient==='portrait')}" onclick="setPage('orient','portrait')"><span class="ico-p"></span>បញ្ឈរ</button>
+      <button class="opt${on(PAGE.orient==='landscape')}" onclick="setPage('orient','landscape')"><span class="ico-l"></span>ផ្តេក</button>
+    </div>
+    <div class="opt-grid">
+      ${[['តូច',2],['មធ្យម',5],['ធំ',10],['ធំបំផុត',15]].map(([n,v])=>`<button class="opt${on(PAGE.margin===v)}" onclick="setPage('margin',${v})">${n}<small>${v}</small></button>`).join('')}
+    </div>
+    <div class="step-row"><span>គែម</span>
+      <div class="stepper"><button onclick="stepPage('margin',-1)">−</button><div class="val">${PAGE.margin} <em>mm</em></div><button onclick="stepPage('margin',1)">+</button></div>
+      <small>ផ្ទៃប្រើ ${uw}×${uh}mm</small></div>
+    <div class="pg-sec"><i class="fa-solid fa-layer-group"></i><span>អក្សរ និងក្រឡា</span><hr></div>
+    <div class="step-row"><span>អក្សរ</span>
+      <div class="stepper"><button onclick="stepPage('font',-5)">−</button><div class="val">${PAGE.font} <em>%</em></div><button onclick="stepPage('font',5)">+</button></div>
+      <small>${fontNote}</small></div>
+    <div class="step-row"><span>កម្ពស់ជួរ</span>
+      <div class="stepper"><button onclick="stepPage('rowh',-1)">−</button><div class="val${PAGE.rowh?'':' auto'}">${PAGE.rowh?PAGE.rowh:'តាមអក្សរ'} <em>mm</em></div><button onclick="stepPage('rowh',1)">+</button></div>
+      <small>${PAGE.rowh?'កំណត់ដោយខ្លួនឯង':'តាមអក្សរ'}</small></div>`;
+}
+function setPage(k,v){PAGE[k]=v;applyPage();renderPagePanel();render()}
+function stepPage(k,d){
+  if(k==='margin')PAGE.margin=Math.min(30,Math.max(0,PAGE.margin+d));
+  if(k==='font')PAGE.font=Math.min(150,Math.max(70,PAGE.font+d));
+  if(k==='rowh'){
+    if(!PAGE.rowh)PAGE.rowh=d>0?8:0; else {PAGE.rowh+=d; if(PAGE.rowh<6)PAGE.rowh=0; if(PAGE.rowh>30)PAGE.rowh=30}
+  }
+  applyPage();renderPagePanel();
+}
+function resetPage(){PAGE={...PAGE_DEFAULT};applyPage();renderPagePanel()}
+function togglePagePanel(e){
+  e.stopPropagation(); const pop=document.getElementById('pgPop'), open=pop.style.display==='block';
+  closePops(); if(open)return;
+  renderPagePanel(); placePop(pop,document.getElementById('btnPage'));
+}
+
+function fitZoom(){
+  const [w]=pageDims(), px=w*96/25.4;
+  let s=(window.innerWidth-24)/px; if(s>1)s=1; if(s<.28)s=.28;
+  document.getElementById('sheetWrap').style.zoom=s;
+}
+window.addEventListener('resize',fitZoom);
+
+/* ================= ទិន្នន័យ ================= */
 let STUDENTS=[], TEACHER='', CUR_CLASS='';
 
 function parseDob(v){
@@ -228,7 +421,7 @@ async function loadData(){
   }catch(err){showMsg('❌ កំហុស៖ '+esc(err.message),'#ef4444')}
 }
 
-/* ---------- បង្កើតរបាយការណ៍ ---------- */
+/* ================= បង្កើតរបាយការណ៍ ================= */
 function compute(ref){
   const skip=document.getElementById('inSkipDrop').checked;
   const c={F:{},M:{}}; AGES.forEach(a=>{c.F[a]=0;c.M[a]=0});
@@ -246,11 +439,10 @@ function compute(ref){
 }
 
 function render(){
-  if(!STUDENTS||!CUR_CLASS)return;
-  const asOfVal=document.getElementById('inAsOf').value;
+  if(!CUR_CLASS)return;
+  const asOfVal=document.getElementById('inAsOf').value; if(!asOfVal)return;
   const [y,m,d]=asOfVal.split('-').map(Number);
-  const ref=new Date(y,m-1,d);
-  const r=compute(ref);
+  const r=compute(new Date(y,m-1,d));
 
   const office=esc(document.getElementById('inOffice').value);
   const school=esc(document.getElementById('inSchool').value);
@@ -295,36 +487,22 @@ function render(){
       <div class="sig-l">
         <div>បានឃើញ និងឯកភាព</div>
         <div>${dIso?fmtKhDate(dIso):'&nbsp;'}</div>
-        <div class="moul" style="font-size:13px">នាយកសាលា</div>
+        <div class="moul" style="font-size:.96em">នាយកសាលា</div>
         <div class="sig-space"></div>
       </div>
       <div class="sig-r">
-        <div style="font-size:12.5px">${lunar}</div>
+        <div style="font-size:.93em">${lunar}</div>
         <div>${place}, ${fmtKhDate(tIso)}</div>
-        <div class="role moul" style="font-size:13px">គ្រូទទួលបន្ទុកថ្នាក់</div>
+        <div class="role moul" style="font-size:.96em">គ្រូទទួលបន្ទុកថ្នាក់</div>
         <div class="sig-space"></div>
         <div class="sig-name">${esc(TEACHER)}</div>
       </div>
     </div>`;
-  fitZoom();
 }
 
-/* ---------- ទំព័រ, zoom, print, export ---------- */
-function applyOrientation(){
-  const o=document.getElementById('inOrient').value, root=document.documentElement.style;
-  root.setProperty('--sw',o==='landscape'?'1122px':'793px');
-  root.setProperty('--sht',o==='landscape'?'793px':'1122px');
-  document.getElementById('pageStyle').textContent=`@page{size:A4 ${o};margin:0}`;
-  fitZoom();
-}
-function fitZoom(){
-  const w=parseInt(getComputedStyle(document.documentElement).getPropertyValue('--sw'))||1122;
-  let s=(window.innerWidth-24)/w; if(s>1)s=1; if(s<.28)s=.28;
-  document.getElementById('sheetWrap').style.zoom=s;
-}
-window.addEventListener('resize',fitZoom);
+/* ================= Print / PDF / Excel ================= */
+function doPrint(){closePops();window.focus();setTimeout(()=>{try{window.print()}catch(e){window.parent.print()}},100)}
 
-function doPrint(){window.focus();setTimeout(()=>{try{window.print()}catch(e){window.parent.print()}},100)}
 async function downloadPdf(){
   const el=document.getElementById('sheet');
   if(!el||!el.querySelector('#statTable')){toast('មិនទាន់មានទិន្នន័យសម្រាប់បង្កើត PDF');return}
@@ -332,7 +510,6 @@ async function downloadPdf(){
   toast('កំពុងបង្កើត PDF...');
   try{
     if(document.fonts&&document.fonts.ready)await document.fonts.ready;
-    const portrait=document.getElementById('inOrient').value==='portrait';
     const canvas=await html2canvas(el,{
       scale:2,useCORS:true,backgroundColor:'#ffffff',scrollX:0,scrollY:0,
       onclone:doc=>{
@@ -340,9 +517,9 @@ async function downloadPdf(){
         const sh=doc.getElementById('sheet'); if(sh)sh.style.boxShadow='none';
       }
     });
+    const [pw,ph]=pageDims();
     const {jsPDF}=window.jspdf;
-    const pdf=new jsPDF({orientation:portrait?'portrait':'landscape',unit:'mm',format:'a4'});
-    const pw=pdf.internal.pageSize.getWidth(), ph=pdf.internal.pageSize.getHeight();
+    const pdf=new jsPDF({orientation:pw>ph?'landscape':'portrait',unit:'mm',format:[Math.min(pw,ph),Math.max(pw,ph)]});
     pdf.addImage(canvas.toDataURL('image/jpeg',0.98),'JPEG',0,0,pw,ph);
     pdf.save('student-age-stats-'+(CUR_CLASS||'all')+'.pdf');
     toast('បានទាញយក PDF រួចរាល់');
@@ -358,14 +535,14 @@ function downloadExcel(){
   a.download='student-age-stats-'+(CUR_CLASS||'')+'.xls'; document.body.appendChild(a); a.click(); a.remove();
 }
 
-/* ---------- ចាប់ផ្តើម ---------- */
+/* ================= ចាប់ផ្តើម ================= */
 window.addEventListener('DOMContentLoaded',async()=>{
   if(!USER||!USER.username){document.getElementById('authDenied').style.display='flex';return}
   document.getElementById('toolbar').style.display='flex';
   document.getElementById('sheetWrap').style.display='flex';
   const now=new Date(), sy=now.getMonth()>=7?now.getFullYear():now.getFullYear()-1;
-  document.getElementById('inAsOf').value=sy+'-10-01';
-  applyOrientation();
+  setDateValue('inAsOf',sy+'-10-01'); setDateValue('inTeacherDate',''); setDateValue('inDirectorDate','');
+  applyPage();
   await initClasses();
 });
 </script>
