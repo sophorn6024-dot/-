@@ -296,6 +296,16 @@
       display: inline-flex; align-items: center; gap: 6px; cursor: pointer; user-select: none;
     }
     .bar-pill:hover { background: #334155; }
+    #reportBorrowBtn.nav-btn-green, #reportReturnBtn.nav-btn-green { background:#059669; color:#fff; border-color:#059669; }
+    @media (max-width: 720px) {
+      body { padding: 8px 8px 40px; }
+      .top-hero-card { padding: 12px; }
+      .hero-title { font-size: 15px; }
+      .action-tabs-row { gap: 6px; }
+      .tab-pill-btn { padding: 7px 10px; font-size: 12px; }
+      .preview-nav-bar > div { width:100%; flex-wrap:wrap; }
+      #rptSubjectNames { min-width: 140px !important; max-width: 100%; }
+    }
     .bar-pill select {
       background: transparent; border: none; color: #fff; outline: none; font-size: 12.5px; font-weight: 700; cursor: pointer;
     }
@@ -607,7 +617,10 @@
         </div>
       </div>
 
-      <div style="display:flex; align-items:center; gap:8px;">
+      <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+        <button type="button" class="tab-pill-btn" id="themeToggleBtn" onclick="toggleTheme()" title="ប្ដូររបៀបពន្លឺ/ងងឹត">
+          <i class="fa-solid fa-sun" id="themeToggleIcon"></i> <span id="themeToggleText">Light</span>
+        </button>
         <div id="adminClassBox" style="display:none;">
           <select id="classSelect" class="sub-chip-check" style="height:38px; outline:none;" onchange="onClassChange()"></select>
         </div>
@@ -684,7 +697,9 @@
         <button type="button" class="bar-pill" onclick="closePrintPreview()">
           <i class="fa-solid fa-chevron-left"></i> ត្រឡប់
         </button>
-        <span style="font-size:12.5px; font-weight:700;">សៀវភៅ</span>
+        <span style="font-size:12.5px; font-weight:700;">របាយការណ៍</span>
+        <button type="button" class="bar-pill" id="reportBorrowBtn" onclick="setReportType('borrow')"><i class="fa-solid fa-box"></i> បញ្ជីខ្ចី</button>
+        <button type="button" class="bar-pill" id="reportReturnBtn" onclick="setReportType('return')"><i class="fa-solid fa-rotate-left"></i> បញ្ជីសង</button>
         <input type="text" id="rptSubjectNames" value="ភាសាខ្មែរ, គណិតវិទ្យា, វិទ្យាសាស្ត្រ, សិក្សាសង្គម" style="background:#0f172a; border:1px solid #475569; color:#fff; padding:6px 10px; border-radius:8px; font-size:12px; min-width:240px; outline:none;">
       </div>
 
@@ -740,7 +755,7 @@
       <div class="print-school-meta">
         <div>ការិយាល័យអប់រំ យុវជន និងកីឡា</div>
         <div>សាលាបឋមសិក្សាកំពង់ល្ពៅ</div>
-        <div id="rptPrintGradeTag">ថ្នាក់ទី...</div>
+        <div id="rptPrintGradeTag" style="display:none;">ថ្នាក់ទី...</div>
       </div>
 
       <div class="f-moul print-doc-title" id="rptPrintDocTitle">បញ្ជីប្រមូលសៀវភៅសិក្សាតាមថ្នាក់</div>
@@ -1075,7 +1090,19 @@
       setTimeout(() => t.classList.remove('show'), 2800);
     }
 
-    function applyTheme(th) { document.documentElement.setAttribute('data-theme', th || 'dark'); }
+    function applyTheme(th) {
+      const theme = th === 'light' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('krou_theme_manual', theme);
+      const icon = document.getElementById('themeToggleIcon');
+      const label = document.getElementById('themeToggleText');
+      if (icon) icon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+      if (label) label.textContent = theme === 'dark' ? 'Light' : 'Dark';
+    }
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme') || 'dark';
+      applyTheme(current === 'dark' ? 'light' : 'dark');
+    }
     applyTheme(localStorage.getItem('krou_theme_manual') || 'dark');
 
     /* =========================================================
@@ -1782,16 +1809,32 @@
     }
 
     /* 10. PRINT PREVIEW */
+    function setReportType(type) {
+      switchActionTab(type === 'return' ? 'return' : 'borrow');
+      document.getElementById('reportBorrowBtn')?.classList.toggle('nav-btn-green', activeTab === 'borrow');
+      document.getElementById('reportReturnBtn')?.classList.toggle('nav-btn-green', activeTab === 'return');
+      openPrintPreview();
+    }
+
     function openPrintPreview() {
       document.getElementById('printPreviewModal').style.display = 'block';
 
       const curPure = cleanGrade(currentClassName);
-      document.getElementById('rptPrintGradeTag').innerText = `ថ្នាក់ទី ${toKhmerNum(curPure)}`;
+      const gradeTag = document.getElementById('rptPrintGradeTag');
+      gradeTag.innerText = `ថ្នាក់ទី ${toKhmerNum(curPure)}`;
+      gradeTag.style.display = IS_ADMIN ? 'block' : 'none';
+      document.getElementById('rptPrintDocTitle').innerText =
+        activeTab === 'borrow' ? 'បញ្ជីចែកសៀវភៅសិក្សាឱ្យសិស្សខ្ចី' : 'បញ្ជីប្រមូលសៀវភៅសិក្សាពីសិស្សមកវិញ';
+      document.getElementById('reportBorrowBtn')?.classList.toggle('nav-btn-green', activeTab === 'borrow');
+      document.getElementById('reportReturnBtn')?.classList.toggle('nav-btn-green', activeTab === 'return');
       document.getElementById('rptTotalStudents').innerText = toKhmerNum(rawStudentsList.length);
       document.getElementById('rptTeacherName').innerText = TEACHER_NAME || 'សេង សុភាស់';
 
       const activeSubjects = SUBJECT_KEYS.filter(k => document.getElementById('chk_' + k).checked);
       document.getElementById('rptSubjectNames').value = activeSubjects.map(k => SUBJECT_NAMES[k]).join(', ');
+      document.getElementById('rptPrintLegend').innerHTML = activeTab === 'borrow'
+        ? `ឆ្នាំសិក្សា ២០២៦-២០២៧ • សិស្សសរុប <span id="rptTotalStudents">${toKhmerNum(rawStudentsList.length)}</span>នាក់ • ✓ = បានទទួលសៀវភៅខ្ចី`
+        : `ឆ្នាំសិក្សា ២០២៦-២០២៧ • សិស្សសរុប <span id="rptTotalStudents">${toKhmerNum(rawStudentsList.length)}</span>នាក់ • <span style="color:#0284c7;">✓ = បានសង</span> • <span style="color:#d97706;">✓ ខូច = សងខូច</span> • <span style="color:#dc2626;">✗ បាត់ = មិនបានសង</span>`;
 
       const tbody = document.getElementById('printTableBody');
       let html = '';
