@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="km" data-theme="dark">
+<head>
+<base target="_top">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ស្ថិតិសិស្សតាមអាយុ នាដើមឆ្នាំសិក្សា</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Moul&family=Battambang:wght@400;700&family=Kantumruy+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{--app-bg:#f8fafc;--tb-bg:rgba(255,255,255,.96);--tb-border:#e2e8f0;--card:#fff;--text:#0f172a;--muted:#64748b;--in-bg:#fff;--in-border:#cbd5e1;--focus:#0284c7;--grp:#f1f5f9;--sh:0 4px 16px rgba(15,23,42,.06);--sw:1122px;--sht:793px;color-scheme:light}
+[data-theme="dark"]{--app-bg:#090e17;--tb-bg:rgba(15,23,42,.95);--tb-border:#1e293b;--card:#111e33;--text:#f8fafc;--muted:#94a3b8;--in-bg:#162642;--in-border:#233f66;--focus:#38bdf8;--grp:#0e1a2d;--sh:0 8px 24px rgba(0,0,0,.45);color-scheme:dark}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;min-height:100vh;background:var(--app-bg);color:var(--text);font-family:'Battambang',sans-serif;padding-bottom:50px;overflow-x:auto}
+
+.auth-wrapper{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:80vh;text-align:center;padding:30px 20px}
+.auth-card{background:var(--card);border:1.5px solid var(--tb-border);border-radius:24px;padding:40px 28px;max-width:440px;width:100%;box-shadow:var(--sh)}
+.auth-card h2{font-size:18px;margin-bottom:8px;color:#ef4444}
+.auth-card p{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:22px}
+
+.toolbar{position:sticky;top:0;z-index:1000;background:var(--tb-bg);backdrop-filter:blur(14px);padding:10px 16px;display:none;flex-direction:column;gap:8px;box-shadow:var(--sh);border-bottom:1.5px solid var(--tb-border);margin-bottom:16px}
+.row{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.pill{background:var(--grp);border:1px solid var(--tb-border);border-radius:10px;padding:4px 8px;display:inline-flex;align-items:center;gap:6px}
+.lbl{font-size:12px;font-weight:700;color:var(--muted);white-space:nowrap}
+.fc{padding:5px 8px;font-family:'Kantumruy Pro','Battambang',sans-serif;font-size:12.5px;font-weight:600;border:1.5px solid var(--in-border);border-radius:8px;outline:none;background:var(--in-bg);color:var(--text);height:32px}
+.fc:focus{border-color:var(--focus)}
+.btn{padding:5px 12px;font-family:'Battambang',sans-serif;font-size:12.5px;font-weight:700;border-radius:8px;border:1px solid var(--tb-border);cursor:pointer;display:inline-flex;align-items:center;gap:6px;height:32px;white-space:nowrap;background:var(--grp);color:var(--text)}
+.btn:active{transform:scale(.96)}
+.btn-primary{background:linear-gradient(135deg,#0284c7,#2563eb);color:#fff;border-color:transparent}
+.btn-green{background:linear-gradient(135deg,#10b981,#059669);color:#fff;border-color:transparent}
+.btn-login{background:linear-gradient(135deg,#0284c7,#7c3aed);color:#fff;border:none;padding:10px 24px;height:auto;font-size:13.5px;border-radius:12px;text-decoration:none}
+
+.settings{display:none;background:var(--grp);border:1px solid var(--tb-border);border-radius:10px;padding:8px 10px;gap:8px;flex-wrap:wrap}
+.settings.open{display:flex}
+.settings .pill{background:var(--card)}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;padding:8px 16px;border-radius:10px;font-size:13px;z-index:3000;display:none}
+
+/* ===== ក្រដាសរបាយការណ៍ (A4) ===== */
+.sheet-wrap{display:flex;justify-content:center;transform-origin:top center}
+.sheet{width:var(--sw);height:var(--sht);background:#fff;color:#000;padding:34px 48px;box-shadow:0 10px 30px rgba(0,0,0,.3);overflow:hidden;flex-shrink:0;font-family:'Battambang',sans-serif;position:relative}
+.moul{font-family:'Moul',serif;font-weight:400}
+.kingdom{text-align:center;font-size:16px;line-height:1.8}
+.motto{text-align:center;font-size:13px;line-height:1.8}
+.divider{display:flex;align-items:center;justify-content:center;gap:6px;margin:2px 0 6px}
+.divider span{width:60px;height:1px;background:#000}
+.hdr-left{font-size:13px;line-height:1.7;margin-top:6px}
+.title{text-align:center;font-size:21px;margin-top:8px;line-height:1.7}
+.subtitle{text-align:center;font-size:13.5px;margin:2px 0 10px}
+table.stat{width:100%;border-collapse:collapse;font-size:13.5px}
+table.stat th,table.stat td{border:1px solid #000;padding:7px 4px;text-align:center}
+table.stat th{background:#eef2ff;font-weight:700}
+table.stat td.tot{background:#f3f6ff;font-weight:700}
+table.stat td.rm{text-align:left;font-size:12px;padding:4px 8px;line-height:1.5}
+.foot{display:flex;justify-content:space-between;align-items:flex-start;margin-top:14px;font-size:13.5px}
+.sig-l{text-align:center;min-width:240px;line-height:1.8}
+.sig-r{text-align:center;min-width:380px;line-height:1.8}
+.sig-r .role{color:#1d4ed8}
+.sig-space{height:64px}
+.sig-name{color:#1d4ed8;font-family:'Moul',serif;font-size:13px}
+
+@media screen and (max-width:768px){.fc,.btn{height:28px;font-size:11.5px;padding:3px 6px}.toolbar{padding:8px 10px}}
+
+@media print{
+  html,body{background:#fff!important;padding:0!important;margin:0!important;overflow:visible!important}
+  .toolbar,.auth-wrapper,.toast{display:none!important}
+  .sheet-wrap{zoom:1!important;transform:none!important;display:block!important}
+  .sheet{box-shadow:none!important;margin:0!important;page-break-after:avoid;break-after:avoid}
+  .sheet,.sheet *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+}
+</style>
+<style id="pageStyle">@page{size:A4 landscape;margin:0}</style>
+</head>
+<body>
+
+<div class="auth-wrapper" id="authDenied">
+  <div class="auth-card">
+    <div style="font-size:42px;margin-bottom:10px">🔒</div>
+    <h2>សូមចូលប្រើប្រាស់ជាមុនសិន!</h2>
+    <p>លោកអ្នកមិនទាន់បាន Login ចូលក្នុងប្រព័ន្ធនៅឡើយទេ។</p>
+    <a href="index.html" target="_top" class="btn btn-login" onclick="goToIndex(event)">🔑 ទៅកាន់ទំព័រដើម (Login)</a>
+  </div>
+</div>
+
+<div class="toolbar" id="toolbar">
+  <div class="row">
+    <button class="btn" onclick="goBack()"><i class="fa-solid fa-arrow-left"></i> ត្រឡប់</button>
+
+    <div class="pill" id="adminClassBox" style="display:none">
+      <span class="lbl"><i class="fa-solid fa-graduation-cap" style="color:#0284c7"></i> ថ្នាក់ទី៖</span>
+      <select id="selectClass" class="fc" onchange="loadData()"><option value="">កំពុងទាញយក...</option></select>
+    </div>
+
+    <div class="pill">
+      <span class="lbl">អាយុគិតត្រឹម</span>
+      <input type="date" id="inAsOf" class="fc" onchange="render()">
+    </div>
+
+    <button class="btn btn-green" onclick="downloadExcel()"><i class="fa-solid fa-file-excel"></i> ទាញយក Excel</button>
+    <button class="btn" onclick="downloadPdf()"><i class="fa-solid fa-download"></i> ទាញយក PDF</button>
+    <button class="btn btn-primary" onclick="doPrint()"><i class="fa-solid fa-print"></i> បោះពុម្ព</button>
+  </div>
+
+  <div class="row">
+    <div class="pill">
+      <span class="lbl">ថ្ងៃអ្នកធ្វើចុះហត្ថលេខា</span>
+      <input type="date" id="inTeacherDate" class="fc" onchange="render()">
+    </div>
+    <div class="pill">
+      <span class="lbl">ថ្ងៃនាយកចុះហត្ថលេខា</span>
+      <input type="date" id="inDirectorDate" class="fc" onchange="render()">
+    </div>
+    <button class="btn" onclick="document.getElementById('settings').classList.toggle('open')"><i class="fa-solid fa-sliders"></i> កំណត់ទំព័រ</button>
+  </div>
+
+  <div class="settings" id="settings">
+    <div class="pill"><span class="lbl">ការិយាល័យ៖</span><input id="inOffice" class="fc" style="width:230px" value="ការិយាល័យអប់រំ យុវជន និងកីឡា" oninput="render()"></div>
+    <div class="pill"><span class="lbl">សាលា៖</span><input id="inSchool" class="fc" style="width:210px" value="សាលាបឋមសិក្សាកំពង់ល្ពៅ" oninput="render()"></div>
+    <div class="pill"><span class="lbl">ឆ្នាំសិក្សា៖</span><input id="inYear" class="fc" style="width:120px" placeholder="ស្វ័យប្រវត្តិ" oninput="render()"></div>
+    <div class="pill"><span class="lbl">ទីកន្លែង៖</span><input id="inPlace" class="fc" style="width:120px" value="កំពង់ល្ពៅ" oninput="render()"></div>
+    <div class="pill" style="flex:1;min-width:260px"><span class="lbl">ចន្ទគតិ៖</span><input id="inLunar" class="fc" style="width:100%" value="ថ្ងៃព្រហស្បតិ៍ ៤កើត ខែអស្សុជ ឆ្នាំមមី អដ្ឋស័ក ពុទ្ធសករាជ ២៥៧០" oninput="render()"></div>
+    <div class="pill"><span class="lbl">ទំព័រ៖</span>
+      <select id="inOrient" class="fc" onchange="applyOrientation()"><option value="landscape">A4 ផ្ដេក</option><option value="portrait">A4 ឈរ</option></select>
+    </div>
+    <label class="pill lbl" style="cursor:pointer"><input type="checkbox" id="inSkipDrop" onchange="render()"> មិនរាប់សិស្សបោះបង់ការសិក្សា</label>
+  </div>
+</div>
+
+<div class="sheet-wrap" id="sheetWrap" style="display:none">
+  <div class="sheet" id="sheet"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const sb = supabase.createClient("https://nggnuobnrxiqjtcwlvwk.supabase.co","sb_publishable_AHDcUJbuMAfhaocyfm2X7w_O9s06wML");
+
+function readSession(){try{return JSON.parse(localStorage.getItem('krou_supabase_user')||'null')}catch(e){return null}}
+const USER = readSession();
+const IS_ADMIN = String(USER?.role||'teacher').toLowerCase().trim()==='admin';
+const USER_CLASS = USER?.assigned_classes || USER?.assigned_class || '';
+
+const KD=['០','១','២','៣','៤','៥','៦','៧','៨','៩'];
+const MONTHS=['មករា','កុម្ភៈ','មីនា','មេសា','ឧសភា','មិថុនា','កក្កដា','សីហា','កញ្ញា','តុលា','វិច្ឆិកា','ធ្នូ'];
+const AGES=[6,7,8,9,10,11,12];
+const toKh=v=>String(v??'').replace(/[0-9]/g,d=>KD[d]);
+const fromKh=v=>String(v??'').replace(/[០-៩]/g,d=>KD.indexOf(d));
+const cleanGrade=g=>String(g||'').replace(/^ថ្នាក់ទី\s*/,'').trim();
+const esc=t=>String(t||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pad=n=>String(n).padStart(2,'0');
+const isoLocal=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+
+function applyTheme(t){document.documentElement.setAttribute('data-theme',t||'dark')}
+applyTheme(localStorage.getItem('krou_theme_manual')||'dark');
+window.addEventListener('message',e=>{if(e.data&&(e.data.type==='THEME_CHANGE'||e.data.theme))applyTheme(e.data.theme||e.data)});
+
+function goToIndex(e){if(e)e.preventDefault();try{if(window.parent!==window){window.parent.postMessage({type:'OPEN_LOGIN',action:'LOGIN'},'*');window.parent.location.href='index.html';return}}catch(x){}location.href='index.html'}
+function goBack(){if(history.length>1)history.back();else location.href='index.html'}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';setTimeout(()=>t.style.display='none',3500)}
+
+/* ---------- ទិន្នន័យ ---------- */
+let STUDENTS=[], TEACHER='', CUR_CLASS='';
+
+function parseDob(v){
+  if(!v)return null; const s=fromKh(String(v).trim());
+  let m=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/); if(m)return new Date(+m[1],+m[2]-1,+m[3]);
+  m=s.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})/); if(m)return new Date(+m[3],+m[2]-1,+m[1]);
+  return null;
+}
+function ageAt(dob,ref){
+  let a=ref.getFullYear()-dob.getFullYear(), md=ref.getMonth()-dob.getMonth();
+  if(md<0||(md===0&&ref.getDate()<dob.getDate()))a--; return a;
+}
+function normGender(g){
+  const s=String(g||'').trim(); if(!s)return null;
+  if(s==='ស'||s.includes('ស្រី')||/^f/i.test(s))return 'F';
+  if(s==='ប'||s.includes('ប្រុស')||/^m/i.test(s))return 'M';
+  return null;
+}
+function fmtKhDate(iso){
+  const m=String(iso||'').match(/^(\d{4})-(\d{2})-(\d{2})$/); if(!m)return '';
+  return 'ថ្ងៃទី'+toKh(+m[3])+' ខែ'+MONTHS[+m[2]-1]+' ឆ្នាំ'+toKh(m[1]);
+}
+
+async function fetchTeacher(cls){
+  try{
+    const {data,error}=await sb.from('users').select('teacher_name, assigned_classes, role');
+    if(error||!data)return '';
+    const ok=data.filter(u=>String(u.assigned_classes||'').split(/[,;،\/]+/).map(cleanGrade).filter(Boolean).includes(cls)&&String(u.teacher_name||'').trim());
+    const t=ok.find(u=>String(u.role||'').toLowerCase().trim()!=='admin')||ok[0];
+    return t?String(t.teacher_name).trim():'';
+  }catch(e){return ''}
+}
+
+async function initClasses(){
+  const box=document.getElementById('adminClassBox'), sel=document.getElementById('selectClass'), mine=cleanGrade(USER_CLASS);
+  if(!IS_ADMIN){
+    box.style.display='none';
+    if(!mine){showMsg('⚠️ គណនីរបស់អ្នកមិនទាន់មានថ្នាក់ទទួលបន្ទុកឡើយ។ សូមទាក់ទង Admin។','#f59e0b');return}
+    sel.innerHTML=`<option value="${esc(mine)}">${esc(mine)}</option>`; sel.value=mine; loadData(); return;
+  }
+  box.style.display='inline-flex';
+  try{
+    const {data}=await sb.from('students').select('grade');
+    let cls=[...new Set((data||[]).map(d=>cleanGrade(d.grade)).filter(Boolean))].sort();
+    if(!cls.length)cls=['១','២','៣','៤','៥','៦'];
+    sel.innerHTML='<option value="ALL">គ្រប់ថ្នាក់ (ទាំងសាលា)</option>'+cls.map(c=>`<option value="${esc(c)}">ថ្នាក់ទី ${esc(c)}</option>`).join('');
+    sel.value=(mine&&cls.includes(mine))?mine:'ALL'; loadData();
+  }catch(e){sel.innerHTML='<option value="">កំហុសទាញយកថ្នាក់</option>'}
+}
+
+function showMsg(html,color){document.getElementById('sheet').innerHTML=`<div style="text-align:center;padding:80px 20px;font-weight:700;color:${color||'#555'}">${html}</div>`}
+
+async function loadData(){
+  CUR_CLASS=document.getElementById('selectClass').value||cleanGrade(USER_CLASS);
+  if(!CUR_CLASS)return;
+  showMsg('<i class="fa-solid fa-spinner fa-spin"></i> កំពុងទាញយកទិន្នន័យ...');
+  try{
+    const {data,error}=await sb.from('students').select('id, student_id, student_name, gender, dob, grade, dropout_semester').order('id',{ascending:true});
+    if(error)throw error;
+    STUDENTS=(data||[]).filter(s=>CUR_CLASS==='ALL'||cleanGrade(s.grade)===CUR_CLASS);
+    TEACHER=CUR_CLASS==='ALL'?'':await fetchTeacher(CUR_CLASS);
+    render();
+  }catch(err){showMsg('❌ កំហុស៖ '+esc(err.message),'#ef4444')}
+}
+
+/* ---------- បង្កើតរបាយការណ៍ ---------- */
+function compute(ref){
+  const skip=document.getElementById('inSkipDrop').checked;
+  const c={F:{},M:{}}; AGES.forEach(a=>{c.F[a]=0;c.M[a]=0});
+  let total=0,female=0,noDob=0,outRange=0,noGender=0;
+  STUDENTS.forEach(s=>{
+    if(skip&&String(s.dropout_semester||'').trim())return;
+    total++;
+    const g=normGender(s.gender); if(g==='F')female++;
+    const dob=parseDob(s.dob); if(!dob){noDob++;return}
+    if(!g){noGender++;return}
+    const a=ageAt(dob,ref);
+    if(c[g][a]===undefined)outRange++; else c[g][a]++;
+  });
+  return {c,total,female,noDob,outRange,noGender};
+}
+
+function render(){
+  if(!STUDENTS||!CUR_CLASS)return;
+  const asOfVal=document.getElementById('inAsOf').value;
+  const [y,m,d]=asOfVal.split('-').map(Number);
+  const ref=new Date(y,m-1,d);
+  const r=compute(ref);
+
+  const office=esc(document.getElementById('inOffice').value);
+  const school=esc(document.getElementById('inSchool').value);
+  const place=esc(document.getElementById('inPlace').value);
+  const lunar=esc(toKh(document.getElementById('inLunar').value));
+  let year=document.getElementById('inYear').value.trim();
+  if(!year){const sy=(m>=8)?y:y-1;year=sy+'-'+(sy+1)}
+  const tIso=document.getElementById('inTeacherDate').value||isoLocal(new Date());
+  const dIso=document.getElementById('inDirectorDate').value;
+  const classLine=CUR_CLASS==='ALL'?'គ្រប់ថ្នាក់':'ថ្នាក់ទី'+esc(CUR_CLASS);
+
+  const rowHtml=(label,g)=>{
+    const t=AGES.reduce((s,a)=>s+r.c[g][a],0);
+    return `<tr><td>${label}</td>${AGES.map(a=>`<td>${r.c[g][a]?toKh(r.c[g][a]):''}</td>`).join('')}<td class="tot">${toKh(t)}</td><td></td></tr>`;
+  };
+  const colTot=a=>r.c.F[a]+r.c.M[a];
+  const grand=AGES.reduce((s,a)=>s+colTot(a),0);
+  const remarks=[];
+  if(r.noDob)remarks.push('គ្មានថ្ងៃកំណើត '+toKh(r.noDob));
+  if(r.outRange)remarks.push('អាយុក្រៅ ៦-១២ '+toKh(r.outRange));
+  if(r.noGender)remarks.push('មិនស្គាល់ភេទ '+toKh(r.noGender));
+
+  document.getElementById('sheet').innerHTML=`
+    <div class="kingdom moul">ព្រះរាជាណាចក្រកម្ពុជា</div>
+    <div class="motto moul">ជាតិ សាសនា ព្រះមហាក្សត្រ</div>
+    <div class="divider"><span></span><b>❖</b><span></span></div>
+    <div class="hdr-left moul">${office}<br>${school}<br>${classLine}</div>
+    <div class="title moul">ស្ថិតិសិស្សតាមអាយុ នាដើមឆ្នាំសិក្សា</div>
+    <div class="subtitle">ឆ្នាំសិក្សា ${toKh(esc(year))} · អាយុគិតត្រឹមថ្ងៃទី ${toKh(pad(d)+'-'+pad(m)+'-'+y)} · សិស្សសរុប ${toKh(r.total)}នាក់ · ស្រី ${toKh(r.female)}នាក់</div>
+    <table class="stat" id="statTable">
+      <thead>
+        <tr><th rowspan="2" style="width:9%">ភេទ</th><th colspan="7">អាយុសិស្ស (ឆ្នាំ)</th><th rowspan="2" style="width:9%">សរុប</th><th rowspan="2" style="width:15%">ផ្សេងៗ</th></tr>
+        <tr>${AGES.map(a=>`<th>${toKh(a)}</th>`).join('')}</tr>
+      </thead>
+      <tbody>
+        ${rowHtml('ស','F')}
+        ${rowHtml('ប','M')}
+        <tr><td><b>សរុប</b></td>${AGES.map(a=>`<td class="tot">${colTot(a)?toKh(colTot(a)):''}</td>`).join('')}<td class="tot">${toKh(grand)}</td><td class="rm">${remarks.join('<br>')}</td></tr>
+      </tbody>
+    </table>
+    <div class="foot">
+      <div class="sig-l">
+        <div>បានឃើញ និងឯកភាព</div>
+        <div>${dIso?fmtKhDate(dIso):'&nbsp;'}</div>
+        <div class="moul" style="font-size:13px">នាយកសាលា</div>
+        <div class="sig-space"></div>
+      </div>
+      <div class="sig-r">
+        <div style="font-size:12.5px">${lunar}</div>
+        <div>${place}, ${fmtKhDate(tIso)}</div>
+        <div class="role moul" style="font-size:13px">គ្រូទទួលបន្ទុកថ្នាក់</div>
+        <div class="sig-space"></div>
+        <div class="sig-name">${esc(TEACHER)}</div>
+      </div>
+    </div>`;
+  fitZoom();
+}
+
+/* ---------- ទំព័រ, zoom, print, export ---------- */
+function applyOrientation(){
+  const o=document.getElementById('inOrient').value, root=document.documentElement.style;
+  root.setProperty('--sw',o==='landscape'?'1122px':'793px');
+  root.setProperty('--sht',o==='landscape'?'793px':'1122px');
+  document.getElementById('pageStyle').textContent=`@page{size:A4 ${o};margin:0}`;
+  fitZoom();
+}
+function fitZoom(){
+  const w=parseInt(getComputedStyle(document.documentElement).getPropertyValue('--sw'))||1122;
+  let s=(window.innerWidth-24)/w; if(s>1)s=1; if(s<.28)s=.28;
+  document.getElementById('sheetWrap').style.zoom=s;
+}
+window.addEventListener('resize',fitZoom);
+
+function doPrint(){window.focus();setTimeout(()=>{try{window.print()}catch(e){window.parent.print()}},100)}
+async function downloadPdf(){
+  const el=document.getElementById('sheet');
+  if(!el||!el.querySelector('#statTable')){toast('មិនទាន់មានទិន្នន័យសម្រាប់បង្កើត PDF');return}
+  if(!window.html2canvas||!window.jspdf){toast('មិនអាចផ្ទុក library PDF បានទេ សូមពិនិត្យអ៊ីនធឺណិត');return}
+  toast('កំពុងបង្កើត PDF...');
+  try{
+    if(document.fonts&&document.fonts.ready)await document.fonts.ready;
+    const portrait=document.getElementById('inOrient').value==='portrait';
+    const canvas=await html2canvas(el,{
+      scale:2,useCORS:true,backgroundColor:'#ffffff',scrollX:0,scrollY:0,
+      onclone:doc=>{
+        const w=doc.getElementById('sheetWrap'); if(w){w.style.zoom=1;w.style.transform='none'}
+        const sh=doc.getElementById('sheet'); if(sh)sh.style.boxShadow='none';
+      }
+    });
+    const {jsPDF}=window.jspdf;
+    const pdf=new jsPDF({orientation:portrait?'portrait':'landscape',unit:'mm',format:'a4'});
+    const pw=pdf.internal.pageSize.getWidth(), ph=pdf.internal.pageSize.getHeight();
+    pdf.addImage(canvas.toDataURL('image/jpeg',0.98),'JPEG',0,0,pw,ph);
+    pdf.save('student-age-stats-'+(CUR_CLASS||'all')+'.pdf');
+    toast('បានទាញយក PDF រួចរាល់');
+  }catch(err){toast('កំហុសបង្កើត PDF៖ '+err.message)}
+}
+
+function downloadExcel(){
+  const tbl=document.getElementById('statTable'); if(!tbl)return;
+  const title=document.querySelector('.title')?.innerText||'', sub=document.querySelector('.subtitle')?.innerText||'';
+  const html=`<html xmlns:x="urn:schemas-microsoft-com:office:excel"><head><meta charset="UTF-8"></head><body><h3>${esc(title)}</h3><p>${esc(sub)}</p>${tbl.outerHTML.replace('<table','<table border="1"')}</body></html>`;
+  const blob=new Blob(['\ufeff'+html],{type:'application/vnd.ms-excel;charset=utf-8'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='student-age-stats-'+(CUR_CLASS||'')+'.xls'; document.body.appendChild(a); a.click(); a.remove();
+}
+
+/* ---------- ចាប់ផ្តើម ---------- */
+window.addEventListener('DOMContentLoaded',async()=>{
+  if(!USER||!USER.username){document.getElementById('authDenied').style.display='flex';return}
+  document.getElementById('toolbar').style.display='flex';
+  document.getElementById('sheetWrap').style.display='flex';
+  const now=new Date(), sy=now.getMonth()>=7?now.getFullYear():now.getFullYear()-1;
+  document.getElementById('inAsOf').value=sy+'-10-01';
+  applyOrientation();
+  await initClasses();
+});
+</script>
+</body>
+</html>
