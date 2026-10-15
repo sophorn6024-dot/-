@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="km">
 <head>
+  <base target="_top">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>ព្រឹត្តិបត្រពិន្ទុ - សាលាបឋមសិក្សាកំពង់ល្ពៅ</title>
@@ -104,7 +105,7 @@
       position: absolute;
       top: calc(100% + 6px);
       left: 0;
-      min-width: 180px;
+      min-width: 190px;
       background: #1e293b;
       border: 1px solid #475569;
       border-radius: 14px;
@@ -162,7 +163,7 @@
       outline: none;
       cursor: pointer;
       padding: 0 8px;
-      max-width: 150px;
+      max-width: 170px;
     }
     .student-select-clean option { background: #1e293b; color: #fff; }
 
@@ -259,13 +260,8 @@
       margin-bottom: 10px;
       font-weight: 600;
     }
-    .student-meta-line span.hl-val {
-      font-weight: 700;
-    }
-    .student-meta-line span.hl-rank {
-      color: #dc2626;
-      font-weight: 800;
-    }
+    .student-meta-line span.hl-val { font-weight: 700; }
+    .student-meta-line span.hl-rank { color: #dc2626; font-weight: 800; }
 
     /* ── Table Styling ── */
     .report-table {
@@ -291,11 +287,9 @@
       font-weight: 700;
       padding-left: 6px;
     }
-    .report-table td.bold-val {
-      font-weight: 700;
-    }
+    .report-table td.bold-val { font-weight: 700; }
 
-    /* ពណ៌និទ្ទេសតាមស្តង់ដារ */
+    /* ពណ៌និទ្ទេស */
     .gr-A { color: #0284c7; font-weight: 800; }
     .gr-B { color: #b45309; font-weight: 800; }
     .gr-C { color: #16a34a; font-weight: 800; }
@@ -330,26 +324,10 @@
     .sig-col.mid-col { min-width: 170px; margin-top: 36px; }
     .sig-col.right-col { min-width: 190px; }
 
-    .sig-title-moul {
-      font-size: 12px;
-      color: #000;
-      margin-bottom: 2px;
-    }
-    .sig-role {
-      font-weight: 700;
-      font-size: 12px;
-      margin-bottom: 45px;
-    }
-    .sig-name {
-      font-weight: 700;
-      font-size: 13px;
-    }
-
-    .sig-lunar-date, .sig-solar-date {
-      font-size: 11px;
-      line-height: 1.4;
-      white-space: nowrap;
-    }
+    .sig-title-moul { font-size: 12px; color: #000; margin-bottom: 2px; }
+    .sig-role { font-weight: 700; font-size: 12px; margin-bottom: 45px; }
+    .sig-name { font-weight: 700; font-size: 13px; }
+    .sig-lunar-date, .sig-solar-date { font-size: 11px; line-height: 1.4; white-space: nowrap; }
     .sig-solar-date { margin-bottom: 4px; }
 
     .parent-dotted-lines {
@@ -357,6 +335,47 @@
       border-bottom: 1px dotted #000;
       height: 16px;
       margin-top: 10px;
+    }
+
+    .empty-state-card {
+      background: #ffffff;
+      padding: 60px 40px;
+      border-radius: 16px;
+      text-align: center;
+      color: #64748b;
+      font-size: 15px;
+      font-weight: 700;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      max-width: 500px;
+      margin-top: 50px;
+    }
+
+    /* 📱 សម្រួលលើទូរសព្ទដៃ និងថេប្លេត (Mobile & Tablet Responsiveness) */
+    @media screen and (max-width: 768px) {
+      .top-toolbar {
+        padding: 8px 10px;
+        justify-content: flex-start;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+      .top-toolbar::-webkit-scrollbar { height: 3px; }
+      .paper-stage {
+        padding: 15px 5px;
+        overflow-x: auto;
+        width: 100%;
+        display: block;
+        -webkit-overflow-scrolling: touch;
+      }
+      .report-sheet {
+        margin: 0 auto;
+        transform-origin: top center;
+      }
+      @media (max-width: 500px) {
+        .report-sheet {
+          width: 195mm;
+          padding: 10mm 10mm;
+        }
+      }
     }
 
     /* =========================================================
@@ -368,12 +387,9 @@
     }
 
     @media print {
-      body {
-        background: #ffffff !important;
-        padding: 0 !important;
-      }
+      body { background: #ffffff !important; padding: 0 !important; }
       .top-toolbar { display: none !important; }
-      .paper-stage { padding: 0 !important; gap: 0 !important; }
+      .paper-stage { padding: 0 !important; gap: 0 !important; overflow: visible !important; display: block !important; }
       .report-sheet {
         box-shadow: none !important;
         margin: 0 !important;
@@ -393,10 +409,15 @@
 <body>
 
   <!-- =========================================================
-       1. TOOLBAR ផ្នែកខាងលើ (ដូចរូបភាព ១០០%)
+       1. TOOLBAR ផ្នែកខាងលើ
   ========================================================= -->
   <div class="top-toolbar">
     
+    <!-- ជ្រើសរើសថ្នាក់ (Class Selector) -->
+    <select id="classSelectPill" class="pill-select" onchange="onClassChange(this.value)">
+      <option value="">កំពុងទាញយកថ្នាក់...</option>
+    </select>
+
     <!-- Dropdown: ចំនួនសន្លឹក និងទិសដៅ -->
     <div class="tb-group">
       <button type="button" class="pill-btn" onclick="toggleDropdown('layoutDropdown')">
@@ -431,23 +452,23 @@
       </div>
     </div>
 
-    <!-- ប៊ូតុងកំណត់កាលបរិច្ឆេទហត្ថលេខា -->
+    <!-- កាលបរិច្ឆេទហត្ថលេខាគ្រូ -->
     <button type="button" class="pill-btn" onclick="editTeacherDate()">
       <i class="fa-regular fa-calendar-days"></i>
       <span>កាលបរិច្ឆេទហត្ថលេខា</span>
     </button>
 
-    <!-- ប៊ូតុងកំណត់ថ្ងៃនាយកចុះហត្ថលេខា -->
+    <!-- ថ្ងៃនាយកចុះហត្ថលេខា -->
     <button type="button" class="pill-btn" onclick="editDirectorDate()">
       <i class="fa-regular fa-calendar-days"></i>
       <span>ថ្ងៃនាយកចុះហត្ថលេខា</span>
     </button>
 
-    <!-- ប៊ូតុងជ្រើសរើសសិស្សដើម្បីមើល -->
+    <!-- រុករកសិស្ស -->
     <div class="student-nav-group">
       <button type="button" class="student-nav-btn" onclick="prevStudent()" title="សិស្សមុន">‹</button>
       <select class="student-select-clean" id="studentSelectBox" onchange="onStudentSelect(this.value)">
-        <!-- ជម្រើសសិស្សនឹងត្រូវបញ្ចូលដោយ JavaScript -->
+        <option value="">គ្មានសិស្ស</option>
       </select>
       <button type="button" class="student-nav-btn" onclick="nextStudent()" title="សិស្សបន្ទាប់">›</button>
     </div>
@@ -470,63 +491,51 @@
        2. សន្លឹកព្រឹត្តិបត្រពិន្ទុ (PAPER WORKSPACE)
   ========================================================= -->
   <div class="paper-stage" id="paperWorkspace">
-    <!-- Rendered dynamically via JavaScript -->
+    <div class="empty-state-card">
+      <i class="fa-solid fa-spinner fa-spin fa-2x" style="color:#0284c7; margin-bottom:12px;"></i>
+      <div>កំពុងទាញយកទិន្នន័យពី Database...</div>
+    </div>
   </div>
 
   <!-- =========================================================
-       3. JAVASCRIPT LOGIC & SUPABASE INTEGRATION
-  ========================================================= */ -->
+       3. JAVASCRIPT: SUPABASE & DYNAMIC REAL DATA
+  ========================================================= -->
   <script>
-    /* ── Supabase Setup ── */
+    /* ── Supabase Configuration ── */
     const SUPABASE_URL = "https://nggnuobnrxiqjtcwlvwk.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_AHDcUJbuMAfhaocyfm2X7w_O9s06wML";
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    /* ── App State ── */
-    let layoutMode = '1_portrait'; // '1_portrait' | '2_landscape'
-    let gradeMode = 'AF';         // 'AF' | 'KH'
+    /* ── Read Session User ── */
+    function readSession() {
+      try { return JSON.parse(localStorage.getItem('krou_supabase_user') || 'null'); } catch(e) { return null; }
+    }
+    const CURRENT_USER = readSession();
+    const USER_ROLE = CURRENT_USER?.role || "teacher";
+    const USER_CLASS = CURRENT_USER?.assigned_classes || CURRENT_USER?.assigned_class || "";
+    const IS_ADMIN = String(USER_ROLE).toLowerCase().trim() === 'admin';
 
-    // កាលបរិច្ឆេទលំនាំដើមដូចក្នុងរូបភាព
-    let teacherLunarDate = "ថ្ងៃពុធ ៣កើត ខែអស្សុជ ឆ្នាំមមែ អដ្ឋស័ក ពុទ្ធសករាជ ២៥៧០";
-    let teacherSolarDate = "កំពង់ល្ពៅ ថ្ងៃទី១៤ ខែតុលា ឆ្នាំ២០២៦";
-    let directorLunarDate = "ថ្ងៃពុធ ៣កើត ខែអស្សុជ ឆ្នាំមមែ អដ្ឋស័ក ពុទ្ធសករាជ ២៥៧០";
-    let directorSolarDate = "កំពង់ល្ពៅ ថ្ងៃទី១៤ ខែតុលា ឆ្នាំ២០២៦";
-    let teacherName = "សេង សុភាន់";
-
-    /* ── ទិន្នន័យគំរូដូចក្នុងរូបភាព ១០០% (Fallback & Demo) ── */
-    let studentsList = [
-      {
-        id: "577",
-        name: "កែវ លីណា",
-        gender: "ប្រុស",
-        grade: "៤ក",
-        rank: 1,
-        avgSem1: 5.82,
-        avgSem2: 3.00,
-        avgYear: 4.41,
-        yearRank: 1,
-        yearGrade: "F",
-        absentUnexcused: 0,
-        absentExcused: 0,
-        scores: [
-          { no: 1, name: "អំណាន", max: 10, s1: 4, s2: null, avg: 4, grade: "F" },
-          { no: 2, name: "ស្ដាប់ និងនិយាយ", max: 10, s1: 5, s2: null, avg: 5, grade: "E" },
-          { no: 3, name: "សរសេរតាមអាន", max: 10, s1: 6, s2: null, avg: 6, grade: "D" },
-          { no: 4, name: "តែងសេចក្ដី", max: 10, s1: 7, s2: null, avg: 7, grade: "C" },
-          { no: 5, name: "គណិតវិទ្យា", max: 10, s1: 7, s2: null, avg: 7, grade: "C" },
-          { no: 6, name: "វិទ្យាសាស្ត្រ", max: 10, s1: 7, s2: null, avg: 7, grade: "C" },
-          { no: 7, name: "សិក្សាសង្គម", max: 10, s1: 8, s2: null, avg: 8, grade: "B" },
-          { no: 8, name: "គេហវិទ្យា-អប់រំសិល្បៈ", max: 10, s1: 9, s2: null, avg: 9, grade: "A" },
-          { no: 9, name: "អប់រំកាយ-សុខភាព", max: 10, s1: 7, s2: null, avg: 7, grade: "C" },
-          { no: 10, name: "អប់រំបំណិនជីវិត", max: 10, s1: 7, s2: null, avg: 7, grade: "C" },
-          { no: 11, name: "ភាសាបរទេស", max: 10, s1: 6, s2: null, avg: 6, grade: "D" }
-        ]
-      }
-    ];
-
+    /* ── State ── */
+    let layoutMode = '1_portrait';
+    let gradeMode = 'AF';
+    let currentClassName = '';
+    let studentsList = []; // 🌟 ចាប់ផ្តើមទទេ (គ្មាន Mock Data)
     let currentStudentIndex = 0;
 
-    /* ── វចនានុក្រមបំប្លែងនិទ្ទេស ── */
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const academicYearStr = `${currentYear}-${currentYear + 1}`;
+
+    let teacherLunarDate = "ថ្ងៃពុធ ៣កើត ខែអស្សុជ ឆ្នាំមមែ អដ្ឋស័ក ពុទ្ធសករាជ ២៥៧០";
+    let teacherSolarDate = `កំពង់ល្ពៅ ថ្ងៃទី១៤ ខែតុលា ឆ្នាំ${currentYear}`;
+    let directorLunarDate = "ថ្ងៃពុធ ៣កើត ខែអស្សុជ ឆ្នាំមមែ អដ្ឋស័ក ពុទ្ធសករាជ ២៥៧០";
+    let directorSolarDate = `កំពង់ល្ពៅ ថ្ងៃទី១៤ ខែតុលា ឆ្នាំ${currentYear}`;
+    let teacherName = CURRENT_USER?.teacher_name || "គ្រូទទួលបន្ទុកថ្នាក់";
+
+    function cleanGrade(g) {
+      return String(g || '').replace(/^(ថ្នាក់ទី|ថ្នាក់)\s*/, '').trim();
+    }
+
     const GRADE_KH_MAP = {
       'A': 'ល្អប្រសើរ',
       'B': 'ល្អណាស់',
@@ -541,6 +550,15 @@
       return (gradeMode === 'KH') ? (GRADE_KH_MAP[code] || code) : code;
     }
 
+    function calculateGrade(avg) {
+      if (avg >= 9) return 'A';
+      if (avg >= 8) return 'B';
+      if (avg >= 7) return 'C';
+      if (avg >= 6) return 'D';
+      if (avg >= 5) return 'E';
+      return 'F';
+    }
+
     /* ── Dropdown Controller ── */
     function toggleDropdown(id) {
       const el = document.getElementById(id);
@@ -548,11 +566,9 @@
       closeAllDropdowns();
       if (!isShown) el.classList.add('show');
     }
-
     function closeAllDropdowns() {
       document.querySelectorAll('.dropdown-popup').forEach(d => d.classList.remove('show'));
     }
-
     document.addEventListener('click', (e) => {
       if (!e.target.closest('.tb-group')) closeAllDropdowns();
     });
@@ -560,15 +576,8 @@
     function setLayoutMode(mode, label, el) {
       layoutMode = mode;
       document.getElementById('currentLayoutText').innerText = label;
-      
-      document.querySelectorAll('#layoutDropdown .dropdown-item').forEach(i => {
-        i.classList.remove('active');
-        const chk = i.querySelector('.fa-check');
-        if (chk) chk.remove();
-      });
+      document.querySelectorAll('#layoutDropdown .dropdown-item').forEach(i => i.classList.remove('active'));
       el.classList.add('active');
-      el.innerHTML = `<span>${label}</span> <i class="fa-solid fa-check"></i>`;
-      
       closeAllDropdowns();
       renderReportWorkspace();
     }
@@ -576,20 +585,12 @@
     function setGradeFormat(fmt, label, el) {
       gradeMode = fmt;
       document.getElementById('currentGradeText').innerText = label;
-
-      document.querySelectorAll('#gradeDropdown .dropdown-item').forEach(i => {
-        i.classList.remove('active');
-        const chk = i.querySelector('.fa-check');
-        if (chk) chk.remove();
-      });
+      document.querySelectorAll('#gradeDropdown .dropdown-item').forEach(i => i.classList.remove('active'));
       el.classList.add('active');
-      el.innerHTML = `<span>${label}</span> <i class="fa-solid fa-check"></i>`;
-
       closeAllDropdowns();
       renderReportWorkspace();
     }
 
-    /* ── Modal / Prompt កាលបរិច្ឆេទ ── */
     function editTeacherDate() {
       const l = prompt("កាលបរិច្ឆេទចន្ទគតិ (គ្រូទទួលបន្ទុកថ្នាក់)៖", teacherLunarDate);
       if (l !== null) teacherLunarDate = l;
@@ -608,9 +609,240 @@
       renderReportWorkspace();
     }
 
+    /* =========================================================
+       4. FETCH REAL DATA FROM SUPABASE
+    ========================================================= */
+    async function initClassDropdown() {
+      const sel = document.getElementById('classSelectPill');
+      sel.innerHTML = '<option value="">កំពុងទាញយកថ្នាក់...</option>';
+
+      try {
+        const { data, error } = await sb.from('students').select('grade').limit(5000);
+        if (error) throw error;
+
+        let rawClasses = Array.from(new Set((data || []).map(d => cleanGrade(d.grade)).filter(Boolean)));
+        rawClasses.sort((a,b) => a.localeCompare(b, 'km', { numeric: true }));
+
+        sel.innerHTML = rawClasses.map(c => `<option value="${c}">ថ្នាក់ទី ${c}</option>`).join('');
+
+        const cleanUserClass = cleanGrade(USER_CLASS);
+        if (!IS_ADMIN && cleanUserClass) {
+          sel.value = cleanUserClass;
+          sel.disabled = true;
+          currentClassName = cleanUserClass;
+        } else {
+          sel.value = (cleanUserClass && rawClasses.includes(cleanUserClass)) ? cleanUserClass : (rawClasses[0] || '');
+          currentClassName = sel.value;
+        }
+
+        await loadRealDataForClass(currentClassName);
+
+      } catch (err) {
+        sel.innerHTML = '<option value="">កំហុសទាញយកថ្នាក់</option>';
+        document.getElementById('paperWorkspace').innerHTML = `<div class="empty-state-card" style="color:#ef4444;">❌ កំហុស៖ ${err.message}</div>`;
+      }
+    }
+
+    function onClassChange(val) {
+      currentClassName = val;
+      loadRealDataForClass(val);
+    }
+
+    async function loadRealDataForClass(cls) {
+      const pure = cleanGrade(cls);
+      if (!pure) return;
+
+      document.getElementById('paperWorkspace').innerHTML = `
+        <div class="empty-state-card">
+          <i class="fa-solid fa-spinner fa-spin fa-2x" style="color:#0284c7; margin-bottom:12px;"></i>
+          <div>កំពុងទាញយកទិន្នន័យថ្នាក់ទី ${pure}...</div>
+        </div>`;
+
+      try {
+        // ១. ទាញយកបញ្ជីសិស្សពិត
+        const { data: stData, error: stErr } = await sb
+          .from('students')
+          .select('*')
+          .in('grade', [pure, `ថ្នាក់ទី${pure}`, `ថ្នាក់ទី ${pure}`])
+          .order('id', { ascending: true });
+        if (stErr) throw stErr;
+
+        if (!stData || stData.length === 0) {
+          studentsList = [];
+          populateStudentSelect();
+          document.getElementById('paperWorkspace').innerHTML = `
+            <div class="empty-state-card">
+              <i class="fa-solid fa-user-slash fa-2x" style="color:#f59e0b; margin-bottom:12px;"></i>
+              <div>មិនទាន់មានទិន្នន័យសិស្សក្នុងថ្នាក់ទី ${pure} នៅឡើយទេ</div>
+            </div>`;
+          return;
+        }
+
+        // ២. ទាញយកមុខវិជ្ជាឆមាសពិតពី table subjects
+        const { data: subData } = await sb
+          .from('subjects')
+          .select('*')
+          .eq('assigned_class', pure)
+          .eq('subject_type', 'semester')
+          .order('sort_order', { ascending: true });
+
+        const defaultSemSubjects = [
+          { name: "អំណាន", code: "read", max: 10 },
+          { name: "ស្ដាប់ និងនិយាយ", code: "listen", max: 10 },
+          { name: "សរសេរតាមអាន", code: "dictation", max: 10 },
+          { name: "តែងសេចក្ដី", code: "essay", max: 10 },
+          { name: "គណិតវិទ្យា", code: "math", max: 10 },
+          { name: "វិទ្យាសាស្ត្រ", code: "science", max: 10 },
+          { name: "សិក្សាសង្គម", code: "social", max: 10 },
+          { name: "គេហវិទ្យា-អប់រំសិល្បៈ", code: "homeArts", max: 10 },
+          { name: "អប់រំកាយ-សុខភាព", code: "pe", max: 10 },
+          { name: "អប់រំបំណិនជីវិត", code: "ethics", max: 10 },
+          { name: "ភាសាបរទេស", code: "foreign", max: 10 }
+        ];
+
+        let classSubjects = (subData && subData.length > 0)
+          ? subData.map((s, i) => ({ no: i + 1, name: s.name, code: s.code || `sub_${s.id}`, max: Number(s.max_score) || 10 }))
+          : defaultSemSubjects.map((s, i) => ({ no: i + 1, name: s.name, code: s.code, max: s.max }));
+
+        // ៣. ទាញយកពិន្ទុឆមាសទី១ និងទី២
+        const { data: scData } = await sb
+          .from('scores')
+          .select('*')
+          .eq('assigned_class', pure)
+          .eq('score_type', 'semester');
+
+        const scoreMapS1 = {};
+        const scoreMapS2 = {};
+
+        (scData || []).forEach(row => {
+          let scObj = row.scores || {};
+          if (typeof scObj === 'string') {
+            try { scObj = JSON.parse(scObj); } catch(e) { scObj = {}; }
+          }
+          const sid = String(row.student_id);
+          if (row.period === 'ឆមាសទី១') scoreMapS1[sid] = scObj;
+          if (row.period === 'ឆមាសទី២') scoreMapS2[sid] = scObj;
+        });
+
+        // ៤. ទាញយកអវត្តមានសិស្សពិត
+        const { data: attData } = await sb
+          .from('attendance')
+          .select('student_id, status')
+          .eq('assigned_class', pure);
+
+        const unexcusedMap = {};
+        const excusedMap = {};
+        const unexcusedCodes = ['A', 'អ', 'អត់ច្បាប់', 'អវត្តមាន', 'ABSENT', 'UNEXCUSED'];
+        const excusedCodes = ['C', 'ច', 'ច្បាប់', 'មានច្បាប់', 'EXCUSED', 'PERMISSION'];
+
+        (attData || []).forEach(a => {
+          const sid = String(a.student_id);
+          const st = String(a.status || '').trim().toUpperCase();
+          if (unexcusedCodes.includes(st)) unexcusedMap[sid] = (unexcusedMap[sid] || 0) + 1;
+          if (excusedCodes.includes(st)) excusedMap[sid] = (excusedMap[sid] || 0) + 1;
+        });
+
+        // ៥. បូកសរុបពិន្ទុ មធ្យមភាគ និងចំណាត់ថ្នាក់
+        studentsList = stData.map(st => {
+          const sid = String(st.student_id || st.id);
+          const sc1 = scoreMapS1[sid] || {};
+          const sc2 = scoreMapS2[sid] || {};
+
+          let sem1Total = 0, sem1Count = 0;
+          let sem2Total = 0, sem2Count = 0;
+
+          const studentScores = classSubjects.map((sub, i) => {
+            const v1 = parseFloat(sc1[sub.code]);
+            const v2 = parseFloat(sc2[sub.code]);
+
+            const has1 = !isNaN(v1);
+            const has2 = !isNaN(v2);
+
+            if (has1) { sem1Total += v1; sem1Count++; }
+            if (has2) { sem2Total += v2; sem2Count++; }
+
+            let subAvg = '-';
+            let subGrade = '-';
+
+            if (has1 && has2) subAvg = ((v1 + v2) / 2);
+            else if (has1) subAvg = v1;
+            else if (has2) subAvg = v2;
+
+            if (subAvg !== '-') {
+              subGrade = calculateGrade(subAvg);
+              subAvg = subAvg.toFixed(2).replace(/\.00$/, '');
+            }
+
+            return {
+              no: i + 1,
+              name: sub.name,
+              max: sub.max,
+              s1: has1 ? v1 : '-',
+              s2: has2 ? v2 : '-',
+              avg: subAvg,
+              grade: subGrade
+            };
+          });
+
+          const avg1 = sem1Count > 0 ? (sem1Total / sem1Count) : 0;
+          const avg2 = sem2Count > 0 ? (sem2Total / sem2Count) : 0;
+          let yearAvg = 0;
+
+          if (sem1Count > 0 && sem2Count > 0) yearAvg = (avg1 + avg2) / 2;
+          else if (sem1Count > 0) yearAvg = avg1;
+          else if (sem2Count > 0) yearAvg = avg2;
+
+          return {
+            id: st.student_id || st.id,
+            name: st.student_name || 'គ្មានឈ្មោះ',
+            gender: st.gender || 'ប្រុស',
+            grade: pure,
+            avgSem1: avg1,
+            avgSem2: avg2,
+            avgYear: yearAvg,
+            yearGrade: yearAvg > 0 ? calculateGrade(yearAvg) : '-',
+            absentUnexcused: unexcusedMap[sid] || 0,
+            absentExcused: excusedMap[sid] || 0,
+            scores: studentScores
+          };
+        });
+
+        // ៦. គណនាចំណាត់ថ្នាក់ប្រចាំឆ្នាំ (Year Rank)
+        const sortedList = [...studentsList].sort((a, b) => b.avgYear - a.avgYear);
+        const rankMap = {};
+        let lastAvg = null, lastRank = 0;
+        sortedList.forEach((item, index) => {
+          if (item.avgYear === lastAvg) {
+            rankMap[item.id] = lastRank;
+          } else {
+            rankMap[item.id] = index + 1;
+            lastRank = index + 1;
+            lastAvg = item.avgYear;
+          }
+        });
+
+        studentsList.forEach(s => {
+          s.rank = rankMap[s.id] || '-';
+          s.yearRank = rankMap[s.id] || '-';
+        });
+
+        currentStudentIndex = 0;
+        populateStudentSelect();
+        renderReportWorkspace();
+
+      } catch (err) {
+        console.error(err);
+        document.getElementById('paperWorkspace').innerHTML = `<div class="empty-state-card" style="color:#ef4444;">❌ កំហុសផ្ទុកទិន្នន័យ៖ ${err.message}</div>`;
+      }
+    }
+
     /* ── Student Navigator ── */
     function populateStudentSelect() {
       const sel = document.getElementById('studentSelectBox');
+      if (!studentsList.length) {
+        sel.innerHTML = '<option value="">គ្មានសិស្ស</option>';
+        return;
+      }
       sel.innerHTML = studentsList.map((s, idx) => 
         `<option value="${idx}">${idx + 1}. ${s.name}</option>`
       ).join('');
@@ -639,22 +871,21 @@
     }
 
     /* =========================================================
-       4. HTML TEMPLATE FOR SINGLE REPORT CARD
+       5. HTML TEMPLATE FOR SINGLE REPORT CARD
     ========================================================= */
     function generateReportHTML(st) {
       if (!st) return '';
 
       let rowsHtml = '';
       st.scores.forEach(row => {
-        const s2Val = row.s2 !== null ? row.s2 : '-';
-        const grClass = `gr-${row.grade}`;
+        const grClass = row.grade !== '-' ? `gr-${row.grade}` : '';
         rowsHtml += `
           <tr>
             <td>${row.no}</td>
             <td class="sub-name">${row.name}</td>
             <td>${row.max}</td>
             <td>${row.s1}</td>
-            <td>${s2Val}</td>
+            <td>${row.s2}</td>
             <td class="bold-val">${row.avg}</td>
             <td class="${grClass}">${formatGrade(row.grade)}</td>
           </tr>
@@ -662,7 +893,7 @@
       });
 
       const totalAbsent = (st.absentUnexcused || 0) + (st.absentExcused || 0);
-      const yearGradeClass = `gr-${st.yearGrade}`;
+      const yearGradeClass = st.yearGrade !== '-' ? `gr-${st.yearGrade}` : '';
 
       return `
         <div class="report-sheet">
@@ -683,8 +914,8 @@
               </div>
 
               <div class="center-doc-title">
-                <div class="doc-main-title f-moul">ព្រឹត្តិបត្រពិន្ទុ 2026-2027</div>
-                <div class="doc-academic-year">ឆ្នាំសិក្សា 2026-2027</div>
+                <div class="doc-main-title f-moul">ព្រឹត្តិបត្រពិន្ទុ ${academicYearStr}</div>
+                <div class="doc-academic-year">ឆ្នាំសិក្សា ${academicYearStr}</div>
               </div>
             </div>
 
@@ -714,7 +945,7 @@
                 <!-- ជួរទី១ សង្ខេបលទ្ធផល -->
                 <tr style="background:#f8fafc;">
                   <td colspan="4" class="summary-cell-text" style="text-align:left; padding-left:14px;">
-                    មធ្យមភាគឆមាសទី១ ${st.avgSem1.toFixed(2)} • ឆមាសទី២ ${st.avgSem2.toFixed(2)} • ប្រចាំឆ្នាំ ${st.avgYear.toFixed(2)}
+                    មធ្យមភាគឆមាសទី១ ${st.avgSem1 > 0 ? st.avgSem1.toFixed(2) : '-'} • ឆមាសទី២ ${st.avgSem2 > 0 ? st.avgSem2.toFixed(2) : '-'} • ប្រចាំឆ្នាំ ${st.avgYear > 0 ? st.avgYear.toFixed(2) : '-'}
                   </td>
                   <td colspan="2" class="summary-cell-text" style="color:#000;">
                     ចំណាត់ថ្នាក់ទី <span style="color:#dc2626; font-weight:800;">${st.yearRank}</span>
@@ -770,17 +1001,26 @@
     }
 
     /* =========================================================
-       5. RENDER WORKSPACE
+       6. RENDER WORKSPACE
     ========================================================= */
     function renderReportWorkspace() {
       const container = document.getElementById('paperWorkspace');
+
+      if (!studentsList.length) {
+        container.className = 'paper-stage';
+        container.innerHTML = `
+          <div class="empty-state-card">
+            <i class="fa-solid fa-folder-open fa-2x" style="color:#f59e0b; margin-bottom:12px;"></i>
+            <div>មិនមានទិន្នន័យសិស្សត្រូវបង្ហាញឡើយ</div>
+          </div>`;
+        return;
+      }
 
       if (layoutMode === '1_portrait') {
         container.className = 'paper-stage';
         const currentStudent = studentsList[currentStudentIndex] || studentsList[0];
         container.innerHTML = generateReportHTML(currentStudent);
       } else {
-        // ទម្រង់ 2 នាក់ក្នុង ១ សន្លឹកផ្តេក A4
         container.className = 'paper-stage layout-2col';
         const st1 = studentsList[currentStudentIndex] || studentsList[0];
         const st2 = studentsList[currentStudentIndex + 1] || st1;
@@ -794,8 +1034,8 @@
       }
     }
 
-    /* ── ទាញយក PDF តាមរយៈ html2pdf ── */
     function downloadPDF() {
+      if (!studentsList.length) return alert('គ្មានទិន្នន័យដើម្បីទាញយកជា PDF ឡើយ!');
       const element = document.getElementById('paperWorkspace');
       const isPortrait = (layoutMode === '1_portrait');
       const st = studentsList[currentStudentIndex] || studentsList[0];
@@ -811,16 +1051,8 @@
       html2pdf().set(opt).from(element).save();
     }
 
-    /* ── ផ្ទុកទិន្នន័យដំបូង ── */
     window.addEventListener('DOMContentLoaded', async () => {
-      // ពិនិត្យមើលឈ្មោះគ្រូពី Session បើមាន
-      try {
-        const u = JSON.parse(localStorage.getItem('krou_supabase_user') || 'null');
-        if (u && u.teacher_name) teacherName = u.teacher_name;
-      } catch(e) {}
-
-      populateStudentSelect();
-      renderReportWorkspace();
+      await initClassDropdown();
     });
   </script>
 </body>
