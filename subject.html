@@ -44,11 +44,11 @@
     }
 
     [data-theme="light"] {
-      --bg: #f0fdf4;
+      --bg: #f8fafc;
       --surface: #ffffff;
-      --surface-card: #f8fafc;
-      --surface-elevated: #eef2f7;
-      --surface-hover: #f1f5f9;
+      --surface-card: #ffffff;
+      --surface-elevated: #f1f5f9;
+      --surface-hover: #e2e8f0;
       --border: #cbd5e1;
       --border-light: #e2e8f0;
       --text: #0f172a;
@@ -60,7 +60,7 @@
       --badge-class-txt: #0369a1;
       --badge-class-border: #bae6fd;
       --input-bg: #ffffff;
-      --card-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
+      --card-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
 
       --modal-bg: rgba(15, 23, 42, 0.7);
       --modal-card: #ffffff;
@@ -282,6 +282,26 @@
     .btn-sub-modal-cancel { height: 44px; border-radius: 12px; border: 1px solid var(--modal-border); background: var(--modal-btn-cancel); color: var(--modal-btn-cancel-txt); font-weight: 800; cursor: pointer; }
     .btn-sub-modal-save { height: 44px; border-radius: 12px; border: none; background: #00875a; color: #ffffff; font-weight: 800; cursor: pointer; }
   </style>
+
+  <!-- 🌟 AUTO-DETECT & INITIALIZE THEME IMMEDIATELY FROM PARENT (index.html) -->
+  <script>
+    (function() {
+      let finalTheme = 'dark';
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlTheme = urlParams.get('theme');
+        let parentTheme = null;
+        try {
+          if (window.parent && window.parent.document) {
+            parentTheme = window.parent.document.documentElement.getAttribute('data-theme');
+          }
+        } catch(err) {}
+        const savedTheme = localStorage.getItem('krou_theme_manual');
+        finalTheme = urlTheme || parentTheme || savedTheme || 'dark';
+      } catch(e) {}
+      document.documentElement.setAttribute('data-theme', finalTheme);
+    })();
+  </script>
 </head>
 
 <body>
@@ -476,6 +496,31 @@
   </div>
 
   <script>
+    /* =========================================================
+       🌟 AUTO-SYNC THEME WITH PARENT (index.html)
+    ========================================================= */
+    function applyTheme(th) {
+      const theme = (th === 'light') ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', theme);
+    }
+
+    // ស្ដាប់សញ្ញាពេលផ្ទាំងមេ (index.html) ប្ដូរ Theme
+    window.addEventListener('message', (ev) => {
+      if (ev.data && ev.data.type === 'THEME_CHANGE' && ev.data.theme) {
+        applyTheme(ev.data.theme);
+      }
+    });
+
+    // ស្ដាប់តាមរយៈ LocalStorage
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'krou_theme_manual' && e.newValue) {
+        applyTheme(e.newValue);
+      }
+    });
+
+    /* =========================================================
+       1. SUPABASE CLIENT CONFIG
+    ========================================================= */
     const SUPABASE_URL = "https://nggnuobnrxiqjtcwlvwk.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_AHDcUJbuMAfhaocyfm2X7w_O9s06wML";
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
