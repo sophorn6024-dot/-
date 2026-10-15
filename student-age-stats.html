@@ -146,7 +146,6 @@ table.stat td.rm{text-align:left;font-size:.89em;padding:.3em .6em;line-height:1
 
 <div class="toolbar" id="toolbar">
   <div class="row">
-    <button class="btn" onclick="goBack()"><i class="fa-solid fa-arrow-left"></i> ត្រឡប់</button>
 
     <div class="pill" id="adminClassBox" style="display:none">
       <span class="lbl"><i class="fa-solid fa-graduation-cap" style="color:#0891b2"></i> ថ្នាក់ទី៖</span>
@@ -231,7 +230,6 @@ window.addEventListener('message',e=>{if(e.data&&(e.data.type==='THEME_CHANGE'||
 window.addEventListener('storage',e=>{if(e.key==='krou_theme_manual')applyTheme(e.newValue)});
 
 function goToIndex(e){if(e)e.preventDefault();try{if(window.parent!==window){window.parent.postMessage({type:'OPEN_LOGIN',action:'LOGIN'},'*');window.parent.location.href='index.html';return}}catch(x){}location.href='index.html'}
-function goBack(){if(history.length>1)history.back();else location.href='index.html'}
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';clearTimeout(t._t);t._t=setTimeout(()=>t.style.display='none',3500)}
 
 /* ================= Popover helpers ================= */
