@@ -12,7 +12,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;600;700;900&family=Moul&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  <!-- 📊 PDF Library -->
+  <!-- 📊 Excel & PDF Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <!-- ⚡ Supabase JS Client (v2) -->
@@ -43,9 +44,7 @@
       font-weight: normal;
     }
 
-    /* =========================================================
-       🔒 AUTH DENIED WRAPPER (ការពារការ LOGIN)
-    ========================================================= */
+    /* 🔒 AUTH DENIED WRAPPER */
     #authDeniedWrap {
       display: none;
       flex-direction: column;
@@ -120,7 +119,7 @@
       color: #f8fafc;
       border: 1px solid #475569;
       height: 36px;
-      padding: 0 14px;
+      padding: 0 13px;
       border-radius: 18px;
       font-size: 12.5px;
       font-weight: 700;
@@ -144,7 +143,6 @@
     }
     .pill-btn.primary:hover { background: #00734c; }
 
-    /* 🌟 Dropdown Popup Fixed */
     .dropdown-popup {
       display: none;
       position: fixed;
@@ -178,7 +176,6 @@
     .dropdown-item:hover { background: #1e293b; }
     .dropdown-item.active { background: #0284c7; color: #fff; }
 
-    /* Student Navigator */
     .student-nav-group {
       display: inline-flex;
       align-items: center;
@@ -211,13 +208,10 @@
       outline: none;
       cursor: pointer;
       padding: 0 6px;
-      max-width: 150px;
+      max-width: 140px;
     }
     .student-select-clean option { background: #0f172a; color: #fff; }
 
-    /* =========================================================
-       📱 លើទូរសព្ទដៃបង្ហាញក្បាលលើជា ២ ជួរស្អាតឥតខ្ចោះ
-    ========================================================= */
     @media screen and (max-width: 768px) {
       .top-toolbar {
         padding: 8px 10px;
@@ -233,49 +227,16 @@
         gap: 6px;
         width: 100%;
       }
-
-      /* ជួរទី១ (ជួរលើ) */
-      .tb-row-1 .pill-select {
-        flex: 0 0 auto;
-        max-width: 110px;
-        height: 35px;
-        font-size: 11.5px;
-        padding: 0 8px;
+      .btn-label { display: none !important; }
+      .pill-btn {
+        width: 36px; height: 36px; padding: 0;
+        justify-content: center; border-radius: 50%;
       }
-      .tb-row-1 .student-nav-group {
-        flex: 1;
-        height: 35px;
-        justify-content: space-between;
-        min-width: 0;
-      }
-      .tb-row-1 .student-select-clean {
-        flex: 1;
-        max-width: 100%;
-        font-size: 11.5px;
-        text-align: center;
-      }
-      .tb-row-1 .pill-btn {
-        flex: 0 0 auto;
-        height: 35px;
-        padding: 0 10px;
-      }
-
-      /* ជួរទី២ (ជួរក្រោម) */
-      .tb-row-2 .tb-group {
-        flex: 1;
-      }
-      .tb-row-2 .pill-btn {
-        flex: 1;
-        width: 100%;
-        height: 35px;
-        padding: 0 6px;
-        justify-content: center;
-        font-size: 11.5px;
-        gap: 5px;
-      }
-      .tb-row-2 .pill-btn.primary {
-        flex: 1.2;
-      }
+      .tb-group .fa-chevron-down { display: none; }
+      .pill-select { height: 34px; padding: 0 8px; font-size: 11.5px; max-width: 105px; }
+      .student-select-clean { max-width: 100px; font-size: 11.5px; }
+      .tb-row-2 .pill-btn { flex: 1; border-radius: 18px; }
+      .tb-row-2 .pill-btn.primary { flex: 1.2; }
     }
 
     /* =========================================================
@@ -299,7 +260,6 @@
       transition: transform 0.2s ease;
     }
 
-    /* 📑 1 នាក់ • សន្លឹកបញ្ឈរ A4 (Portrait Mode) */
     .report-sheet {
       background: #ffffff;
       width: 210mm;
@@ -345,7 +305,7 @@
       width: 100%;
       border-collapse: collapse;
       text-align: center;
-      font-size: 11.5px;
+      font-size: 11px;
       border: 1px solid #000;
       margin-bottom: 12px;
     }
@@ -435,9 +395,7 @@
       margin-top: 10px;
     }
 
-    /* =========================================================
-       📑 2 នាក់ • សន្លឹកផ្តេក A4 (Landscape Mode)
-    ========================================================= */
+    /* 2 នាក់ • សន្លឹកផ្តេក A4 (Landscape Mode) */
     .paper-stage.layout-2col .report-sheet-container-2col {
       background: #ffffff;
       width: 297mm;
@@ -456,52 +414,37 @@
       min-height: auto;
       box-shadow: none;
       padding: 0;
-      font-size: 9.5px;
+      font-size: 9px;
     }
 
     .paper-stage.layout-2col .nat-title-1 { font-size: 11.5px; margin-bottom: 1px; }
     .paper-stage.layout-2col .nat-title-2 { font-size: 10.5px; margin-bottom: 1px; }
     .paper-stage.layout-2col .nat-symbol { font-size: 8.5px; letter-spacing: 1.5px; }
-    .paper-stage.layout-2col .doc-main-title { font-size: 12.5px; margin-bottom: 1px; }
-    .paper-stage.layout-2col .doc-academic-year { font-size: 10px; }
-    .paper-stage.layout-2col .left-dept-info { font-size: 9.5px; line-height: 1.35; }
-    .paper-stage.layout-2col .center-doc-title { margin-right: 40px; }
-    .paper-stage.layout-2col .student-meta-line { font-size: 10px; margin-bottom: 4px; }
+    .paper-stage.layout-2col .doc-main-title { font-size: 12px; margin-bottom: 1px; }
+    .paper-stage.layout-2col .doc-academic-year { font-size: 9.5px; }
+    .paper-stage.layout-2col .left-dept-info { font-size: 9px; line-height: 1.3; }
+    .paper-stage.layout-2col .center-doc-title { margin-right: 35px; }
+    .paper-stage.layout-2col .student-meta-line { font-size: 9.5px; margin-bottom: 3px; }
     
-    .paper-stage.layout-2col .report-table { font-size: 9.2px; margin-bottom: 6px; }
+    .paper-stage.layout-2col .report-table { font-size: 8.8px; margin-bottom: 5px; }
     .paper-stage.layout-2col .report-table th,
     .paper-stage.layout-2col .report-table td {
       padding: 2px 1px;
-      height: 19px;
+      height: 18px;
       white-space: nowrap !important;
     }
     
-    .paper-stage.layout-2col .report-table th.col-no { width: 22px !important; }
-    .paper-stage.layout-2col .report-table th.col-sub { width: auto !important; min-width: 108px !important; }
-    .paper-stage.layout-2col .report-table th.col-max { width: 50px !important; }
-    .paper-stage.layout-2col .report-table th.col-s1 { width: 62px !important; }
-    .paper-stage.layout-2col .report-table th.col-s2 { width: 62px !important; }
-    .paper-stage.layout-2col .report-table th.col-avg { width: 44px !important; }
-    .paper-stage.layout-2col .report-table th.col-gr { width: 34px !important; }
-
-    .paper-stage.layout-2col .summary-cell-text { font-size: 8.8px; padding: 2px; }
-
-    .paper-stage.layout-2col .sheet-signatures-area { font-size: 9px; margin-top: 4px; }
-    .paper-stage.layout-2col .sig-col.left-col { width: 27%; margin-top: 36px; }
-    .paper-stage.layout-2col .sig-col.mid-col  { width: 29%; margin-top: 18px; }
+    .paper-stage.layout-2col .summary-cell-text { font-size: 8.5px; padding: 2px; }
+    .paper-stage.layout-2col .sheet-signatures-area { font-size: 8.5px; margin-top: 3px; }
+    .paper-stage.layout-2col .sig-col.left-col { width: 27%; margin-top: 34px; }
+    .paper-stage.layout-2col .sig-col.mid-col  { width: 29%; margin-top: 16px; }
     .paper-stage.layout-2col .sig-col.right-col { width: 44%; margin-top: 0; }
-    .paper-stage.layout-2col .sig-title-moul { font-size: 9px; }
-    .paper-stage.layout-2col .sig-role { font-size: 9px; margin-bottom: 26px; }
-    .paper-stage.layout-2col .sig-name { font-size: 9.5px; }
-
-    .paper-stage.layout-2col .clean-lunar-input {
-      font-size: 8px;
-      line-height: 1.25;
-      padding: 1px;
-      white-space: normal;
-    }
-    .paper-stage.layout-2col .sig-solar-date { font-size: 8.5px; white-space: nowrap; }
-    .paper-stage.layout-2col .parent-dotted-lines { height: 10px; margin-top: 6px; }
+    .paper-stage.layout-2col .sig-title-moul { font-size: 8.5px; }
+    .paper-stage.layout-2col .sig-role { font-size: 8.5px; margin-bottom: 24px; }
+    .paper-stage.layout-2col .sig-name { font-size: 9px; }
+    .paper-stage.layout-2col .clean-lunar-input { font-size: 7.8px; padding: 1px; }
+    .paper-stage.layout-2col .sig-solar-date { font-size: 8px; }
+    .paper-stage.layout-2col .parent-dotted-lines { height: 9px; margin-top: 5px; }
 
     .empty-state-card {
       background: #ffffff;
@@ -516,9 +459,6 @@
       margin-top: 40px;
     }
 
-    /* =========================================================
-       🖨️ PRINT & PDF SETUP
-    ========================================================= */
     @page { size: A4 portrait; margin: 6mm 8mm; }
 
     @media print {
@@ -544,14 +484,12 @@
 </head>
 <body>
 
-  <!-- =========================================================
-       🔒 AUTH DENIED
-  ========================================================= -->
+  <!-- 🔒 AUTH DENIED -->
   <div id="authDeniedWrap">
     <div class="auth-card">
       <div class="auth-icon">🔒</div>
       <h2 class="f-moul">សូមចូលប្រើប្រាស់ជាមុនសិន!</h2>
-      <p>លោកអ្នកមិនទាន់បាន Login ចូលក្នុងប្រព័ន្ធនៅឡើយទេ។ សូម Login គណនីរបស់អ្នកដើម្បីមើល និងបោះពុម្ពព្រឹត្តិបត្រពិន្ទុ។</p>
+      <p>លោកអ្នកមិនទាន់បាន Login ចូលក្នុងប្រព័ន្ធនៅឡើយទេ។ សូម Login ដើម្បីមើល និងបោះពុម្ពព្រឹត្តិបត្រពិន្ទុ។</p>
       <a href="index.html" target="_top" class="btn-login-redirect" onclick="goToIndex(event)">
         <span>🔑</span> <span>ទៅកាន់ទំព័រដើម</span>
       </a>
@@ -559,18 +497,24 @@
   </div>
 
   <!-- =========================================================
-       1. TOOLBAR ផ្នែកខាងលើ (បែងចែកជា ២ ជួរស្អាតលើទូរសព្ទ)
+       1. TOOLBAR ផ្នែកខាងលើ (រៀបជា ២ ជួរស្អាតលើទូរសព្ទ)
   ========================================================= -->
   <div class="top-toolbar" id="mainToolbar" style="display:none;">
     
-    <!-- ជួរទី១ (ជួរលើលើទូរសព្ទ) -->
+    <!-- ជួរទី១ (ជួរលើ) -->
     <div class="tb-row-1">
-      <!-- ជ្រើសរើសថ្នាក់ (Class Selector) -->
+      <!-- ប៊ូតុងត្រឡប់ -->
+      <button type="button" class="pill-btn" onclick="goBackToScore()" title="ត្រឡប់ទៅស្រង់ពិន្ទុ">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span class="btn-label">ត្រឡប់</span>
+      </button>
+
+      <!-- ជ្រើសរើសថ្នាក់ -->
       <select id="classSelectPill" class="pill-select" onchange="onClassChange(this.value)">
         <option value="">កំពុងទាញយកថ្នាក់...</option>
       </select>
 
-      <!-- រុករកសិស្ស (Student Navigator) -->
+      <!-- រុករកសិស្ស -->
       <div class="student-nav-group">
         <button type="button" class="student-nav-btn" onclick="prevStudent()" title="សិស្សមុន">‹</button>
         <select class="student-select-clean" id="studentSelectBox" onchange="onStudentSelect(this.value)">
@@ -579,9 +523,9 @@
         <button type="button" class="student-nav-btn" onclick="nextStudent()" title="សិស្សបន្ទាប់">›</button>
       </div>
 
-      <!-- Dropdown: ចំនួនសន្លឹក និងទិសដៅ -->
+      <!-- ប្តូរទម្រង់សន្លឹក (១ នាក់ / ២ នាក់) -->
       <div class="tb-group">
-        <button type="button" class="pill-btn" onclick="toggleDropdown('layoutDropdown', this)" title="ប្តូរទម្រង់សន្លឹក (បញ្ឈរ/ផ្តេក)">
+        <button type="button" class="pill-btn" onclick="toggleDropdown('layoutDropdown', this)" title="ប្តូរទម្រង់សន្លឹក">
           <i class="fa-solid fa-file-lines"></i>
           <span class="btn-label" id="currentLayoutText">1 នាក់ • បញ្ឈរ</span>
           <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 2px;"></i>
@@ -598,13 +542,24 @@
       </div>
     </div>
 
-    <!-- ជួរទី២ (ជួរក្រោមលើទូរសព្ទ) -->
+    <!-- ជួរទី២ (ជួរក្រោម) -->
     <div class="tb-row-2">
-      <!-- Dropdown: ប្រភេទនិទ្ទេស -->
-      <div class="tb-group">
-        <button type="button" class="pill-btn" onclick="toggleDropdown('gradeDropdown', this)" title="ប្តូរនិទ្ទេស (A-F ឬ ខ្មែរ)">
+      <!-- 🌟 ជ្រើសរើសប្រភេទព្រឹត្តិបត្រ: ខែ ឬ ឆមាស -->
+      <select id="reportTypeSelect" class="pill-select" onchange="onReportTypeChange(this.value)" style="flex:1;">
+        <option value="monthly">ព្រឹត្តិបត្រខែ</option>
+        <option value="semester">ព្រឹត្តិបត្រឆមាស</option>
+      </select>
+
+      <!-- ជ្រើសរើសខែ (បង្ហាញតែពេលជ្រើសរើសព្រឹត្តិបត្រខែ) -->
+      <select id="monthSelectPill" class="pill-select" onchange="onMonthChange(this.value)" style="flex:1;">
+        <!-- បញ្ចូលខែតាម JS -->
+      </select>
+
+      <!-- និទ្ទេស -->
+      <div class="tb-group" style="flex:1;">
+        <button type="button" class="pill-btn" onclick="toggleDropdown('gradeDropdown', this)" title="ប្តូរនិទ្ទេស (A-F ឬ ខ្មែរ)" style="width:100%;">
           <i class="fa-solid fa-language"></i>
-          <span class="btn-label" id="currentGradeText">និទ្ទេស A–F</span>
+          <span class="btn-label" id="currentGradeText">A–F</span>
           <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 2px;"></i>
         </button>
 
@@ -618,19 +573,19 @@
         </div>
       </div>
 
-      <!-- ប៊ូតុងពង្រីក/បង្រួមសមអេក្រង់ -->
-      <button type="button" class="pill-btn" id="btnFitScreen" onclick="toggleMobileFitScreen()" title="ពង្រីក ឬបង្រួមសមអេក្រង់">
+      <!-- សមអេក្រង់ -->
+      <button type="button" class="pill-btn" id="btnFitScreen" onclick="toggleMobileFitScreen()" title="ពង្រីក/បង្រួមសមអេក្រង់">
         <i class="fa-solid fa-expand"></i>
         <span class="btn-label" id="txtFitScreen">សមអេក្រង់</span>
       </button>
 
-      <!-- ប៊ូតុងទាញយក PDF -->
+      <!-- PDF -->
       <button type="button" class="pill-btn" onclick="downloadPDF()" title="ទាញយក PDF">
         <i class="fa-solid fa-download"></i>
-        <span class="btn-label">ទាញយក PDF</span>
+        <span class="btn-label">PDF</span>
       </button>
 
-      <!-- ប៊ូតុងបោះពុម្ព (ពណ៌បៃតង) -->
+      <!-- បោះពុម្ព -->
       <button type="button" class="pill-btn primary" onclick="printReport()" title="បោះពុម្ព">
         <i class="fa-solid fa-print"></i>
         <span class="btn-label">បោះពុម្ព</span>
@@ -682,16 +637,26 @@
 
     function goToIndex(e) {
       if (e) e.preventDefault();
-      if (window.parent && window.parent !== window) {
-        try {
-          window.parent.postMessage({ type: 'OPEN_LOGIN', action: 'LOGIN' }, '*');
-          window.parent.location.href = 'index.html';
-          return;
-        } catch(err) {}
-      }
       window.location.href = 'index.html';
     }
 
+    function goBackToScore() {
+      if (window.parent && window.parent !== window) {
+        try {
+          window.parent.postMessage({ type: 'NAVIGATE', page: 'score', target: 'score.html' }, '*');
+        } catch(e) {}
+      }
+      window.location.href = 'score.html';
+    }
+
+    const ALL_MONTHS = ['វិច្ឆិកា','ធ្នូ','មករា','កុម្ភៈ','មីនា','មេសា','ឧសភា','មិថុនា','កក្កដា','សីហា','កញ្ញា','តុលា'];
+    const CAL_MONTH = {
+      'មករា': 1, 'កុម្ភៈ': 2, 'មីនា': 3, 'មេសា': 4, 'ឧសភា': 5, 'មិថុនា': 6,
+      'កក្កដា': 7, 'សីហា': 8, 'កញ្ញា': 9, 'តុលា': 10, 'វិច្ឆិកា': 11, 'ធ្នូ': 12
+    };
+
+    let reportMode = 'monthly'; // 'monthly' | 'semester'
+    let selectedMonth = 'តុលា';
     let layoutMode = '1_portrait';
     let gradeMode = 'AF';
     let currentClassName = '';
@@ -706,15 +671,16 @@
     const KHMER_DIGITS = ['០','១','២','៣','៤','៥','៦','៧','៨','៩'];
     function toKhmerNum(n) { return String(n).replace(/\d/g, d => KHMER_DIGITS[d]); }
 
-    function getAutoSolarDate() {
+    /* 🌟 គណនាថ្ងៃដាច់ខែសុរិយគតិស្វ័យប្រវត្តិតាមខែដែលបានជ្រើសរើស */
+    function getAutoSolarDate(mName) {
       const year = currentYear;
-      const lastDay = new Date(year, 10, 0).getDate();
-      return `កំពង់ល្ពៅ, ថ្ងៃទី${toKhmerNum(lastDay)} ខែតុលា ឆ្នាំ${toKhmerNum(year)}`;
+      const mNum = CAL_MONTH[mName] || 10;
+      const lastDay = new Date(year, mNum, 0).getDate();
+      return `កំពង់ល្ពៅ, ថ្ងៃទី${toKhmerNum(lastDay)} ខែ${mName} ឆ្នាំ${toKhmerNum(year)}`;
     }
 
-    let currentSolarDate = getAutoSolarDate();
-    let teacherLunarDate = "ថ្ងៃពុធ ៣កើត ខែអស្សុជ ឆ្នាំមមែ អដ្ឋស័ក ពុទ្ធសករាជ ២៥៧០";
-    let teacherName = CURRENT_USER?.teacher_name || "គ្រូទទួលបន្ទុកថ្នាក់";
+    let teacherLunarDate = "ថ្ងៃព្រហស្បតិ៍ ៤កើត ខែអស្សុជ ឆ្នាំមមែ អដ្ឋស័ក ពុទ្ធសករាជ ២៥៧០";
+    let teacherName = CURRENT_USER?.teacher_name || "សេង សុភាន់";
 
     function cleanGrade(g) {
       return String(g || '').replace(/^(ថ្នាក់ទី|ថ្នាក់)\s*/, '').trim();
@@ -754,9 +720,7 @@
           const r = btn.getBoundingClientRect();
           el.style.top = (r.bottom + 6) + 'px';
           let left = r.left;
-          if (left + 200 > window.innerWidth) {
-            left = window.innerWidth - 206;
-          }
+          if (left + 200 > window.innerWidth) left = window.innerWidth - 206;
           el.style.left = Math.max(8, left) + 'px';
         }
       }
@@ -791,8 +755,27 @@
       renderReportWorkspace();
     }
 
+    function onReportTypeChange(val) {
+      reportMode = val;
+      document.getElementById('monthSelectPill').style.display = (val === 'monthly') ? 'inline-block' : 'none';
+      loadRealDataForClass(currentClassName);
+    }
+
+    function onMonthChange(val) {
+      selectedMonth = val;
+      loadRealDataForClass(currentClassName);
+    }
+
+    /* =========================================================
+       4. FETCH REAL DATA FROM SUPABASE
+    ========================================================= */
     async function initClassDropdown() {
       const sel = document.getElementById('classSelectPill');
+      const mSel = document.getElementById('monthSelectPill');
+      
+      // បញ្ចូលជម្រើសខែ
+      mSel.innerHTML = ALL_MONTHS.map(m => `<option value="${m}" ${m==='តុលា'?'selected':''}>ខែ ${m}</option>`).join('');
+
       sel.innerHTML = '<option value="">កំពុងទាញយកថ្នាក់...</option>';
 
       try {
@@ -818,7 +801,6 @@
 
       } catch (err) {
         sel.innerHTML = '<option value="">កំហុសទាញយកថ្នាក់</option>';
-        document.getElementById('paperWorkspace').innerHTML = `<div class="empty-state-card" style="color:#ef4444;">❌ កំហុស៖ ${err.message}</div>`;
       }
     }
 
@@ -838,6 +820,7 @@
         </div>`;
 
       try {
+        // ១. ទាញយកសិស្សពិត
         const { data: stData, error: stErr } = await sb
           .from('students')
           .select('*')
@@ -856,37 +839,26 @@
           return;
         }
 
+        // ២. ទាញយកមុខវិជ្ជាពិតពី table subjects
         const { data: subData } = await sb
           .from('subjects')
           .select('*')
           .eq('assigned_class', pure)
-          .eq('subject_type', 'semester')
-          .order('sort_order', { ascending: true });
+          .eq('subject_type', reportMode)
+          .order('sort_order', { ascending: true })
+          .order('id', { ascending: true });
 
-        const defaultSemSubjects = [
-          { name: "អំណាន", code: "read", max: 10 },
-          { name: "ស្ដាប់ និងនិយាយ", code: "listen", max: 10 },
-          { name: "សរសេរតាមអាន", code: "dictation", max: 10 },
-          { name: "តែងសេចក្ដី", code: "essay", max: 10 },
-          { name: "គណិតវិទ្យា", code: "math", max: 10 },
-          { name: "វិទ្យាសាស្ត្រ", code: "science", max: 10 },
-          { name: "សិក្សាសង្គម", code: "social", max: 10 },
-          { name: "គេហវិទ្យា-អប់រំសិល្បៈ", code: "homeArts", max: 10 },
-          { name: "អប់រំកាយ-សុខភាព", code: "pe", max: 10 },
-          { name: "អប់រំបំណិនជីវិត", code: "ethics", max: 10 },
-          { name: "ភាសាបរទេស", code: "foreign", max: 10 }
-        ];
+        // ៣. ទាញយកពិន្ទុពិត
+        const targetPeriod = (reportMode === 'monthly') ? selectedMonth : 'ឆមាស';
+        let scoreQuery = sb.from('scores').select('*').eq('assigned_class', pure).eq('score_type', reportMode);
+        
+        if (reportMode === 'monthly') {
+          scoreQuery = scoreQuery.eq('period', selectedMonth);
+        }
 
-        let classSubjects = (subData && subData.length > 0)
-          ? subData.map((s, i) => ({ no: i + 1, name: s.name, code: s.code || `sub_${s.id}`, max: Number(s.max_score) || 10 }))
-          : defaultSemSubjects.map((s, i) => ({ no: i + 1, name: s.name, code: s.code, max: s.max }));
+        const { data: scData } = await scoreQuery;
 
-        const { data: scData } = await sb
-          .from('scores')
-          .select('*')
-          .eq('assigned_class', pure)
-          .eq('score_type', 'semester');
-
+        const scoreMap = {};
         const scoreMapS1 = {};
         const scoreMapS2 = {};
 
@@ -896,10 +868,15 @@
             try { scObj = JSON.parse(scObj); } catch(e) { scObj = {}; }
           }
           const sid = String(row.student_id);
-          if (row.period === 'ឆមាសទី១') scoreMapS1[sid] = scObj;
-          if (row.period === 'ឆមាសទី២') scoreMapS2[sid] = scObj;
+          if (reportMode === 'monthly') {
+            scoreMap[sid] = scObj;
+          } else {
+            if (row.period === 'ឆមាសទី១') scoreMapS1[sid] = scObj;
+            if (row.period === 'ឆមាសទី២') scoreMapS2[sid] = scObj;
+          }
         });
 
+        // ៤. ទាញយកអវត្តមាន
         const { data: attData } = await sb
           .from('attendance')
           .select('student_id, status')
@@ -917,86 +894,157 @@
           if (excusedCodes.includes(st)) excusedMap[sid] = (excusedMap[sid] || 0) + 1;
         });
 
+        // ៥. រៀបចំទិន្នន័យ (🌟 ច្រោះចោលមុខវិជ្ជាណាដែលគ្មានពិន្ទុ)
         studentsList = stData.map(st => {
           const sid = String(st.student_id || st.id);
+          const sc = scoreMap[sid] || {};
           const sc1 = scoreMapS1[sid] || {};
           const sc2 = scoreMapS2[sid] || {};
 
-          let sem1Total = 0, sem1Count = 0;
-          let sem2Total = 0, sem2Count = 0;
+          let totalScore = 0;
+          let activeSubjectCount = 0;
 
-          const studentScores = classSubjects.map((sub, i) => {
-            const v1 = parseFloat(sc1[sub.code]);
-            const v2 = parseFloat(sc2[sub.code]);
+          if (reportMode === 'monthly') {
+            // បែងចែកជាមុខវិជ្ជាមេ និងមុខវិជ្ជារង
+            const parents = (subData || []).filter(s => !s.parent_id);
+            const activeGroups = [];
 
-            const has1 = !isNaN(v1);
-            const has2 = !isNaN(v2);
+            parents.forEach(p => {
+              const children = (subData || []).filter(c => String(c.parent_id) === String(p.id));
+              
+              if (children.length > 0) {
+                // 🌟 ច្រោះយកតែជំនាញរងណាដែលមានពិន្ទុ
+                const activeChildren = [];
+                children.forEach(c => {
+                  const val = sc[c.code || `sub_${c.id}`];
+                  const num = parseFloat(val);
+                  if (!isNaN(num) && val !== '' && val !== null) {
+                    activeChildren.push({
+                      name: c.name,
+                      code: c.code || `sub_${c.id}`,
+                      max: Number(c.max_score) || 10,
+                      score: num,
+                      grade: calculateGrade(num)
+                    });
+                    totalScore += num;
+                    activeSubjectCount++;
+                  }
+                });
 
-            if (has1) { sem1Total += v1; sem1Count++; }
-            if (has2) { sem2Total += v2; sem2Count++; }
+                if (activeChildren.length > 0) {
+                  activeGroups.push({
+                    parentName: p.name,
+                    isGroup: true,
+                    children: activeChildren
+                  });
+                }
+              } else {
+                // មុខវិជ្ជាទោល (គ្មានរង)
+                const val = sc[p.code || `sub_${p.id}`];
+                const num = parseFloat(val);
+                if (!isNaN(num) && val !== '' && val !== null) {
+                  activeGroups.push({
+                    parentName: p.name,
+                    isGroup: false,
+                    max: Number(p.max_score) || 10,
+                    score: num,
+                    grade: calculateGrade(num)
+                  });
+                  totalScore += num;
+                  activeSubjectCount++;
+                }
+              }
+            });
 
-            let subAvg = '-';
-            let subGrade = '-';
-
-            if (has1 && has2) subAvg = ((v1 + v2) / 2);
-            else if (has1) subAvg = v1;
-            else if (has2) subAvg = v2;
-
-            if (subAvg !== '-') {
-              subGrade = calculateGrade(subAvg);
-              subAvg = subAvg.toFixed(2).replace(/\.00$/, '');
-            }
+            const avgScore = activeSubjectCount > 0 ? (totalScore / activeSubjectCount) : 0;
 
             return {
-              no: i + 1,
-              name: sub.name,
-              max: sub.max,
-              s1: has1 ? v1 : '-',
-              s2: has2 ? v2 : '-',
-              avg: subAvg,
-              grade: subGrade
+              id: st.student_id || st.id,
+              name: st.student_name || 'គ្មានឈ្មោះ',
+              gender: st.gender || 'ប្រុស',
+              grade: pure,
+              totalScore: totalScore,
+              avgScore: avgScore,
+              gradeLabel: avgScore > 0 ? calculateGrade(avgScore) : '-',
+              absentUnexcused: unexcusedMap[sid] || 0,
+              absentExcused: excusedMap[sid] || 0,
+              monthlyGroups: activeGroups
             };
-          });
 
-          const avg1 = sem1Count > 0 ? (sem1Total / sem1Count) : 0;
-          const avg2 = sem2Count > 0 ? (sem2Total / sem2Count) : 0;
-          let yearAvg = 0;
+          } else {
+            // ព្រឹត្តិបត្រឆមាស
+            let sem1Total = 0, sem1Count = 0;
+            let sem2Total = 0, sem2Count = 0;
+            const activeSemSubjects = [];
 
-          if (sem1Count > 0 && sem2Count > 0) yearAvg = (avg1 + avg2) / 2;
-          else if (sem1Count > 0) yearAvg = avg1;
-          else if (sem2Count > 0) yearAvg = avg2;
+            (subData || []).forEach(sub => {
+              const code = sub.code || `sub_${sub.id}`;
+              const v1 = parseFloat(sc1[code]);
+              const v2 = parseFloat(sc2[code]);
+              const has1 = !isNaN(v1);
+              const has2 = !isNaN(v2);
 
-          return {
-            id: st.student_id || st.id,
-            name: st.student_name || 'គ្មានឈ្មោះ',
-            gender: st.gender || 'ប្រុស',
-            grade: pure,
-            avgSem1: avg1,
-            avgSem2: avg2,
-            avgYear: yearAvg,
-            yearGrade: yearAvg > 0 ? calculateGrade(yearAvg) : '-',
-            absentUnexcused: unexcusedMap[sid] || 0,
-            absentExcused: excusedMap[sid] || 0,
-            scores: studentScores
-          };
+              // 🌟 បើគ្មានពិន្ទុទាំងឆមាស១ និង២ ទេ មិនបាច់បង្ហាញឡើយ
+              if (!has1 && !has2) return;
+
+              if (has1) { sem1Total += v1; sem1Count++; }
+              if (has2) { sem2Total += v2; sem2Count++; }
+
+              let subAvg = '-';
+              if (has1 && has2) subAvg = ((v1 + v2) / 2);
+              else if (has1) subAvg = v1;
+              else if (has2) subAvg = v2;
+
+              activeSemSubjects.push({
+                name: sub.name,
+                max: Number(sub.max_score) || 10,
+                s1: has1 ? v1 : '-',
+                s2: has2 ? v2 : '-',
+                avg: (subAvg !== '-') ? subAvg.toFixed(2).replace(/\.00$/, '') : '-',
+                grade: (subAvg !== '-') ? calculateGrade(subAvg) : '-'
+              });
+            });
+
+            const avg1 = sem1Count > 0 ? (sem1Total / sem1Count) : 0;
+            const avg2 = sem2Count > 0 ? (sem2Total / sem2Count) : 0;
+            let yearAvg = 0;
+            if (sem1Count > 0 && sem2Count > 0) yearAvg = (avg1 + avg2) / 2;
+            else if (sem1Count > 0) yearAvg = avg1;
+            else if (sem2Count > 0) yearAvg = avg2;
+
+            return {
+              id: st.student_id || st.id,
+              name: st.student_name || 'គ្មានឈ្មោះ',
+              gender: st.gender || 'ប្រុស',
+              grade: pure,
+              avgSem1: avg1,
+              avgSem2: avg2,
+              avgYear: yearAvg,
+              yearGrade: yearAvg > 0 ? calculateGrade(yearAvg) : '-',
+              absentUnexcused: unexcusedMap[sid] || 0,
+              absentExcused: excusedMap[sid] || 0,
+              semSubjects: activeSemSubjects
+            };
+          }
         });
 
-        const sortedList = [...studentsList].sort((a, b) => b.avgYear - a.avgYear);
+        // ៦. គណនាចំណាត់ថ្នាក់
+        const scoreKey = (reportMode === 'monthly') ? 'avgScore' : 'avgYear';
+        const sorted = [...studentsList].sort((a, b) => b[scoreKey] - a[scoreKey]);
         const rankMap = {};
-        let lastAvg = null, lastRank = 0;
-        sortedList.forEach((item, index) => {
-          if (item.avgYear === lastAvg) {
+        let lastScore = null, lastRank = 0;
+        sorted.forEach((item, index) => {
+          if (item[scoreKey] === lastScore) {
             rankMap[item.id] = lastRank;
           } else {
             rankMap[item.id] = index + 1;
             lastRank = index + 1;
-            lastAvg = item.avgYear;
+            lastScore = item[scoreKey];
           }
         });
 
         studentsList.forEach(s => {
-          s.rank = rankMap[s.id] || '-';
-          s.yearRank = rankMap[s.id] || '-';
+          s.rank = rankMap[s.id] || 1;
         });
 
         currentStudentIndex = 0;
@@ -1043,29 +1091,147 @@
     }
 
     /* =========================================================
-       5. HTML TEMPLATE FOR SINGLE REPORT CARD
+       5. HTML GENERATOR (ខែ និង ឆមាស តាមរូបភាពគំរូ)
     ========================================================= */
     function generateReportHTML(st) {
       if (!st) return '';
 
-      let rowsHtml = '';
-      st.scores.forEach(row => {
-        const grClass = row.grade !== '-' ? `gr-${row.grade}` : '';
-        rowsHtml += `
+      const totalAbsent = (st.absentUnexcused || 0) + (st.absentExcused || 0);
+      const isMonthly = (reportMode === 'monthly');
+      const docTitle = isMonthly ? `ព្រឹត្តិបត្រពិន្ទុ ខែ ${selectedMonth}` : `ព្រឹត្តិបត្រពិន្ទុ ${academicYearStr}`;
+      const solarDateStr = isMonthly ? getAutoSolarDate(selectedMonth) : getAutoSolarDate('តុលា');
+
+      let theadHtml = '';
+      let tbodyHtml = '';
+      let summaryRowsHtml = '';
+
+      if (isMonthly) {
+        // ── ព្រឹត្តិបត្រខែ ──
+        theadHtml = `
           <tr>
-            <td>${row.no}</td>
-            <td class="sub-name">${row.name}</td>
-            <td>${row.max}</td>
-            <td>${row.s1}</td>
-            <td>${row.s2}</td>
-            <td class="bold-val">${row.avg}</td>
-            <td class="${grClass}">${formatGrade(row.grade)}</td>
+            <th style="width: 32px;">ល.រ</th>
+            <th colspan="2">មុខវិជ្ជា</th>
+            <th style="width: 78px;">ពិន្ទុអតិបរមា</th>
+            <th style="width: 82px;">ពិន្ទុទទួលបាន</th>
+            <th style="width: 72px;">ចំណាត់ថ្នាក់</th>
+            <th style="width: 52px;">និទ្ទេស</th>
+            <th style="width: 78px;">សេចក្តីផ្សេងៗ</th>
           </tr>
         `;
-      });
 
-      const totalAbsent = (st.absentUnexcused || 0) + (st.absentExcused || 0);
-      const yearGradeClass = st.yearGrade !== '-' ? `gr-${st.yearGrade}` : '';
+        let rowCounter = 1;
+        (st.monthlyGroups || []).forEach(g => {
+          if (g.isGroup) {
+            // មានជំនាញរង
+            g.children.forEach((c, idx) => {
+              const grClass = `gr-${c.grade}`;
+              tbodyHtml += `<tr>`;
+              tbodyHtml += `<td>${rowCounter++}</td>`;
+              if (idx === 0) {
+                tbodyHtml += `<td rowspan="${g.children.length}" style="font-weight:700; background:#fcfcfc;">${g.parentName}</td>`;
+              }
+              tbodyHtml += `<td style="text-align:left; padding-left:8px;">${c.name}</td>`;
+              tbodyHtml += `<td>${c.max}</td>`;
+              tbodyHtml += `<td class="bold-val">${c.score}</td>`;
+              tbodyHtml += `<td style="color:#dc2626; font-weight:800;">${st.rank}</td>`;
+              tbodyHtml += `<td class="${grClass}">${formatGrade(c.grade)}</td>`;
+              tbodyHtml += `<td></td>`;
+              tbodyHtml += `</tr>`;
+            });
+          } else {
+            // មុខវិជ្ជាទោល
+            const grClass = `gr-${g.grade}`;
+            tbodyHtml += `<tr>`;
+            tbodyHtml += `<td>${rowCounter++}</td>`;
+            tbodyHtml += `<td colspan="2" style="font-weight:700;">${g.parentName}</td>`;
+            tbodyHtml += `<td>${g.max}</td>`;
+            tbodyHtml += `<td class="bold-val">${g.score}</td>`;
+            tbodyHtml += `<td style="color:#dc2626; font-weight:800;">${st.rank}</td>`;
+            tbodyHtml += `<td class="${grClass}">${formatGrade(g.grade)}</td>`;
+            tbodyHtml += `<td></td>`;
+            tbodyHtml += `</tr>`;
+          }
+        });
+
+        summaryRowsHtml = `
+          <tr style="background:#f8fafc;">
+            <td colspan="3" class="summary-cell-text" style="text-align:left; padding-left:12px;">
+              ពិន្ទុសរុប ${st.totalScore.toFixed(2)} • មធ្យមភាគ ${st.avgScore.toFixed(2)}
+            </td>
+            <td colspan="2" class="summary-cell-text">
+              ចំណាត់ថ្នាក់ទី <span style="color:#dc2626; font-weight:800;">${st.rank}</span>
+            </td>
+            <td colspan="3" class="summary-cell-text gr-${st.gradeLabel}">
+              និទ្ទេស ${formatGrade(st.gradeLabel)}
+            </td>
+          </tr>
+          <tr style="background:#f8fafc;">
+            <td colspan="3" class="summary-cell-text">
+              អវត្តមាន (ឥតច្បាប់) ៖ ${st.absentUnexcused}
+            </td>
+            <td colspan="2" class="summary-cell-text">
+              អវត្តមាន (មានច្បាប់) ៖ ${st.absentExcused}
+            </td>
+            <td colspan="3" class="summary-cell-text">
+              សរុប ៖ ${totalAbsent}
+            </td>
+          </tr>
+        `;
+
+      } else {
+        // ── ព្រឹត្តិបត្រឆមាស ──
+        theadHtml = `
+          <tr>
+            <th style="width: 32px;">ល.រ</th>
+            <th style="min-width: 140px;">មុខវិជ្ជា</th>
+            <th style="width: 75px;">ពិន្ទុអតិបរមា</th>
+            <th style="width: 85px;">ប្រឡងឆមាសទី១</th>
+            <th style="width: 85px;">ប្រឡងឆមាសទី២</th>
+            <th style="width: 68px;">មធ្យមភាគ</th>
+            <th style="width: 52px;">និទ្ទេស</th>
+          </tr>
+        `;
+
+        (st.semSubjects || []).forEach((row, i) => {
+          const grClass = row.grade !== '-' ? `gr-${row.grade}` : '';
+          tbodyHtml += `
+            <tr>
+              <td>${i + 1}</td>
+              <td class="sub-name">${row.name}</td>
+              <td>${row.max}</td>
+              <td>${row.s1}</td>
+              <td>${row.s2}</td>
+              <td class="bold-val">${row.avg}</td>
+              <td class="${grClass}">${formatGrade(row.grade)}</td>
+            </tr>
+          `;
+        });
+
+        summaryRowsHtml = `
+          <tr style="background:#f8fafc;">
+            <td colspan="4" class="summary-cell-text" style="text-align:left; padding-left:12px;">
+              មធ្យមភាគឆមាសទី១ ${st.avgSem1 > 0 ? st.avgSem1.toFixed(2) : '-'} • ឆមាសទី២ ${st.avgSem2 > 0 ? st.avgSem2.toFixed(2) : '-'} • ប្រចាំឆ្នាំ ${st.avgYear > 0 ? st.avgYear.toFixed(2) : '-'}
+            </td>
+            <td colspan="2" class="summary-cell-text">
+              ចំណាត់ថ្នាក់ទី <span style="color:#dc2626; font-weight:800;">${st.rank}</span>
+            </td>
+            <td class="summary-cell-text gr-${st.yearGrade}">
+              និទ្ទេស ${formatGrade(st.yearGrade)}
+            </td>
+          </tr>
+          <tr style="background:#f8fafc;">
+            <td colspan="3" class="summary-cell-text">
+              អវត្តមាន (ឥតច្បាប់) ៖ ${st.absentUnexcused}
+            </td>
+            <td colspan="2" class="summary-cell-text">
+              អវត្តមាន (មានច្បាប់) ៖ ${st.absentExcused}
+            </td>
+            <td colspan="2" class="summary-cell-text">
+              សរុប ៖ ${totalAbsent}
+            </td>
+          </tr>
+        `;
+      }
 
       return `
         <div class="report-sheet">
@@ -1083,7 +1249,7 @@
             </div>
 
             <div class="center-doc-title">
-              <div class="doc-main-title f-moul">ព្រឹត្តិបត្រពិន្ទុ ${academicYearStr}</div>
+              <div class="doc-main-title f-moul">${docTitle}</div>
               <div class="doc-academic-year">ឆ្នាំសិក្សា ${academicYearStr}</div>
             </div>
           </div>
@@ -1096,41 +1262,10 @@
           </div>
 
           <table class="report-table">
-            <thead>
-              <tr>
-                <th class="col-no" style="width: 32px;">ល.រ</th>
-                <th class="col-sub" style="min-width: 140px;">មុខវិជ្ជា</th>
-                <th class="col-max" style="width: 75px;">ពិន្ទុអតិបរមា</th>
-                <th class="col-s1" style="width: 85px;">ប្រឡងឆមាសទី១</th>
-                <th class="col-s2" style="width: 85px;">ប្រឡងឆមាសទី២</th>
-                <th class="col-avg" style="width: 68px;">មធ្យមភាគ</th>
-                <th class="col-gr" style="width: 52px;">និទ្ទេស</th>
-              </tr>
-            </thead>
+            <thead>${theadHtml}</thead>
             <tbody>
-              ${rowsHtml}
-              <tr style="background:#f8fafc;">
-                <td colspan="4" class="summary-cell-text" style="text-align:left; padding-left:12px;">
-                  មធ្យមភាគឆមាសទី១ ${st.avgSem1 > 0 ? st.avgSem1.toFixed(2) : '-'} • ឆមាសទី២ ${st.avgSem2 > 0 ? st.avgSem2.toFixed(2) : '-'} • ប្រចាំឆ្នាំ ${st.avgYear > 0 ? st.avgYear.toFixed(2) : '-'}
-                </td>
-                <td colspan="2" class="summary-cell-text" style="color:#000;">
-                  ចំណាត់ថ្នាក់ទី <span style="color:#dc2626; font-weight:800;">${st.yearRank}</span>
-                </td>
-                <td class="summary-cell-text ${yearGradeClass}">
-                  និទ្ទេស ${formatGrade(st.yearGrade)}
-                </td>
-              </tr>
-              <tr style="background:#f8fafc;">
-                <td colspan="3" class="summary-cell-text">
-                  អវត្តមាន (ឥតច្បាប់) ៖ ${st.absentUnexcused}
-                </td>
-                <td colspan="3" class="summary-cell-text">
-                  អវត្តមាន (មានច្បាប់) ៖ ${st.absentExcused}
-                </td>
-                <td class="summary-cell-text">
-                  សរុប ៖ ${totalAbsent}
-                </td>
-              </tr>
+              ${tbodyHtml}
+              ${summaryRowsHtml}
             </tbody>
           </table>
 
@@ -1148,9 +1283,8 @@
             </div>
 
             <div class="sig-col right-col">
-              <!-- 🌟 Contenteditable Div មិនកាត់ដាច់អក្សរឡើយ -->
               <div contenteditable="true" class="clean-lunar-input" onblur="teacherLunarDate=this.innerText.trim()" title="ចុចត្រង់នេះដើម្បីកែប្រែថ្ងៃខែចន្ទគតិ">${teacherLunarDate}</div>
-              <div class="sig-solar-date">${currentSolarDate}</div>
+              <div class="sig-solar-date">${solarDateStr}</div>
               <div class="sig-role f-moul" style="margin-top:2px;">គ្រូទទួលបន្ទុកថ្នាក់</div>
               <div class="sig-name">${teacherName}</div>
             </div>
