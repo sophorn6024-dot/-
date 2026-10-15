@@ -1008,7 +1008,6 @@
 
           function getCellContent(gradeCode) {
             if (sGrade !== gradeCode || val === null) return '';
-            if (val === 0) return '0';
             return displayMode === 'tick' ? '✔' : val.toFixed(val % 1 === 0 ? 0 : 1);
           }
 
@@ -1083,7 +1082,7 @@
             </div>
 
             <div class="signature-grid">
-              <div class="sig-col">
+              <div class="sig-col" style="margin-top: 30px;">
                 <div>
                   <div class="sig-title">បានឃើញ និងឯកភាព</div>
                   <div class="f-bold" style="margin-top: 3px;">នាយកសាលា</div>
