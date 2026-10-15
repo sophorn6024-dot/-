@@ -44,7 +44,7 @@
     }
 
     /* =========================================================
-       🔒 AUTH DENIED WRAPPER (ការពារការ LOGIN)
+       🔒 AUTH DENIED WRAPPER
     ========================================================= */
     #authDeniedWrap {
       display: none;
@@ -143,7 +143,7 @@
     }
     .pill-btn.primary:hover { background: #00734c; }
 
-    /* Dropdown Popup */
+    /* Dropdown Popup Fixed */
     .dropdown-popup {
       display: none;
       position: fixed;
@@ -214,36 +214,14 @@
     }
     .student-select-clean option { background: #0f172a; color: #fff; }
 
-    /* 📱 MOBILE COMPACT MODE (លើទូរសព្ទបង្ហាញតែ ICON) */
+    /* 📱 MOBILE COMPACT MODE */
     @media screen and (max-width: 768px) {
       .btn-label { display: none !important; }
-      
-      .top-toolbar {
-        padding: 6px 8px;
-        gap: 6px;
-        justify-content: flex-start;
-      }
-      .pill-btn {
-        width: 36px;
-        height: 36px;
-        padding: 0;
-        justify-content: center;
-        gap: 0;
-        border-radius: 50%;
-      }
+      .top-toolbar { padding: 6px 8px; gap: 6px; justify-content: flex-start; }
+      .pill-btn { width: 36px; height: 36px; padding: 0; justify-content: center; gap: 0; border-radius: 50%; }
       .tb-group .fa-chevron-down { display: none; }
-      
-      .pill-select {
-        height: 34px;
-        padding: 0 8px;
-        font-size: 11.5px;
-        max-width: 110px;
-      }
-      .student-select-clean {
-        max-width: 105px;
-        font-size: 11.5px;
-        padding: 0 4px;
-      }
+      .pill-select { height: 34px; padding: 0 8px; font-size: 11.5px; max-width: 110px; }
+      .student-select-clean { max-width: 105px; font-size: 11.5px; padding: 0 4px; }
     }
 
     /* =========================================================
@@ -324,7 +302,7 @@
       padding: 4px 3px;
       vertical-align: middle;
       height: 25px;
-      white-space: nowrap; /* 🌟 រារាំងមិនឱ្យធ្លាក់បន្ទាត់ជាដាច់ខាត */
+      white-space: nowrap;
     }
     .report-table thead th {
       background: #e2e8f0;
@@ -333,11 +311,11 @@
       white-space: nowrap;
     }
     
-    /* 🌟 ក្រឡាមុខវិជ្ជា៖ កុំឱ្យធ្លាក់ ២ បន្ទាត់ & ទុកទំហំធំទូលាយ */
+    /* 🌟 ក្រឡាមុខវិជ្ជា៖ កុំឱ្យធ្លាក់ ២ បន្ទាត់ */
     .report-table td.sub-name {
       text-align: center;
       font-weight: 700;
-      white-space: nowrap !important; /* 🌟 មិនធ្លាក់បន្ទាត់ */
+      white-space: nowrap !important;
       padding: 4px 6px;
     }
     .report-table td.bold-val { font-weight: 700; }
@@ -358,6 +336,7 @@
       align-items: flex-start;
       margin-top: 10px;
       padding: 0 4px;
+      width: 100%;
       font-size: 11px;
     }
     .sig-col {
@@ -365,18 +344,19 @@
       flex-direction: column;
       align-items: center;
       text-align: center;
-      min-width: 180px;
     }
 
-    .sig-col.left-col { min-width: 190px; margin-top: 50px; }
-    .sig-col.mid-col  { min-width: 170px; margin-top: 28px; }
-    .sig-col.right-col { min-width: 200px; margin-top: 0; }
+    /* 🌟 បែងចែកទទឹងសមាមាត្រ ដើម្បីឱ្យថ្ងៃខែចន្ទគតិមានកន្លែងធំទូលាយ */
+    .sig-col.left-col { width: 28%; margin-top: 50px; }
+    .sig-col.mid-col  { width: 30%; margin-top: 28px; }
+    .sig-col.right-col { width: 42%; margin-top: 0; }
 
     .sig-title-moul { font-size: 11.5px; color: #000; margin-bottom: 3px; }
     .sig-role { font-weight: 700; font-size: 11.5px; margin-bottom: 45px; }
     .sig-name { font-weight: 700; font-size: 12.5px; }
-    .sig-solar-date { font-size: 11px; font-weight: 700; margin-top: 3px; }
+    .sig-solar-date { font-size: 11px; font-weight: 700; margin-top: 3px; white-space: nowrap; }
 
+    /* 🌟 ប្រអប់ថ្ងៃខែចន្ទគតិ Auto-wrap មិនកាត់ដាច់អក្សរឡើយ */
     .clean-lunar-input {
       font-size: 11px;
       font-weight: bold;
@@ -387,7 +367,10 @@
       width: 100%;
       outline: none;
       cursor: text;
-      padding: 2px;
+      padding: 2px 4px;
+      line-height: 1.35;
+      white-space: normal;
+      word-break: break-word;
       transition: all 0.2s;
     }
     .clean-lunar-input:hover, .clean-lunar-input:focus {
@@ -444,7 +427,6 @@
       white-space: nowrap !important;
     }
     
-    /* 🌟 បែងចែកទទឹងក្រឡា Mode 2 នាក់ ឱ្យសមមាត្រ កុំឱ្យរុញមុខវិជ្ជាធ្លាក់បន្ទាត់ */
     .paper-stage.layout-2col .report-table th.col-no { width: 22px !important; }
     .paper-stage.layout-2col .report-table th.col-sub { width: auto !important; min-width: 108px !important; }
     .paper-stage.layout-2col .report-table th.col-max { width: 50px !important; }
@@ -456,15 +438,21 @@
     .paper-stage.layout-2col .summary-cell-text { font-size: 8.8px; padding: 2px; }
 
     .paper-stage.layout-2col .sheet-signatures-area { font-size: 9px; margin-top: 4px; }
-    .paper-stage.layout-2col .sig-col { min-width: 120px; }
-    .paper-stage.layout-2col .sig-col.left-col { min-width: 120px; margin-top: 36px; }
-    .paper-stage.layout-2col .sig-col.mid-col  { min-width: 110px; margin-top: 18px; }
-    .paper-stage.layout-2col .sig-col.right-col { min-width: 130px; margin-top: 0; }
+    .paper-stage.layout-2col .sig-col.left-col { width: 27%; margin-top: 36px; }
+    .paper-stage.layout-2col .sig-col.mid-col  { width: 29%; margin-top: 18px; }
+    .paper-stage.layout-2col .sig-col.right-col { width: 44%; margin-top: 0; }
     .paper-stage.layout-2col .sig-title-moul { font-size: 9px; }
     .paper-stage.layout-2col .sig-role { font-size: 9px; margin-bottom: 26px; }
     .paper-stage.layout-2col .sig-name { font-size: 9.5px; }
-    .paper-stage.layout-2col .clean-lunar-input { font-size: 8.5px; padding: 1px; }
-    .paper-stage.layout-2col .sig-solar-date { font-size: 8.5px; }
+
+    /* 🌟 អក្សរចន្ទគតិក្នុង Mode ផ្តេក ២ នាក់៖ បង្រួមទំហំសមស្រប មិនកាត់ដាច់តួឡើយ */
+    .paper-stage.layout-2col .clean-lunar-input {
+      font-size: 8px;
+      line-height: 1.25;
+      padding: 1px;
+      white-space: normal;
+    }
+    .paper-stage.layout-2col .sig-solar-date { font-size: 8.5px; white-space: nowrap; }
     .paper-stage.layout-2col .parent-dotted-lines { height: 10px; margin-top: 6px; }
 
     .empty-state-card {
@@ -509,7 +497,7 @@
 <body>
 
   <!-- =========================================================
-       🔒 AUTH DENIED (ផ្ទៀងផ្ទាត់ការ LOGIN)
+       🔒 AUTH DENIED
   ========================================================= -->
   <div id="authDeniedWrap">
     <div class="auth-card">
@@ -613,12 +601,10 @@
        3. JAVASCRIPT: SUPABASE & DYNAMIC REAL DATA
   ========================================================= -->
   <script>
-    /* ── Supabase Configuration ── */
     const SUPABASE_URL = "https://nggnuobnrxiqjtcwlvwk.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_AHDcUJbuMAfhaocyfm2X7w_O9s06wML";
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    /* ── Read Session User & Authentication Check ── */
     function readSession() {
       try { return JSON.parse(localStorage.getItem('krou_supabase_user') || 'null'); } catch(e) { return null; }
     }
@@ -652,7 +638,6 @@
       window.location.href = 'index.html';
     }
 
-    /* ── State ── */
     let layoutMode = '1_portrait';
     let gradeMode = 'AF';
     let currentClassName = '';
@@ -704,7 +689,6 @@
       return 'F';
     }
 
-    /* 🌟 Dropdown Controller */
     function toggleDropdown(id, btn) {
       const el = document.getElementById(id);
       if (!el) return;
@@ -715,7 +699,6 @@
         if (btn) {
           const r = btn.getBoundingClientRect();
           el.style.top = (r.bottom + 6) + 'px';
-          
           let left = r.left;
           if (left + 200 > window.innerWidth) {
             left = window.innerWidth - 206;
@@ -754,9 +737,6 @@
       renderReportWorkspace();
     }
 
-    /* =========================================================
-       4. FETCH REAL DATA FROM SUPABASE
-    ========================================================= */
     async function initClassDropdown() {
       const sel = document.getElementById('classSelectPill');
       sel.innerHTML = '<option value="">កំពុងទាញយកថ្នាក់...</option>';
@@ -804,7 +784,6 @@
         </div>`;
 
       try {
-        // ១. ទាញយកបញ្ជីសិស្សពិត
         const { data: stData, error: stErr } = await sb
           .from('students')
           .select('*')
@@ -823,7 +802,6 @@
           return;
         }
 
-        // ២. ទាញយកមុខវិជ្ជាឆមាសពិត
         const { data: subData } = await sb
           .from('subjects')
           .select('*')
@@ -849,7 +827,6 @@
           ? subData.map((s, i) => ({ no: i + 1, name: s.name, code: s.code || `sub_${s.id}`, max: Number(s.max_score) || 10 }))
           : defaultSemSubjects.map((s, i) => ({ no: i + 1, name: s.name, code: s.code, max: s.max }));
 
-        // ៣. ទាញយកពិន្ទុឆមាសទី១ និងទី២
         const { data: scData } = await sb
           .from('scores')
           .select('*')
@@ -869,7 +846,6 @@
           if (row.period === 'ឆមាសទី២') scoreMapS2[sid] = scObj;
         });
 
-        // ៤. ទាញយកអវត្តមានសិស្សពិត
         const { data: attData } = await sb
           .from('attendance')
           .select('student_id, status')
@@ -887,7 +863,6 @@
           if (excusedCodes.includes(st)) excusedMap[sid] = (excusedMap[sid] || 0) + 1;
         });
 
-        // ៥. បូកសរុបពិន្ទុ មធ្យមភាគ និងចំណាត់ថ្នាក់
         studentsList = stData.map(st => {
           const sid = String(st.student_id || st.id);
           const sc1 = scoreMapS1[sid] || {};
@@ -952,7 +927,6 @@
           };
         });
 
-        // ៦. គណនាចំណាត់ថ្នាក់
         const sortedList = [...studentsList].sort((a, b) => b.avgYear - a.avgYear);
         const rankMap = {};
         let lastAvg = null, lastRank = 0;
@@ -981,7 +955,6 @@
       }
     }
 
-    /* ── Student Navigator ── */
     function populateStudentSelect() {
       const sel = document.getElementById('studentSelectBox');
       if (!studentsList.length) {
@@ -1042,14 +1015,12 @@
 
       return `
         <div class="report-sheet">
-          <!-- ក្បាលទំព័រជាតិ -->
           <div class="sheet-national-header">
             <div class="nat-title-1 f-moul">ព្រះរាជាណាចក្រកម្ពុជា</div>
             <div class="nat-title-2 f-moul">ជាតិ សាសនា ព្រះមហាក្សត្រ</div>
             <div class="nat-symbol">─────── ❖ ───────</div>
           </div>
 
-          <!-- ឈ្មោះសាលា និង ចំណងជើង -->
           <div class="sheet-sub-header">
             <div class="left-dept-info">
               <div>ការិយាល័យអប់រំ យុវជន និងកីឡា</div>
@@ -1063,7 +1034,6 @@
             </div>
           </div>
 
-          <!-- ព័ត៌មានសិស្ស -->
           <div class="student-meta-line">
             សិស្សឈ្មោះ: <span class="hl-val">${st.name}</span> • 
             ភេទ <span class="hl-val">${st.gender}</span> • 
@@ -1071,7 +1041,6 @@
             ចំណាត់ថ្នាក់ទី <span class="hl-rank">${st.rank}</span>
           </div>
 
-          <!-- តារាងពិន្ទុមុខវិជ្ជា (🌟 មុខវិជ្ជាលើ ១ បន្ទាត់រហូត មិនធ្លាក់ជា ២ បន្ទាត់ឡើយ) -->
           <table class="report-table">
             <thead>
               <tr>
@@ -1086,7 +1055,6 @@
             </thead>
             <tbody>
               ${rowsHtml}
-              <!-- ជួរទី១ សង្ខេបលទ្ធផល -->
               <tr style="background:#f8fafc;">
                 <td colspan="4" class="summary-cell-text" style="text-align:left; padding-left:12px;">
                   មធ្យមភាគឆមាសទី១ ${st.avgSem1 > 0 ? st.avgSem1.toFixed(2) : '-'} • ឆមាសទី២ ${st.avgSem2 > 0 ? st.avgSem2.toFixed(2) : '-'} • ប្រចាំឆ្នាំ ${st.avgYear > 0 ? st.avgYear.toFixed(2) : '-'}
@@ -1098,7 +1066,6 @@
                   និទ្ទេស ${formatGrade(st.yearGrade)}
                 </td>
               </tr>
-              <!-- ជួរទី២ សង្ខេបអវត្តមាន -->
               <tr style="background:#f8fafc;">
                 <td colspan="3" class="summary-cell-text">
                   អវត្តមាន (ឥតច្បាប់) ៖ ${st.absentUnexcused}
@@ -1113,15 +1080,12 @@
             </tbody>
           </table>
 
-          <!-- 🌟 កន្លែងហត្ថលេខា (នាយកសាលាទាបជាងគ្រូ តាមក្បួនច្បាប់) -->
           <div class="sheet-signatures-area">
-            <!-- ឆ្វេង៖ នាយកសាលា (ស្ថិតនៅទាបជាងគ្រូ) -->
             <div class="sig-col left-col">
               <div class="sig-title-moul f-moul">បានឃើញ និងឯកភាព</div>
               <div class="sig-role f-moul">នាយកសាលា</div>
             </div>
 
-            <!-- កណ្ដាល៖ មតិអាណាព្យាបាល -->
             <div class="sig-col mid-col">
               <div class="sig-title-moul f-moul">មតិរបស់មាតាបិតា</div>
               <div class="f-moul" style="font-size:11px; margin-bottom:4px;">ឬអាណាព្យាបាលសិស្ស</div>
@@ -1129,9 +1093,9 @@
               <div class="parent-dotted-lines"></div>
             </div>
 
-            <!-- ស្ដាំ៖ គ្រូទទួលបន្ទុកថ្នាក់ -->
             <div class="sig-col right-col">
-              <input type="text" class="clean-lunar-input" value="${teacherLunarDate}" onchange="teacherLunarDate=this.value" title="ចុចត្រង់នេះដើម្បីកែប្រែថ្ងៃខែចន្ទគតិ">
+              <!-- 🌟 ប្រើប្រាស់ Contenteditable Div មិនកាត់ដាច់អក្សរឡើយ -->
+              <div contenteditable="true" class="clean-lunar-input" onblur="teacherLunarDate=this.innerText.trim()" title="ចុចត្រង់នេះដើម្បីកែប្រែថ្ងៃខែចន្ទគតិ">${teacherLunarDate}</div>
               <div class="sig-solar-date">${currentSolarDate}</div>
               <div class="sig-role f-moul" style="margin-top:2px;">គ្រូទទួលបន្ទុកថ្នាក់</div>
               <div class="sig-name">${teacherName}</div>
@@ -1177,7 +1141,6 @@
       applyAutoMobileScale();
     }
 
-    /* 🌟 អនុគមន៍ពង្រីក/បង្រួមសមអេក្រង់ទូរសព្ទស្វ័យប្រវត្តិ */
     function applyAutoMobileScale() {
       const stage = document.getElementById('paperWorkspace');
       const wrapper = document.getElementById('paperStageWrapper');
@@ -1239,7 +1202,6 @@
       });
     }
 
-    /* ── ដំណើរការពេលបើកទំព័រដំបូង ── */
     window.addEventListener('DOMContentLoaded', async () => {
       if (!checkAuthentication()) return;
       await initClassDropdown();
