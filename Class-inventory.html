@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="km" data-theme="dark">
+<head>
+<base target="_top">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>បញ្ជីសារពើភ័ណ្ឌថ្នាក់រៀន</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Moul&family=Battambang:wght@400;700&family=Kantumruy+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{
+  --app-bg:#f8fafc;--tb-bg:rgba(255,255,255,.96);--tb-border:#e2e8f0;--card:#fff;--text:#0f172a;--muted:#64748b;
+  --in-bg:#fff;--in-border:#cbd5e1;--focus:#0891b2;--grp:#f1f5f9;--sh:0 4px 16px rgba(15,23,42,.06);
+  --pop-bg:#ffffff;--pop-line:#e2e8f0;--chip:#f1f5f9;--chip-hover:#e2e8f0;--accent:#0891b2;
+  --pop-shadow:0 18px 44px rgba(15,23,42,.20);
+  --pw:210mm;--ph:297mm;--mg:5mm;--fs:1;--rowh:auto;color-scheme:light}
+[data-theme="dark"]{
+  --app-bg:#090e17;--tb-bg:rgba(15,23,42,.95);--tb-border:#1e293b;--card:#111e33;--text:#f8fafc;--muted:#9aa3b2;
+  --in-bg:#162642;--in-border:#233f66;--focus:#22d3ee;--grp:#0e1a2d;--sh:0 8px 24px rgba(0,0,0,.45);
+  --pop-bg:#25282e;--pop-line:#3a3f48;--chip:#33363d;--chip-hover:#3e424a;--accent:#0894b3;
+  --pop-shadow:0 18px 48px rgba(0,0,0,.6);color-scheme:dark}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;min-height:100vh;background:var(--app-bg);color:var(--text);font-family:'Battambang',sans-serif;padding-bottom:50px;overflow-x:auto;transition:background .25s,color .25s}
+
+.auth-wrapper{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:80vh;text-align:center;padding:30px 20px}
+.auth-card{background:var(--card);border:1.5px solid var(--tb-border);border-radius:24px;padding:40px 28px;max-width:440px;width:100%;box-shadow:var(--sh)}
+.auth-card h2{font-size:18px;margin-bottom:8px;color:#ef4444}
+.auth-card p{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:22px}
+
+.toolbar{position:sticky;top:0;z-index:1000;background:var(--tb-bg);backdrop-filter:blur(14px);padding:10px 16px;display:none;flex-direction:column;gap:8px;box-shadow:var(--sh);border-bottom:1.5px solid var(--tb-border);margin-bottom:16px}
+.row{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.pill{background:var(--grp);border:1px solid var(--tb-border);border-radius:10px;padding:4px 8px;display:inline-flex;align-items:center;gap:6px}
+.lbl{font-size:12px;font-weight:700;color:var(--muted);white-space:nowrap}
+.fc{padding:5px 8px;font-family:'Kantumruy Pro','Battambang',sans-serif;font-size:12.5px;font-weight:600;border:1.5px solid var(--in-border);border-radius:8px;outline:none;background:var(--in-bg);color:var(--text);height:32px}
+.fc:focus{border-color:var(--focus)}
+.btn{padding:5px 12px;font-family:'Battambang',sans-serif;font-size:12.5px;font-weight:700;border-radius:8px;border:1px solid var(--tb-border);cursor:pointer;display:inline-flex;align-items:center;gap:6px;height:32px;white-space:nowrap;background:var(--grp);color:var(--text)}
+.btn:active{transform:scale(.96)}
+.btn-primary{background:linear-gradient(135deg,#0891b2,#2563eb);color:#fff;border-color:transparent}
+.btn-green{background:linear-gradient(135deg,#10b981,#059669);color:#fff;border-color:transparent}
+.btn-login{background:linear-gradient(135deg,#0284c7,#7c3aed);color:#fff;border:none;padding:10px 24px;height:auto;font-size:13.5px;border-radius:12px;text-decoration:none}
+.date-btn{display:inline-flex;align-items:center;gap:8px;height:32px;padding:4px 10px;font-family:'Battambang',sans-serif;font-size:13px;color:var(--text);background:var(--in-bg);border:1.5px solid var(--in-border);border-radius:8px;cursor:pointer;white-space:nowrap}
+.date-btn i{color:var(--muted)}
+.date-btn.empty span{color:var(--muted)}
+.date-btn.open{border-color:var(--focus)}
+
+.pop{display:none;position:fixed;z-index:2500;background:var(--pop-bg);color:var(--text);border:1px solid var(--pop-line);border-radius:16px;box-shadow:var(--pop-shadow);overflow:auto;font-family:'Battambang',sans-serif}
+.pop select{font-family:'Battambang',sans-serif;font-size:15px;height:40px;padding:0 10px;border-radius:10px;border:1px solid var(--pop-line);background:var(--chip);color:var(--text);outline:none;flex:1;min-width:0}
+#dpPop{width:min(340px,calc(100vw - 16px));padding:14px}
+.dp-top{display:flex;gap:8px;margin-bottom:10px}
+.dp-title{text-align:center;font-weight:700;font-size:14px;margin:6px 0 8px}
+.dp-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center}
+.dp-wd{font-size:12px;color:var(--muted);padding:6px 0}
+.dp-day{height:38px;border:none;background:transparent;color:var(--text);font-family:'Battambang',sans-serif;font-size:14px;border-radius:9px;cursor:pointer}
+.dp-day:hover{background:var(--chip-hover)}
+.dp-day.out{color:var(--muted);opacity:.45}
+.dp-day.today{background:var(--chip);font-weight:700}
+.dp-day.sel{background:var(--accent);color:#fff;font-weight:700;opacity:1}
+.dp-foot{display:flex;justify-content:space-between;border-top:1px solid var(--pop-line);margin-top:8px;padding-top:10px;font-size:13px}
+.dp-foot a{color:var(--accent);cursor:pointer;font-weight:700}
+.dp-foot a.clr{color:var(--muted)}
+
+#pgPop{width:min(430px,calc(100vw - 16px));padding:18px 18px 8px}
+.pg-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.pg-head h3{font-size:17px}
+.pg-reset{background:none;border:none;color:var(--muted);font-family:'Battambang',sans-serif;font-size:13px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.pg-sec{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:13px;margin:14px 0 10px}
+.pg-sec hr{flex:1;border:none;border-top:1px solid var(--pop-line)}
+.opt-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:8px}
+.opt{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:62px;padding:6px 4px;background:var(--chip);color:var(--text);border:1.5px solid transparent;border-radius:12px;font-family:'Battambang',sans-serif;font-size:13.5px;cursor:pointer}
+.opt small{font-size:12px;color:var(--muted)}
+.opt b{font-family:'Kantumruy Pro',sans-serif;font-size:15px}
+.opt.on{background:var(--accent);border-color:#22d3ee;color:#fff}
+.opt.on small{color:rgba(255,255,255,.85)}
+.ico-p,.ico-l{display:block;border:2px solid currentColor;border-radius:3px}
+.ico-p{width:11px;height:17px}.ico-l{width:17px;height:11px}
+.step-row{display:flex;align-items:center;gap:8px;margin:10px 0}
+.step-row>span:first-child{width:62px;font-size:14px}
+.step-row>small{font-size:12.5px;color:var(--muted);flex:1}
+.stepper{display:flex;align-items:center;gap:6px}
+.stepper button{width:38px;height:38px;border:none;border-radius:10px;background:var(--chip);color:var(--text);font-size:18px;cursor:pointer}
+.stepper button:active{transform:scale(.94)}
+.stepper .val{min-width:104px;height:38px;border-radius:10px;background:var(--chip);display:flex;align-items:center;justify-content:center;gap:6px;font-weight:700;font-size:15px;padding:0 8px}
+.stepper .val em{font-style:normal;color:var(--muted);font-weight:400;font-size:13px}
+.stepper .val.auto{color:var(--muted);font-weight:400;font-size:13px}
+.pg-info{border-top:1px solid var(--pop-line);margin-top:12px;padding:6px 0 10px}
+.pg-info label{display:block;font-size:12.5px;color:var(--muted);margin:8px 0 3px}
+.pg-info .fc{width:100%}
+.pg-info textarea.fc{height:auto;line-height:1.6;resize:vertical;font-family:'Battambang',sans-serif;font-weight:400}
+.pg-info .link{color:var(--accent);font-size:12.5px;cursor:pointer;font-weight:700;display:inline-block;margin-top:6px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;padding:8px 16px;border-radius:10px;font-size:13px;z-index:3000;display:none;border:1px solid #334155}
+
+/* ===== ក្រដាសបញ្ជីសារពើភ័ណ្ឌ ===== */
+.sheet-wrap{display:flex;justify-content:center;transform-origin:top center}
+.sheet{width:var(--pw);height:calc(var(--ph) - .6mm);background:#fff;color:#000;padding:var(--mg);box-shadow:0 10px 30px rgba(0,0,0,.3);overflow:hidden;flex-shrink:0;font-family:'Battambang',sans-serif;font-size:calc(13.5px * var(--fs));position:relative}
+.moul{font-family:'Moul',serif;font-weight:400}
+.kingdom{text-align:center;font-size:1.185em;line-height:1.8}
+.motto{text-align:center;font-size:.96em;line-height:1.8}
+.divider{display:flex;align-items:center;justify-content:center;gap:6px;margin:2px 0 6px}
+.divider span{width:60px;height:1px;background:#000}
+.hdr-left{font-size:.96em;line-height:1.7;margin-top:6px}
+.title{text-align:center;font-size:1.56em;margin:8px 0 .6em;line-height:1.7}
+table.inv{width:100%;border-collapse:collapse;table-layout:fixed}
+table.inv th,table.inv td{border:1px solid #000;padding:.35em .4em;text-align:center;height:var(--rowh);word-break:break-word}
+table.inv th{background:#eef2ff;font-weight:700;height:auto}
+table.inv td.nm{text-align:left;padding-left:.7em}
+[contenteditable="true"]{cursor:text}
+[contenteditable="true"]:focus{outline:2px solid #0891b2;outline-offset:-2px;background:#f0fdff}
+.foot{display:flex;justify-content:space-between;align-items:flex-start;margin-top:1em}
+.sig-l{text-align:center;min-width:14em;line-height:1.8}
+.sig-r{text-align:center;min-width:22em;line-height:1.8}
+.sig-r .role{color:#1d4ed8}
+.sig-space{height:4.7em}
+.sig-name{color:#1d4ed8;font-family:'Moul',serif;font-size:.96em}
+
+@media screen and (max-width:768px){.fc,.btn,.date-btn{height:28px;font-size:11.5px;padding:3px 6px}.toolbar{padding:8px 10px}}
+
+@media print{
+  html,body{background:#fff!important;padding:0!important;margin:0!important;overflow:visible!important}
+  .toolbar,.auth-wrapper,.toast,.pop{display:none!important}
+  .sheet-wrap{zoom:1!important;transform:none!important;display:block!important}
+  .sheet{box-shadow:none!important;margin:0!important;break-after:avoid;page-break-after:avoid}
+  .sheet,.sheet *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+}
+</style>
+<style id="pageStyle">@page{size:210mm 297mm;margin:0}</style>
+</head>
+<body>
+
+<div class="auth-wrapper" id="authDenied">
+  <div class="auth-card">
+    <div style="font-size:42px;margin-bottom:10px">🔒</div>
+    <h2>សូមចូលប្រើប្រាស់ជាមុនសិន!</h2>
+    <p>លោកអ្នកមិនទាន់បាន Login ចូលក្នុងប្រព័ន្ធនៅឡើយទេ។</p>
+    <a href="index.html" target="_top" class="btn btn-login" onclick="goToIndex(event)">🔑 ទៅកាន់ទំព័រដើម (Login)</a>
+  </div>
+</div>
+
+<div class="toolbar" id="toolbar">
+  <div class="row">
+    <div class="pill" id="adminClassBox" style="display:none">
+      <span class="lbl"><i class="fa-solid fa-graduation-cap" style="color:#0891b2"></i> ថ្នាក់ទី៖</span>
+      <select id="selectClass" class="fc" onchange="loadData()"><option value="">កំពុងទាញយក...</option></select>
+    </div>
+    <button class="btn btn-green" onclick="downloadExcel()"><i class="fa-solid fa-file-excel"></i> ទាញយក Excel</button>
+    <button class="btn" onclick="downloadPdf()"><i class="fa-solid fa-download"></i> ទាញយក PDF</button>
+    <button class="btn btn-primary" onclick="doPrint()"><i class="fa-solid fa-print"></i> បោះពុម្ព</button>
+  </div>
+
+  <div class="row">
+    <div class="pill">
+      <span class="lbl">ថ្ងៃអ្នកធ្វើចុះហត្ថលេខា</span>
+      <input type="hidden" id="inTeacherDate">
+      <button type="button" class="date-btn" id="btn_inTeacherDate" data-ph="ជ្រើសថ្ងៃ" onclick="openDatePicker(event,'inTeacherDate',true)"><i class="fa-regular fa-calendar"></i><span></span></button>
+    </div>
+    <div class="pill">
+      <span class="lbl">ថ្ងៃនាយកចុះហត្ថលេខា</span>
+      <input type="hidden" id="inDirectorDate">
+      <button type="button" class="date-btn" id="btn_inDirectorDate" data-ph="មិនដាក់" onclick="openDatePicker(event,'inDirectorDate',true)"><i class="fa-regular fa-calendar"></i><span></span></button>
+    </div>
+    <div class="pill" style="flex:1;min-width:260px">
+      <span class="lbl"><i class="fa-solid fa-moon" style="color:#f59e0b"></i> ចន្ទគតិ៖</span>
+      <input type="text" id="inLunar" class="fc" style="width:100%" value="ថ្ងៃព្រហស្បតិ៍ ៤កើត ខែអស្សុជ ឆ្នាំមមី អដ្ឋស័ក ពុទ្ធសករាជ ២៥៧០" oninput="render()" title="កាលបរិច្ឆេទចន្ទគតិ">
+    </div>
+    <button class="btn" id="btnPage" onclick="togglePagePanel(event)"><i class="fa-solid fa-sliders"></i> កំណត់ទំព័រ</button>
+  </div>
+</div>
+
+<div class="pop" id="dpPop"></div>
+
+<div class="pop" id="pgPop">
+  <div id="pgDyn"></div>
+  <div class="pg-info">
+    <div class="pg-sec" style="margin-top:4px"><i class="fa-solid fa-pen-to-square"></i><span>ព័ត៌មានរបាយការណ៍</span><hr></div>
+    <label>ការិយាល័យ</label><input id="inOffice" class="fc" value="ការិយាល័យអប់រំ យុវជន និងកីឡា" oninput="render()">
+    <label>សាលារៀន</label><input id="inSchool" class="fc" value="សាលាបឋមសិក្សាកំពង់ល្ពៅ" oninput="render()">
+    <label>ទីកន្លែង</label><input id="inPlace" class="fc" value="កំពង់ល្ពៅ" oninput="render()">
+    <label>បញ្ជីសម្ភារៈ (មួយបន្ទាត់ = មួយមុខ ទម្រង់៖ ឈ្មោះ | ចំនួន)</label>
+    <textarea id="inItems" class="fc" rows="9" oninput="itemsFromText()"></textarea>
+    <a class="link" onclick="resetItems()"><i class="fa-solid fa-rotate-left"></i> ត្រឡប់ទៅបញ្ជីលំនាំដើម</a>
+  </div>
+</div>
+
+<div class="sheet-wrap" id="sheetWrap" style="display:none">
+  <div class="sheet" id="sheet"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const sb = supabase.createClient("https://nggnuobnrxiqjtcwlvwk.supabase.co","sb_publishable_AHDcUJbuMAfhaocyfm2X7w_O9s06wML");
+
+function readSession(){try{return JSON.parse(localStorage.getItem('krou_supabase_user')||'null')}catch(e){return null}}
+const USER = readSession();
+const IS_ADMIN = String(USER?.role||'teacher').toLowerCase().trim()==='admin';
+const USER_CLASS = USER?.assigned_classes || USER?.assigned_class || '';
+
+const KD=['០','១','២','៣','៤','៥','៦','៧','៨','៩'];
+const MONTHS=['មករា','កុម្ភៈ','មីនា','មេសា','ឧសភា','មិថុនា','កក្កដា','សីហា','កញ្ញា','តុលា','វិច្ឆិកា','ធ្នូ'];
+const WD=['អា','ច','អ','ព','ព្រ','សុ','ស'];
+const toKh=v=>String(v??'').replace(/[0-9]/g,d=>KD[d]);
+const cleanGrade=g=>String(g||'').replace(/^ថ្នាក់ទី\s*/,'').trim();
+const esc=t=>String(t||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pad=n=>String(n).padStart(2,'0');
+const isoLocal=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+
+function applyTheme(t){document.documentElement.setAttribute('data-theme',t==='light'?'light':'dark')}
+applyTheme(localStorage.getItem('krou_theme_manual')||'dark');
+window.addEventListener('message',e=>{if(e.data&&(e.data.type==='THEME_CHANGE'||e.data.theme))applyTheme(e.data.theme||e.data)});
+window.addEventListener('storage',e=>{if(e.key==='krou_theme_manual')applyTheme(e.newValue)});
+
+function goToIndex(e){if(e)e.preventDefault();try{if(window.parent!==window){window.parent.postMessage({type:'OPEN_LOGIN',action:'LOGIN'},'*');window.parent.location.href='index.html';return}}catch(x){}location.href='index.html'}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';clearTimeout(t._t);t._t=setTimeout(()=>t.style.display='none',3500)}
+
+/* ===== Popover helpers ===== */
+function placePop(pop,anchor){
+  pop.style.display='block';
+  const r=anchor.getBoundingClientRect(), w=pop.offsetWidth;
+  const left=Math.min(Math.max(8,r.left),window.innerWidth-w-8), top=r.bottom+6;
+  pop.style.left=left+'px'; pop.style.top=top+'px';
+  pop.style.maxHeight=Math.max(220,window.innerHeight-top-12)+'px';
+}
+function closePops(){
+  ['dpPop','pgPop'].forEach(id=>document.getElementById(id).style.display='none');
+  document.querySelectorAll('.date-btn.open').forEach(b=>b.classList.remove('open'));
+}
+document.addEventListener('click',closePops);
+['dpPop','pgPop'].forEach(id=>document.getElementById(id).addEventListener('click',e=>e.stopPropagation()));
+window.addEventListener('resize',closePops);
+
+/* ===== Date picker ===== */
+const DP={id:null,clearable:false,vy:0,vm:0};
+function dateLabel(iso){const m=String(iso||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);return m?(+m[3])+' '+MONTHS[+m[2]-1]+' '+m[1]:''}
+function setDateValue(id,iso){
+  document.getElementById(id).value=iso||'';
+  const b=document.getElementById('btn_'+id);
+  b.classList.toggle('empty',!iso);
+  b.querySelector('span').textContent=iso?dateLabel(iso):b.dataset.ph;
+}
+function openDatePicker(e,id,clearable){
+  e.stopPropagation(); const btn=document.getElementById('btn_'+id);
+  const wasOpen=btn.classList.contains('open'); closePops(); if(wasOpen)return;
+  DP.id=id; DP.clearable=clearable;
+  const v=document.getElementById(id).value, base=v?new Date(v+'T00:00:00'):new Date();
+  DP.vy=base.getFullYear(); DP.vm=base.getMonth();
+  btn.classList.add('open'); renderDp(); placePop(document.getElementById('dpPop'),btn);
+}
+function renderDp(){
+  const sel=document.getElementById(DP.id).value, today=isoLocal(new Date()), ny=new Date().getFullYear();
+  const y0=Math.min(DP.vy,ny)-8, y1=Math.max(DP.vy,ny)+4;
+  let years='';for(let y=y0;y<=y1;y++)years+=`<option value="${y}" ${y===DP.vy?'selected':''}>${y}</option>`;
+  const months=MONTHS.map((m,i)=>`<option value="${i}" ${i===DP.vm?'selected':''}>${m}</option>`).join('');
+  const first=new Date(DP.vy,DP.vm,1).getDay();
+  let cells='';
+  for(let i=0;i<42;i++){
+    const d=new Date(DP.vy,DP.vm,1-first+i), iso=isoLocal(d);
+    const cls=['dp-day']; if(d.getMonth()!==DP.vm)cls.push('out'); if(iso===today)cls.push('today'); if(iso===sel)cls.push('sel');
+    cells+=`<button type="button" class="${cls.join(' ')}" onclick="pickDate('${iso}')">${d.getDate()}</button>`;
+  }
+  document.getElementById('dpPop').innerHTML=`
+    <div class="dp-top"><select onchange="DP.vm=+this.value;renderDp()">${months}</select><select onchange="DP.vy=+this.value;renderDp()">${years}</select></div>
+    <div class="dp-title">${MONTHS[DP.vm]} ${DP.vy}</div>
+    <div class="dp-grid">${WD.map(w=>`<div class="dp-wd">${w}</div>`).join('')}${cells}</div>
+    <div class="dp-foot"><a onclick="pickDate('${today}')">ថ្ងៃនេះ</a>${DP.clearable?'<a class="clr" onclick="pickDate(\'\')">លុប</a>':''}</div>`;
+}
+function pickDate(iso){setDateValue(DP.id,iso);closePops();render()}
+function fmtKhDate(iso){const m=String(iso||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);return m?'ថ្ងៃទី'+toKh(+m[3])+' ខែ'+MONTHS[+m[2]-1]+' ឆ្នាំ'+toKh(m[1]):''}
+
+/* ===== Page setup (A4 បញ្ឈរ ជាលំនាំដើម) ===== */
+const PAPERS={A4:[210,297],F4:[216,330]};
+const PAGE_DEFAULT={paper:'A4',orient:'portrait',margin:5,font:100,rowh:0};
+let PAGE={...PAGE_DEFAULT};
+try{Object.assign(PAGE,JSON.parse(localStorage.getItem('krou_inventory_page')||'{}'))}catch(e){}
+function pageDims(){const [a,b]=PAPERS[PAGE.paper]||PAPERS.A4;return PAGE.orient==='landscape'?[b,a]:[a,b]}
+function applyPage(){
+  const [w,h]=pageDims(), r=document.documentElement.style;
+  r.setProperty('--pw',w+'mm'); r.setProperty('--ph',h+'mm'); r.setProperty('--mg',PAGE.margin+'mm');
+  r.setProperty('--fs',PAGE.font/100); r.setProperty('--rowh',PAGE.rowh?PAGE.rowh+'mm':'auto');
+  document.getElementById('pageStyle').textContent=`@page{size:${w}mm ${h}mm;margin:0}`;
+  try{localStorage.setItem('krou_inventory_page',JSON.stringify(PAGE))}catch(e){}
+  fitZoom();
+}
+function renderPagePanel(){
+  const [w,h]=pageDims(), uw=w-2*PAGE.margin, uh=h-2*PAGE.margin, on=c=>c?' on':'';
+  const fontNote=PAGE.font===100?'ធម្មតា':(PAGE.font<100?'តូចជាងធម្មតា':'ធំជាងធម្មតា');
+  document.getElementById('pgDyn').innerHTML=`
+    <div class="pg-head"><h3>ការរៀបចំទំព័រ</h3><button class="pg-reset" onclick="resetPage()"><i class="fa-solid fa-rotate-left"></i> ដើមវិញ</button></div>
+    <div class="pg-sec"><i class="fa-regular fa-file-lines"></i><span>ក្រដាស</span><hr></div>
+    <div class="opt-grid">
+      <button class="opt${on(PAGE.paper==='A4')}" onclick="setPage('paper','A4')"><b>A4</b><small>210×297</small></button>
+      <button class="opt${on(PAGE.paper==='F4')}" onclick="setPage('paper','F4')"><b>F4</b><small>216×330</small></button>
+      <button class="opt${on(PAGE.orient==='portrait')}" onclick="setPage('orient','portrait')"><span class="ico-p"></span>បញ្ឈរ</button>
+      <button class="opt${on(PAGE.orient==='landscape')}" onclick="setPage('orient','landscape')"><span class="ico-l"></span>ផ្តេក</button>
+    </div>
+    <div class="opt-grid">
+      ${[['តូច',2],['មធ្យម',5],['ធំ',10],['ធំបំផុត',15]].map(([n,v])=>`<button class="opt${on(PAGE.margin===v)}" onclick="setPage('margin',${v})">${n}<small>${v}</small></button>`).join('')}
+    </div>
+    <div class="step-row"><span>គែម</span>
+      <div class="stepper"><button onclick="stepPage('margin',-1)">−</button><div class="val">${PAGE.margin} <em>mm</em></div><button onclick="stepPage('margin',1)">+</button></div>
+      <small>ផ្ទៃប្រើ ${uw}×${uh}mm</small></div>
+    <div class="pg-sec"><i class="fa-solid fa-layer-group"></i><span>អក្សរ និងក្រឡា</span><hr></div>
+    <div class="step-row"><span>អក្សរ</span>
+      <div class="stepper"><button onclick="stepPage('font',-5)">−</button><div class="val">${PAGE.font} <em>%</em></div><button onclick="stepPage('font',5)">+</button></div>
+      <small>${fontNote}</small></div>
+    <div class="step-row"><span>កម្ពស់ជួរ</span>
+      <div class="stepper"><button onclick="stepPage('rowh',-1)">−</button><div class="val${PAGE.rowh?'':' auto'}">${PAGE.rowh?PAGE.rowh:'តាមអក្សរ'} <em>mm</em></div><button onclick="stepPage('rowh',1)">+</button></div>
+      <small>${PAGE.rowh?'កំណត់ដោយខ្លួនឯង':'តាមអក្សរ'}</small></div>`;
+}
+function setPage(k,v){PAGE[k]=v;applyPage();renderPagePanel()}
+function stepPage(k,d){
+  if(k==='margin')PAGE.margin=Math.min(30,Math.max(0,PAGE.margin+d));
+  if(k==='font')PAGE.font=Math.min(150,Math.max(70,PAGE.font+d));
+  if(k==='rowh'){if(!PAGE.rowh)PAGE.rowh=d>0?8:0;else{PAGE.rowh+=d;if(PAGE.rowh<6)PAGE.rowh=0;if(PAGE.rowh>30)PAGE.rowh=30}}
+  applyPage();renderPagePanel();
+}
+function resetPage(){PAGE={...PAGE_DEFAULT};applyPage();renderPagePanel()}
+function togglePagePanel(e){
+  e.stopPropagation(); const pop=document.getElementById('pgPop'), open=pop.style.display==='block';
+  closePops(); if(open)return;
+  renderPagePanel(); itemsToText(); placePop(pop,document.getElementById('btnPage'));
+}
+function fitZoom(){
+  const [w]=pageDims(), px=w*96/25.4; let s=(window.innerWidth-24)/px;
+  if(s>1)s=1; if(s<.28)s=.28; document.getElementById('sheetWrap').style.zoom=s;
+}
+window.addEventListener('resize',fitZoom);
+
+/* ===== បញ្ជីសម្ភារៈ ===== */
+const DEFAULT_ITEMS=['តុគ្រូ','កម្រាលតុ','ថ្មូផ្កា','កៅអី','តុសិស្ស','ក្តារខៀន','ព្រះឆាយាល័ក្ខណ៍','សៀវភៅពិន្ទុសិស្ស','សៀវភៅបញ្ជីឈ្មោះសិស្ស','សៀវភៅពុម្ពសិស្ស','សៀវភៅតាមដាន','សៀវភៅសិក្ខាគារិកា','តារាងទាំងប្រាំបួន','ធុងទឹក','កាធុនទឹក','ពាក្យស្លោក','ផ្ទាំងរូបភាព','តារាងថ្លឹងទម្ងន់សិស្ស','តារាស្រង់ស្ថិតិសិស្ស','អំបោស','បទបញ្ជាផ្ទៃក្នុង','ក្រាស់ កញ្ចក់','ហិបវិន័យ','គោលការណ៍ថ្នាក់រៀន','ប្រអប់ដាក់ប៊ិក','បន្ទាត់ ដែកឈាន','រ៉ាប៉ូទ័រ កែង','ធុងសំរាម'];
+let INV=[], CUR_CLASS='', TEACHER='';
+const invKey=()=>'krou_inventory_items_'+CUR_CLASS;
+function defaultInv(){return DEFAULT_ITEMS.map(n=>({name:n,qty:''}))}
+function loadInv(){
+  try{const v=JSON.parse(localStorage.getItem(invKey())||'null'); if(Array.isArray(v)&&v.length){INV=v;return}}catch(e){}
+  INV=defaultInv();
+}
+function saveInv(){try{localStorage.setItem(invKey(),JSON.stringify(INV))}catch(e){}}
+function itemsToText(){document.getElementById('inItems').value=INV.map(i=>i.qty?`${i.name} | ${i.qty}`:i.name).join('\n')}
+function itemsFromText(){
+  INV=document.getElementById('inItems').value.split('\n').map(l=>l.trim()).filter(Boolean).map(l=>{
+    const k=l.lastIndexOf('|'); return k>=0?{name:l.slice(0,k).trim(),qty:l.slice(k+1).trim()}:{name:l,qty:''};
+  });
+  saveInv(); render();
+}
+function resetItems(){INV=defaultInv();saveInv();itemsToText();render()}
+function invEdit(el){const i=+el.dataset.i; if(INV[i])INV[i][el.dataset.f]=el.innerText.trim(); saveInv()}
+document.getElementById('sheet').addEventListener('keydown',e=>{if(e.target.isContentEditable&&e.key==='Enter'){e.preventDefault();e.target.blur()}});
+document.getElementById('sheet').addEventListener('paste',e=>{
+  if(!e.target.isContentEditable)return; e.preventDefault();
+  document.execCommand('insertText',false,(e.clipboardData||window.clipboardData).getData('text').replace(/\s+/g,' '));
+});
+
+/* ===== ទិន្នន័យ ===== */
+async function fetchTeacher(cls){
+  try{
+    const {data,error}=await sb.from('users').select('teacher_name, assigned_classes, role');
+    if(error||!data)return '';
+    const ok=data.filter(u=>String(u.assigned_classes||'').split(/[,;،\/]+/).map(cleanGrade).filter(Boolean).includes(cls)&&String(u.teacher_name||'').trim());
+    const t=ok.find(u=>String(u.role||'').toLowerCase().trim()!=='admin')||ok[0];
+    return t?String(t.teacher_name).trim():'';
+  }catch(e){return ''}
+}
+function showMsg(html,color){document.getElementById('sheet').innerHTML=`<div style="text-align:center;padding:80px 20px;font-weight:700;color:${color||'#555'}">${html}</div>`}
+
+async function initClasses(){
+  const box=document.getElementById('adminClassBox'), sel=document.getElementById('selectClass'), mine=cleanGrade(USER_CLASS);
+  if(!IS_ADMIN){
+    box.style.display='none';
+    if(!mine){showMsg('⚠️ គណនីរបស់អ្នកមិនទាន់មានថ្នាក់ទទួលបន្ទុកឡើយ។ សូមទាក់ទង Admin។','#f59e0b');return}
+    sel.innerHTML=`<option value="${esc(mine)}">${esc(mine)}</option>`; sel.value=mine; loadData(); return;
+  }
+  box.style.display='inline-flex';
+  try{
+    const {data}=await sb.from('students').select('grade');
+    let cls=[...new Set((data||[]).map(d=>cleanGrade(d.grade)).filter(Boolean))].sort();
+    if(!cls.length)cls=['១','២','៣','៤','៥','៦'];
+    sel.innerHTML=cls.map(c=>`<option value="${esc(c)}">ថ្នាក់ទី ${esc(c)}</option>`).join('');
+    sel.value=(mine&&cls.includes(mine))?mine:cls[0]; loadData();
+  }catch(e){sel.innerHTML='<option value="">កំហុសទាញយកថ្នាក់</option>'}
+}
+async function loadData(){
+  CUR_CLASS=document.getElementById('selectClass').value||cleanGrade(USER_CLASS);
+  if(!CUR_CLASS)return;
+  loadInv(); TEACHER=await fetchTeacher(CUR_CLASS); render();
+}
+
+/* ===== បង្កើតរបាយការណ៍ ===== */
+function render(){
+  if(!CUR_CLASS)return;
+  const office=esc(document.getElementById('inOffice').value);
+  const school=esc(document.getElementById('inSchool').value);
+  const place=esc(document.getElementById('inPlace').value);
+  const lunar=esc(toKh(document.getElementById('inLunar').value));
+  const tIso=document.getElementById('inTeacherDate').value||isoLocal(new Date());
+  const dIso=document.getElementById('inDirectorDate').value;
+
+  const n=INV.length, half=Math.ceil(n/2);
+  const cell=(i)=>{
+    if(i>=n)return '<td></td><td class="nm"></td><td></td>';
+    const it=INV[i];
+    return `<td>${toKh(i+1)}</td>
+      <td class="nm" contenteditable="true" data-i="${i}" data-f="name" oninput="invEdit(this)">${esc(it.name)}</td>
+      <td contenteditable="true" data-i="${i}" data-f="qty" oninput="invEdit(this)">${esc(it.qty)}</td>`;
+  };
+  let rows='';
+  for(let r=0;r<half;r++)rows+=`<tr>${cell(r)}${cell(half+r)}</tr>`;
+
+  document.getElementById('sheet').innerHTML=`
+    <div class="kingdom moul">ព្រះរាជាណាចក្រកម្ពុជា</div>
+    <div class="motto moul">ជាតិ សាសនា ព្រះមហាក្សត្រ</div>
+    <div class="divider"><span></span><b>❖</b><span></span></div>
+    <div class="hdr-left moul">${office}<br>${school}<br>ថ្នាក់ទី${esc(CUR_CLASS)}</div>
+    <div class="title moul">បញ្ជីសារពើភ័ណ្ឌ</div>
+    <table class="inv" id="invTable">
+      <colgroup><col style="width:8%"><col style="width:30%"><col style="width:12%"><col style="width:8%"><col style="width:30%"><col style="width:12%"></colgroup>
+      <thead><tr><th>ល.រ</th><th>ឈ្មោះសម្ភារៈ</th><th>ចំនួនឯកតា</th><th>ល.រ</th><th>ឈ្មោះសម្ភារៈ</th><th>ចំនួនឯកតា</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div class="foot">
+      <div class="sig-l">
+        ${dIso?`<div>បានឃើញ និងឯកភាព</div><div>${fmtKhDate(dIso)}</div>`:`<div>&nbsp;</div><div>បានឃើញ និងឯកភាព</div>`}
+        <div class="moul" style="font-size:.96em">នាយកសាលា</div>
+        <div class="sig-space"></div>
+      </div>
+      <div class="sig-r">
+        <div style="font-size:.93em">${lunar}</div>
+        <div>${place}, ${fmtKhDate(tIso)}</div>
+        <div class="role moul" style="font-size:.96em">គ្រូទទួលបន្ទុកថ្នាក់</div>
+        <div class="sig-space"></div>
+        <div class="sig-name">${esc(TEACHER)}</div>
+      </div>
+    </div>`;
+}
+
+/* ===== Print / PDF / Excel ===== */
+function doPrint(){closePops();document.activeElement?.blur();window.focus();setTimeout(()=>{try{window.print()}catch(e){window.parent.print()}},100)}
+
+async function downloadPdf(){
+  const el=document.getElementById('sheet');
+  if(!el||!el.querySelector('#invTable')){toast('មិនទាន់មានទិន្នន័យសម្រាប់បង្កើត PDF');return}
+  if(!window.html2canvas||!window.jspdf){toast('មិនអាចផ្ទុក library PDF បានទេ សូមពិនិត្យអ៊ីនធឺណិត');return}
+  toast('កំពុងបង្កើត PDF...');
+  try{
+    document.activeElement?.blur();
+    if(document.fonts&&document.fonts.ready)await document.fonts.ready;
+    const canvas=await html2canvas(el,{scale:2,useCORS:true,backgroundColor:'#ffffff',scrollX:0,scrollY:0,
+      onclone:doc=>{const w=doc.getElementById('sheetWrap');if(w){w.style.zoom=1;w.style.transform='none'}const sh=doc.getElementById('sheet');if(sh)sh.style.boxShadow='none'}});
+    const [pw,ph]=pageDims(), {jsPDF}=window.jspdf;
+    const pdf=new jsPDF({orientation:pw>ph?'landscape':'portrait',unit:'mm',format:[Math.min(pw,ph),Math.max(pw,ph)]});
+    pdf.addImage(canvas.toDataURL('image/jpeg',0.98),'JPEG',0,0,pw,ph);
+    pdf.save('class-inventory-'+(CUR_CLASS||'')+'.pdf');
+    toast('បានទាញយក PDF រួចរាល់');
+  }catch(err){toast('កំហុសបង្កើត PDF៖ '+err.message)}
+}
+
+function downloadExcel(){
+  if(!INV.length)return;
+  const half=Math.ceil(INV.length/2), c=i=>i<INV.length?`<td>${toKh(i+1)}</td><td>${esc(INV[i].name)}</td><td>${esc(INV[i].qty)}</td>`:'<td></td><td></td><td></td>';
+  let rows=''; for(let r=0;r<half;r++)rows+=`<tr>${c(r)}${c(half+r)}</tr>`;
+  const html=`<html xmlns:x="urn:schemas-microsoft-com:office:excel"><head><meta charset="UTF-8"></head><body><h3>បញ្ជីសារពើភ័ណ្ឌ ថ្នាក់ទី${esc(CUR_CLASS)}</h3><table border="1"><tr><th>ល.រ</th><th>ឈ្មោះសម្ភារៈ</th><th>ចំនួនឯកតា</th><th>ល.រ</th><th>ឈ្មោះសម្ភារៈ</th><th>ចំនួនឯកតា</th></tr>${rows}</table></body></html>`;
+  const blob=new Blob(['\ufeff'+html],{type:'application/vnd.ms-excel;charset=utf-8'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='class-inventory-'+(CUR_CLASS||'')+'.xls'; document.body.appendChild(a); a.click(); a.remove();
+}
+
+window.addEventListener('DOMContentLoaded',async()=>{
+  if(!USER||!USER.username){document.getElementById('authDenied').style.display='flex';return}
+  document.getElementById('toolbar').style.display='flex';
+  document.getElementById('sheetWrap').style.display='flex';
+  setDateValue('inTeacherDate',''); setDateValue('inDirectorDate','');
+  applyPage();
+  await initClasses();
+});
+</script>
+</body>
+</html>
