@@ -3,7 +3,7 @@
 <head>
   <base target="_top">
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>ព្រឹត្តិបត្រពិន្ទុ - សាលាបឋមសិក្សាកំពង់ល្ពៅ</title>
 
   <!-- 🔤 Google Fonts Khmer -->
@@ -35,11 +35,53 @@
       align-items: center;
       padding-bottom: 60px;
       overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .f-moul {
       font-family: 'Khmer OS Muol Light', 'Moul', cursive !important;
       font-weight: normal;
+    }
+
+    /* =========================================================
+       🔒 AUTH DENIED WRAPPER (ការពារការ LOGIN)
+    ========================================================= */
+    #authDeniedWrap {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 85vh;
+      text-align: center;
+      padding: 30px 20px;
+      width: 100%;
+    }
+    .auth-card {
+      background: #0f172a;
+      border: 1.5px solid #334155;
+      border-radius: 24px;
+      padding: 38px 28px;
+      max-width: 430px;
+      width: 100%;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #f8fafc;
+    }
+    .auth-icon {
+      width: 64px; height: 64px; border-radius: 20px;
+      background: rgba(239, 68, 68, 0.15); color: #ef4444;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 30px; margin-bottom: 14px;
+    }
+    .auth-card h2 { font-size: 17.5px; margin-bottom: 8px; color: #ef4444; }
+    .auth-card p { font-size: 13px; color: #94a3b8; line-height: 1.6; margin-bottom: 22px; }
+    .btn-login-redirect {
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      color: #ffffff; padding: 10px 24px; border-radius: 12px;
+      font-weight: 700; font-size: 13px; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 8px; border: none; cursor: pointer;
     }
 
     /* =========================================================
@@ -101,7 +143,7 @@
     }
     .pill-btn.primary:hover { background: #00734c; }
 
-    /* 🌟 Dropdown Popup ប្តូរជា Fixed ដើម្បីកុំឱ្យកាត់ដាច់គែម */
+    /* Dropdown Popup */
     .dropdown-popup {
       display: none;
       position: fixed;
@@ -109,7 +151,7 @@
       background: #0f172a;
       border: 1px solid #475569;
       border-radius: 14px;
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.65);
       padding: 6px;
       z-index: 99999;
       animation: popIn 0.15s ease-out;
@@ -121,7 +163,7 @@
     }
 
     .dropdown-item {
-      padding: 8px 12px;
+      padding: 9px 12px;
       border-radius: 8px;
       color: #f8fafc;
       font-size: 12.5px;
@@ -172,8 +214,40 @@
     }
     .student-select-clean option { background: #0f172a; color: #fff; }
 
+    /* 📱 MOBILE COMPACT MODE (លើទូរសព្ទបង្ហាញតែ ICON) */
+    @media screen and (max-width: 768px) {
+      .btn-label { display: none !important; }
+      
+      .top-toolbar {
+        padding: 6px 8px;
+        gap: 6px;
+        justify-content: flex-start;
+      }
+      .pill-btn {
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        justify-content: center;
+        gap: 0;
+        border-radius: 50%;
+      }
+      .tb-group .fa-chevron-down { display: none; }
+      
+      .pill-select {
+        height: 34px;
+        padding: 0 8px;
+        font-size: 11.5px;
+        max-width: 110px;
+      }
+      .student-select-clean {
+        max-width: 105px;
+        font-size: 11.5px;
+        padding: 0 4px;
+      }
+    }
+
     /* =========================================================
-       📄 PAPER STAGE & SCALING SYSTEM (សម្រាប់ទូរសព្ទ និងកុំព្យូទ័រ)
+       📄 PAPER STAGE & SCALING SYSTEM
     ========================================================= */
     .paper-stage-wrapper {
       width: 100%;
@@ -236,6 +310,7 @@
     .student-meta-line span.hl-val { font-weight: 700; }
     .student-meta-line span.hl-rank { color: #dc2626; font-weight: 800; }
 
+    /* ── Table Styling ── */
     .report-table {
       width: 100%;
       border-collapse: collapse;
@@ -246,16 +321,25 @@
     }
     .report-table th, .report-table td {
       border: 1px solid #000;
-      padding: 4px 2px;
+      padding: 4px 3px;
       vertical-align: middle;
       height: 25px;
+      white-space: nowrap; /* 🌟 រារាំងមិនឱ្យធ្លាក់បន្ទាត់ជាដាច់ខាត */
     }
     .report-table thead th {
       background: #e2e8f0;
       font-weight: 700;
       font-size: 11.5px;
+      white-space: nowrap;
     }
-    .report-table td.sub-name { text-align: center; font-weight: 700; }
+    
+    /* 🌟 ក្រឡាមុខវិជ្ជា៖ កុំឱ្យធ្លាក់ ២ បន្ទាត់ & ទុកទំហំធំទូលាយ */
+    .report-table td.sub-name {
+      text-align: center;
+      font-weight: 700;
+      white-space: nowrap !important; /* 🌟 មិនធ្លាក់បន្ទាត់ */
+      padding: 4px 6px;
+    }
     .report-table td.bold-val { font-weight: 700; }
 
     .gr-A { color: #0284c7; font-weight: 800; }
@@ -265,8 +349,9 @@
     .gr-E { color: #7c3aed; font-weight: 800; }
     .gr-F { color: #dc2626; font-weight: 800; }
 
-    .summary-cell-text { font-size: 11px; font-weight: 700; padding: 5px 3px; }
+    .summary-cell-text { font-size: 11px; font-weight: 700; padding: 5px 3px; white-space: nowrap; }
 
+    /* ── Signatures & Footer ── */
     .sheet-signatures-area {
       display: flex;
       justify-content: space-between;
@@ -283,7 +368,6 @@
       min-width: 180px;
     }
 
-    /* នាយកសាលានៅទាបជាងគ្រូ */
     .sig-col.left-col { min-width: 190px; margin-top: 50px; }
     .sig-col.mid-col  { min-width: 170px; margin-top: 28px; }
     .sig-col.right-col { min-width: 200px; margin-top: 0; }
@@ -357,7 +441,18 @@
     .paper-stage.layout-2col .report-table td {
       padding: 2px 1px;
       height: 19px;
+      white-space: nowrap !important;
     }
+    
+    /* 🌟 បែងចែកទទឹងក្រឡា Mode 2 នាក់ ឱ្យសមមាត្រ កុំឱ្យរុញមុខវិជ្ជាធ្លាក់បន្ទាត់ */
+    .paper-stage.layout-2col .report-table th.col-no { width: 22px !important; }
+    .paper-stage.layout-2col .report-table th.col-sub { width: auto !important; min-width: 108px !important; }
+    .paper-stage.layout-2col .report-table th.col-max { width: 50px !important; }
+    .paper-stage.layout-2col .report-table th.col-s1 { width: 62px !important; }
+    .paper-stage.layout-2col .report-table th.col-s2 { width: 62px !important; }
+    .paper-stage.layout-2col .report-table th.col-avg { width: 44px !important; }
+    .paper-stage.layout-2col .report-table th.col-gr { width: 34px !important; }
+
     .paper-stage.layout-2col .summary-cell-text { font-size: 8.8px; padding: 2px; }
 
     .paper-stage.layout-2col .sheet-signatures-area { font-size: 9px; margin-top: 4px; }
@@ -392,7 +487,7 @@
 
     @media print {
       body { background: #ffffff !important; padding: 0 !important; overflow: visible !important; }
-      .top-toolbar { display: none !important; }
+      .top-toolbar, #authDeniedWrap { display: none !important; }
       .paper-stage-wrapper { padding: 0 !important; overflow: visible !important; display: block !important; }
       .paper-stage { transform: none !important; gap: 0 !important; }
       .report-sheet {
@@ -414,9 +509,23 @@
 <body>
 
   <!-- =========================================================
+       🔒 AUTH DENIED (ផ្ទៀងផ្ទាត់ការ LOGIN)
+  ========================================================= -->
+  <div id="authDeniedWrap">
+    <div class="auth-card">
+      <div class="auth-icon">🔒</div>
+      <h2 class="f-moul">សូមចូលប្រើប្រាស់ជាមុនសិន!</h2>
+      <p>លោកអ្នកមិនទាន់បាន Login ចូលក្នុងប្រព័ន្ធនៅឡើយទេ។ សូម Login គណនីរបស់អ្នកដើម្បីមើល និងបោះពុម្ពព្រឹត្តិបត្រពិន្ទុ។</p>
+      <a href="index.html" target="_top" class="btn-login-redirect" onclick="goToIndex(event)">
+        <span>🔑</span> <span>ទៅកាន់ទំព័រដើម</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- =========================================================
        1. TOOLBAR ផ្នែកខាងលើ
   ========================================================= -->
-  <div class="top-toolbar">
+  <div class="top-toolbar" id="mainToolbar" style="display:none;">
     
     <!-- ជ្រើសរើសថ្នាក់ (Class Selector) -->
     <select id="classSelectPill" class="pill-select" onchange="onClassChange(this.value)">
@@ -425,9 +534,10 @@
 
     <!-- Dropdown: ចំនួនសន្លឹក និងទិសដៅ -->
     <div class="tb-group">
-      <button type="button" class="pill-btn" onclick="toggleDropdown('layoutDropdown', this)">
-        <span id="currentLayoutText">1 នាក់ • សន្លឹកបញ្ឈរ</span>
-        <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 4px;"></i>
+      <button type="button" class="pill-btn" onclick="toggleDropdown('layoutDropdown', this)" title="ប្តូរទម្រង់សន្លឹក (បញ្ឈរ/ផ្តេក)">
+        <i class="fa-solid fa-file-lines"></i>
+        <span class="btn-label" id="currentLayoutText">1 នាក់ • សន្លឹកបញ្ឈរ</span>
+        <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 2px;"></i>
       </button>
 
       <div class="dropdown-popup" id="layoutDropdown">
@@ -442,9 +552,10 @@
 
     <!-- Dropdown: ប្រភេទនិទ្ទេស -->
     <div class="tb-group">
-      <button type="button" class="pill-btn" onclick="toggleDropdown('gradeDropdown', this)">
-        <span id="currentGradeText">និទ្ទេស A–F</span>
-        <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 4px;"></i>
+      <button type="button" class="pill-btn" onclick="toggleDropdown('gradeDropdown', this)" title="ប្តូរនិទ្ទេស (A-F ឬ ខ្មែរ)">
+        <i class="fa-solid fa-language"></i>
+        <span class="btn-label" id="currentGradeText">និទ្ទេស A–F</span>
+        <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 2px;"></i>
       </button>
 
       <div class="dropdown-popup" id="gradeDropdown">
@@ -469,19 +580,19 @@
     <!-- ប៊ូតុងពង្រីក/បង្រួមសមអេក្រង់លើទូរសព្ទ -->
     <button type="button" class="pill-btn" id="btnFitScreen" onclick="toggleMobileFitScreen()" title="ពង្រីក ឬបង្រួមសមអេក្រង់">
       <i class="fa-solid fa-expand"></i>
-      <span id="txtFitScreen">សមអេក្រង់</span>
+      <span class="btn-label" id="txtFitScreen">សមអេក្រង់</span>
     </button>
 
     <!-- ប៊ូតុងទាញយក PDF -->
-    <button type="button" class="pill-btn" onclick="downloadPDF()">
+    <button type="button" class="pill-btn" onclick="downloadPDF()" title="ទាញយក PDF">
       <i class="fa-solid fa-download"></i>
-      <span>ទាញយក PDF</span>
+      <span class="btn-label">ទាញយក PDF</span>
     </button>
 
     <!-- ប៊ូតុងបោះពុម្ព (ពណ៌បៃតង) -->
-    <button type="button" class="pill-btn primary" onclick="printReport()">
+    <button type="button" class="pill-btn primary" onclick="printReport()" title="បោះពុម្ព">
       <i class="fa-solid fa-print"></i>
-      <span>បោះពុម្ព</span>
+      <span class="btn-label">បោះពុម្ព</span>
     </button>
 
   </div>
@@ -489,7 +600,7 @@
   <!-- =========================================================
        2. សន្លឹកព្រឹត្តិបត្រពិន្ទុ (PAPER WORKSPACE)
   ========================================================= -->
-  <div class="paper-stage-wrapper" id="paperStageWrapper">
+  <div class="paper-stage-wrapper" id="paperStageWrapper" style="display:none;">
     <div class="paper-stage" id="paperWorkspace">
       <div class="empty-state-card">
         <i class="fa-solid fa-spinner fa-spin fa-2x" style="color:#0284c7; margin-bottom:12px;"></i>
@@ -507,7 +618,7 @@
     const SUPABASE_ANON_KEY = "sb_publishable_AHDcUJbuMAfhaocyfm2X7w_O9s06wML";
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    /* ── Read Session User ── */
+    /* ── Read Session User & Authentication Check ── */
     function readSession() {
       try { return JSON.parse(localStorage.getItem('krou_supabase_user') || 'null'); } catch(e) { return null; }
     }
@@ -515,6 +626,31 @@
     const USER_ROLE = CURRENT_USER?.role || "teacher";
     const USER_CLASS = CURRENT_USER?.assigned_classes || CURRENT_USER?.assigned_class || "";
     const IS_ADMIN = String(USER_ROLE).toLowerCase().trim() === 'admin';
+
+    function checkAuthentication() {
+      if (!CURRENT_USER || !CURRENT_USER.username) {
+        document.getElementById('authDeniedWrap').style.display = 'flex';
+        document.getElementById('mainToolbar').style.display = 'none';
+        document.getElementById('paperStageWrapper').style.display = 'none';
+        return false;
+      }
+      document.getElementById('authDeniedWrap').style.display = 'none';
+      document.getElementById('mainToolbar').style.display = 'flex';
+      document.getElementById('paperStageWrapper').style.display = 'flex';
+      return true;
+    }
+
+    function goToIndex(e) {
+      if (e) e.preventDefault();
+      if (window.parent && window.parent !== window) {
+        try {
+          window.parent.postMessage({ type: 'OPEN_LOGIN', action: 'LOGIN' }, '*');
+          window.parent.location.href = 'index.html';
+          return;
+        } catch(err) {}
+      }
+      window.location.href = 'index.html';
+    }
 
     /* ── State ── */
     let layoutMode = '1_portrait';
@@ -568,7 +704,7 @@
       return 'F';
     }
 
-    /* 🌟 Dropdown Controller: ប្រើ getBoundingClientRect & Fixed Position មិនកាត់ដាច់គែមទៀតឡើយ */
+    /* 🌟 Dropdown Controller */
     function toggleDropdown(id, btn) {
       const el = document.getElementById(id);
       if (!el) return;
@@ -579,7 +715,12 @@
         if (btn) {
           const r = btn.getBoundingClientRect();
           el.style.top = (r.bottom + 6) + 'px';
-          el.style.left = r.left + 'px';
+          
+          let left = r.left;
+          if (left + 200 > window.innerWidth) {
+            left = window.innerWidth - 206;
+          }
+          el.style.left = Math.max(8, left) + 'px';
         }
       }
     }
@@ -592,7 +733,6 @@
       if (!e.target.closest('.tb-group')) closeAllDropdowns();
     });
 
-    // បិទ Dropdown ពេលអូស Scroll
     window.addEventListener('scroll', closeAllDropdowns, true);
     window.addEventListener('resize', closeAllDropdowns);
 
@@ -931,17 +1071,17 @@
             ចំណាត់ថ្នាក់ទី <span class="hl-rank">${st.rank}</span>
           </div>
 
-          <!-- តារាងពិន្ទុមុខវិជ្ជា -->
+          <!-- តារាងពិន្ទុមុខវិជ្ជា (🌟 មុខវិជ្ជាលើ ១ បន្ទាត់រហូត មិនធ្លាក់ជា ២ បន្ទាត់ឡើយ) -->
           <table class="report-table">
             <thead>
               <tr>
-                <th style="width: 40px;">ល.រ</th>
-                <th>មុខវិជ្ជា</th>
-                <th style="width: 85px;">ពិន្ទុអតិបរមា</th>
-                <th style="width: 95px;">ប្រឡងឆមាសទី១</th>
-                <th style="width: 95px;">ប្រឡងឆមាសទី២</th>
-                <th style="width: 80px;">មធ្យមភាគ</th>
-                <th style="width: 60px;">និទ្ទេស</th>
+                <th class="col-no" style="width: 32px;">ល.រ</th>
+                <th class="col-sub" style="min-width: 140px;">មុខវិជ្ជា</th>
+                <th class="col-max" style="width: 75px;">ពិន្ទុអតិបរមា</th>
+                <th class="col-s1" style="width: 85px;">ប្រឡងឆមាសទី១</th>
+                <th class="col-s2" style="width: 85px;">ប្រឡងឆមាសទី២</th>
+                <th class="col-avg" style="width: 68px;">មធ្យមភាគ</th>
+                <th class="col-gr" style="width: 52px;">និទ្ទេស</th>
               </tr>
             </thead>
             <tbody>
@@ -973,9 +1113,9 @@
             </tbody>
           </table>
 
-          <!-- កន្លែងហត្ថលេខា (នាយកសាលាទាបជាងគ្រូ) -->
+          <!-- 🌟 កន្លែងហត្ថលេខា (នាយកសាលាទាបជាងគ្រូ តាមក្បួនច្បាប់) -->
           <div class="sheet-signatures-area">
-            <!-- ឆ្វេង៖ នាយកសាលា -->
+            <!-- ឆ្វេង៖ នាយកសាលា (ស្ថិតនៅទាបជាងគ្រូ) -->
             <div class="sig-col left-col">
               <div class="sig-title-moul f-moul">បានឃើញ និងឯកភាព</div>
               <div class="sig-role f-moul">នាយកសាលា</div>
@@ -1037,7 +1177,7 @@
       applyAutoMobileScale();
     }
 
-    /* ពង្រីក/បង្រួមសមអេក្រង់ទូរសព្ទស្វ័យប្រវត្តិ */
+    /* 🌟 អនុគមន៍ពង្រីក/បង្រួមសមអេក្រង់ទូរសព្ទស្វ័យប្រវត្តិ */
     function applyAutoMobileScale() {
       const stage = document.getElementById('paperWorkspace');
       const wrapper = document.getElementById('paperStageWrapper');
@@ -1047,14 +1187,14 @@
 
       if (screenWidth <= 850 && isFitScreen) {
         const paperWidth = (layoutMode === '1_portrait') ? 794 : 1122;
-        const availableWidth = screenWidth - 20;
+        const availableWidth = screenWidth - 16;
         const scaleRatio = Math.min(1, availableWidth / paperWidth);
 
         stage.style.transform = `scale(${scaleRatio})`;
         stage.style.transformOrigin = 'top center';
         
         const scaledHeight = (stage.scrollHeight || 1122) * scaleRatio;
-        wrapper.style.minHeight = (scaledHeight + 40) + 'px';
+        wrapper.style.minHeight = (scaledHeight + 30) + 'px';
       } else {
         stage.style.transform = 'none';
         wrapper.style.minHeight = 'auto';
@@ -1099,7 +1239,9 @@
       });
     }
 
+    /* ── ដំណើរការពេលបើកទំព័រដំបូង ── */
     window.addEventListener('DOMContentLoaded', async () => {
+      if (!checkAuthentication()) return;
       await initClassDropdown();
     });
   </script>
