@@ -27,7 +27,6 @@
       font-family: 'Khmer OS Battambang', 'Battambang', sans-serif;
     }
 
-    /* 🌟 បង្ខំឱ្យ SELECT & OPTION ទាំងអស់ប្រើ Font Battambang ដិតស្អាត */
     select, option, input, button {
       font-family: 'Khmer OS Battambang', 'Battambang', sans-serif !important;
       font-weight: 700 !important;
@@ -90,7 +89,7 @@
     }
 
     /* =========================================================
-       🎛️ TOP TOOLBAR (រៀបជា ២ ជួរលើទូរសព្ទ)
+       🎛️ TOP TOOLBAR
     ========================================================= */
     .top-toolbar {
       position: sticky;
@@ -120,7 +119,7 @@
       position: relative;
     }
 
-    .pill-btn, .pill-select {
+    .pill-btn {
       background: #1e293b;
       color: #f8fafc;
       border: 1px solid #475569;
@@ -137,23 +136,10 @@
       outline: none;
       white-space: nowrap;
     }
-    .pill-btn:hover, .pill-select:hover {
+    .pill-btn:hover {
       background: #334155;
       border-color: #64748b;
     }
-
-    /* 🌟 រចនាប្រអប់ជ្រើសរើសខែឱ្យលេចធ្លោស្អាត */
-    .custom-month-select {
-      color: #38bdf8 !important;
-      border-color: #0284c7 !important;
-      background: #0b1f33 !important;
-    }
-    .custom-month-select option {
-      background: #0f172a !important;
-      color: #f8fafc !important;
-      padding: 8px;
-    }
-
     .pill-btn.primary {
       background: #00875a;
       color: #ffffff;
@@ -161,39 +147,56 @@
     }
     .pill-btn.primary:hover { background: #00734c; }
 
-    .dropdown-popup {
-      display: none;
-      position: fixed;
-      min-width: 190px;
-      background: #0f172a;
-      border: 1px solid #475569;
-      border-radius: 14px;
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.65);
-      padding: 6px;
-      z-index: 99999;
-      animation: popIn 0.15s ease-out;
+    /* =========================================================
+       🌟 CUSTOM SELECT (ប៊ូតុងជ្រើសរើស ទម្រង់ថ្មី)
+    ========================================================= */
+    .cselect {
+      position: relative;
+      display: inline-flex;
     }
-    .dropdown-popup.show { display: block; }
-    @keyframes popIn {
-      from { opacity: 0; transform: translateY(-6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .dropdown-item {
-      padding: 9px 12px;
-      border-radius: 8px;
+    .cs-btn {
+      background: #1e293b;
       color: #f8fafc;
+      border: 1px solid #475569;
+      height: 36px;
+      padding: 0 13px;
+      border-radius: 18px;
       font-size: 12.5px;
-      font-weight: 700;
       cursor: pointer;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       justify-content: space-between;
       gap: 8px;
+      transition: all 0.15s ease;
+      outline: none;
+      white-space: nowrap;
+      width: 100%;
     }
-    .dropdown-item:hover { background: #1e293b; }
-    .dropdown-item.active { background: #0284c7; color: #fff; }
+    .cs-btn:hover { background: #334155; border-color: #64748b; }
+    .cs-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+    .cs-label {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 140px;
+    }
+    .cs-chev {
+      font-size: 10px;
+      color: #38bdf8;
+      transition: transform 0.2s ease;
+    }
+    .cs-btn.open .cs-chev,
+    .pill-btn.open .fa-chevron-down { transform: rotate(180deg); }
+    .pill-btn .fa-chevron-down { transition: transform 0.2s ease; }
 
+    /* ប៊ូតុងខែ ពណ៌ខៀវលេចធ្លោ */
+    .cselect.month .cs-btn {
+      color: #38bdf8;
+      border-color: #0284c7;
+      background: #0b1f33;
+    }
+    .cselect.month .cs-btn:hover { background: #10304d; }
+
+    /* ប៊ូតុងសិស្ស (នៅក្នុង nav group) */
     .student-nav-group {
       display: inline-flex;
       align-items: center;
@@ -217,18 +220,60 @@
       font-size: 13px;
     }
     .student-nav-btn:hover { background: #334155; }
-    .student-select-clean {
+    .student-nav-group .cs-btn {
       background: transparent;
       border: none;
-      color: #f8fafc;
-      font-size: 12.5px;
-      font-weight: 700;
-      outline: none;
-      cursor: pointer;
+      height: 28px;
       padding: 0 6px;
-      max-width: 140px;
+      border-radius: 14px;
     }
-    .student-select-clean option { background: #0f172a; color: #fff; }
+    .student-nav-group .cs-btn:hover { background: #334155; }
+    .student-nav-group .cs-label { max-width: 120px; }
+
+    /* =========================================================
+       🪟 DROPDOWN POPUP (ស្តាយថ្មី ពណ៌ស មូល ស្រស់ស្អាត)
+    ========================================================= */
+    .dropdown-popup {
+      display: none;
+      position: fixed;
+      min-width: 190px;
+      max-height: 300px;
+      overflow-y: auto;
+      background: #ffffff;
+      border: none;
+      border-radius: 22px;
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45);
+      padding: 6px;
+      z-index: 99999;
+      animation: popIn 0.15s ease-out;
+      scrollbar-width: thin;
+      scrollbar-color: #cbd5e1 transparent;
+    }
+    .dropdown-popup::-webkit-scrollbar { width: 5px; }
+    .dropdown-popup::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    .dropdown-popup.show { display: block; }
+    @keyframes popIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .dropdown-item {
+      padding: 14px 18px;
+      border-radius: 16px;
+      color: #1e293b;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      white-space: nowrap;
+    }
+    .dropdown-item:hover { background: #f1f5f9; }
+    .dropdown-item.active { background: #d9f0fa; color: #0284c7; }
+    .dropdown-item .fa-check { display: none; font-size: 14px; }
+    .dropdown-item.active .fa-check { display: inline; }
 
     @media screen and (max-width: 768px) {
       .top-toolbar {
@@ -251,10 +296,14 @@
         justify-content: center; border-radius: 50%;
       }
       .tb-group .fa-chevron-down { display: none; }
-      .pill-select { height: 34px; padding: 0 8px; font-size: 11.5px; max-width: 105px; }
-      .student-select-clean { max-width: 100px; font-size: 11.5px; }
+      .cs-btn { height: 34px; padding: 0 10px; font-size: 11.5px; }
+      .cs-label { max-width: 95px; }
+      .student-nav-group .cs-label { max-width: 95px; }
+      .tb-row-1 .cselect { flex: 0 1 auto; }
+      .tb-row-2 .cselect { flex: 1; }
       .tb-row-2 .pill-btn { flex: 1; border-radius: 18px; }
       .tb-row-2 .pill-btn.primary { flex: 1.2; }
+      .dropdown-item { font-size: 14px; padding: 12px 16px; }
     }
 
     /* =========================================================
@@ -340,7 +389,7 @@
       font-size: 11.5px;
       white-space: nowrap;
     }
-    
+
     .report-table td.sub-name {
       text-align: center;
       font-weight: 700;
@@ -443,7 +492,7 @@
     .paper-stage.layout-2col .left-dept-info { font-size: 9px; line-height: 1.3; }
     .paper-stage.layout-2col .center-doc-title { margin-right: 35px; }
     .paper-stage.layout-2col .student-meta-line { font-size: 9.5px; margin-bottom: 3px; }
-    
+
     .paper-stage.layout-2col .report-table { font-size: 8.8px; margin-bottom: 5px; }
     .paper-stage.layout-2col .report-table th,
     .paper-stage.layout-2col .report-table td {
@@ -451,7 +500,7 @@
       height: 18px;
       white-space: nowrap !important;
     }
-    
+
     .paper-stage.layout-2col .summary-cell-text { font-size: 8.5px; padding: 2px; }
     .paper-stage.layout-2col .sheet-signatures-area { font-size: 8.5px; margin-top: 3px; }
     .paper-stage.layout-2col .sig-col.left-col { width: 27%; margin-top: 34px; }
@@ -481,7 +530,7 @@
 
     @media print {
       body { background: #ffffff !important; padding: 0 !important; overflow: visible !important; }
-      .top-toolbar, #authDeniedWrap { display: none !important; }
+      .top-toolbar, #authDeniedWrap, .dropdown-popup { display: none !important; }
       .paper-stage-wrapper { padding: 0 !important; overflow: visible !important; display: block !important; }
       .paper-stage { transform: none !important; gap: 0 !important; }
       .report-sheet {
@@ -518,8 +567,8 @@
        1. TOOLBAR ផ្នែកខាងលើ
   ========================================================= -->
   <div class="top-toolbar" id="mainToolbar" style="display:none;">
-    
-    <!-- ជួរទី១ (ជួរលើ) -->
+
+    <!-- ជួរទី១ -->
     <div class="tb-row-1">
       <!-- ប៊ូតុងត្រឡប់ -->
       <button type="button" class="pill-btn" onclick="goBackToScore()" title="ត្រឡប់ទៅស្រង់ពិន្ទុ">
@@ -527,21 +576,17 @@
         <span class="btn-label">ត្រឡប់</span>
       </button>
 
-      <!-- ជ្រើសរើសថ្នាក់ -->
-      <select id="classSelectPill" class="pill-select" onchange="onClassChange(this.value)">
-        <option value="">កំពុងទាញយកថ្នាក់...</option>
-      </select>
+      <!-- 🌟 ជ្រើសរើសថ្នាក់ (បង្ហាញតែ Admin ប៉ុណ្ណោះ) -->
+      <div id="csClass" style="display:none;"></div>
 
       <!-- រុករកសិស្ស -->
       <div class="student-nav-group">
         <button type="button" class="student-nav-btn" onclick="prevStudent()" title="សិស្សមុន">‹</button>
-        <select class="student-select-clean" id="studentSelectBox" onchange="onStudentSelect(this.value)">
-          <option value="">គ្មានសិស្ស</option>
-        </select>
+        <div id="csStudent"></div>
         <button type="button" class="student-nav-btn" onclick="nextStudent()" title="សិស្សបន្ទាប់">›</button>
       </div>
 
-      <!-- ប្តូរទម្រង់សន្លឹក (១ នាក់ / ២ នាក់) -->
+      <!-- ប្តូរទម្រង់សន្លឹក -->
       <div class="tb-group">
         <button type="button" class="pill-btn" onclick="toggleDropdown('layoutDropdown', this)" title="ប្តូរទម្រង់សន្លឹក">
           <i class="fa-solid fa-file-lines"></i>
@@ -550,28 +595,23 @@
         </button>
 
         <div class="dropdown-popup" id="layoutDropdown">
-          <div class="dropdown-item active" onclick="setLayoutMode('1_portrait', '1 នាក់ • សន្លឹកបញ្ឈរ', this)">
+          <div class="dropdown-item active" onclick="setLayoutMode('1_portrait', '1 នាក់ • បញ្ឈរ', this)">
             <span>1 នាក់ • សន្លឹកបញ្ឈរ</span> <i class="fa-solid fa-check"></i>
           </div>
-          <div class="dropdown-item" onclick="setLayoutMode('2_landscape', '2 នាក់ • សន្លឹកផ្តេក A4', this)">
-            <span>2 នាក់ • សន្លឹកផ្តេក A4</span>
+          <div class="dropdown-item" onclick="setLayoutMode('2_landscape', '2 នាក់ • ផ្តេក A4', this)">
+            <span>2 នាក់ • សន្លឹកផ្តេក A4</span> <i class="fa-solid fa-check"></i>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ជួរទី២ (ជួរក្រោម) -->
+    <!-- ជួរទី២ -->
     <div class="tb-row-2">
-      <!-- ជ្រើសរើសប្រភេទព្រឹត្តិបត្រ: ខែ ឬ ឆមាស -->
-      <select id="reportTypeSelect" class="pill-select" onchange="onReportTypeChange(this.value)" style="flex:1;">
-        <option value="monthly">ព្រឹត្តិបត្រខែ</option>
-        <option value="semester">ព្រឹត្តិបត្រឆមាស</option>
-      </select>
+      <!-- 🌟 ប្រភេទព្រឹត្តិបត្រ -->
+      <div id="csReportType" style="flex:1; display:flex;"></div>
 
-      <!-- 🌟 ជ្រើសរើសខែ រចនា Font Battambang យ៉ាងស្រស់ស្អាត -->
-      <select id="monthSelectPill" class="pill-select custom-month-select" onchange="onMonthChange(this.value)" style="flex:1;">
-        <!-- Populated via JS -->
-      </select>
+      <!-- 🌟 ជ្រើសរើសខែ -->
+      <div id="csMonth" style="flex:1; display:flex;"></div>
 
       <!-- និទ្ទេស -->
       <div class="tb-group" style="flex:1;">
@@ -586,7 +626,7 @@
             <span>និទ្ទេស A–F</span> <i class="fa-solid fa-check"></i>
           </div>
           <div class="dropdown-item" onclick="setGradeFormat('KH', 'និទ្ទេស ខ្មែរ', this)">
-            <span>និទ្ទេស ខ្មែរ (ល្អប្រសើរ...)</span>
+            <span>និទ្ទេស ខ្មែរ (ល្អប្រសើរ...)</span> <i class="fa-solid fa-check"></i>
           </div>
         </div>
       </div>
@@ -639,7 +679,6 @@
     const USER_ROLE = CURRENT_USER?.role || "teacher";
     const IS_ADMIN = String(USER_ROLE).toLowerCase().trim() === 'admin';
 
-    /* 🌟 អនុគមន៍ស្វែងរកថ្នាក់របស់គ្រូឱ្យប្រាកដប្រជា ១០០% */
     function getTeacherClass() {
       const c = CURRENT_USER?.assigned_classes || CURRENT_USER?.assigned_class || CURRENT_USER?.grade || CURRENT_USER?.class || "";
       return cleanGrade(c);
@@ -678,7 +717,6 @@
       'កក្កដា': 7, 'សីហា': 8, 'កញ្ញា': 9, 'តុលា': 10, 'វិច្ឆិកា': 11, 'ធ្នូ': 12
     };
 
-    /* 🌟 TEMPLATES ស្តង់ដារ (FALLBACK ធានាថាមិនបាត់មុខវិជ្ជាឡើយ) */
     const DEFAULT_MONTHLY_TEMPLATE = [
       {
         parentName: 'ភាសាខ្មែរ', isGroup: true,
@@ -780,7 +818,6 @@
       return 'F';
     }
 
-    /* 🌟 HELPER ស្វែងរកពិន្ទុឆ្លាតវៃតាមគ្រប់ KEY (code, key, id, name) ធានាមិនបាត់ពិន្ទុឡើយ */
     function getSubjectScore(scoreObj, sub) {
       if (!scoreObj || typeof scoreObj !== 'object') return null;
       const candidates = [
@@ -800,6 +837,100 @@
       return null;
     }
 
+    /* =========================================================
+       🌟 CUSTOM SELECT COMPONENT
+       ប៊ូតុងជ្រើសរើសទម្រង់ថ្មី (ប៉ុបអាប់ពណ៌ស មូល + ធីកពណ៌ខៀវ)
+    ========================================================= */
+    function createCSelect(containerId, cfg = {}) {
+      const root = document.getElementById(containerId);
+      const state = {
+        options: [],
+        value: '',
+        disabled: false,
+        placeholder: cfg.placeholder || '',
+        onChange: cfg.onChange || function() {}
+      };
+
+      root.classList.add('cselect');
+      if (cfg.className) root.classList.add(cfg.className);
+      root.innerHTML = `
+        <button type="button" class="cs-btn">
+          <span class="cs-label"></span>
+          <i class="fa-solid fa-chevron-down cs-chev"></i>
+        </button>`;
+
+      const btn = root.querySelector('.cs-btn');
+      const label = root.querySelector('.cs-label');
+
+      const pop = document.createElement('div');
+      pop.className = 'dropdown-popup cs-popup';
+      document.body.appendChild(pop);
+
+      function renderLabel() {
+        const cur = state.options.find(o => String(o.value) === String(state.value));
+        label.textContent = cur ? (cur.btnLabel || cur.label) : state.placeholder;
+      }
+
+      function renderPopup() {
+        pop.innerHTML = '';
+        state.options.forEach(o => {
+          const item = document.createElement('div');
+          item.className = 'dropdown-item' + (String(o.value) === String(state.value) ? ' active' : '');
+          item.innerHTML = `<span>${o.label}</span><i class="fa-solid fa-check"></i>`;
+          item.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const changed = String(state.value) !== String(o.value);
+            state.value = o.value;
+            renderLabel();
+            closeAllDropdowns();
+            if (changed) state.onChange(o.value);
+          });
+          pop.appendChild(item);
+        });
+      }
+
+      function open() {
+        if (state.disabled) return;
+        closeAllDropdowns();
+        renderPopup();
+
+        const r = btn.getBoundingClientRect();
+        pop.style.minWidth = Math.max(r.width, 150) + 'px';
+        pop.style.top = (r.bottom + 6) + 'px';
+        pop.style.maxHeight = Math.max(140, Math.min(300, window.innerHeight - r.bottom - 16)) + 'px';
+        pop.classList.add('show');
+        btn.classList.add('open');
+
+        // កំណត់ទីតាំងផ្តេក មិនឱ្យលើសអេក្រង់
+        const pw = pop.offsetWidth;
+        let left = r.left;
+        if (left + pw > window.innerWidth - 8) left = window.innerWidth - pw - 8;
+        pop.style.left = Math.max(8, left) + 'px';
+
+        // រមូរទៅរកធាតុដែលបានជ្រើស
+        const act = pop.querySelector('.dropdown-item.active');
+        if (act) pop.scrollTop = act.offsetTop - (pop.clientHeight / 2) + (act.clientHeight / 2);
+      }
+
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (pop.classList.contains('show')) closeAllDropdowns();
+        else open();
+      });
+
+      return {
+        setOptions(list) { state.options = list || []; renderLabel(); },
+        setValue(v) { state.value = v; renderLabel(); },
+        getValue() { return state.value; },
+        setDisabled(d) { state.disabled = !!d; btn.disabled = !!d; },
+        setPlaceholder(t) { state.placeholder = t; renderLabel(); },
+        show(display) { root.style.display = display || 'flex'; },
+        hide() { root.style.display = 'none'; }
+      };
+    }
+
+    const CS = {};
+
     function toggleDropdown(id, btn) {
       const el = document.getElementById(id);
       if (!el) return;
@@ -808,10 +939,11 @@
       if (!isShown) {
         el.classList.add('show');
         if (btn) {
+          btn.classList.add('open');
           const r = btn.getBoundingClientRect();
           el.style.top = (r.bottom + 6) + 'px';
           let left = r.left;
-          if (left + 200 > window.innerWidth) left = window.innerWidth - 206;
+          if (left + 220 > window.innerWidth) left = window.innerWidth - 226;
           el.style.left = Math.max(8, left) + 'px';
         }
       }
@@ -819,13 +951,20 @@
 
     function closeAllDropdowns() {
       document.querySelectorAll('.dropdown-popup').forEach(d => d.classList.remove('show'));
+      document.querySelectorAll('.cs-btn.open, .pill-btn.open').forEach(b => b.classList.remove('open'));
     }
 
     document.addEventListener('click', (e) => {
-      if (!e.target.closest('.tb-group')) closeAllDropdowns();
+      if (!e.target.closest('.tb-group') && !e.target.closest('.cselect') && !e.target.closest('.dropdown-popup')) {
+        closeAllDropdowns();
+      }
     });
 
-    window.addEventListener('scroll', closeAllDropdowns, true);
+    // មិនបិទ popup ពេលរមូរក្នុងបញ្ជីខ្លួនឯង
+    window.addEventListener('scroll', (e) => {
+      if (e.target && e.target.closest && e.target.closest('.dropdown-popup')) return;
+      closeAllDropdowns();
+    }, true);
     window.addEventListener('resize', closeAllDropdowns);
 
     function setLayoutMode(mode, label, el) {
@@ -848,7 +987,7 @@
 
     function onReportTypeChange(val) {
       reportMode = val;
-      document.getElementById('monthSelectPill').style.display = (val === 'monthly') ? 'inline-block' : 'none';
+      if (val === 'monthly') CS.month.show('flex'); else CS.month.hide();
       loadRealDataForClass(currentClassName);
     }
 
@@ -860,41 +999,69 @@
     /* =========================================================
        4. FETCH REAL DATA FROM SUPABASE
     ========================================================= */
-    async function initClassDropdown() {
-      const sel = document.getElementById('classSelectPill');
-      const mSel = document.getElementById('monthSelectPill');
-      
-      // បញ្ចូលជម្រើសខែជាមួយ Font Battambang
-      mSel.innerHTML = ALL_MONTHS.map(m => `<option value="${m}" ${m==='តុលា'?'selected':''}>ខែ ${m}</option>`).join('');
+    function initCustomSelects() {
+      // ថ្នាក់ (Admin ប៉ុណ្ណោះ)
+      CS.cls = createCSelect('csClass', {
+        placeholder: 'ថ្នាក់ទី...',
+        onChange: (v) => onClassChange(v)
+      });
 
-      sel.innerHTML = '<option value="">កំពុងទាញយកថ្នាក់...</option>';
+      // សិស្ស
+      CS.student = createCSelect('csStudent', {
+        placeholder: 'គ្មានសិស្ស',
+        onChange: (v) => onStudentSelect(v)
+      });
+
+      // ប្រភេទព្រឹត្តិបត្រ
+      CS.type = createCSelect('csReportType', {
+        onChange: (v) => onReportTypeChange(v)
+      });
+      CS.type.setOptions([
+        { value: 'monthly',  label: 'ព្រឹត្តិបត្រខែ' },
+        { value: 'semester', label: 'ព្រឹត្តិបត្រឆមាស' }
+      ]);
+      CS.type.setValue('monthly');
+
+      // ខែ
+      CS.month = createCSelect('csMonth', {
+        className: 'month',
+        onChange: (v) => onMonthChange(v)
+      });
+      CS.month.setOptions(ALL_MONTHS.map(m => ({ value: m, label: m })));
+      CS.month.setValue(selectedMonth);
+    }
+
+    async function initClassDropdown() {
+      const teacherClass = getTeacherClass();
 
       try {
+        // 👩‍🏫 គ្រូ៖ ចាប់តាមថ្នាក់ខ្លួនឯងតែម្តង មិនបង្ហាញប៊ូតុងជ្រើសថ្នាក់
+        if (!IS_ADMIN && teacherClass) {
+          CS.cls.hide();
+          currentClassName = teacherClass;
+          await loadRealDataForClass(currentClassName);
+          return;
+        }
+
+        // 👑 Admin (ឬគ្រូដែលរកមិនឃើញថ្នាក់) ៖ បង្ហាញប៊ូតុងជ្រើសថ្នាក់
+        CS.cls.show('flex');
+        CS.cls.setPlaceholder('កំពុងទាញយក...');
+
         const { data, error } = await sb.from('students').select('grade').limit(5000);
         if (error) throw error;
 
         let rawClasses = Array.from(new Set((data || []).map(d => cleanGrade(d.grade)).filter(Boolean)));
         rawClasses.sort((a,b) => a.localeCompare(b, 'km', { numeric: true }));
 
-        const teacherClass = getTeacherClass();
-
-        // បើជាគ្រូធម្មតា ត្រូវប្រាកដថាថ្នាក់របស់គាត់ត្រូវបានបញ្ចូលជានិច្ច
-        if (!IS_ADMIN && teacherClass) {
-          if (!rawClasses.includes(teacherClass)) rawClasses.unshift(teacherClass);
-          sel.innerHTML = `<option value="${teacherClass}">ថ្នាក់ទី ${teacherClass}</option>`;
-          sel.value = teacherClass;
-          sel.disabled = true;
-          currentClassName = teacherClass;
-        } else {
-          sel.innerHTML = rawClasses.map(c => `<option value="${c}">ថ្នាក់ទី ${c}</option>`).join('');
-          sel.value = (teacherClass && rawClasses.includes(teacherClass)) ? teacherClass : (rawClasses[0] || '');
-          currentClassName = sel.value;
-        }
+        CS.cls.setOptions(rawClasses.map(c => ({ value: c, label: `ថ្នាក់ទី ${c}` })));
+        const initial = (teacherClass && rawClasses.includes(teacherClass)) ? teacherClass : (rawClasses[0] || '');
+        CS.cls.setValue(initial);
+        currentClassName = initial;
 
         await loadRealDataForClass(currentClassName);
 
       } catch (err) {
-        sel.innerHTML = '<option value="">កំហុសទាញយកថ្នាក់</option>';
+        CS.cls.setPlaceholder('កំហុសទាញយកថ្នាក់');
       }
     }
 
@@ -933,7 +1100,7 @@
           return;
         }
 
-        // ២. ទាញយកមុខវិជ្ជាពិតពី table subjects (បើគ្មាន Fallback ទៅ Template ស្វ័យប្រវត្តិ)
+        // ២. ទាញយកមុខវិជ្ជា
         const { data: dbSubData } = await sb
           .from('subjects')
           .select('*')
@@ -942,7 +1109,7 @@
           .order('sort_order', { ascending: true })
           .order('id', { ascending: true });
 
-        // ៣. ទាញយកពិន្ទុពិត
+        // ៣. ទាញយកពិន្ទុ
         const classVariants = [pure, 'ថ្នាក់ទី' + pure, 'ថ្នាក់ទី ' + pure, 'ថ្នាក់' + pure, 'ថ្នាក់ ' + pure];
         const { data: scData } = await sb
           .from('scores')
@@ -988,11 +1155,11 @@
           if (excusedCodes.includes(st)) excusedMap[sid] = (excusedMap[sid] || 0) + 1;
         });
 
-        // ៥. រៀបចំទិន្នន័យ (🌟 បើគ្មានពិន្ទុ មិនបង្ហាញមុខវិជ្ជាឡើយ)
+        // ៥. រៀបចំទិន្នន័យ
         studentsList = stData.map(st => {
           const sid1 = String(st.student_id || '').trim();
           const sid2 = String(st.id || '').trim();
-          
+
           const sc = scoreMap[sid1] || scoreMap[sid2] || {};
           const sc1 = scoreMapS1[sid1] || scoreMapS1[sid2] || {};
           const sc2 = scoreMapS2[sid1] || scoreMapS2[sid2] || {};
@@ -1001,7 +1168,6 @@
           let activeSubjectCount = 0;
 
           if (reportMode === 'monthly') {
-            // រៀបចំ Groups មុខវិជ្ជាខែ (Fallback ទៅ DEFAULT_MONTHLY_TEMPLATE បើគ្មានក្នុង DB)
             let rawGroups = [];
             if (dbSubData && dbSubData.length > 0) {
               const parents = dbSubData.filter(s => !s.parent_id);
@@ -1078,8 +1244,7 @@
             };
 
           } else {
-            // ព្រឹត្តិបត្រឆមាស
-            let semList = (dbSubData && dbSubData.length > 0) 
+            let semList = (dbSubData && dbSubData.length > 0)
               ? dbSubData.map(s => ({ name: s.name, code: s.code || `sub_${s.id}`, id: s.id, max: Number(s.max_score)||10 }))
               : JSON.parse(JSON.stringify(DEFAULT_SEMESTER_TEMPLATE));
 
@@ -1093,7 +1258,6 @@
               const has1 = v1 !== null;
               const has2 = v2 !== null;
 
-              // 🌟 បើគ្មានពិន្ទុទាំងឆមាស១ និង២ ទេ មិនបាច់បង្ហាញឡើយ
               if (!has1 && !has2) return;
 
               if (has1) { sem1Total += v1; sem1Count++; }
@@ -1167,15 +1331,17 @@
     }
 
     function populateStudentSelect() {
-      const sel = document.getElementById('studentSelectBox');
       if (!studentsList.length) {
-        sel.innerHTML = '<option value="">គ្មានសិស្ស</option>';
+        CS.student.setOptions([]);
+        CS.student.setValue('');
+        CS.student.setPlaceholder('គ្មានសិស្ស');
         return;
       }
-      sel.innerHTML = studentsList.map((s, idx) => 
-        `<option value="${idx}">${idx + 1}. ${s.name}</option>`
-      ).join('');
-      sel.value = String(currentStudentIndex);
+      CS.student.setOptions(studentsList.map((s, idx) => ({
+        value: String(idx),
+        label: `${idx + 1}. ${s.name}`
+      })));
+      CS.student.setValue(String(currentStudentIndex));
     }
 
     function onStudentSelect(idx) {
@@ -1186,7 +1352,7 @@
     function prevStudent() {
       if (currentStudentIndex > 0) {
         currentStudentIndex--;
-        document.getElementById('studentSelectBox').value = String(currentStudentIndex);
+        CS.student.setValue(String(currentStudentIndex));
         renderReportWorkspace();
       }
     }
@@ -1194,13 +1360,13 @@
     function nextStudent() {
       if (currentStudentIndex < studentsList.length - 1) {
         currentStudentIndex++;
-        document.getElementById('studentSelectBox').value = String(currentStudentIndex);
+        CS.student.setValue(String(currentStudentIndex));
         renderReportWorkspace();
       }
     }
 
     /* =========================================================
-       5. HTML GENERATOR (ខែ និង ឆមាស តាមរូបភាពគំរូ)
+       5. HTML GENERATOR
     ========================================================= */
     function generateReportHTML(st) {
       if (!st) return '';
@@ -1209,8 +1375,7 @@
       const isMonthly = (reportMode === 'monthly');
       const docTitle = isMonthly ? `ព្រឹត្តិបត្រពិន្ទុ ខែ ${selectedMonth}` : `ព្រឹត្តិបត្រពិន្ទុ ${academicYearStr}`;
       const solarDateStr = isMonthly ? getAutoSolarDate(selectedMonth) : getAutoSolarDate('តុលា');
-      
-      // 🌟 ថ្នាក់ទីបង្ហាញច្បាស់លាស់ជានិច្ច ទាំងសម្រាប់គ្រូ និង Admin
+
       const displayGrade = cleanGrade(st.grade) || cleanGrade(currentClassName) || getTeacherClass() || '...';
 
       let theadHtml = '';
@@ -1374,9 +1539,9 @@
           </div>
 
           <div class="student-meta-line">
-            សិស្សឈ្មោះ: <span class="hl-val">${st.name}</span> • 
-            ភេទ <span class="hl-val">${st.gender}</span> • 
-            អត្តលេខ <span class="hl-val">${st.id}</span> • 
+            សិស្សឈ្មោះ: <span class="hl-val">${st.name}</span> •
+            ភេទ <span class="hl-val">${st.gender}</span> •
+            អត្តលេខ <span class="hl-val">${st.id}</span> •
             ចំណាត់ថ្នាក់ទី <span class="hl-rank">${st.rank}</span>
           </div>
 
@@ -1462,7 +1627,7 @@
 
         stage.style.transform = `scale(${scaleRatio})`;
         stage.style.transformOrigin = 'top center';
-        
+
         const scaledHeight = (stage.scrollHeight || 1122) * scaleRatio;
         wrapper.style.minHeight = (scaledHeight + 30) + 'px';
       } else {
@@ -1511,6 +1676,7 @@
 
     window.addEventListener('DOMContentLoaded', async () => {
       if (!checkAuthentication()) return;
+      initCustomSelects();
       await initClassDropdown();
     });
   </script>
