@@ -10,16 +10,13 @@
   <!-- 🔤 Google Fonts Khmer & FontAwesome -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Moul&family=Siemreap&family=Kantumruy+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Moul&family=Siemreap&family=Battambang:wght@400;700&family=Kantumruy+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <!-- ⚡ Supabase JS Client (v2) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    /* =====================================================
-       🌟 ភ្ជាប់ពុម្ពអក្សរ TACTEING ពិតប្រាកដ
-    ===================================================== */
     @font-face {
       font-family: 'Tacteing';
       src: local('Tacteing'),
@@ -30,9 +27,6 @@
       font-display: block;
     }
 
-    /* =========================================================
-       🎨 DYNAMIC THEME SYSTEM (LIGHT & DARK MODE)
-    ========================================================= */
     :root {
       --app-bg: #f8fafc;
       --tb-bg: rgba(255, 255, 255, 0.96);
@@ -61,11 +55,7 @@
       --shadow-sm: 0 8px 24px rgba(0, 0, 0, 0.45);
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     html, body {
       width: 100%;
@@ -130,9 +120,7 @@
       border: none;
     }
 
-    /* =====================================================
-       🎛️ 2-ROW BALANCED TOOLBAR DESIGN
-    ===================================================== */
+    /* ══════════════ 🎛️ TOOLBAR ══════════════ */
     .no-print-toolbar {
       position: sticky;
       top: 0;
@@ -203,19 +191,10 @@
       box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15);
     }
 
-    .teacher-class-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: linear-gradient(135deg, #0284c7, #2563eb);
-      color: #ffffff;
-      padding: 4px 12px;
-      border-radius: 10px;
-      font-weight: 700;
-      font-size: 12.5px;
-      height: 32px;
-      white-space: nowrap;
-      user-select: none;
+    /* 🔤 Font Battambang (ប្រអប់ស៊ុមរចនា) */
+    .font-battambang,
+    .font-battambang option {
+      font-family: 'Battambang', 'Siemreap', sans-serif !important;
     }
 
     .btn {
@@ -288,9 +267,7 @@
       .zoom-btn { height: 24px; padding: 2px 6px; font-size: 10.5px; }
     }
 
-    /* =====================================================
-       📜 CERTIFICATES LIST & CANVAS (A4 LANDSCAPE)
-    ===================================================== */
+    /* ══════════════ 📜 CERTIFICATES (A4 LANDSCAPE) ══════════════ */
     .certificate-list {
       display: flex;
       flex-direction: column;
@@ -386,8 +363,8 @@
       margin-top: 8px;
     }
 
-    .header-right { 
-      text-align: center; 
+    .header-right {
+      text-align: center;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -436,10 +413,7 @@
       text-align: center;
     }
 
-    .cert-title-block {
-      margin-top: -10px;
-      text-align: center;
-    }
+    .cert-title-block { margin-top: -10px; text-align: center; }
 
     .cert-title {
       font-family: 'Moul', serif;
@@ -464,11 +438,7 @@
       line-height: 1.8;
     }
 
-    .nowrap-group {
-      white-space: nowrap;
-      display: inline-block;
-      margin: 0 1px;
-    }
+    .nowrap-group { white-space: nowrap; display: inline-block; margin: 0 1px; }
 
     .field-highlight {
       font-family: 'Moul', serif;
@@ -505,11 +475,7 @@
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
     }
 
-    .student-photo-box img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+    .student-photo-box img { width: 100%; height: 100%; object-fit: cover; }
 
     .footer-section {
       display: grid;
@@ -520,10 +486,7 @@
       font-size: 13px;
     }
 
-    .signature-box {
-      text-align: center;
-      justify-self: center;
-    }
+    .signature-box { text-align: center; justify-self: center; }
 
     .signature-title {
       font-family: 'Moul', serif;
@@ -532,13 +495,9 @@
       margin-top: 4px;
     }
 
-    .signature-space {
-      height: 62px;
-    }
+    .signature-space { height: 62px; }
 
-    /* =====================================================
-       🖨️ PRINT A4 LANDSCAPE (STRICT WHITE BACKGROUND)
-    ===================================================== */
+    /* ══════════════ 🖨️ PRINT ══════════════ */
     @media print {
       html, body {
         background: transparent !important;
@@ -547,9 +506,7 @@
         overflow: visible !important;
       }
 
-      .no-print-toolbar {
-        display: none !important;
-      }
+      .no-print-toolbar { display: none !important; }
 
       .certificate-list {
         gap: 0 !important;
@@ -572,25 +529,17 @@
         border-radius: 0 !important;
       }
 
-      .certificate-container.has-frame {
-        padding: 38mm 18mm 20mm 18mm !important;
-      }
+      .certificate-container.has-frame { padding: 38mm 18mm 20mm 18mm !important; }
+      .header-row { padding: 0 12mm !important; }
 
-      .header-row {
-        padding: 0 12mm !important;
-      }
-
-      @page {
-        size: A4 landscape;
-        margin: 0;
-      }
+      @page { size: A4 landscape; margin: 0; }
     }
   </style>
 </head>
 
 <body>
 
-  <!-- ══════════════ 🔒 AUTH DENIED WRAPPER ══════════════ -->
+  <!-- 🔒 AUTH DENIED -->
   <div class="auth-wrapper" id="authDeniedWrap">
     <div class="auth-card">
       <div class="auth-icon">🔒</div>
@@ -602,15 +551,12 @@
     </div>
   </div>
 
-  <!-- =====================================================
-       🎛️ 2-ROW BALANCED TOOLBAR DESIGN
-  ===================================================== -->
+  <!-- 🎛️ TOOLBAR -->
   <div class="no-print-toolbar" id="controlToolbar" style="display:none;">
-    
-    <!-- ជួរទី ១ ៖ ការកំណត់ចម្បង & ប៊ូតុងបញ្ជា -->
+
     <div class="toolbar-row">
       <div class="toolbar-section">
-        <!-- ថ្នាក់ -->
+        <!-- ថ្នាក់ (បង្ហាញតែ Admin) -->
         <div class="panel-pill-box" id="adminClassBox" style="display:none;">
           <span class="toolbar-label"><i class="fa-solid fa-graduation-cap" style="color:#0284c7;"></i> ថ្នាក់ទី៖</span>
           <select id="selectClass" class="form-control" onchange="loadTopStudents()">
@@ -618,15 +564,10 @@
           </select>
         </div>
 
-        <div id="teacherClassBadge" class="teacher-class-badge" style="display:none;">
-          <i class="fa-solid fa-chalkboard-user"></i>
-          <span id="teacherClassText">ថ្នាក់ទី...</span>
-        </div>
-
-        <!-- ស៊ុម -->
+        <!-- ស៊ុម (font Battambang) -->
         <div class="panel-pill-box">
-          <span class="toolbar-label"><i class="fa-solid fa-border-all" style="color:#7c3aed;"></i> ស៊ុម៖</span>
-          <select id="selectFrame" class="form-control" onchange="updateAllFrames()">
+          <span class="toolbar-label font-battambang"><i class="fa-solid fa-border-all" style="color:#7c3aed;"></i> ស៊ុម៖</span>
+          <select id="selectFrame" class="form-control font-battambang" onchange="updateAllFrames()">
             <option value="">ស៊ុមលំនាំដើម (Kbach)</option>
             <option value="1">ស៊ុមទី១</option>
             <option value="2">ស៊ុមទី២</option>
@@ -650,7 +591,6 @@
       </div>
 
       <div class="toolbar-section">
-        <!-- 🔍 Zoom Buttons -->
         <div class="zoom-btn-group" title="ពង្រីក/បង្រួមទំហំ">
           <button type="button" class="zoom-btn active" id="zFit" onclick="setFitZoom()">សម</button>
           <button type="button" class="zoom-btn" id="z75" onclick="setZoom(0.75, 'z75')">75%</button>
@@ -667,22 +607,18 @@
       </div>
     </div>
 
-    <!-- ជួរទី ២ ៖ ព័ត៌មានលម្អិតលើបណ្ណសរសើរ (បំបែកកាលបរិច្ឆេទជា ចន្ទគតិ និង សុរិយគតិ) -->
     <div class="toolbar-row" style="background:var(--ctrl-group-bg); padding:6px 10px; border-radius:10px; border:1px solid var(--tb-border);">
       <div class="toolbar-section" style="width:100%; display:flex; flex-wrap:wrap; gap:8px;">
-        <!-- សាលា -->
         <div class="panel-pill-box">
           <span class="toolbar-label"><i class="fa-solid fa-school" style="color:#10b981;"></i> សាលារៀន៖</span>
           <input type="text" id="inSchool" class="form-control" value="សាលាបឋមសិក្សាកំពង់ល្ពៅ" style="width:200px;" oninput="updateAllCertText()">
         </div>
 
-        <!-- ថ្ងៃចន្ទគតិ -->
         <div class="panel-pill-box" style="flex:1; min-width:240px;">
           <span class="toolbar-label"><i class="fa-solid fa-moon" style="color:#f59e0b;"></i> ចន្ទគតិ៖</span>
           <input type="text" id="inLunarDate" class="form-control" style="width:100%;" value="ថ្ងៃព្រហស្បតិ៍ ១៤កើត ខែស្រាពណ៍ ឆ្នាំមមី អដ្ឋស័ក ព.ស. ២៥៧០" oninput="updateAllCertText()" title="កាលបរិច្ឆេទចន្ទគតិ">
         </div>
 
-        <!-- ថ្ងៃសុរិយគតិ -->
         <div class="panel-pill-box" style="flex:1; min-width:210px;">
           <span class="toolbar-label"><i class="fa-solid fa-sun" style="color:#0284c7;"></i> សុរិយគតិ៖</span>
           <input type="text" id="inSolarDate" class="form-control" style="width:100%;" value="កំពង់ល្ពៅ, ថ្ងៃទី២៧ ខែសីហា ឆ្នាំ២០២៦" oninput="updateAllCertText()" title="កាលបរិច្ឆេទសុរិយគតិ">
@@ -692,9 +628,7 @@
 
   </div>
 
-  <!-- =====================================================
-       📜 CERTIFICATES CONTAINER
-  ===================================================== -->
+  <!-- 📜 CERTIFICATES -->
   <div id="certificateList" class="certificate-list" style="display:none;">
     <div style="text-align:center; padding:60px 20px; font-size:15px; color:var(--text-muted); font-weight:600;">
       <i class="fa-solid fa-spinner fa-spin fa-2x" style="color:#0284c7;"></i>
@@ -702,9 +636,6 @@
     </div>
   </div>
 
-  <!-- =====================================================
-       ⚙️ JAVASCRIPT (SUPABASE INTEGRATED)
-  ===================================================== -->
   <script>
     /* 1. SUPABASE CLIENT CONFIG */
     const SUPABASE_URL = "https://nggnuobnrxiqjtcwlvwk.supabase.co";
@@ -780,7 +711,7 @@
       return (toKhmerDigits(startYear) + ' - ' + toKhmerDigits(startYear + 1));
     }
 
-    /* 3. ZOOM & RESPONSIVE FIT (TABLET & MOBILE) */
+    /* 3. ZOOM */
     function setZoom(scale, btnId) {
       const container = document.getElementById('certificateList');
       if (container) container.style.zoom = scale;
@@ -824,28 +755,25 @@
 
     async function initClasses() {
       const adminBox = document.getElementById('adminClassBox');
-      const teacherBadge = document.getElementById('teacherClassBadge');
       const select = document.getElementById('selectClass');
       const cleanCls = cleanGrade(USER_CLASS);
 
+      /* 👩‍🏫 គ្រូ៖ មិនបង្ហាញថ្នាក់ទីទាល់តែសោះ (ប្រើថ្នាក់ទទួលបន្ទុកដោយស្វ័យប្រវត្តិ) */
       if (!IS_ADMIN) {
         adminBox.style.display = 'none';
+
         if (cleanCls) {
-          document.getElementById('teacherClassText').innerText = 'ថ្នាក់ទី ' + cleanCls;
-          teacherBadge.style.display = 'inline-flex';
           select.innerHTML = `<option value="${cleanCls}">ថ្នាក់ទី ${cleanCls}</option>`;
           select.value = cleanCls;
           loadTopStudents();
         } else {
-          teacherBadge.style.display = 'inline-flex';
-          document.getElementById('teacherClassText').innerText = 'មិនទាន់កំណត់ថ្នាក់';
-          document.getElementById('certificateList').innerHTML = 
+          document.getElementById('certificateList').innerHTML =
             '<div style="text-align:center; padding:50px; color:#f59e0b; font-weight:700;">⚠️ គណនីរបស់អ្នកមិនទាន់មានថ្នាក់ទទួលបន្ទុកឡើយ។ សូមទាក់ទង Admin។</div>';
         }
         return;
       }
 
-      teacherBadge.style.display = 'none';
+      /* 👑 Admin៖ បង្ហាញប្រអប់ជ្រើសរើសថ្នាក់ទី */
       adminBox.style.display = 'inline-flex';
 
       try {
@@ -864,7 +792,7 @@
       }
     }
 
-    /* 5. LOAD TOP 5 STUDENTS OF THE ACADEMIC YEAR (SUPABASE) */
+    /* 5. LOAD TOP 5 STUDENTS (SUPABASE) */
     async function loadTopStudents() {
       const selectedClass = document.getElementById('selectClass').value || cleanGrade(USER_CLASS);
       const curPure = cleanGrade(selectedClass);
@@ -986,7 +914,7 @@
       }
     }
 
-    /* 6. RENDER CERTIFICATES (បែងចែកកាលបរិច្ឆេទជា ២ ជួរដាច់ពីគ្នា) */
+    /* 6. RENDER CERTIFICATES */
     function renderAllCertificates(topStudents, selectedClass) {
       const container = document.getElementById('certificateList');
 
@@ -1022,7 +950,6 @@
             <svg class="corner-kbach bottom-right" viewBox="0 0 100 100"><path d="M0,0 L100,0 L100,20 L20,20 L20,100 L0,100 Z" /><circle cx="35" cy="35" r="10" /></svg>
 
             <div class="inner-border">
-              <!-- HEADER -->
               <div class="header-row">
                 <div class="header-left">
                   <div class="header-admin-line1">រដ្ឋបាលស្រុកសំឡូត</div>
@@ -1035,14 +962,12 @@
                 </div>
               </div>
 
-              <!-- TITLE -->
               <div class="cert-title-block">
                 <h1 class="cert-title">បណ្ណសរសើរ</h1>
                 <p style="font-family:'Kantumruy Pro'; font-size:12px; color:#555; letter-spacing:2px; margin-top:2px;">CERTIFICATE OF COMMENDATION</p>
                 <div class="cert-subtitle-school">នាយក${schoolInput}</div>
               </div>
 
-              <!-- BODY -->
               <div class="cert-body">
                 សូមសរសើរចំពោះសិស្សឈ្មោះ
                 <div class="student-name">${sName}</div>
@@ -1061,7 +986,6 @@
                 បណ្ណសរសើរនេះប្រគល់ជូនសាមីខ្លួនប្រើប្រាស់តាមការដែលអាចប្រើបាន ។
               </div>
 
-              <!-- FOOTER (២ ជួរដាច់ពីគ្នាស្អាត) -->
               <div class="footer-section">
                 <div class="signature-box">
                   <span>បានឃើញ និងឯកភាព</span><br>
