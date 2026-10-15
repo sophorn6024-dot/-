@@ -27,13 +27,14 @@
     }
 
     body {
-      background: #334155;
+      background: #1e293b;
       color: #0f172a;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding-bottom: 50px;
+      padding-bottom: 60px;
+      overflow-x: hidden;
     }
 
     .f-moul {
@@ -49,44 +50,47 @@
       top: 0;
       z-index: 1000;
       width: 100%;
-      background: #1e293b;
-      padding: 10px 18px;
+      background: #0f172a;
+      padding: 10px 16px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+      gap: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
       border-bottom: 1px solid #334155;
+      overflow-x: auto;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
     }
+    .top-toolbar::-webkit-scrollbar { height: 3px; }
+    .top-toolbar::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
 
     .tb-group {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       position: relative;
     }
 
     .pill-btn, .pill-select {
-      background: #334155;
+      background: #1e293b;
       color: #f8fafc;
       border: 1px solid #475569;
-      height: 38px;
-      padding: 0 16px;
-      border-radius: 20px;
-      font-size: 13px;
+      height: 36px;
+      padding: 0 14px;
+      border-radius: 18px;
+      font-size: 12.5px;
       font-weight: 700;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      transition: all 0.2s ease;
+      gap: 6px;
+      transition: all 0.15s ease;
       outline: none;
       white-space: nowrap;
     }
-
     .pill-btn:hover, .pill-select:hover {
-      background: #475569;
+      background: #334155;
       border-color: #64748b;
     }
 
@@ -95,9 +99,7 @@
       color: #ffffff;
       border-color: #00875a;
     }
-    .pill-btn.primary:hover {
-      background: #00734c;
-    }
+    .pill-btn.primary:hover { background: #00734c; }
 
     /* Dropdown Menu Popup */
     .dropdown-popup {
@@ -106,46 +108,44 @@
       top: calc(100% + 6px);
       left: 0;
       min-width: 190px;
-      background: #1e293b;
+      background: #0f172a;
       border: 1px solid #475569;
       border-radius: 14px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
       padding: 6px;
       z-index: 2000;
     }
     .dropdown-popup.show { display: block; }
-
     .dropdown-item {
-      padding: 9px 14px;
-      border-radius: 10px;
+      padding: 8px 12px;
+      border-radius: 8px;
       color: #f8fafc;
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 700;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      transition: background 0.15s;
     }
-    .dropdown-item:hover { background: #334155; }
+    .dropdown-item:hover { background: #1e293b; }
     .dropdown-item.active { background: #0284c7; color: #fff; }
 
     /* Student Navigator */
     .student-nav-group {
       display: inline-flex;
       align-items: center;
-      background: #334155;
-      border-radius: 20px;
+      background: #1e293b;
+      border-radius: 18px;
       border: 1px solid #475569;
-      height: 38px;
+      height: 36px;
       padding: 0 4px;
     }
     .student-nav-btn {
       background: none;
       border: none;
       color: #f8fafc;
-      width: 30px;
-      height: 30px;
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
       cursor: pointer;
       display: flex;
@@ -153,111 +153,80 @@
       justify-content: center;
       font-size: 13px;
     }
-    .student-nav-btn:hover { background: #475569; }
+    .student-nav-btn:hover { background: #334155; }
     .student-select-clean {
       background: transparent;
       border: none;
       color: #f8fafc;
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 700;
       outline: none;
       cursor: pointer;
-      padding: 0 8px;
-      max-width: 170px;
+      padding: 0 6px;
+      max-width: 150px;
     }
-    .student-select-clean option { background: #1e293b; color: #fff; }
+    .student-select-clean option { background: #0f172a; color: #fff; }
 
     /* =========================================================
-       📄 PAPER WORKSPACE (សន្លឹកក្រដាស A4)
+       📄 PAPER STAGE & SCALING SYSTEM (សម្រាប់ទូរសព្ទ និងកុំព្យូទ័រ)
     ========================================================= */
-    .paper-stage {
-      padding: 25px 15px;
+    .paper-stage-wrapper {
       width: 100%;
+      display: flex;
+      justify-content: center;
+      padding: 20px 10px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .paper-stage {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 30px;
+      gap: 24px;
+      transform-origin: top center;
+      transition: transform 0.2s ease;
     }
 
-    /* ទម្រង់បញ្ឈរ (Portrait - 1 នាក់ក្នុង ១ សន្លឹក) */
+    /* =========================================================
+       📑 1 នាក់ • សន្លឹកបញ្ឈរ A4 (Portrait Mode)
+    ========================================================= */
     .report-sheet {
       background: #ffffff;
       width: 210mm;
       min-height: 297mm;
-      padding: 15mm 16mm 15mm;
-      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.4);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      padding: 14mm 16mm 14mm;
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.45);
+      display: block; /* 🌟 ដក space-between ចេញដើម្បីកុំឱ្យដាច់ចន្លោះសធំធេង */
       position: relative;
       color: #000;
-      page-break-after: always;
-    }
-
-    /* ទម្រង់ផ្តេក (Landscape - 2 នាក់ក្នុង ១ សន្លឹក A4) */
-    .paper-stage.layout-2col .report-sheet-container-2col {
-      background: #ffffff;
-      width: 297mm;
-      min-height: 210mm;
-      padding: 8mm 10mm;
-      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.4);
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12mm;
-      position: relative;
-      page-break-after: always;
-    }
-
-    .paper-stage.layout-2col .report-sheet {
-      width: 100%;
-      min-height: auto;
-      box-shadow: none;
-      padding: 0;
     }
 
     /* ── Headers ── */
-    .sheet-national-header {
-      text-align: center;
-      margin-bottom: 6px;
-    }
-    .nat-title-1 { font-size: 15px; margin-bottom: 3px; }
+    .sheet-national-header { text-align: center; margin-bottom: 4px; }
+    .nat-title-1 { font-size: 14.5px; margin-bottom: 2px; }
     .nat-title-2 { font-size: 13px; margin-bottom: 2px; }
-    .nat-symbol { font-size: 11px; letter-spacing: 3px; }
+    .nat-symbol { font-size: 10.5px; letter-spacing: 2.5px; }
 
     .sheet-sub-header {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-top: 6px;
-      margin-bottom: 12px;
+      margin-top: 4px;
+      margin-bottom: 8px;
     }
-    .left-dept-info {
-      text-align: left;
-      font-size: 12.5px;
-      line-height: 1.5;
-    }
+    .left-dept-info { text-align: left; font-size: 12px; line-height: 1.45; }
     .left-dept-info div:first-child { font-weight: 700; }
     .left-dept-info div:last-child { font-weight: 700; }
 
-    .center-doc-title {
-      text-align: center;
-      flex: 1;
-      margin-right: 80px;
-    }
-    .doc-main-title {
-      font-size: 17px;
-      color: #000;
-      margin-bottom: 2px;
-    }
-    .doc-academic-year {
-      font-size: 13.5px;
-      font-weight: 600;
-    }
+    .center-doc-title { text-align: center; flex: 1; margin-right: 70px; }
+    .doc-main-title { font-size: 16.5px; color: #000; margin-bottom: 2px; }
+    .doc-academic-year { font-size: 13px; font-weight: 600; }
 
     .student-meta-line {
       text-align: center;
-      font-size: 13px;
-      margin-bottom: 10px;
+      font-size: 12.5px;
+      margin-bottom: 8px;
       font-weight: 600;
     }
     .student-meta-line span.hl-val { font-weight: 700; }
@@ -268,28 +237,24 @@
       width: 100%;
       border-collapse: collapse;
       text-align: center;
-      font-size: 12px;
+      font-size: 11.5px;
       border: 1px solid #000;
+      margin-bottom: 12px; /* 🌟 ភ្ជាប់ទៅជិតហត្ថលេខា មិនឃ្លាតឆ្ងាយ */
     }
     .report-table th, .report-table td {
       border: 1px solid #000;
-      padding: 5px 3px;
+      padding: 4px 2px;
       vertical-align: middle;
-      height: 27px;
+      height: 25px;
     }
     .report-table thead th {
       background: #e2e8f0;
       font-weight: 700;
-      font-size: 12px;
+      font-size: 11.5px;
     }
-    .report-table td.sub-name {
-      text-align: center;
-      font-weight: 700;
-      padding-left: 6px;
-    }
+    .report-table td.sub-name { text-align: center; font-weight: 700; }
     .report-table td.bold-val { font-weight: 700; }
 
-    /* ពណ៌និទ្ទេស */
     .gr-A { color: #0284c7; font-weight: 800; }
     .gr-B { color: #b45309; font-weight: 800; }
     .gr-C { color: #16a34a; font-weight: 800; }
@@ -297,22 +262,17 @@
     .gr-E { color: #7c3aed; font-weight: 800; }
     .gr-F { color: #dc2626; font-weight: 800; }
 
-    .summary-cell-text {
-      font-size: 11.5px;
-      font-weight: 700;
-      padding: 6px 4px;
-    }
+    .summary-cell-text { font-size: 11px; font-weight: 700; padding: 5px 3px; }
 
     /* ── Signatures & Footer ── */
     .sheet-signatures-area {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-top: 14px;
+      margin-top: 10px;
       padding: 0 4px;
-      font-size: 11.5px;
+      font-size: 11px;
     }
-
     .sig-col {
       display: flex;
       flex-direction: column;
@@ -320,88 +280,131 @@
       text-align: center;
       min-width: 180px;
     }
-    .sig-col.left-col { min-width: 190px; }
-    .sig-col.mid-col { min-width: 170px; margin-top: 36px; }
-    .sig-col.right-col { min-width: 190px; }
 
-    .sig-title-moul { font-size: 12px; color: #000; margin-bottom: 2px; }
-    .sig-role { font-weight: 700; font-size: 12px; margin-bottom: 45px; }
-    .sig-name { font-weight: 700; font-size: 13px; }
-    .sig-lunar-date, .sig-solar-date { font-size: 11px; line-height: 1.4; white-space: nowrap; }
-    .sig-solar-date { margin-bottom: 4px; }
+    /* 🌟 នាយកសាលានៅទាបជាងគ្រូ */
+    .sig-col.left-col { min-width: 190px; margin-top: 50px; }
+    .sig-col.mid-col  { min-width: 170px; margin-top: 28px; }
+    .sig-col.right-col { min-width: 200px; margin-top: 0; }
+
+    .sig-title-moul { font-size: 11.5px; color: #000; margin-bottom: 3px; }
+    .sig-role { font-weight: 700; font-size: 11.5px; margin-bottom: 45px; }
+    .sig-name { font-weight: 700; font-size: 12.5px; }
+    .sig-solar-date { font-size: 11px; font-weight: 700; margin-top: 3px; }
+
+    .clean-lunar-input {
+      font-size: 11px;
+      font-weight: bold;
+      color: #000;
+      border: 1px dashed transparent;
+      background: transparent;
+      text-align: center;
+      width: 100%;
+      outline: none;
+      cursor: text;
+      padding: 2px;
+      transition: all 0.2s;
+    }
+    .clean-lunar-input:hover, .clean-lunar-input:focus {
+      border-color: #3b82f6;
+      background: rgba(239, 246, 255, 0.7);
+      border-radius: 4px;
+    }
 
     .parent-dotted-lines {
       width: 100%;
       border-bottom: 1px dotted #000;
-      height: 16px;
+      height: 14px;
       margin-top: 10px;
     }
 
+    /* =========================================================
+       📑 2 នាក់ • សន្លឹកផ្តេក A4 (Landscape Mode — បង្រួមស្អាតឥតខ្ចោះ)
+    ========================================================= */
+    .paper-stage.layout-2col .report-sheet-container-2col {
+      background: #ffffff;
+      width: 297mm;
+      min-height: 210mm;
+      max-height: 210mm;
+      padding: 6mm 8mm;
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.45);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8mm;
+      overflow: hidden;
+    }
+
+    .paper-stage.layout-2col .report-sheet {
+      width: 100%;
+      min-height: auto;
+      box-shadow: none;
+      padding: 0;
+      font-size: 9.5px;
+    }
+
+    .paper-stage.layout-2col .nat-title-1 { font-size: 11.5px; margin-bottom: 1px; }
+    .paper-stage.layout-2col .nat-title-2 { font-size: 10.5px; margin-bottom: 1px; }
+    .paper-stage.layout-2col .nat-symbol { font-size: 8.5px; letter-spacing: 1.5px; }
+    .paper-stage.layout-2col .doc-main-title { font-size: 12.5px; margin-bottom: 1px; }
+    .paper-stage.layout-2col .doc-academic-year { font-size: 10px; }
+    .paper-stage.layout-2col .left-dept-info { font-size: 9.5px; line-height: 1.35; }
+    .paper-stage.layout-2col .center-doc-title { margin-right: 40px; }
+    .paper-stage.layout-2col .student-meta-line { font-size: 10px; margin-bottom: 4px; }
+    
+    .paper-stage.layout-2col .report-table { font-size: 9.2px; margin-bottom: 6px; }
+    .paper-stage.layout-2col .report-table th,
+    .paper-stage.layout-2col .report-table td {
+      padding: 2px 1px;
+      height: 19px;
+    }
+    .paper-stage.layout-2col .summary-cell-text { font-size: 8.8px; padding: 2px; }
+
+    .paper-stage.layout-2col .sheet-signatures-area { font-size: 9px; margin-top: 4px; }
+    .paper-stage.layout-2col .sig-col { min-width: 120px; }
+    .paper-stage.layout-2col .sig-col.left-col { min-width: 120px; margin-top: 36px; }
+    .paper-stage.layout-2col .sig-col.mid-col  { min-width: 110px; margin-top: 18px; }
+    .paper-stage.layout-2col .sig-col.right-col { min-width: 130px; margin-top: 0; }
+    .paper-stage.layout-2col .sig-title-moul { font-size: 9px; }
+    .paper-stage.layout-2col .sig-role { font-size: 9px; margin-bottom: 26px; }
+    .paper-stage.layout-2col .sig-name { font-size: 9.5px; }
+    .paper-stage.layout-2col .clean-lunar-input { font-size: 8.5px; padding: 1px; }
+    .paper-stage.layout-2col .sig-solar-date { font-size: 8.5px; }
+    .paper-stage.layout-2col .parent-dotted-lines { height: 10px; margin-top: 6px; }
+
     .empty-state-card {
       background: #ffffff;
-      padding: 60px 40px;
+      padding: 50px 30px;
       border-radius: 16px;
       text-align: center;
       color: #64748b;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 700;
       box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-      max-width: 500px;
-      margin-top: 50px;
-    }
-
-    /* 📱 សម្រួលលើទូរសព្ទដៃ និងថេប្លេត (Mobile & Tablet Responsiveness) */
-    @media screen and (max-width: 768px) {
-      .top-toolbar {
-        padding: 8px 10px;
-        justify-content: flex-start;
-        overflow-x: auto;
-        white-space: nowrap;
-      }
-      .top-toolbar::-webkit-scrollbar { height: 3px; }
-      .paper-stage {
-        padding: 15px 5px;
-        overflow-x: auto;
-        width: 100%;
-        display: block;
-        -webkit-overflow-scrolling: touch;
-      }
-      .report-sheet {
-        margin: 0 auto;
-        transform-origin: top center;
-      }
-      @media (max-width: 500px) {
-        .report-sheet {
-          width: 195mm;
-          padding: 10mm 10mm;
-        }
-      }
+      max-width: 440px;
+      margin-top: 40px;
     }
 
     /* =========================================================
        🖨️ PRINT & PDF SETUP
     ========================================================= */
-    @page {
-      size: A4 portrait;
-      margin: 8mm;
-    }
+    @page { size: A4 portrait; margin: 6mm 8mm; }
 
     @media print {
-      body { background: #ffffff !important; padding: 0 !important; }
+      body { background: #ffffff !important; padding: 0 !important; overflow: visible !important; }
       .top-toolbar { display: none !important; }
-      .paper-stage { padding: 0 !important; gap: 0 !important; overflow: visible !important; display: block !important; }
+      .paper-stage-wrapper { padding: 0 !important; overflow: visible !important; display: block !important; }
+      .paper-stage { transform: none !important; gap: 0 !important; }
       .report-sheet {
         box-shadow: none !important;
         margin: 0 !important;
         width: 100% !important;
-        height: auto !important;
-        min-height: 280mm !important;
+        min-height: auto !important;
       }
+      .clean-lunar-input { border: none !important; background: transparent !important; }
       .paper-stage.layout-2col .report-sheet-container-2col {
         box-shadow: none !important;
         margin: 0 !important;
         width: 100% !important;
-        min-height: 195mm !important;
+        min-height: auto !important;
       }
     }
   </style>
@@ -452,18 +455,6 @@
       </div>
     </div>
 
-    <!-- កាលបរិច្ឆេទហត្ថលេខាគ្រូ -->
-    <button type="button" class="pill-btn" onclick="editTeacherDate()">
-      <i class="fa-regular fa-calendar-days"></i>
-      <span>កាលបរិច្ឆេទហត្ថលេខា</span>
-    </button>
-
-    <!-- ថ្ងៃនាយកចុះហត្ថលេខា -->
-    <button type="button" class="pill-btn" onclick="editDirectorDate()">
-      <i class="fa-regular fa-calendar-days"></i>
-      <span>ថ្ងៃនាយកចុះហត្ថលេខា</span>
-    </button>
-
     <!-- រុករកសិស្ស -->
     <div class="student-nav-group">
       <button type="button" class="student-nav-btn" onclick="prevStudent()" title="សិស្សមុន">‹</button>
@@ -473,6 +464,12 @@
       <button type="button" class="student-nav-btn" onclick="nextStudent()" title="សិស្សបន្ទាប់">›</button>
     </div>
 
+    <!-- 🌟 ប៊ូតុងពង្រីក/បង្រួមសមអេក្រង់លើទូរសព្ទ -->
+    <button type="button" class="pill-btn" id="btnFitScreen" onclick="toggleMobileFitScreen()" title="ពង្រីក ឬបង្រួមសមអេក្រង់">
+      <i class="fa-solid fa-expand"></i>
+      <span id="txtFitScreen">សមអេក្រង់</span>
+    </button>
+
     <!-- ប៊ូតុងទាញយក PDF -->
     <button type="button" class="pill-btn" onclick="downloadPDF()">
       <i class="fa-solid fa-download"></i>
@@ -480,7 +477,7 @@
     </button>
 
     <!-- ប៊ូតុងបោះពុម្ព (ពណ៌បៃតង) -->
-    <button type="button" class="pill-btn primary" onclick="window.print()">
+    <button type="button" class="pill-btn primary" onclick="printReport()">
       <i class="fa-solid fa-print"></i>
       <span>បោះពុម្ព</span>
     </button>
@@ -490,10 +487,12 @@
   <!-- =========================================================
        2. សន្លឹកព្រឹត្តិបត្រពិន្ទុ (PAPER WORKSPACE)
   ========================================================= -->
-  <div class="paper-stage" id="paperWorkspace">
-    <div class="empty-state-card">
-      <i class="fa-solid fa-spinner fa-spin fa-2x" style="color:#0284c7; margin-bottom:12px;"></i>
-      <div>កំពុងទាញយកទិន្នន័យពី Database...</div>
+  <div class="paper-stage-wrapper" id="paperStageWrapper">
+    <div class="paper-stage" id="paperWorkspace">
+      <div class="empty-state-card">
+        <i class="fa-solid fa-spinner fa-spin fa-2x" style="color:#0284c7; margin-bottom:12px;"></i>
+        <div>កំពុងទាញយកទិន្នន័យពី Database...</div>
+      </div>
     </div>
   </div>
 
@@ -519,17 +518,28 @@
     let layoutMode = '1_portrait';
     let gradeMode = 'AF';
     let currentClassName = '';
-    let studentsList = []; // 🌟 ចាប់ផ្តើមទទេ (គ្មាន Mock Data)
+    let studentsList = [];
     let currentStudentIndex = 0;
+    let isFitScreen = true;
 
     const now = new Date();
     const currentYear = now.getFullYear();
     const academicYearStr = `${currentYear}-${currentYear + 1}`;
 
+    const KHMER_DIGITS = ['០','១','២','៣','៤','៥','៦','៧','៨','៩'];
+    function toKhmerNum(n) { return String(n).replace(/\d/g, d => KHMER_DIGITS[d]); }
+
+    /* 🌟 គណនាថ្ងៃដាច់ខែសុរិយគតិស្វ័យប្រវត្តិតាមខែប្រឡងឆមាស (ឧ. កំពង់ល្ពៅ, ថ្ងៃទី៣១ ខែតុលា ឆ្នាំ២០២៦) */
+    function getAutoSolarDate() {
+      const year = currentYear;
+      // ឆមាសទី២ ចប់ត្រឹមខែតុលា (ថ្ងៃទី៣១)
+      const lastDay = new Date(year, 10, 0).getDate();
+      return `កំពង់ល្ពៅ, ថ្ងៃទី${toKhmerNum(lastDay)} ខែតុលា ឆ្នាំ${toKhmerNum(year)}`;
+    }
+
+    let currentSolarDate = getAutoSolarDate();
     let teacherLunarDate = "ថ្ងៃពុធ ៣កើត ខែអស្សុជ ឆ្នាំមមែ អដ្ឋស័ក ពុទ្ធសករាជ ២៥៧០";
-    let teacherSolarDate = `កំពង់ល្ពៅ ថ្ងៃទី១៤ ខែតុលា ឆ្នាំ${currentYear}`;
     let directorLunarDate = "ថ្ងៃពុធ ៣កើត ខែអស្សុជ ឆ្នាំមមែ អដ្ឋស័ក ពុទ្ធសករាជ ២៥៧០";
-    let directorSolarDate = `កំពង់ល្ពៅ ថ្ងៃទី១៤ ខែតុលា ឆ្នាំ${currentYear}`;
     let teacherName = CURRENT_USER?.teacher_name || "គ្រូទទួលបន្ទុកថ្នាក់";
 
     function cleanGrade(g) {
@@ -588,24 +598,6 @@
       document.querySelectorAll('#gradeDropdown .dropdown-item').forEach(i => i.classList.remove('active'));
       el.classList.add('active');
       closeAllDropdowns();
-      renderReportWorkspace();
-    }
-
-    function editTeacherDate() {
-      const l = prompt("កាលបរិច្ឆេទចន្ទគតិ (គ្រូទទួលបន្ទុកថ្នាក់)៖", teacherLunarDate);
-      if (l !== null) teacherLunarDate = l;
-      const s = prompt("កាលបរិច្ឆេទសុរិយគតិ (គ្រូទទួលបន្ទុកថ្នាក់)៖", teacherSolarDate);
-      if (s !== null) teacherSolarDate = s;
-      const t = prompt("ឈ្មោះគ្រូទទួលបន្ទុកថ្នាក់៖", teacherName);
-      if (t !== null) teacherName = t;
-      renderReportWorkspace();
-    }
-
-    function editDirectorDate() {
-      const l = prompt("កាលបរិច្ឆេទចន្ទគតិ (នាយកសាលា)៖", directorLunarDate);
-      if (l !== null) directorLunarDate = l;
-      const s = prompt("កាលបរិច្ឆេទសុរិយគតិ (នាយកសាលា)៖", directorSolarDate);
-      if (s !== null) directorSolarDate = s;
       renderReportWorkspace();
     }
 
@@ -678,7 +670,7 @@
           return;
         }
 
-        // ២. ទាញយកមុខវិជ្ជាឆមាសពិតពី table subjects
+        // ២. ទាញយកមុខវិជ្ជាឆមាសពិត
         const { data: subData } = await sb
           .from('subjects')
           .select('*')
@@ -807,7 +799,7 @@
           };
         });
 
-        // ៦. គណនាចំណាត់ថ្នាក់ប្រចាំឆ្នាំ (Year Rank)
+        // ៦. គណនាចំណាត់ថ្នាក់
         const sortedList = [...studentsList].sort((a, b) => b.avgYear - a.avgYear);
         const rankMap = {};
         let lastAvg = null, lastRank = 0;
@@ -897,102 +889,100 @@
 
       return `
         <div class="report-sheet">
-          <div>
-            <!-- ក្បាលទំព័រជាតិ -->
-            <div class="sheet-national-header">
-              <div class="nat-title-1 f-moul">ព្រះរាជាណាចក្រកម្ពុជា</div>
-              <div class="nat-title-2 f-moul">ជាតិ សាសនា ព្រះមហាក្សត្រ</div>
-              <div class="nat-symbol">─────── ❖ ───────</div>
-            </div>
-
-            <!-- ឈ្មោះសាលា និង ចំណងជើង -->
-            <div class="sheet-sub-header">
-              <div class="left-dept-info">
-                <div>ការិយាល័យអប់រំ យុវជន និងកីឡា</div>
-                <div style="font-weight:700;">សាលាបឋមសិក្សាកំពង់ល្ពៅ</div>
-                <div>ថ្នាក់ទី${st.grade}</div>
-              </div>
-
-              <div class="center-doc-title">
-                <div class="doc-main-title f-moul">ព្រឹត្តិបត្រពិន្ទុ ${academicYearStr}</div>
-                <div class="doc-academic-year">ឆ្នាំសិក្សា ${academicYearStr}</div>
-              </div>
-            </div>
-
-            <!-- ព័ត៌មានសិស្ស -->
-            <div class="student-meta-line">
-              សិស្សឈ្មោះ: <span class="hl-val">${st.name}</span> • 
-              ភេទ <span class="hl-val">${st.gender}</span> • 
-              អត្តលេខ <span class="hl-val">${st.id}</span> • 
-              ចំណាត់ថ្នាក់ទី <span class="hl-rank">${st.rank}</span>
-            </div>
-
-            <!-- តារាងពិន្ទុមុខវិជ្ជា -->
-            <table class="report-table">
-              <thead>
-                <tr>
-                  <th style="width: 44px;">ល.រ</th>
-                  <th>មុខវិជ្ជា</th>
-                  <th style="width: 90px;">ពិន្ទុអតិបរមា</th>
-                  <th style="width: 105px;">ប្រឡងឆមាសទី១</th>
-                  <th style="width: 105px;">ប្រឡងឆមាសទី២</th>
-                  <th style="width: 85px;">មធ្យមភាគ</th>
-                  <th style="width: 65px;">និទ្ទេស</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${rowsHtml}
-                <!-- ជួរទី១ សង្ខេបលទ្ធផល -->
-                <tr style="background:#f8fafc;">
-                  <td colspan="4" class="summary-cell-text" style="text-align:left; padding-left:14px;">
-                    មធ្យមភាគឆមាសទី១ ${st.avgSem1 > 0 ? st.avgSem1.toFixed(2) : '-'} • ឆមាសទី២ ${st.avgSem2 > 0 ? st.avgSem2.toFixed(2) : '-'} • ប្រចាំឆ្នាំ ${st.avgYear > 0 ? st.avgYear.toFixed(2) : '-'}
-                  </td>
-                  <td colspan="2" class="summary-cell-text" style="color:#000;">
-                    ចំណាត់ថ្នាក់ទី <span style="color:#dc2626; font-weight:800;">${st.yearRank}</span>
-                  </td>
-                  <td class="summary-cell-text ${yearGradeClass}">
-                    និទ្ទេស ${formatGrade(st.yearGrade)}
-                  </td>
-                </tr>
-                <!-- ជួរទី២ សង្ខេបអវត្តមាន -->
-                <tr style="background:#f8fafc;">
-                  <td colspan="3" class="summary-cell-text">
-                    អវត្តមាន (ឥតច្បាប់) ៖ ${st.absentUnexcused}
-                  </td>
-                  <td colspan="3" class="summary-cell-text">
-                    អវត្តមាន (មានច្បាប់) ៖ ${st.absentExcused}
-                  </td>
-                  <td class="summary-cell-text">
-                    សរុប ៖ ${totalAbsent}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <!-- ក្បាលទំព័រជាតិ -->
+          <div class="sheet-national-header">
+            <div class="nat-title-1 f-moul">ព្រះរាជាណាចក្រកម្ពុជា</div>
+            <div class="nat-title-2 f-moul">ជាតិ សាសនា ព្រះមហាក្សត្រ</div>
+            <div class="nat-symbol">─────── ❖ ───────</div>
           </div>
 
-          <!-- កន្លែងហត្ថលេខាទាំង ៣ ជួរ -->
+          <!-- ឈ្មោះសាលា និង ចំណងជើង -->
+          <div class="sheet-sub-header">
+            <div class="left-dept-info">
+              <div>ការិយាល័យអប់រំ យុវជន និងកីឡា</div>
+              <div style="font-weight:700;">សាលាបឋមសិក្សាកំពង់ល្ពៅ</div>
+              <div>ថ្នាក់ទី${st.grade}</div>
+            </div>
+
+            <div class="center-doc-title">
+              <div class="doc-main-title f-moul">ព្រឹត្តិបត្រពិន្ទុ ${academicYearStr}</div>
+              <div class="doc-academic-year">ឆ្នាំសិក្សា ${academicYearStr}</div>
+            </div>
+          </div>
+
+          <!-- ព័ត៌មានសិស្ស -->
+          <div class="student-meta-line">
+            សិស្សឈ្មោះ: <span class="hl-val">${st.name}</span> • 
+            ភេទ <span class="hl-val">${st.gender}</span> • 
+            អត្តលេខ <span class="hl-val">${st.id}</span> • 
+            ចំណាត់ថ្នាក់ទី <span class="hl-rank">${st.rank}</span>
+          </div>
+
+          <!-- តារាងពិន្ទុមុខវិជ្ជា (🌟 ភ្ជាប់ជាប់ទៅហត្ថលេខា គ្មានចន្លោះសធំធេងឡើយ) -->
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th style="width: 40px;">ល.រ</th>
+                <th>មុខវិជ្ជា</th>
+                <th style="width: 85px;">ពិន្ទុអតិបរមា</th>
+                <th style="width: 95px;">ប្រឡងឆមាសទី១</th>
+                <th style="width: 95px;">ប្រឡងឆមាសទី២</th>
+                <th style="width: 80px;">មធ្យមភាគ</th>
+                <th style="width: 60px;">និទ្ទេស</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rowsHtml}
+              <!-- ជួរទី១ សង្ខេបលទ្ធផល -->
+              <tr style="background:#f8fafc;">
+                <td colspan="4" class="summary-cell-text" style="text-align:left; padding-left:12px;">
+                  មធ្យមភាគឆមាសទី១ ${st.avgSem1 > 0 ? st.avgSem1.toFixed(2) : '-'} • ឆមាសទី២ ${st.avgSem2 > 0 ? st.avgSem2.toFixed(2) : '-'} • ប្រចាំឆ្នាំ ${st.avgYear > 0 ? st.avgYear.toFixed(2) : '-'}
+                </td>
+                <td colspan="2" class="summary-cell-text" style="color:#000;">
+                  ចំណាត់ថ្នាក់ទី <span style="color:#dc2626; font-weight:800;">${st.yearRank}</span>
+                </td>
+                <td class="summary-cell-text ${yearGradeClass}">
+                  និទ្ទេស ${formatGrade(st.yearGrade)}
+                </td>
+              </tr>
+              <!-- ជួរទី២ សង្ខេបអវត្តមាន -->
+              <tr style="background:#f8fafc;">
+                <td colspan="3" class="summary-cell-text">
+                  អវត្តមាន (ឥតច្បាប់) ៖ ${st.absentUnexcused}
+                </td>
+                <td colspan="3" class="summary-cell-text">
+                  អវត្តមាន (មានច្បាប់) ៖ ${st.absentExcused}
+                </td>
+                <td class="summary-cell-text">
+                  សរុប ៖ ${totalAbsent}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- 🌟 កន្លែងហត្ថលេខា (នាយកសាលាទាបជាងគ្រូ តាមក្បួនច្បាប់) -->
           <div class="sheet-signatures-area">
-            <!-- ឆ្វេង៖ នាយកសាលា -->
+            <!-- ឆ្វេង៖ នាយកសាលា (ស្ថិតនៅទាបជាងគ្រូ) -->
             <div class="sig-col left-col">
               <div class="sig-title-moul f-moul">បានឃើញ និងឯកភាព</div>
-              <div class="sig-lunar-date">${directorLunarDate}</div>
-              <div class="sig-solar-date">${directorSolarDate}</div>
               <div class="sig-role f-moul">នាយកសាលា</div>
             </div>
 
             <!-- កណ្ដាល៖ មតិអាណាព្យាបាល -->
             <div class="sig-col mid-col">
-              <div class="sig-title-moul f-moul" style="font-size:12px;">មតិរបស់មាតាបិតា</div>
-              <div class="f-moul" style="font-size:12px; margin-bottom:8px;">ឬអាណាព្យាបាលសិស្ស</div>
+              <div class="sig-title-moul f-moul">មតិរបស់មាតាបិតា</div>
+              <div class="f-moul" style="font-size:11px; margin-bottom:4px;">ឬអាណាព្យាបាលសិស្ស</div>
               <div class="parent-dotted-lines"></div>
               <div class="parent-dotted-lines"></div>
             </div>
 
             <!-- ស្ដាំ៖ គ្រូទទួលបន្ទុកថ្នាក់ -->
             <div class="sig-col right-col">
-              <div class="sig-lunar-date">${teacherLunarDate}</div>
-              <div class="sig-solar-date">${teacherSolarDate}</div>
-              <div class="sig-role f-moul">គ្រូទទួលបន្ទុកថ្នាក់</div>
+              <!-- ថ្ងៃខែចន្ទគតិអាចចុចកែប្រែបានផ្ទាល់ -->
+              <input type="text" class="clean-lunar-input" value="${teacherLunarDate}" onchange="teacherLunarDate=this.value" title="ចុចត្រង់នេះដើម្បីកែប្រែថ្ងៃខែចន្ទគតិ">
+              <!-- ថ្ងៃខែសុរិយគតិដាច់ខែស្វ័យប្រវត្តិ -->
+              <div class="sig-solar-date">${currentSolarDate}</div>
+              <div class="sig-role f-moul" style="margin-top:2px;">គ្រូទទួលបន្ទុកថ្នាក់</div>
               <div class="sig-name">${teacherName}</div>
             </div>
           </div>
@@ -1001,7 +991,7 @@
     }
 
     /* =========================================================
-       6. RENDER WORKSPACE
+       6. RENDER WORKSPACE & MOBILE RESPONSIVE SCALING
     ========================================================= */
     function renderReportWorkspace() {
       const container = document.getElementById('paperWorkspace');
@@ -1032,11 +1022,59 @@
           </div>
         `;
       }
+
+      applyAutoMobileScale();
+    }
+
+    /* 🌟 អនុគមន៍ពង្រីក/បង្រួមទំហំសមអេក្រង់ទូរសព្ទស្វ័យប្រវត្តិ */
+    function applyAutoMobileScale() {
+      const stage = document.getElementById('paperWorkspace');
+      const wrapper = document.getElementById('paperStageWrapper');
+      if (!stage || !wrapper) return;
+
+      const screenWidth = window.innerWidth;
+
+      if (screenWidth <= 850 && isFitScreen) {
+        // ទំហំក្រដាសតាម Mode: Portrait = 210mm (~794px), Landscape = 297mm (~1122px)
+        const paperWidth = (layoutMode === '1_portrait') ? 794 : 1122;
+        const availableWidth = screenWidth - 20;
+        const scaleRatio = Math.min(1, availableWidth / paperWidth);
+
+        stage.style.transform = `scale(${scaleRatio})`;
+        stage.style.transformOrigin = 'top center';
+        
+        // កំណត់កម្ពស់ Wrapper ឱ្យសមាមាត្រដើម្បីកុំឱ្យដាច់ខាងក្រោម
+        const scaledHeight = (stage.scrollHeight || 1122) * scaleRatio;
+        wrapper.style.minHeight = (scaledHeight + 40) + 'px';
+      } else {
+        stage.style.transform = 'none';
+        wrapper.style.minHeight = 'auto';
+      }
+    }
+
+    function toggleMobileFitScreen() {
+      isFitScreen = !isFitScreen;
+      document.getElementById('txtFitScreen').innerText = isFitScreen ? 'សមអេក្រង់' : 'ទំហំដើម';
+      const icon = document.querySelector('#btnFitScreen i');
+      if (icon) icon.className = isFitScreen ? 'fa-solid fa-expand' : 'fa-solid fa-compress';
+      applyAutoMobileScale();
+    }
+
+    window.addEventListener('resize', applyAutoMobileScale);
+
+    function printReport() {
+      // មុនពេលបោះពុម្ព បិទ Scale ដើម្បីឱ្យក្រដាសចេញមកច្បាស់កម្រិតខ្ពស់
+      const stage = document.getElementById('paperWorkspace');
+      if (stage) stage.style.transform = 'none';
+      window.print();
+      applyAutoMobileScale();
     }
 
     function downloadPDF() {
       if (!studentsList.length) return alert('គ្មានទិន្នន័យដើម្បីទាញយកជា PDF ឡើយ!');
-      const element = document.getElementById('paperWorkspace');
+      const stage = document.getElementById('paperWorkspace');
+      stage.style.transform = 'none'; // បិទ Scale មុន save PDF
+
       const isPortrait = (layoutMode === '1_portrait');
       const st = studentsList[currentStudentIndex] || studentsList[0];
 
@@ -1048,7 +1086,9 @@
         jsPDF: { unit: 'mm', format: 'a4', orientation: isPortrait ? 'portrait' : 'landscape' }
       };
 
-      html2pdf().set(opt).from(element).save();
+      html2pdf().set(opt).from(stage).save().then(() => {
+        applyAutoMobileScale();
+      });
     }
 
     window.addEventListener('DOMContentLoaded', async () => {
