@@ -562,6 +562,11 @@
       border: none; color: #fff; width: 30px; height: 30px; border-radius: 50%; cursor: pointer;
     }
     .modal-avatar-preview { width: 80px; height: 80px; border-radius: 50%; border: 3px solid #38bdf8; object-fit: cover; }
+    .profile-photo-actions { display:flex; justify-content:center; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+    .profile-photo-action { display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:7px 12px; border-radius:20px; font-size:11px; font-weight:700; cursor:pointer; border:1px solid var(--border); }
+    .profile-photo-action.pick { background:var(--primary-soft); color:var(--primary); }
+    .profile-photo-action.remove { background:rgba(239,68,68,.10); color:#ef4444; border-color:rgba(239,68,68,.35); }
+    .profile-photo-size-note { color:var(--text-muted); font-size:10.5px; margin-top:7px; }
     .modal-body { padding: 18px; }
     .form-group-field { margin-bottom: 12px; }
     .form-group-field label { display: block; font-size: 11.5px; font-weight: 700; margin-bottom: 5px; color: var(--text-muted); }
@@ -972,10 +977,13 @@
     </div>
     <div class="modal-body">
       <form id="profileForm" onsubmit="return saveMyProfile(event)">
-        <div style="text-align:center; margin-bottom:14px;">
-          <label style="font-size:11px; font-weight:700; padding:6px 14px; border-radius:20px; background:var(--primary-soft); color:var(--primary); cursor:pointer; border:1px solid var(--border); transition:all 0.2s;">
-            📷 ប្តូររូបថត <input type="file" accept="image/*" style="display:none;" onchange="onProfilePhotoPicked(event)">
+        <div class="profile-photo-actions">
+          <label class="profile-photo-action pick">
+            📷 ជ្រើសរើសរូបថត
+            <input id="profilePhotoInput" type="file" accept="image/*" style="display:none;" onchange="onProfilePhotoPicked(event)">
           </label>
+          <button type="button" class="profile-photo-action remove" id="removeProfilePhotoBtn" onclick="removeProfilePhoto()" style="display:none;">🗑️ លុបរូបថត</button>
+          <div id="profilePhotoSizeNote" class="profile-photo-size-note" style="width:100%;">រូបថតនឹងត្រូវបានបង្រួមឱ្យតូចជាង 100 KB មុនរក្សាទុក</div>
         </div>
         <div class="form-group-field"><label>ឈ្មោះគ្រូ</label><input type="text" id="pfName" required></div>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
@@ -1020,6 +1028,7 @@
   let cachedStudentsRoster = [];
   let currentPvIndex = 0;
   let profilePickedPhotoBase64 = null;
+  let profilePhotoDeleteRequested = false;
 
   function cleanGrade(g) {
     return String(g || '').replace(/^(ថ្នាក់ទី|ថ្នាក់)\s*/, '').trim();
@@ -1604,40 +1613,125 @@
   }
 
   /* 8. TEACHER PROFILE EDIT */
+  function setProfilePhotoPreview(src) {
+    const preview = document.getElementById('profilePhotoPreview');
+    const placeholder = document.getElementById('profileAvatarPlaceholder');
+    const removeBtn = document.getElementById('removeProfilePhotoBtn');
+    if (src) {
+      preview.src = src;
+      preview.style.display = 'block';
+      placeholder.style.display = 'none';
+      if (removeBtn) removeBtn.style.display = 'inline-flex';
+    } else {
+      preview.removeAttribute('src');
+      preview.style.display = 'none';
+      placeholder.style.display = 'flex';
+      if (removeBtn) removeBtn.style.display = 'none';
+    }
+  }
+
   function openProfileModal() {
     if (!CURRENT_USER) return;
+    profilePickedPhotoBase64 = null;
+    profilePhotoDeleteRequested = false;
+    const photoInput = document.getElementById('profilePhotoInput');
+    if (photoInput) photoInput.value = '';
     document.getElementById('profileModalBackdrop').classList.add('show');
     document.getElementById('pfName').value = CURRENT_USER.teacher_name || '';
     document.getElementById('pfSex').value = (CURRENT_USER.gender && CURRENT_USER.gender.includes('ស្រី')) ? 'ស្រី' : 'ប្រុស';
     document.getElementById('pfPhone').value = CURRENT_USER.phone || '';
     document.getElementById('pfDob').value = CURRENT_USER.dob || '';
     document.getElementById('pfAddress').value = CURRENT_USER.address || '';
-
-    if (CURRENT_USER.photo_url) {
-      document.getElementById('profilePhotoPreview').src = CURRENT_USER.photo_url;
-      document.getElementById('profilePhotoPreview').style.display = 'block';
-      document.getElementById('profileAvatarPlaceholder').style.display = 'none';
-    } else {
-      document.getElementById('profilePhotoPreview').style.display = 'none';
-      document.getElementById('profileAvatarPlaceholder').style.display = 'flex';
-    }
+    document.getElementById('pfPassword').value = '';
+    setProfilePhotoPreview(CURRENT_USER.photo_url || '');
+    const note = document.getElementById('profilePhotoSizeNote');
+    if (note) note.textContent = 'រូបថតនឹងត្រូវបានបង្រួមឱ្យតូចជាង 100 KB មុនរក្សាទុក';
   }
 
   function closeProfileModal() {
     document.getElementById('profileModalBackdrop').classList.remove('show');
   }
 
-  function onProfilePhotoPicked(ev) {
-    const file = ev.target.files[0];
+  // បង្រួមរូបភាពក្នុង browser ដោយមិនត្រូវការសេវាកម្មបន្ថែម។
+  // លទ្ធផល JPEG ត្រូវមានទំហំតិចជាង 100 KB (ទុកសុវត្ថិភាព 98 KB)។
+  function compressTeacherPhoto(file, maxBytes = 98 * 1024) {
+    return new Promise((resolve, reject) => {
+      if (!file || !file.type || !file.type.startsWith('image/')) {
+        reject(new Error('សូមជ្រើសរើសឯកសាររូបថតដែលត្រឹមត្រូវ។'));
+        return;
+      }
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error('មិនអាចអានឯកសាររូបថតបានទេ។'));
+      reader.onload = () => {
+        const img = new Image();
+        img.onerror = () => reject(new Error('មិនអាចបើករូបថតនេះបានទេ។ សូមសាកល្បងរូបថតផ្សេង។'));
+        img.onload = async () => {
+          try {
+            const canvas = document.createElement('canvas');
+            let scale = Math.min(1, 1400 / Math.max(img.naturalWidth, img.naturalHeight));
+            let quality = 0.86;
+            let blob = null;
+            for (let attempt = 0; attempt < 18; attempt++) {
+              canvas.width = Math.max(1, Math.round(img.naturalWidth * scale));
+              canvas.height = Math.max(1, Math.round(img.naturalHeight * scale));
+              const ctx = canvas.getContext('2d', { alpha: false });
+              if (!ctx) throw new Error('កម្មវិធីមិនអាចដំណើរការរូបថតបានទេ។');
+              ctx.fillStyle = '#ffffff';
+              ctx.fillRect(0, 0, canvas.width, canvas.height);
+              ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+              blob = await new Promise(resolveBlob => canvas.toBlob(resolveBlob, 'image/jpeg', quality));
+              if (blob && blob.size <= maxBytes) break;
+              if (quality > 0.46) quality -= 0.10;
+              else scale *= 0.78;
+            }
+            if (!blob || blob.size > maxBytes) {
+              throw new Error('មិនអាចបង្រួមរូបថតឱ្យក្រោម 100 KB បានទេ។ សូមជ្រើសរើសរូបថតផ្សេង។');
+            }
+            const dataUrl = await new Promise((resolveData, rejectData) => {
+              const fr = new FileReader();
+              fr.onload = () => resolveData(fr.result);
+              fr.onerror = () => rejectData(new Error('មិនអាចបម្លែងរូបថតបានទេ។'));
+              fr.readAsDataURL(blob);
+            });
+            resolve({ dataUrl, size: blob.size, width: canvas.width, height: canvas.height });
+          } catch (err) {
+            reject(err);
+          }
+        };
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function onProfilePhotoPicked(ev) {
+    const file = ev.target.files && ev.target.files[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      profilePickedPhotoBase64 = e.target.result;
-      document.getElementById('profilePhotoPreview').src = profilePickedPhotoBase64;
-      document.getElementById('profilePhotoPreview').style.display = 'block';
-      document.getElementById('profileAvatarPlaceholder').style.display = 'none';
-    };
-    reader.readAsDataURL(file);
+    const note = document.getElementById('profilePhotoSizeNote');
+    if (note) note.textContent = '⏳ កំពុងបង្រួមរូបថត...';
+    try {
+      const result = await compressTeacherPhoto(file);
+      profilePickedPhotoBase64 = result.dataUrl;
+      profilePhotoDeleteRequested = false;
+      setProfilePhotoPreview(result.dataUrl);
+      if (note) note.textContent = `✅ រូបថតត្រៀមរួចរាល់ · ${(result.size / 1024).toFixed(1)} KB · ${result.width}×${result.height}px`;
+    } catch (err) {
+      ev.target.value = '';
+      if (note) note.textContent = '❌ មិនអាចបង្រួមរូបថតបានទេ';
+      alert(err.message || 'មានបញ្ហាក្នុងការបង្រួមរូបថត។');
+    }
+  }
+
+  function removeProfilePhoto() {
+    if (!CURRENT_USER) return;
+    if (!confirm('តើអ្នកពិតជាចង់លុបរូបថតគ្រូនេះមែនទេ?')) return;
+    profilePickedPhotoBase64 = null;
+    profilePhotoDeleteRequested = true;
+    const photoInput = document.getElementById('profilePhotoInput');
+    if (photoInput) photoInput.value = '';
+    setProfilePhotoPreview('');
+    const note = document.getElementById('profilePhotoSizeNote');
+    if (note) note.textContent = '🗑️ រូបថតនឹងត្រូវបានលុបពេលចុច «រក្សាទុក»';
   }
 
   async function saveMyProfile(ev) {
@@ -1659,6 +1753,7 @@
     const newPass = document.getElementById('pfPassword').value.trim();
     if (newPass) updates.password = newPass;
     if (profilePickedPhotoBase64) updates.photo_url = profilePickedPhotoBase64;
+    else if (profilePhotoDeleteRequested) updates.photo_url = null;
 
     try {
       const { data, error } = await sb
@@ -1673,7 +1768,9 @@
       CURRENT_USER = data;
       localStorage.setItem('krou_supabase_user', JSON.stringify(CURRENT_USER));
       TEACHER_NAME = data.teacher_name;
-      TEACHER_PHOTO_URL = data.photo_url;
+      TEACHER_PHOTO_URL = data.photo_url || '';
+      profilePickedPhotoBase64 = null;
+      profilePhotoDeleteRequested = false;
 
       btn.innerText = '💾 រក្សាទុក';
       btn.disabled = false;
