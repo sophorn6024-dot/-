@@ -376,10 +376,12 @@
     .cover-title-block .school-name { font-size: 16.5px; margin-top: 5px; }
 
     .dotted-info-list {
-      margin: 14px 0 8px 0;
+      flex: 1;
+      margin: 8px 0 10px 0;
       display: flex;
       flex-direction: column;
-      gap: 15.5px;
+      justify-content: space-evenly;
+      gap: 6px;
       font-size: 15.5px;
     }
     .info-row { display: flex; align-items: flex-end; width: 100%; }
@@ -389,7 +391,7 @@
       color: #0f172a; font-family: 'Khmer OS Battambang', 'Battambang', sans-serif; font-size: 15.5px;
     }
 
-    .cover-footer { text-align: center; font-size: 21px; color: var(--navy); margin-top: 6px; margin-bottom: 2px; }
+    .cover-footer { text-align: center; font-size: 21px; color: var(--navy); margin-top: 4px; margin-bottom: 2px; padding-top: 6px; }
 
     .report-meta-grid {
       display: grid; grid-template-columns: auto 1fr; column-gap: 8px; row-gap: 2px; margin: 2px 0 4px 0; font-size: 13.5px; color: var(--navy);
@@ -924,7 +926,7 @@
         leftPage.style.display = showCover ? 'flex' : 'none';
         leftPage.innerHTML = `
           <div style="display: flex; flex-direction: column; height: 100%; justify-content: space-between;">
-            <div>
+            <div style="flex: 1; display: flex; flex-direction: column; min-height: 0;">
               <div class="header-text">
                 <h2 class="f-moul">ព្រះរាជាណាចក្រកម្ពុជា</h2>
                 <h3 class="f-moul">ជាតិ សាសនា ព្រះមហាក្សត្រ</h3>
@@ -1015,7 +1017,7 @@
               <td class="val-cell">${getCellContent('D')}</td>
               <td class="val-cell">${getCellContent('E')}</td>
               <td class="val-cell">${getCellContent('F')}</td>
-              <td></td>
+              <td class="val-cell">${(val !== null && val < 5) ? '✔' : ''}</td>
             </tr>
           `;
         });
