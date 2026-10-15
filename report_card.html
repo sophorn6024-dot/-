@@ -44,7 +44,7 @@
     }
 
     /* =========================================================
-       🔒 AUTH DENIED WRAPPER
+       🔒 AUTH DENIED WRAPPER (ការពារការ LOGIN)
     ========================================================= */
     #authDeniedWrap {
       display: none;
@@ -85,7 +85,7 @@
     }
 
     /* =========================================================
-       🎛️ TOP TOOLBAR (របារឧបករណ៍ផ្នែកខាងលើ)
+       🎛️ TOP TOOLBAR (ក្បាលលើរៀបជា ២ ជួរលើទូរសព្ទ)
     ========================================================= */
     .top-toolbar {
       position: sticky;
@@ -100,12 +100,13 @@
       gap: 8px;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
       border-bottom: 1px solid #334155;
-      overflow-x: auto;
-      white-space: nowrap;
-      -webkit-overflow-scrolling: touch;
     }
-    .top-toolbar::-webkit-scrollbar { height: 3px; }
-    .top-toolbar::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
+
+    .tb-row-1, .tb-row-2 {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
 
     .tb-group {
       display: inline-flex;
@@ -143,7 +144,7 @@
     }
     .pill-btn.primary:hover { background: #00734c; }
 
-    /* Dropdown Popup Fixed */
+    /* 🌟 Dropdown Popup Fixed */
     .dropdown-popup {
       display: none;
       position: fixed;
@@ -214,14 +215,67 @@
     }
     .student-select-clean option { background: #0f172a; color: #fff; }
 
-    /* 📱 MOBILE COMPACT MODE */
+    /* =========================================================
+       📱 លើទូរសព្ទដៃបង្ហាញក្បាលលើជា ២ ជួរស្អាតឥតខ្ចោះ
+    ========================================================= */
     @media screen and (max-width: 768px) {
-      .btn-label { display: none !important; }
-      .top-toolbar { padding: 6px 8px; gap: 6px; justify-content: flex-start; }
-      .pill-btn { width: 36px; height: 36px; padding: 0; justify-content: center; gap: 0; border-radius: 50%; }
-      .tb-group .fa-chevron-down { display: none; }
-      .pill-select { height: 34px; padding: 0 8px; font-size: 11.5px; max-width: 110px; }
-      .student-select-clean { max-width: 105px; font-size: 11.5px; padding: 0 4px; }
+      .top-toolbar {
+        padding: 8px 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+      }
+      .tb-row-1, .tb-row-2 {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 6px;
+        width: 100%;
+      }
+
+      /* ជួរទី១ (ជួរលើ) */
+      .tb-row-1 .pill-select {
+        flex: 0 0 auto;
+        max-width: 110px;
+        height: 35px;
+        font-size: 11.5px;
+        padding: 0 8px;
+      }
+      .tb-row-1 .student-nav-group {
+        flex: 1;
+        height: 35px;
+        justify-content: space-between;
+        min-width: 0;
+      }
+      .tb-row-1 .student-select-clean {
+        flex: 1;
+        max-width: 100%;
+        font-size: 11.5px;
+        text-align: center;
+      }
+      .tb-row-1 .pill-btn {
+        flex: 0 0 auto;
+        height: 35px;
+        padding: 0 10px;
+      }
+
+      /* ជួរទី២ (ជួរក្រោម) */
+      .tb-row-2 .tb-group {
+        flex: 1;
+      }
+      .tb-row-2 .pill-btn {
+        flex: 1;
+        width: 100%;
+        height: 35px;
+        padding: 0 6px;
+        justify-content: center;
+        font-size: 11.5px;
+        gap: 5px;
+      }
+      .tb-row-2 .pill-btn.primary {
+        flex: 1.2;
+      }
     }
 
     /* =========================================================
@@ -245,9 +299,7 @@
       transition: transform 0.2s ease;
     }
 
-    /* =========================================================
-       📑 1 នាក់ • សន្លឹកបញ្ឈរ A4 (Portrait Mode)
-    ========================================================= */
+    /* 📑 1 នាក់ • សន្លឹកបញ្ឈរ A4 (Portrait Mode) */
     .report-sheet {
       background: #ffffff;
       width: 210mm;
@@ -311,7 +363,6 @@
       white-space: nowrap;
     }
     
-    /* 🌟 ក្រឡាមុខវិជ្ជា៖ កុំឱ្យធ្លាក់ ២ បន្ទាត់ */
     .report-table td.sub-name {
       text-align: center;
       font-weight: 700;
@@ -346,7 +397,6 @@
       text-align: center;
     }
 
-    /* 🌟 បែងចែកទទឹងសមាមាត្រ ដើម្បីឱ្យថ្ងៃខែចន្ទគតិមានកន្លែងធំទូលាយ */
     .sig-col.left-col { width: 28%; margin-top: 50px; }
     .sig-col.mid-col  { width: 30%; margin-top: 28px; }
     .sig-col.right-col { width: 42%; margin-top: 0; }
@@ -356,7 +406,6 @@
     .sig-name { font-weight: 700; font-size: 12.5px; }
     .sig-solar-date { font-size: 11px; font-weight: 700; margin-top: 3px; white-space: nowrap; }
 
-    /* 🌟 ប្រអប់ថ្ងៃខែចន្ទគតិ Auto-wrap មិនកាត់ដាច់អក្សរឡើយ */
     .clean-lunar-input {
       font-size: 11px;
       font-weight: bold;
@@ -445,7 +494,6 @@
     .paper-stage.layout-2col .sig-role { font-size: 9px; margin-bottom: 26px; }
     .paper-stage.layout-2col .sig-name { font-size: 9.5px; }
 
-    /* 🌟 អក្សរចន្ទគតិក្នុង Mode ផ្តេក ២ នាក់៖ បង្រួមទំហំសមស្រប មិនកាត់ដាច់តួឡើយ */
     .paper-stage.layout-2col .clean-lunar-input {
       font-size: 8px;
       line-height: 1.25;
@@ -511,77 +559,83 @@
   </div>
 
   <!-- =========================================================
-       1. TOOLBAR ផ្នែកខាងលើ
+       1. TOOLBAR ផ្នែកខាងលើ (បែងចែកជា ២ ជួរស្អាតលើទូរសព្ទ)
   ========================================================= -->
   <div class="top-toolbar" id="mainToolbar" style="display:none;">
     
-    <!-- ជ្រើសរើសថ្នាក់ (Class Selector) -->
-    <select id="classSelectPill" class="pill-select" onchange="onClassChange(this.value)">
-      <option value="">កំពុងទាញយកថ្នាក់...</option>
-    </select>
-
-    <!-- Dropdown: ចំនួនសន្លឹក និងទិសដៅ -->
-    <div class="tb-group">
-      <button type="button" class="pill-btn" onclick="toggleDropdown('layoutDropdown', this)" title="ប្តូរទម្រង់សន្លឹក (បញ្ឈរ/ផ្តេក)">
-        <i class="fa-solid fa-file-lines"></i>
-        <span class="btn-label" id="currentLayoutText">1 នាក់ • សន្លឹកបញ្ឈរ</span>
-        <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 2px;"></i>
-      </button>
-
-      <div class="dropdown-popup" id="layoutDropdown">
-        <div class="dropdown-item active" onclick="setLayoutMode('1_portrait', '1 នាក់ • សន្លឹកបញ្ឈរ', this)">
-          <span>1 នាក់ • សន្លឹកបញ្ឈរ</span> <i class="fa-solid fa-check"></i>
-        </div>
-        <div class="dropdown-item" onclick="setLayoutMode('2_landscape', '2 នាក់ • សន្លឹកផ្តេក A4', this)">
-          <span>2 នាក់ • សន្លឹកផ្តេក A4</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Dropdown: ប្រភេទនិទ្ទេស -->
-    <div class="tb-group">
-      <button type="button" class="pill-btn" onclick="toggleDropdown('gradeDropdown', this)" title="ប្តូរនិទ្ទេស (A-F ឬ ខ្មែរ)">
-        <i class="fa-solid fa-language"></i>
-        <span class="btn-label" id="currentGradeText">និទ្ទេស A–F</span>
-        <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 2px;"></i>
-      </button>
-
-      <div class="dropdown-popup" id="gradeDropdown">
-        <div class="dropdown-item active" onclick="setGradeFormat('AF', 'និទ្ទេស A–F', this)">
-          <span>និទ្ទេស A–F</span> <i class="fa-solid fa-check"></i>
-        </div>
-        <div class="dropdown-item" onclick="setGradeFormat('KH', 'និទ្ទេស ខ្មែរ', this)">
-          <span>និទ្ទេស ខ្មែរ (ល្អប្រសើរ...)</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- រុករកសិស្ស -->
-    <div class="student-nav-group">
-      <button type="button" class="student-nav-btn" onclick="prevStudent()" title="សិស្សមុន">‹</button>
-      <select class="student-select-clean" id="studentSelectBox" onchange="onStudentSelect(this.value)">
-        <option value="">គ្មានសិស្ស</option>
+    <!-- ជួរទី១ (ជួរលើលើទូរសព្ទ) -->
+    <div class="tb-row-1">
+      <!-- ជ្រើសរើសថ្នាក់ (Class Selector) -->
+      <select id="classSelectPill" class="pill-select" onchange="onClassChange(this.value)">
+        <option value="">កំពុងទាញយកថ្នាក់...</option>
       </select>
-      <button type="button" class="student-nav-btn" onclick="nextStudent()" title="សិស្សបន្ទាប់">›</button>
+
+      <!-- រុករកសិស្ស (Student Navigator) -->
+      <div class="student-nav-group">
+        <button type="button" class="student-nav-btn" onclick="prevStudent()" title="សិស្សមុន">‹</button>
+        <select class="student-select-clean" id="studentSelectBox" onchange="onStudentSelect(this.value)">
+          <option value="">គ្មានសិស្ស</option>
+        </select>
+        <button type="button" class="student-nav-btn" onclick="nextStudent()" title="សិស្សបន្ទាប់">›</button>
+      </div>
+
+      <!-- Dropdown: ចំនួនសន្លឹក និងទិសដៅ -->
+      <div class="tb-group">
+        <button type="button" class="pill-btn" onclick="toggleDropdown('layoutDropdown', this)" title="ប្តូរទម្រង់សន្លឹក (បញ្ឈរ/ផ្តេក)">
+          <i class="fa-solid fa-file-lines"></i>
+          <span class="btn-label" id="currentLayoutText">1 នាក់ • បញ្ឈរ</span>
+          <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 2px;"></i>
+        </button>
+
+        <div class="dropdown-popup" id="layoutDropdown">
+          <div class="dropdown-item active" onclick="setLayoutMode('1_portrait', '1 នាក់ • សន្លឹកបញ្ឈរ', this)">
+            <span>1 នាក់ • សន្លឹកបញ្ឈរ</span> <i class="fa-solid fa-check"></i>
+          </div>
+          <div class="dropdown-item" onclick="setLayoutMode('2_landscape', '2 នាក់ • សន្លឹកផ្តេក A4', this)">
+            <span>2 នាក់ • សន្លឹកផ្តេក A4</span>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- ប៊ូតុងពង្រីក/បង្រួមសមអេក្រង់លើទូរសព្ទ -->
-    <button type="button" class="pill-btn" id="btnFitScreen" onclick="toggleMobileFitScreen()" title="ពង្រីក ឬបង្រួមសមអេក្រង់">
-      <i class="fa-solid fa-expand"></i>
-      <span class="btn-label" id="txtFitScreen">សមអេក្រង់</span>
-    </button>
+    <!-- ជួរទី២ (ជួរក្រោមលើទូរសព្ទ) -->
+    <div class="tb-row-2">
+      <!-- Dropdown: ប្រភេទនិទ្ទេស -->
+      <div class="tb-group">
+        <button type="button" class="pill-btn" onclick="toggleDropdown('gradeDropdown', this)" title="ប្តូរនិទ្ទេស (A-F ឬ ខ្មែរ)">
+          <i class="fa-solid fa-language"></i>
+          <span class="btn-label" id="currentGradeText">និទ្ទេស A–F</span>
+          <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 2px;"></i>
+        </button>
 
-    <!-- ប៊ូតុងទាញយក PDF -->
-    <button type="button" class="pill-btn" onclick="downloadPDF()" title="ទាញយក PDF">
-      <i class="fa-solid fa-download"></i>
-      <span class="btn-label">ទាញយក PDF</span>
-    </button>
+        <div class="dropdown-popup" id="gradeDropdown">
+          <div class="dropdown-item active" onclick="setGradeFormat('AF', 'និទ្ទេស A–F', this)">
+            <span>និទ្ទេស A–F</span> <i class="fa-solid fa-check"></i>
+          </div>
+          <div class="dropdown-item" onclick="setGradeFormat('KH', 'និទ្ទេស ខ្មែរ', this)">
+            <span>និទ្ទេស ខ្មែរ (ល្អប្រសើរ...)</span>
+          </div>
+        </div>
+      </div>
 
-    <!-- ប៊ូតុងបោះពុម្ព (ពណ៌បៃតង) -->
-    <button type="button" class="pill-btn primary" onclick="printReport()" title="បោះពុម្ព">
-      <i class="fa-solid fa-print"></i>
-      <span class="btn-label">បោះពុម្ព</span>
-    </button>
+      <!-- ប៊ូតុងពង្រីក/បង្រួមសមអេក្រង់ -->
+      <button type="button" class="pill-btn" id="btnFitScreen" onclick="toggleMobileFitScreen()" title="ពង្រីក ឬបង្រួមសមអេក្រង់">
+        <i class="fa-solid fa-expand"></i>
+        <span class="btn-label" id="txtFitScreen">សមអេក្រង់</span>
+      </button>
+
+      <!-- ប៊ូតុងទាញយក PDF -->
+      <button type="button" class="pill-btn" onclick="downloadPDF()" title="ទាញយក PDF">
+        <i class="fa-solid fa-download"></i>
+        <span class="btn-label">ទាញយក PDF</span>
+      </button>
+
+      <!-- ប៊ូតុងបោះពុម្ព (ពណ៌បៃតង) -->
+      <button type="button" class="pill-btn primary" onclick="printReport()" title="បោះពុម្ព">
+        <i class="fa-solid fa-print"></i>
+        <span class="btn-label">បោះពុម្ព</span>
+      </button>
+    </div>
 
   </div>
 
@@ -1094,7 +1148,7 @@
             </div>
 
             <div class="sig-col right-col">
-              <!-- 🌟 ប្រើប្រាស់ Contenteditable Div មិនកាត់ដាច់អក្សរឡើយ -->
+              <!-- 🌟 Contenteditable Div មិនកាត់ដាច់អក្សរឡើយ -->
               <div contenteditable="true" class="clean-lunar-input" onblur="teacherLunarDate=this.innerText.trim()" title="ចុចត្រង់នេះដើម្បីកែប្រែថ្ងៃខែចន្ទគតិ">${teacherLunarDate}</div>
               <div class="sig-solar-date">${currentSolarDate}</div>
               <div class="sig-role f-moul" style="margin-top:2px;">គ្រូទទួលបន្ទុកថ្នាក់</div>
