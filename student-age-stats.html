@@ -485,8 +485,7 @@ function render(){
     </table>
     <div class="foot">
       <div class="sig-l">
-        <div>បានឃើញ និងឯកភាព</div>
-        <div>${dIso?fmtKhDate(dIso):'&nbsp;'}</div>
+        ${dIso?`<div>បានឃើញ និងឯកភាព</div><div>${fmtKhDate(dIso)}</div>`:`<div>&nbsp;</div><div>បានឃើញ និងឯកភាព</div>`}
         <div class="moul" style="font-size:.96em">នាយកសាលា</div>
         <div class="sig-space"></div>
       </div>
