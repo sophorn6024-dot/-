@@ -522,7 +522,15 @@
       margin-top: 4px;
     }
 
-    .signature-space { height: 62px; }
+    .signature-space { height: 46px; }
+    .signature-name {
+      font-family: 'Moul', serif;
+      font-size: 12px;
+      color: #002b66;
+      min-height: 20px;
+      line-height: 1.6;
+      white-space: nowrap;
+    }
 
     /* ══════════════ 🖨️ PRINT ══════════════ */
     @media print {
@@ -750,6 +758,25 @@
     document.addEventListener('click', () => document.getElementById('frameDdMenu')?.classList.remove('open'));
     buildFrameDropdown();
 
+
+    /* 👩‍🏫 គ្រូបន្ទុកថ្នាក់ (ទាញពីតារាង users) */
+    let HOMEROOM_NAME = '';
+    function escHtml(t) {
+      return String(t || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+    async function fetchHomeroomTeacher(cls) {
+      try {
+        const { data, error } = await sb.from('users').select('teacher_name, assigned_classes, role');
+        if (error || !data) return '';
+        const matched = data.filter(u => {
+          const list = String(u.assigned_classes || '').split(/[,;،\/]+/).map(cleanGrade).filter(Boolean);
+          return list.includes(cls) && String(u.teacher_name || '').trim();
+        });
+        const teacher = matched.find(u => String(u.role || '').toLowerCase().trim() !== 'admin') || matched[0];
+        return teacher ? String(teacher.teacher_name).trim() : '';
+      } catch (e) { return ''; }
+    }
+
     const NO_PHOTO_SRC = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='150' height='150'><rect width='100%25' height='100%25' fill='%23f0f0f0'/><text x='50%25' y='50%25' font-size='14' text-anchor='middle' fill='%23999' dy='.3em'>NO PHOTO</text></svg>";
 
     function defaultAcademicYear() {
@@ -955,6 +982,7 @@
         });
 
         const top5 = validStudents.slice(0, 5);
+        HOMEROOM_NAME = await fetchHomeroomTeacher(curPure);
         renderAllCertificates(top5, curPure);
 
       } catch (err) {
@@ -1039,6 +1067,7 @@
                   <span>បានឃើញ និងឯកភាព</span><br>
                   <div class="signature-title">នាយកសាលា</div>
                   <div class="signature-space"></div>
+                  <div class="signature-name"></div>
                 </div>
 
                 <div class="student-photo-box">
@@ -1050,6 +1079,7 @@
                   <div class="cert-out-solar" style="font-size:12px; line-height:1.45; white-space:nowrap;">${toKhmerDigits(solarInput)}</div>
                   <div class="signature-title">គ្រូបន្ទុកថ្នាក់</div>
                   <div class="signature-space"></div>
+                  <div class="signature-name">${escHtml(HOMEROOM_NAME)}</div>
                 </div>
               </div>
             </div>
