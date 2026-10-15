@@ -330,10 +330,11 @@
     .report-sheet {
       background: #ffffff;
       width: 210mm;
-      min-height: 297mm;
-      padding: 14mm 16mm 14mm;
+      min-height: 295mm;
+      padding: 12mm 15mm 12mm;
       box-shadow: 0 10px 35px rgba(0, 0, 0, 0.45);
-      display: block;
+      display: flex;
+      flex-direction: column;
       position: relative;
       color: #000;
     }
@@ -380,7 +381,7 @@
       border: 1px solid #000;
       padding: 4px 3px;
       vertical-align: middle;
-      height: 25px;
+      height: var(--row-h, 25px);
       white-space: nowrap;
     }
     .report-table thead th {
@@ -412,8 +413,8 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-top: 10px;
-      padding: 0 4px;
+      margin-top: auto;
+      padding: 8mm 4px 0;
       width: 100%;
       font-size: 11px;
     }
@@ -464,54 +465,68 @@
 
     /* 2 នាក់ • សន្លឹកផ្តេក A4 */
     .paper-stage.layout-2col .report-sheet-container-2col {
+      position: relative;
       background: #ffffff;
       width: 297mm;
-      min-height: 210mm;
-      max-height: 210mm;
-      padding: 6mm 8mm;
+      height: 209mm;
+      padding: 7mm 9mm;
       box-shadow: 0 10px 35px rgba(0, 0, 0, 0.45);
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8mm;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      column-gap: 12mm;
       overflow: hidden;
     }
-
+    .paper-stage.layout-2col .report-sheet-container-2col::before {
+      content: '';
+      position: absolute;
+      top: 6mm; bottom: 6mm; left: 50%;
+      border-left: 1px dashed #94a3b8;
+    }
     .paper-stage.layout-2col .report-sheet {
       width: 100%;
-      min-height: auto;
+      min-height: 0;
+      height: 100%;
       box-shadow: none;
       padding: 0;
       font-size: 9px;
+      overflow: hidden;
     }
+    .paper-stage.layout-2col .nat-title-1 { font-size: 12px; margin-bottom: 1px; }
+    .paper-stage.layout-2col .nat-title-2 { font-size: 11px; margin-bottom: 1px; }
+    .paper-stage.layout-2col .nat-symbol { font-size: 9px; letter-spacing: 1.5px; }
+    .paper-stage.layout-2col .doc-main-title { font-size: 12.5px; margin-bottom: 1px; }
+    .paper-stage.layout-2col .doc-academic-year { font-size: 10px; }
+    .paper-stage.layout-2col .left-dept-info { font-size: 9.5px; line-height: 1.3; }
+    .paper-stage.layout-2col .center-doc-title { margin-right: 40px; }
+    .paper-stage.layout-2col .sheet-sub-header { margin-bottom: 5px; }
+    .paper-stage.layout-2col .student-meta-line { font-size: 10px; margin-bottom: 4px; }
 
-    .paper-stage.layout-2col .nat-title-1 { font-size: 11.5px; margin-bottom: 1px; }
-    .paper-stage.layout-2col .nat-title-2 { font-size: 10.5px; margin-bottom: 1px; }
-    .paper-stage.layout-2col .nat-symbol { font-size: 8.5px; letter-spacing: 1.5px; }
-    .paper-stage.layout-2col .doc-main-title { font-size: 12px; margin-bottom: 1px; }
-    .paper-stage.layout-2col .doc-academic-year { font-size: 9.5px; }
-    .paper-stage.layout-2col .left-dept-info { font-size: 9px; line-height: 1.3; }
-    .paper-stage.layout-2col .center-doc-title { margin-right: 35px; }
-    .paper-stage.layout-2col .student-meta-line { font-size: 9.5px; margin-bottom: 3px; }
-
-    .paper-stage.layout-2col .report-table { font-size: 8.8px; margin-bottom: 5px; }
+    .paper-stage.layout-2col .report-table { font-size: 9.5px; margin-bottom: 5px; }
     .paper-stage.layout-2col .report-table th,
     .paper-stage.layout-2col .report-table td {
-      padding: 2px 1px;
-      height: 18px;
+      padding: 1px 2px;
       white-space: nowrap !important;
     }
-
-    .paper-stage.layout-2col .summary-cell-text { font-size: 8.5px; padding: 2px; }
-    .paper-stage.layout-2col .sheet-signatures-area { font-size: 8.5px; margin-top: 3px; }
-    .paper-stage.layout-2col .sig-col.left-col { width: 27%; margin-top: 34px; }
-    .paper-stage.layout-2col .sig-col.mid-col  { width: 29%; margin-top: 16px; }
+    .paper-stage.layout-2col .report-table thead th {
+      width: auto !important;
+      font-size: 9.5px;
+      white-space: normal !important;
+      line-height: 1.25;
+    }
+    .paper-stage.layout-2col .summary-cell-text { font-size: 9.3px; padding: 2px; }
+    .paper-stage.layout-2col .sheet-signatures-area { font-size: 9px; padding-top: 3mm; }
+    .paper-stage.layout-2col .sig-col.left-col { width: 27%; margin-top: 30px; }
+    .paper-stage.layout-2col .sig-col.mid-col  { width: 29%; margin-top: 14px; }
     .paper-stage.layout-2col .sig-col.right-col { width: 44%; margin-top: 0; }
-    .paper-stage.layout-2col .sig-title-moul { font-size: 8.5px; }
-    .paper-stage.layout-2col .sig-role { font-size: 8.5px; margin-bottom: 24px; }
-    .paper-stage.layout-2col .sig-name { font-size: 9px; }
-    .paper-stage.layout-2col .clean-lunar-input { font-size: 7.8px; padding: 1px; }
-    .paper-stage.layout-2col .sig-solar-date { font-size: 8px; }
+    .paper-stage.layout-2col .sig-title-moul { font-size: 9px; }
+    .paper-stage.layout-2col .sig-role { font-size: 9px; margin-bottom: 22px; }
+    .paper-stage.layout-2col .sig-name { font-size: 9.5px; }
+    .paper-stage.layout-2col .clean-lunar-input { font-size: 8.2px; padding: 1px; }
+    .paper-stage.layout-2col .sig-solar-date { font-size: 8.5px; }
     .paper-stage.layout-2col .parent-dotted-lines { height: 9px; margin-top: 5px; }
+
+    body.exporting .report-sheet,
+    body.exporting .report-sheet-container-2col { box-shadow: none !important; }
 
     .empty-state-card {
       background: #ffffff;
@@ -526,26 +541,50 @@
       margin-top: 40px;
     }
 
-    @page { size: A4 portrait; margin: 6mm 8mm; }
+    @page { size: A4 portrait; margin: 0; }
 
     @media print {
-      body { background: #ffffff !important; padding: 0 !important; overflow: visible !important; }
+      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      html, body {
+        background: #ffffff !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: block !important;
+        min-height: 0 !important;
+        width: auto !important;
+        overflow: visible !important;
+      }
       .top-toolbar, #authDeniedWrap, .dropdown-popup { display: none !important; }
-      .paper-stage-wrapper { padding: 0 !important; overflow: visible !important; display: block !important; }
-      .paper-stage { transform: none !important; gap: 0 !important; }
+      .paper-stage-wrapper {
+        display: block !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        min-height: 0 !important;
+        width: auto !important;
+        overflow: visible !important;
+      }
+      .paper-stage {
+        display: block !important;
+        transform: none !important;
+        gap: 0 !important;
+        width: auto !important;
+      }
       .report-sheet {
         box-shadow: none !important;
         margin: 0 !important;
-        width: 100% !important;
-        min-height: auto !important;
+        break-inside: avoid;
+        page-break-inside: avoid;
       }
-      .clean-lunar-input { border: none !important; background: transparent !important; }
       .paper-stage.layout-2col .report-sheet-container-2col {
         box-shadow: none !important;
         margin: 0 !important;
-        width: 100% !important;
-        min-height: auto !important;
+        width: 297mm !important;
+        height: 209mm !important;
+        break-inside: avoid;
+        page-break-inside: avoid;
       }
+      .paper-stage.layout-2col .report-sheet { width: 100% !important; height: 100% !important; }
+      .clean-lunar-input { border: none !important; background: transparent !important; }
     }
   </style>
 </head>
@@ -1350,16 +1389,18 @@
     }
 
     function prevStudent() {
+      const step = (layoutMode === '2_landscape') ? 2 : 1;
       if (currentStudentIndex > 0) {
-        currentStudentIndex--;
+        currentStudentIndex = Math.max(0, currentStudentIndex - step);
         CS.student.setValue(String(currentStudentIndex));
         renderReportWorkspace();
       }
     }
 
     function nextStudent() {
+      const step = (layoutMode === '2_landscape') ? 2 : 1;
       if (currentStudentIndex < studentsList.length - 1) {
-        currentStudentIndex++;
+        currentStudentIndex = Math.min(studentsList.length - 1, currentStudentIndex + step);
         CS.student.setValue(String(currentStudentIndex));
         renderReportWorkspace();
       }
@@ -1377,6 +1418,7 @@
       const solarDateStr = isMonthly ? getAutoSolarDate(selectedMonth) : getAutoSolarDate('តុលា');
 
       const displayGrade = cleanGrade(st.grade) || cleanGrade(currentClassName) || getTeacherClass() || '...';
+      const rowH = calcRowH(st);
 
       let theadHtml = '';
       let tbodyHtml = '';
@@ -1518,7 +1560,7 @@
       }
 
       return `
-        <div class="report-sheet">
+        <div class="report-sheet" style="--row-h:${rowH}mm;">
           <div class="sheet-national-header">
             <div class="nat-title-1 f-moul">ព្រះរាជាណាចក្រកម្ពុជា</div>
             <div class="nat-title-2 f-moul">ជាតិ សាសនា ព្រះមហាក្សត្រ</div>
@@ -1580,7 +1622,35 @@
     /* =========================================================
        6. RENDER WORKSPACE & MOBILE RESPONSIVE SCALING
     ========================================================= */
+    function applyPageStyle() {
+      let el = document.getElementById('dynPageStyle');
+      if (!el) {
+        el = document.createElement('style');
+        el.id = 'dynPageStyle';
+        document.head.appendChild(el);
+      }
+      const orient = (layoutMode === '2_landscape') ? 'landscape' : 'portrait';
+      el.textContent = '@page { size: A4 ' + orient + '; margin: 0; }';
+    }
+
+    /* កំណត់កម្ពស់ជួរតារាងស្វ័យប្រវត្តិ ឱ្យពេញក្រដាស A4 ស្អាត */
+    function calcRowH(st) {
+      let n;
+      if (reportMode === 'monthly') {
+        n = (st.monthlyGroups || []).reduce((sum, g) => sum + (g.isGroup ? g.children.length : 1), 0);
+      } else {
+        n = (st.semSubjects || []).length;
+      }
+      n = Math.max(n, 4) + 3; // + ក្បាលតារាង + ២ ជួរសរុប
+      const two = (layoutMode === '2_landscape');
+      const avail = two ? 116 : 168;
+      const min = two ? 4.8 : 5.6;
+      const max = two ? 9 : 14;
+      return Math.max(min, Math.min(max, avail / n)).toFixed(2);
+    }
+
     function renderReportWorkspace() {
+      applyPageStyle();
       const container = document.getElementById('paperWorkspace');
 
       if (!studentsList.length) {
@@ -1600,12 +1670,12 @@
       } else {
         container.className = 'paper-stage layout-2col';
         const st1 = studentsList[currentStudentIndex] || studentsList[0];
-        const st2 = studentsList[currentStudentIndex + 1] || st1;
+        const st2 = studentsList[currentStudentIndex + 1] || null;
 
         container.innerHTML = `
           <div class="report-sheet-container-2col">
             ${generateReportHTML(st1)}
-            ${generateReportHTML(st2)}
+            ${st2 ? generateReportHTML(st2) : '<div></div>'}
           </div>
         `;
       }
@@ -1649,6 +1719,7 @@
     function printReport() {
       const stage = document.getElementById('paperWorkspace');
       if (stage) stage.style.transform = 'none';
+      applyPageStyle();
       window.print();
       applyAutoMobileScale();
     }
@@ -1662,14 +1733,19 @@
       const st = studentsList[currentStudentIndex] || studentsList[0];
 
       const opt = {
-        margin: [4, 4, 4, 4],
+        margin: [0, 0, 0, 0],
         filename: `ព្រឹត្តិបត្រពិន្ទុ_${st.name}_ថ្នាក់ទី${st.grade}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 3, useCORS: true },
         jsPDF: { unit: 'mm', format: 'a4', orientation: isPortrait ? 'portrait' : 'landscape' }
       };
 
+      document.body.classList.add('exporting');
       html2pdf().set(opt).from(stage).save().then(() => {
+        document.body.classList.remove('exporting');
+        applyAutoMobileScale();
+      }).catch(() => {
+        document.body.classList.remove('exporting');
         applyAutoMobileScale();
       });
     }
