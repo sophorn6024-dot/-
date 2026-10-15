@@ -413,8 +413,8 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-top: auto;
-      padding: 8mm 4px 0;
+      margin-top: 0;
+      padding: 6mm 4px 0;
       width: 100%;
       font-size: 11px;
     }
@@ -1643,9 +1643,9 @@
       }
       n = Math.max(n, 4) + 3; // + ក្បាលតារាង + ២ ជួរសរុប
       const two = (layoutMode === '2_landscape');
-      const avail = two ? 116 : 168;
+      const avail = two ? 122 : 180;
       const min = two ? 4.8 : 5.6;
-      const max = two ? 9 : 14;
+      const max = two ? 9.5 : 16;
       return Math.max(min, Math.min(max, avail / n)).toFixed(2);
     }
 
