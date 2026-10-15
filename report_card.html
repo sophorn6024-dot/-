@@ -651,6 +651,7 @@
 
       <!-- 🌟 ជ្រើសរើសខែ -->
       <div id="csMonth" style="flex:1; display:flex;"></div>
+      <div id="csSemester" style="flex:1; display:none;"></div>
 
       <!-- និទ្ទេស -->
       <div class="tb-group" style="flex:1;">
@@ -806,6 +807,7 @@
 
     let reportMode = 'monthly';
     let selectedMonth = 'តុលា';
+    let selectedSemester = 'ឆមាសទី១';
     let layoutMode = '1_portrait';
     let gradeMode = 'AF';
     let currentClassName = '';
@@ -1026,7 +1028,13 @@
 
     function onReportTypeChange(val) {
       reportMode = val;
-      if (val === 'monthly') CS.month.show('flex'); else CS.month.hide();
+      if (val === 'monthly') { CS.month.show('flex'); CS.semester.hide(); }
+      else { CS.month.hide(); CS.semester.show('flex'); }
+      loadRealDataForClass(currentClassName);
+    }
+
+    function onSemesterChange(val) {
+      selectedSemester = val;
       loadRealDataForClass(currentClassName);
     }
 
@@ -1068,6 +1076,18 @@
       });
       CS.month.setOptions(ALL_MONTHS.map(m => ({ value: m, label: m })));
       CS.month.setValue(selectedMonth);
+
+      // ឆមាស (ជ្រើសរើសឆមាសទី១ ឬ ទី២)
+      CS.semester = createCSelect('csSemester', {
+        className: 'month',
+        onChange: (v) => onSemesterChange(v)
+      });
+      CS.semester.setOptions([
+        { value: 'ឆមាសទី១', label: 'ឆមាសទី១' },
+        { value: 'ឆមាសទី២', label: 'ឆមាសទី២' }
+      ]);
+      CS.semester.setValue(selectedSemester);
+      CS.semester.hide();
     }
 
     async function initClassDropdown() {
@@ -1283,56 +1303,38 @@
             };
 
           } else {
-            let semList = (dbSubData && dbSubData.length > 0)
-              ? dbSubData.map(s => ({ name: s.name, code: s.code || `sub_${s.id}`, id: s.id, max: Number(s.max_score)||10 }))
+            const semList = (dbSubData && dbSubData.length > 0)
+              ? dbSubData.map(x => ({ name: x.name, code: x.code || `sub_${x.id}`, id: x.id, max: Number(x.max_score)||10 }))
               : JSON.parse(JSON.stringify(DEFAULT_SEMESTER_TEMPLATE));
 
-            let sem1Total = 0, sem1Count = 0;
-            let sem2Total = 0, sem2Count = 0;
+            // 🌟 ប្រើពិន្ទុតែឆមាសដែលបានជ្រើសរើសប៉ុណ្ណោះ
+            const scSem = (selectedSemester === 'ឆមាសទី២') ? sc2 : sc1;
+            let semTotal = 0, semCount = 0;
             const activeSemSubjects = [];
 
             semList.forEach(sub => {
-              const v1 = getSubjectScore(sc1, sub);
-              const v2 = getSubjectScore(sc2, sub);
-              const has1 = v1 !== null;
-              const has2 = v2 !== null;
-
-              if (!has1 && !has2) return;
-
-              if (has1) { sem1Total += v1; sem1Count++; }
-              if (has2) { sem2Total += v2; sem2Count++; }
-
-              let subAvg = '-';
-              if (has1 && has2) subAvg = ((v1 + v2) / 2);
-              else if (has1) subAvg = v1;
-              else if (has2) subAvg = v2;
-
+              const v = getSubjectScore(scSem, sub);
+              if (v === null) return;
+              semTotal += v;
+              semCount++;
               activeSemSubjects.push({
                 name: sub.name,
                 max: sub.max || 10,
-                s1: has1 ? v1 : '-',
-                s2: has2 ? v2 : '-',
-                avg: (subAvg !== '-') ? subAvg.toFixed(2).replace(/\.00$/, '') : '-',
-                grade: (subAvg !== '-') ? calculateGrade(subAvg) : '-'
+                score: v,
+                grade: calculateGrade(v)
               });
             });
 
-            const avg1 = sem1Count > 0 ? (sem1Total / sem1Count) : 0;
-            const avg2 = sem2Count > 0 ? (sem2Total / sem2Count) : 0;
-            let yearAvg = 0;
-            if (sem1Count > 0 && sem2Count > 0) yearAvg = (avg1 + avg2) / 2;
-            else if (sem1Count > 0) yearAvg = avg1;
-            else if (sem2Count > 0) yearAvg = avg2;
+            const semAvg = semCount > 0 ? (semTotal / semCount) : 0;
 
             return {
               id: st.student_id || st.id,
               name: st.student_name || 'គ្មានឈ្មោះ',
               gender: st.gender || 'ប្រុស',
               grade: pure,
-              avgSem1: avg1,
-              avgSem2: avg2,
-              avgYear: yearAvg,
-              yearGrade: yearAvg > 0 ? calculateGrade(yearAvg) : '-',
+              totalScore: semTotal,
+              avgScore: semAvg,
+              gradeLabel: semAvg > 0 ? calculateGrade(semAvg) : '-',
               absentUnexcused: unexcusedMap[sid1] || unexcusedMap[sid2] || 0,
               absentExcused: excusedMap[sid1] || excusedMap[sid2] || 0,
               semSubjects: activeSemSubjects
@@ -1341,7 +1343,7 @@
         });
 
         // ៦. គណនាចំណាត់ថ្នាក់
-        const scoreKey = (reportMode === 'monthly') ? 'avgScore' : 'avgYear';
+        const scoreKey = 'avgScore';
         const sorted = [...studentsList].sort((a, b) => b[scoreKey] - a[scoreKey]);
         const rankMap = {};
         let lastScore = null, lastRank = 0;
@@ -1414,7 +1416,7 @@
 
       const totalAbsent = (st.absentUnexcused || 0) + (st.absentExcused || 0);
       const isMonthly = (reportMode === 'monthly');
-      const docTitle = isMonthly ? `ព្រឹត្តិបត្រពិន្ទុ ខែ ${selectedMonth}` : `ព្រឹត្តិបត្រពិន្ទុ ${academicYearStr}`;
+      const docTitle = isMonthly ? `ព្រឹត្តិបត្រពិន្ទុ ខែ ${selectedMonth}` : `ព្រឹត្តិបត្រពិន្ទុ ${selectedSemester}`;
       const solarDateStr = isMonthly ? getAutoSolarDate(selectedMonth) : getAutoSolarDate('តុលា');
 
       const displayGrade = cleanGrade(st.grade) || cleanGrade(currentClassName) || getTeacherClass() || '...';
@@ -1504,30 +1506,27 @@
         theadHtml = `
           <tr>
             <th style="width: 32px;">ល.រ</th>
-            <th style="min-width: 140px;">មុខវិជ្ជា</th>
-            <th style="width: 75px;">ពិន្ទុអតិបរមា</th>
-            <th style="width: 85px;">ប្រឡងឆមាសទី១</th>
-            <th style="width: 85px;">ប្រឡងឆមាសទី២</th>
-            <th style="width: 68px;">មធ្យមភាគ</th>
-            <th style="width: 52px;">និទ្ទេស</th>
+            <th style="min-width: 150px;">មុខវិជ្ជា</th>
+            <th style="width: 85px;">ពិន្ទុអតិបរមា</th>
+            <th style="width: 90px;">ពិន្ទុទទួលបាន</th>
+            <th style="width: 60px;">និទ្ទេស</th>
+            <th style="width: 90px;">សេចក្តីផ្សេងៗ</th>
           </tr>
         `;
 
         const semSubs = st.semSubjects || [];
         if (semSubs.length === 0) {
-          tbodyHtml = `<tr><td colspan="7" style="padding: 24px; color:#ef4444; font-weight:bold;">⚠️ សិស្សនេះមិនទាន់មានពិន្ទុប្រឡងឆមាសនៅឡើយទេ</td></tr>`;
+          tbodyHtml = `<tr><td colspan="6" style="padding: 24px; color:#ef4444; font-weight:bold;">⚠️ សិស្សនេះមិនទាន់មានពិន្ទុ${selectedSemester}នៅឡើយទេ</td></tr>`;
         } else {
           semSubs.forEach((row, i) => {
-            const grClass = row.grade !== '-' ? `gr-${row.grade}` : '';
             tbodyHtml += `
               <tr>
                 <td>${i + 1}</td>
                 <td class="sub-name">${row.name}</td>
                 <td>${row.max}</td>
-                <td>${row.s1}</td>
-                <td>${row.s2}</td>
-                <td class="bold-val">${row.avg}</td>
-                <td class="${grClass}">${formatGrade(row.grade)}</td>
+                <td class="bold-val">${row.score}</td>
+                <td class="gr-${row.grade}">${formatGrade(row.grade)}</td>
+                <td></td>
               </tr>
             `;
           });
@@ -1535,18 +1534,18 @@
 
         summaryRowsHtml = `
           <tr style="background:#f8fafc;">
-            <td colspan="4" class="summary-cell-text" style="text-align:left; padding-left:12px;">
-              មធ្យមភាគឆមាសទី១ ${st.avgSem1 > 0 ? st.avgSem1.toFixed(2) : '-'} • ឆមាសទី២ ${st.avgSem2 > 0 ? st.avgSem2.toFixed(2) : '-'} • ប្រចាំឆ្នាំ ${st.avgYear > 0 ? st.avgYear.toFixed(2) : '-'}
+            <td colspan="2" class="summary-cell-text" style="text-align:left; padding-left:12px;">
+              ពិន្ទុសរុប ${st.totalScore.toFixed(2)} • មធ្យមភាគ ${st.avgScore.toFixed(2)}
             </td>
             <td colspan="2" class="summary-cell-text">
               ចំណាត់ថ្នាក់ទី <span style="color:#dc2626; font-weight:800;">${st.rank}</span>
             </td>
-            <td class="summary-cell-text gr-${st.yearGrade}">
-              និទ្ទេស ${formatGrade(st.yearGrade)}
+            <td colspan="2" class="summary-cell-text gr-${st.gradeLabel}">
+              និទ្ទេស ${formatGrade(st.gradeLabel)}
             </td>
           </tr>
           <tr style="background:#f8fafc;">
-            <td colspan="3" class="summary-cell-text">
+            <td colspan="2" class="summary-cell-text">
               អវត្តមាន (ឥតច្បាប់) ៖ ${st.absentUnexcused}
             </td>
             <td colspan="2" class="summary-cell-text">
