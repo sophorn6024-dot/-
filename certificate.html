@@ -533,42 +533,54 @@
       white-space: nowrap;
     }
 
-    /* ══════════════ 🖨️ PRINT ══════════════ */
+    /* ══════════════ 🖨️ PRINT (ដូចពេលបង្ហាញ ១០០% — គ្រាន់តែពង្រីកស្មើគ្នាឲ្យពេញ A4) ══════════════ */
     @media print {
+      @page { size: A4 landscape; margin: 0; }
+
       html, body {
-        background: transparent !important;
+        background: #ffffff !important;
         padding: 0 !important;
         margin: 0 !important;
         overflow: visible !important;
+        width: auto !important;
+        min-height: 0 !important;
       }
 
-      .no-print-toolbar { display: none !important; }
+      .no-print-toolbar, .auth-wrapper { display: none !important; }
 
       .certificate-list {
+        display: block !important;
         gap: 0 !important;
         zoom: 1 !important;
         transform: none !important;
-        margin-top: 0 !important;
+        margin: 0 !important;
       }
 
+      /* ទំហំ និង padding ដូចពេលបង្ហាញ (960×710px) ទាំងអស់ រួចពង្រីកស្មើគ្នាឲ្យសមនឹង A4 */
       .certificate-container {
-        width: 297mm !important;
-        height: 210mm !important;
-        max-height: 210mm !important;
-        margin: 0 !important;
-        padding: 10mm 15mm !important;
+        width: 960px !important;
+        height: 710px !important;
+        max-height: 710px !important;
+        margin: 0 auto !important;
         box-shadow: none !important;
+        border-radius: 0 !important;
+        overflow: hidden !important;
+        zoom: 1.11;
         page-break-after: always !important;
         break-after: page !important;
-        overflow: hidden !important;
-        transform: none !important;
-        border-radius: 0 !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      .certificate-container:last-child {
+        page-break-after: auto !important;
+        break-after: auto !important;
       }
 
-      .certificate-container.has-frame { padding: 38mm 18mm 20mm 18mm !important; }
-      .header-row { padding: 0 12mm !important; }
-
-      @page { size: A4 landscape; margin: 0; }
+      .certificate-container,
+      .certificate-container * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
     }
   </style>
 </head>
