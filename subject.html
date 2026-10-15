@@ -103,7 +103,32 @@
     /* ── Layout Wrap ── */
     .page-wrap { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
 
-    .top-header-bar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+    .top-header-bar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; }
+    
+    /* 🌟 ប៊ូតុងត្រឡប់ទៅកាន់ Form ស្រង់ពិន្ទុ (score) */
+    .btn-back-nav {
+      background: var(--surface-card);
+      border: 1.5px solid var(--border);
+      color: var(--text);
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+    .btn-back-nav:hover {
+      color: var(--teal);
+      border-color: var(--teal);
+      background: var(--surface-hover);
+      transform: translateX(-2px);
+    }
+
     .page-title {
       font-size: 21px; font-weight: 800; color: #00d2d3; display: flex; align-items: center; gap: 10px;
     }
@@ -278,9 +303,16 @@
 
     <!-- Top Header Bar -->
     <div class="top-header-bar">
-      <div class="page-title">
-        <i class="fa-solid fa-book-bookmark"></i>
-        <span>គ្រប់គ្រងមុខវិជ្ជា</span>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <!-- 🌟 ប៊ូតុងត្រឡប់ទៅកាន់ Form ស្រង់ពិន្ទុ (score) -->
+        <button type="button" class="btn-back-nav" onclick="goBackToScore()" title="ត្រឡប់ទៅកាន់ទំព័រស្រង់ពិន្ទុ (Score)">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+
+        <div class="page-title">
+          <i class="fa-solid fa-book-bookmark"></i>
+          <span>គ្រប់គ្រងមុខវិជ្ជា</span>
+        </div>
       </div>
 
       <div class="top-actions">
@@ -468,6 +500,16 @@
     }
     function goToIndex(e) { if (e) e.preventDefault(); window.location.href = 'index.html'; }
 
+    /* 🌟 អនុគមន៍ត្រឡប់ទៅកាន់ Form ស្រង់ពិន្ទុ (score) */
+    function goBackToScore() {
+      if (window.parent && window.parent !== window) {
+        try {
+          window.parent.postMessage({ type: 'NAVIGATE', page: 'score', target: 'score.html' }, '*');
+        } catch(e) {}
+      }
+      window.location.href = 'score.html';
+    }
+
     function cleanGrade(g) { return String(g || '').replace(/^(ថ្នាក់ទី|ថ្នាក់)\s*/, '').trim(); }
     function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
     function toNum(v, d) { const n = Number(v); return (Number.isFinite(n) && n >= 0) ? n : d; }
@@ -478,8 +520,6 @@
     let semesterSubjects = [];
     let usingTemplate = { monthly: false, semester: false };
     let editingSection = null;
-    
-    // 🌟 អថេរគ្រប់គ្រងការពន្លាត (Collapse by default = មិនពន្លាតឡើយពេលបើកមកដំបូង)
     let subExpandedMap = {}; 
     let isSaving = false;
 
@@ -588,7 +628,6 @@
         const rawM = rows.filter(s => s.subject_type === 'monthly');
         const rawS = rows.filter(s => s.subject_type === 'semester');
 
-        // បើមិនទាន់មានក្នុង DB ទេ វានឹងប្រើ Template ដើម និងបង្ហាញ Badge «Template · មិនទាន់រក្សាទុក»
         monthlySubjects = rawM.length ? rowsToTree(rawM) : JSON.parse(JSON.stringify(DEFAULT_MONTHLY_TEMPLATE));
         usingTemplate.monthly = !rawM.length;
 
@@ -631,7 +670,6 @@
         const hasChildren = p.children && p.children.length > 0;
         const isExpanded = Boolean(subExpandedMap['m_' + idx]);
         
-        // សញ្ញាព្រួញ (Default = '>' ពេលចុចពន្លាត = 'v')
         const arrowEl = hasChildren
           ? `<button type="button" class="toggle-arrow-btn" onclick="subExpandedMap['m_${idx}']=!subExpandedMap['m_${idx}']; renderMonthlyTable();"><i class="fa-solid ${isExpanded ? 'fa-chevron-down' : 'fa-chevron-right'}"></i></button>`
           : `<span class="toggle-arrow-btn"><i class="fa-solid fa-chevron-right"></i></span>`;
@@ -656,7 +694,6 @@
             </td>
           </tr>`;
 
-        // បង្ហាញមុខវិជ្ជារង លុះត្រាតែបានចុចពន្លាតសញ្ញាព្រួញ
         if (hasChildren && isExpanded) {
           p.children.forEach((c, cIdx) => {
             html += `
@@ -744,10 +781,8 @@
         for (const s of secs) {
           const tree = (s === 'monthly' ? monthlySubjects : semesterSubjects);
 
-          // ១. លុបចាស់ក្នុង Database
           await sb.from('subjects').delete().eq('assigned_class', cls).eq('subject_type', s);
 
-          // ២. បញ្ចូលមុខវិជ្ជាមេ
           const pRows = tree.map((p, i) => ({
             assigned_class: cls,
             subject_type: s,
@@ -761,7 +796,6 @@
           const { data: ins, error } = await sb.from('subjects').insert(pRows).select('id, sort_order');
           if (error) throw error;
 
-          // ៣. បញ្ចូលមុខវិជ្ជារង
           const idMap = new Map((ins || []).map(r => [Number(r.sort_order), r.id]));
           const cRows = [];
           tree.forEach((p, i) => {
@@ -783,7 +817,7 @@
           if (cRows.length) await sb.from('subjects').insert(cRows);
         }
 
-        // 🌟 បាញ់សញ្ញា Real-time ទៅ Form ស្រង់ពិន្ទុឱ្យ Update ភ្លាម
+        // 🌟 បាញ់សញ្ញា Real-time ទៅ Form ស្រង់ពិន្ទុ
         localStorage.setItem('krou_subjects_updated', Date.now().toString());
         try {
           window.postMessage({ type: 'SUBJECTS_UPDATED', assigned_class: cls }, '*');
@@ -803,16 +837,14 @@
       }
     }
 
-    /* 🌟 មុខងារ «នាំចូលពី TEMPLATE» ដើម (RESET ទៅរកមុខវិជ្ជាដើមវិញ) */
     async function importFromDefaultTemplate() {
       const cls = cleanGrade(currentClassName);
       if (!confirm(`តើលោកគ្រូ/អ្នកគ្រូចង់កំណត់មុខវិជ្ជាថ្នាក់ទី ${cls} ឡើងវិញតាម Template ដើមមែនទេ?\n(រាល់មុខវិជ្ជាដែលបានកែប្រែកន្លងមកនឹងត្រូវជំនួសដោយ Template ស្តង់ដារ)`)) return;
 
       monthlySubjects = JSON.parse(JSON.stringify(DEFAULT_MONTHLY_TEMPLATE));
       semesterSubjects = JSON.parse(JSON.stringify(DEFAULT_SEMESTER_TEMPLATE));
-      subExpandedMap = {}; // បង្រួមដូចដើមវិញ
+      subExpandedMap = {};
       
-      // រក្សាទុកចូល Supabase ភ្លាមៗ
       await saveSections(['monthly', 'semester']);
     }
 
@@ -860,7 +892,7 @@
         const idx = Number(pId);
         if (!monthlySubjects[idx].children) monthlySubjects[idx].children = [];
         monthlySubjects[idx].children.push({ name, code, max_score: max, coef: 1 });
-        subExpandedMap['m_' + idx] = true; // ពន្លាតមើលកូនដែលទើបតែបន្ថែម
+        subExpandedMap['m_' + idx] = true;
       } else if (type === 'monthly') {
         monthlySubjects.push({ name, code, max_score: max, coef: 1, children: [] });
       } else {
