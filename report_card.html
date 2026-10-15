@@ -101,21 +101,25 @@
     }
     .pill-btn.primary:hover { background: #00734c; }
 
-    /* Dropdown Menu Popup */
+    /* 🌟 Dropdown Popup ប្តូរជា Fixed ដើម្បីកុំឱ្យកាត់ដាច់គែម */
     .dropdown-popup {
       display: none;
-      position: absolute;
-      top: calc(100% + 6px);
-      left: 0;
+      position: fixed;
       min-width: 190px;
       background: #0f172a;
       border: 1px solid #475569;
       border-radius: 14px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6);
       padding: 6px;
-      z-index: 2000;
+      z-index: 99999;
+      animation: popIn 0.15s ease-out;
     }
     .dropdown-popup.show { display: block; }
+    @keyframes popIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     .dropdown-item {
       padding: 8px 12px;
       border-radius: 8px;
@@ -126,6 +130,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 8px;
     }
     .dropdown-item:hover { background: #1e293b; }
     .dropdown-item.active { background: #0284c7; color: #fff; }
@@ -197,12 +202,11 @@
       min-height: 297mm;
       padding: 14mm 16mm 14mm;
       box-shadow: 0 10px 35px rgba(0, 0, 0, 0.45);
-      display: block; /* 🌟 ដក space-between ចេញដើម្បីកុំឱ្យដាច់ចន្លោះសធំធេង */
+      display: block;
       position: relative;
       color: #000;
     }
 
-    /* ── Headers ── */
     .sheet-national-header { text-align: center; margin-bottom: 4px; }
     .nat-title-1 { font-size: 14.5px; margin-bottom: 2px; }
     .nat-title-2 { font-size: 13px; margin-bottom: 2px; }
@@ -232,14 +236,13 @@
     .student-meta-line span.hl-val { font-weight: 700; }
     .student-meta-line span.hl-rank { color: #dc2626; font-weight: 800; }
 
-    /* ── Table Styling ── */
     .report-table {
       width: 100%;
       border-collapse: collapse;
       text-align: center;
       font-size: 11.5px;
       border: 1px solid #000;
-      margin-bottom: 12px; /* 🌟 ភ្ជាប់ទៅជិតហត្ថលេខា មិនឃ្លាតឆ្ងាយ */
+      margin-bottom: 12px;
     }
     .report-table th, .report-table td {
       border: 1px solid #000;
@@ -264,7 +267,6 @@
 
     .summary-cell-text { font-size: 11px; font-weight: 700; padding: 5px 3px; }
 
-    /* ── Signatures & Footer ── */
     .sheet-signatures-area {
       display: flex;
       justify-content: space-between;
@@ -281,7 +283,7 @@
       min-width: 180px;
     }
 
-    /* 🌟 នាយកសាលានៅទាបជាងគ្រូ */
+    /* នាយកសាលានៅទាបជាងគ្រូ */
     .sig-col.left-col { min-width: 190px; margin-top: 50px; }
     .sig-col.mid-col  { min-width: 170px; margin-top: 28px; }
     .sig-col.right-col { min-width: 200px; margin-top: 0; }
@@ -318,7 +320,7 @@
     }
 
     /* =========================================================
-       📑 2 នាក់ • សន្លឹកផ្តេក A4 (Landscape Mode — បង្រួមស្អាតឥតខ្ចោះ)
+       📑 2 នាក់ • សន្លឹកផ្តេក A4 (Landscape Mode)
     ========================================================= */
     .paper-stage.layout-2col .report-sheet-container-2col {
       background: #ffffff;
@@ -423,7 +425,7 @@
 
     <!-- Dropdown: ចំនួនសន្លឹក និងទិសដៅ -->
     <div class="tb-group">
-      <button type="button" class="pill-btn" onclick="toggleDropdown('layoutDropdown')">
+      <button type="button" class="pill-btn" onclick="toggleDropdown('layoutDropdown', this)">
         <span id="currentLayoutText">1 នាក់ • សន្លឹកបញ្ឈរ</span>
         <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 4px;"></i>
       </button>
@@ -440,7 +442,7 @@
 
     <!-- Dropdown: ប្រភេទនិទ្ទេស -->
     <div class="tb-group">
-      <button type="button" class="pill-btn" onclick="toggleDropdown('gradeDropdown')">
+      <button type="button" class="pill-btn" onclick="toggleDropdown('gradeDropdown', this)">
         <span id="currentGradeText">និទ្ទេស A–F</span>
         <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 4px;"></i>
       </button>
@@ -464,7 +466,7 @@
       <button type="button" class="student-nav-btn" onclick="nextStudent()" title="សិស្សបន្ទាប់">›</button>
     </div>
 
-    <!-- 🌟 ប៊ូតុងពង្រីក/បង្រួមសមអេក្រង់លើទូរសព្ទ -->
+    <!-- ប៊ូតុងពង្រីក/បង្រួមសមអេក្រង់លើទូរសព្ទ -->
     <button type="button" class="pill-btn" id="btnFitScreen" onclick="toggleMobileFitScreen()" title="ពង្រីក ឬបង្រួមសមអេក្រង់">
       <i class="fa-solid fa-expand"></i>
       <span id="txtFitScreen">សមអេក្រង់</span>
@@ -529,17 +531,14 @@
     const KHMER_DIGITS = ['០','១','២','៣','៤','៥','៦','៧','៨','៩'];
     function toKhmerNum(n) { return String(n).replace(/\d/g, d => KHMER_DIGITS[d]); }
 
-    /* 🌟 គណនាថ្ងៃដាច់ខែសុរិយគតិស្វ័យប្រវត្តិតាមខែប្រឡងឆមាស (ឧ. កំពង់ល្ពៅ, ថ្ងៃទី៣១ ខែតុលា ឆ្នាំ២០២៦) */
     function getAutoSolarDate() {
       const year = currentYear;
-      // ឆមាសទី២ ចប់ត្រឹមខែតុលា (ថ្ងៃទី៣១)
       const lastDay = new Date(year, 10, 0).getDate();
       return `កំពង់ល្ពៅ, ថ្ងៃទី${toKhmerNum(lastDay)} ខែតុលា ឆ្នាំ${toKhmerNum(year)}`;
     }
 
     let currentSolarDate = getAutoSolarDate();
     let teacherLunarDate = "ថ្ងៃពុធ ៣កើត ខែអស្សុជ ឆ្នាំមមែ អដ្ឋស័ក ពុទ្ធសករាជ ២៥៧០";
-    let directorLunarDate = "ថ្ងៃពុធ ៣កើត ខែអស្សុជ ឆ្នាំមមែ អដ្ឋស័ក ពុទ្ធសករាជ ២៥៧០";
     let teacherName = CURRENT_USER?.teacher_name || "គ្រូទទួលបន្ទុកថ្នាក់";
 
     function cleanGrade(g) {
@@ -569,19 +568,33 @@
       return 'F';
     }
 
-    /* ── Dropdown Controller ── */
-    function toggleDropdown(id) {
+    /* 🌟 Dropdown Controller: ប្រើ getBoundingClientRect & Fixed Position មិនកាត់ដាច់គែមទៀតឡើយ */
+    function toggleDropdown(id, btn) {
       const el = document.getElementById(id);
+      if (!el) return;
       const isShown = el.classList.contains('show');
       closeAllDropdowns();
-      if (!isShown) el.classList.add('show');
+      if (!isShown) {
+        el.classList.add('show');
+        if (btn) {
+          const r = btn.getBoundingClientRect();
+          el.style.top = (r.bottom + 6) + 'px';
+          el.style.left = r.left + 'px';
+        }
+      }
     }
+
     function closeAllDropdowns() {
       document.querySelectorAll('.dropdown-popup').forEach(d => d.classList.remove('show'));
     }
+
     document.addEventListener('click', (e) => {
       if (!e.target.closest('.tb-group')) closeAllDropdowns();
     });
+
+    // បិទ Dropdown ពេលអូស Scroll
+    window.addEventListener('scroll', closeAllDropdowns, true);
+    window.addEventListener('resize', closeAllDropdowns);
 
     function setLayoutMode(mode, label, el) {
       layoutMode = mode;
@@ -918,7 +931,7 @@
             ចំណាត់ថ្នាក់ទី <span class="hl-rank">${st.rank}</span>
           </div>
 
-          <!-- តារាងពិន្ទុមុខវិជ្ជា (🌟 ភ្ជាប់ជាប់ទៅហត្ថលេខា គ្មានចន្លោះសធំធេងឡើយ) -->
+          <!-- តារាងពិន្ទុមុខវិជ្ជា -->
           <table class="report-table">
             <thead>
               <tr>
@@ -960,9 +973,9 @@
             </tbody>
           </table>
 
-          <!-- 🌟 កន្លែងហត្ថលេខា (នាយកសាលាទាបជាងគ្រូ តាមក្បួនច្បាប់) -->
+          <!-- កន្លែងហត្ថលេខា (នាយកសាលាទាបជាងគ្រូ) -->
           <div class="sheet-signatures-area">
-            <!-- ឆ្វេង៖ នាយកសាលា (ស្ថិតនៅទាបជាងគ្រូ) -->
+            <!-- ឆ្វេង៖ នាយកសាលា -->
             <div class="sig-col left-col">
               <div class="sig-title-moul f-moul">បានឃើញ និងឯកភាព</div>
               <div class="sig-role f-moul">នាយកសាលា</div>
@@ -978,9 +991,7 @@
 
             <!-- ស្ដាំ៖ គ្រូទទួលបន្ទុកថ្នាក់ -->
             <div class="sig-col right-col">
-              <!-- ថ្ងៃខែចន្ទគតិអាចចុចកែប្រែបានផ្ទាល់ -->
               <input type="text" class="clean-lunar-input" value="${teacherLunarDate}" onchange="teacherLunarDate=this.value" title="ចុចត្រង់នេះដើម្បីកែប្រែថ្ងៃខែចន្ទគតិ">
-              <!-- ថ្ងៃខែសុរិយគតិដាច់ខែស្វ័យប្រវត្តិ -->
               <div class="sig-solar-date">${currentSolarDate}</div>
               <div class="sig-role f-moul" style="margin-top:2px;">គ្រូទទួលបន្ទុកថ្នាក់</div>
               <div class="sig-name">${teacherName}</div>
@@ -1026,7 +1037,7 @@
       applyAutoMobileScale();
     }
 
-    /* 🌟 អនុគមន៍ពង្រីក/បង្រួមទំហំសមអេក្រង់ទូរសព្ទស្វ័យប្រវត្តិ */
+    /* ពង្រីក/បង្រួមសមអេក្រង់ទូរសព្ទស្វ័យប្រវត្តិ */
     function applyAutoMobileScale() {
       const stage = document.getElementById('paperWorkspace');
       const wrapper = document.getElementById('paperStageWrapper');
@@ -1035,7 +1046,6 @@
       const screenWidth = window.innerWidth;
 
       if (screenWidth <= 850 && isFitScreen) {
-        // ទំហំក្រដាសតាម Mode: Portrait = 210mm (~794px), Landscape = 297mm (~1122px)
         const paperWidth = (layoutMode === '1_portrait') ? 794 : 1122;
         const availableWidth = screenWidth - 20;
         const scaleRatio = Math.min(1, availableWidth / paperWidth);
@@ -1043,7 +1053,6 @@
         stage.style.transform = `scale(${scaleRatio})`;
         stage.style.transformOrigin = 'top center';
         
-        // កំណត់កម្ពស់ Wrapper ឱ្យសមាមាត្រដើម្បីកុំឱ្យដាច់ខាងក្រោម
         const scaledHeight = (stage.scrollHeight || 1122) * scaleRatio;
         wrapper.style.minHeight = (scaledHeight + 40) + 'px';
       } else {
@@ -1063,7 +1072,6 @@
     window.addEventListener('resize', applyAutoMobileScale);
 
     function printReport() {
-      // មុនពេលបោះពុម្ព បិទ Scale ដើម្បីឱ្យក្រដាសចេញមកច្បាស់កម្រិតខ្ពស់
       const stage = document.getElementById('paperWorkspace');
       if (stage) stage.style.transform = 'none';
       window.print();
@@ -1073,7 +1081,7 @@
     function downloadPDF() {
       if (!studentsList.length) return alert('គ្មានទិន្នន័យដើម្បីទាញយកជា PDF ឡើយ!');
       const stage = document.getElementById('paperWorkspace');
-      stage.style.transform = 'none'; // បិទ Scale មុន save PDF
+      stage.style.transform = 'none';
 
       const isPortrait = (layoutMode === '1_portrait');
       const st = studentsList[currentStudentIndex] || studentsList[0];
