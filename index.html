@@ -973,7 +973,7 @@
         <div class="form-group-field"><label>ឈ្មោះគ្រូ</label><input type="text" id="pfName" required></div>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
           <div class="form-group-field"><label>ភេទ</label><select id="pfSex"><option value="ប្រុស">ប្រុស</option><option value="ស្រី">ស្រី</option></select></div>
-          <div class="form-group-field"><label>លេខទូរសព្ទ</label><input type="text" id="pfPhone" required></div>
+          <div class="form-group-field"><label>លេខទូរស័ព្ទ</label><input type="text" id="pfPhone" required></div>
         </div>
         <div class="form-group-field"><label>ថ្ងៃខែឆ្នាំកំណើត</label><input type="date" id="pfDob"></div>
         <div class="form-group-field"><label>ទីកន្លែងបច្ចុប្បន្ន</label><input type="text" id="pfAddress" required></div>
@@ -1090,7 +1090,6 @@
       ASSIGNED_CLASS = data.assigned_classes || data.assigned_class || '';
       IS_ADMIN = String(USER_ROLE).toLowerCase().trim() === 'admin';
 
-      // 🌟 រាល់ពេល Login ជោគជ័យ បើកផ្ទាំង Dashboard មុនជានិច្ច!
       currentPage = 'dashboard';
       localStorage.setItem('krou_active_page', 'dashboard');
       try { history.replaceState(null, '', '#dashboard'); } catch(e) {}
@@ -1187,13 +1186,14 @@
 
   applyTheme(localStorage.getItem('krou_theme_manual') || 'dark');
 
-  /* 5. NAVIGATION & REFRESH PERSISTENCE */
+  /* 5. NAVIGATION & REFRESH PERSISTENCE (🌟 បានកែលម្អមិនឱ្យបាត់ទំព័រពេល Refresh) */
   let currentPage = window.location.hash.replace('#', '') || localStorage.getItem('krou_active_page') || 'dashboard';
 
   function navigate(page, el) {
     if (!page) return;
     currentPage = page;
     
+    // 🌟 កត់ត្រាទំព័របច្ចុប្បន្នដើម្បីឱ្យ Refresh (F5) នៅចាំដដែល
     localStorage.setItem('krou_active_page', page);
     try { history.replaceState(null, '', '#' + page); } catch(e) {}
 
@@ -1202,12 +1202,13 @@
     const isReportChild = ['roster', 'rank', 'honor', 'certificate', 'report', 'remesterrecord'].includes(page);
     let target = el || document.querySelector(`[data-page="${page}"]`);
     if (!target && isReportChild) target = document.querySelector('[data-page="reportsHub"]');
+    if (!target && page === 'subject') target = document.querySelector('[data-page="score"]'); // Highlight score link when in subject
     if (target) target.classList.add('active');
 
     document.querySelectorAll('.m-nav-item').forEach(m => m.classList.remove('active'));
     if (page === 'dashboard') document.getElementById('mNavDash')?.classList.add('active');
     else if (page === 'attendance') document.getElementById('mNavAtt')?.classList.add('active');
-    else if (page === 'score') document.getElementById('mNavScores')?.classList.add('active');
+    else if (page === 'score' || page === 'subject') document.getElementById('mNavScores')?.classList.add('active');
 
     closeSidebarMobile();
 
@@ -1242,9 +1243,42 @@
     frame.src = `${page}.html?theme=${encodeURIComponent(currentTheme)}&v=${Date.now()}`;
   }
 
+  /* 🌟 ស្តាប់ការផ្លាស់ប្តូរ Iframe URL ដើម្បីកត់ត្រាទំព័របច្ចុប្បន្នស្វ័យប្រវត្តិ */
   document.getElementById('pageFrame').addEventListener('load', function() {
     document.getElementById('loadingOverlay').classList.remove('show');
     syncThemeToIframe(document.documentElement.getAttribute('data-theme') || 'dark');
+
+    try {
+      const framePath = this.contentWindow.location.pathname;
+      const fileMatch = framePath.match(/\/([^\/]+)\.html/);
+      if (fileMatch && fileMatch[1]) {
+        const detectedPage = fileMatch[1];
+        if (detectedPage !== 'about:blank' && detectedPage !== currentPage) {
+          currentPage = detectedPage;
+          localStorage.setItem('krou_active_page', detectedPage);
+          try { history.replaceState(null, '', '#' + detectedPage); } catch(err) {}
+
+          document.querySelectorAll('.nav-link-btn').forEach(n => n.classList.remove('active'));
+          let t = document.querySelector(`[data-page="${detectedPage}"]`);
+          if (!t && detectedPage === 'subject') t = document.querySelector('[data-page="score"]');
+          if (t) t.classList.add('active');
+        }
+      }
+    } catch(err) {}
+  });
+
+  /* 🌟 ទទួលសញ្ញា PostMessage ពីទំព័រកូន (NAVIGATE, OPEN_PAGE, OPEN_LOGIN) */
+  window.addEventListener('message', (ev) => {
+    if (!ev.data) return;
+    if (ev.data.type === 'NAVIGATE' || ev.data.type === 'OPEN_PAGE') {
+      const targetPage = ev.data.page || (ev.data.target ? ev.data.target.replace('.html', '') : null);
+      if (targetPage) {
+        navigate(targetPage, null);
+      }
+    }
+    if (ev.data.type === 'OPEN_LOGIN') {
+      doLogout();
+    }
   });
 
   window.addEventListener('hashchange', () => {
@@ -1270,7 +1304,6 @@
   async function refreshStats() {
     if (!CURRENT_USER) return;
     try {
-      // 🌟 ទាញយកទិន្នន័យពីតារាង students ដោយប្រើឈ្មោះ Column ត្រឹមត្រូវ (student_name, gender, grade)
       const { data: students, error } = await sb
         .from('students')
         .select('id, student_id, student_name, grade, gender, dropout_semester')
@@ -1362,7 +1395,7 @@
     navigate('attendance', null);
   }
 
-  /* 🌟 មុខងារឆែកមើលកិច្ចការវត្តមាន និងពិន្ទុថ្ងៃនេះឱ្យដើរត្រឹមត្រូវ ១០០% */
+  /* 🌟 មុខងារឆែកមើលកិច្ចការវត្តមាន និងពិន្ទុថ្ងៃនេះ */
   async function checkDashboardTasks(targetCls, currentMonth, todayDay, totalClassStudents) {
     try {
       const now = new Date();
@@ -1372,7 +1405,6 @@
       const curPure = cleanGrade(targetCls);
       const todayIso = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
 
-      // ១. ឆែកមើលតារាង attendance តាម attendance_date = ថ្ងៃនេះ
       let attQuery = sb.from('attendance')
         .select('id, status')
         .eq('attendance_date', todayIso);
@@ -1398,7 +1430,6 @@
         if (todaySubEl) { todaySubEl.style.color = ""; todaySubEl.innerText = "ត្រូវកត់វត្តមាន"; }
       }
 
-      // ២. ឆែកមើលតារាង scores តាម assigned_class និង period (ខែបច្ចុប្បន្ន)
       let scoreQuery = sb.from('scores')
         .select('student_id, total, average')
         .eq('score_type', 'monthly')
@@ -1436,7 +1467,7 @@
     }
   }
 
-  /* 7. STUDENT PROFILE VIEWER (កែតម្រូវឱ្យបង្ហាញព័ត៌មានសិស្សពេញលេញ) */
+  /* 7. STUDENT PROFILE VIEWER */
   async function openStudentProfileViewer() {
     document.getElementById('studentProfileModal').style.display = 'flex';
     await loadStudentsForProfileViewer();
