@@ -152,43 +152,20 @@
       box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3); border: none; cursor: pointer;
     }
 
-    /* LANDING PAGE CARDS */
+    /* ══════════════ 1. LANDING PAGE CARDS ══════════════ */
     #landingPage {
-      max-width: 860px;
+      max-width: 1040px; /* ពង្រីកដើម្បីដាក់ Card ទាំង ៣ នៅជួរទន្ទឹមគ្នា */
       margin: 0 auto;
-      padding: 30px 20px;
+      padding: 36px 20px;
       height: 100%;
       overflow-y: auto;
       animation: fadeIn 0.25s ease;
     }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-    .landing-header { margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end; gap: 14px; flex-wrap: wrap; }
-    .landing-header h1 { font-size: 22px; color: var(--primary); margin-bottom: 4px; }
-    .landing-header p { font-size: 13px; color: var(--text-muted); }
-
-    /* 🌟 ប៊ូតុងរុករកទៅកាន់ Subject នៅជាប់ Title */
-    .btn-subject-nav {
-      background: rgba(0, 184, 148, 0.12);
-      color: var(--teal);
-      border: 1.5px solid rgba(0, 184, 148, 0.35);
-      padding: 5px 14px;
-      border-radius: 20px;
-      font-size: 12.5px;
-      font-weight: 700;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.2s ease;
-      height: 32px;
-    }
-    .btn-subject-nav:hover {
-      background: var(--teal);
-      color: #ffffff;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 14px rgba(0, 184, 148, 0.3);
-    }
+    .landing-header { margin-bottom: 26px; display: flex; justify-content: space-between; align-items: flex-end; gap: 14px; flex-wrap: wrap; }
+    .landing-header h1 { font-size: 24px; color: var(--primary); margin-bottom: 4px; }
+    .landing-header p { font-size: 13.5px; color: var(--text-muted); }
 
     .assigned-class-badge {
       background: var(--surface-elevated);
@@ -203,10 +180,11 @@
       gap: 6px;
     }
 
+    /* 🌟 ប្លង់តម្រៀប Card ទាំង ៣ នៅទន្ទឹមគ្នា */
     .cards-wrapper {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
     }
     .score-card {
       background: var(--surface);
@@ -219,27 +197,34 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 160px;
+      min-height: 165px;
     }
     .score-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 25px rgba(2, 132, 199, 0.15);
-      border-color: var(--primary);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
     }
-    .score-card.monthly { border-left: 6px solid #0284c7; }
+
+    /* ពណ៌ឆ្នូតខាងឆ្វេងកាតនីមួយៗ */
+    .score-card.subject  { border-left: 6px solid var(--teal); }
+    .score-card.monthly  { border-left: 6px solid #0284c7; }
     .score-card.semester { border-left: 6px solid #7c3aed; }
     
+    .score-card.subject:hover  { border-color: var(--teal); }
+    .score-card.monthly:hover  { border-color: #0284c7; }
+    .score-card.semester:hover { border-color: #7c3aed; }
+
     .card-top { display: flex; align-items: flex-start; gap: 14px; }
     .card-icon {
-      width: 46px; height: 46px; border-radius: 14px;
+      width: 48px; height: 48px; border-radius: 14px;
       display: flex; align-items: center; justify-content: center;
       font-size: 22px; flex-shrink: 0;
     }
-    .card-icon.m { background: rgba(2, 132, 199, 0.15); color: #0284c7; }
-    .card-icon.s { background: rgba(124, 58, 237, 0.15); color: #7c3aed; }
+    .card-icon.sub { background: rgba(0, 184, 148, 0.15); color: var(--teal); }
+    .card-icon.m   { background: rgba(2, 132, 199, 0.15); color: #0284c7; }
+    .card-icon.s   { background: rgba(124, 58, 237, 0.15); color: #7c3aed; }
     
-    .card-info h2 { font-size: 16px; margin-bottom: 4px; }
-    .card-info p { font-size: 12px; color: var(--text-muted); }
+    .card-info h2 { font-size: 16.5px; margin-bottom: 4px; }
+    .card-info p { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
     
     .card-bottom {
       display: flex;
@@ -254,9 +239,9 @@
       background: var(--surface-elevated); color: var(--text); border: 1px solid var(--border);
     }
     .card-arrow { font-size: 15px; color: var(--text-muted); transition: transform 0.2s; }
-    .score-card:hover .card-arrow { transform: translateX(3px); color: var(--primary); }
+    .score-card:hover .card-arrow { transform: translateX(4px); color: inherit; }
 
-    /* MAIN FORM */
+    /* ══════════════ 2. MAIN SPREADSHEET FORM ══════════════ */
     #mainForm {
       display: none;
       width: 100%;
@@ -663,16 +648,11 @@
     </div>
   </div>
 
+  <!-- ══════════════ 1. LANDING PAGE CARDS ══════════════ -->
   <div id="landingPage">
     <div class="landing-header">
       <div>
-        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:4px;">
-          <h1 class="f-moul" style="margin-bottom:0;">ស្រង់ពិន្ទុ</h1>
-          <!-- 🌟 ប៊ូតុងរុករកទៅកាន់ Subject នៅជាប់ចំណងជើង ស្រង់ពិន្ទុ -->
-          <button type="button" class="btn-subject-nav" onclick="openSubjectManagement()" title="ទៅកាន់ទំព័រគ្រប់គ្រងមុខវិជ្ជា">
-            <i class="fa-solid fa-book-bookmark"></i> <span>គ្រប់គ្រងមុខវិជ្ជា</span>
-          </button>
-        </div>
+        <h1 class="f-moul">ស្រង់ពិន្ទុ</h1>
         <p>បញ្ចូលពិន្ទុសិស្សប្រចាំខែ និងឆមាស (ភ្ជាប់ជាមួយមុខវិជ្ជាស្វ័យប្រវត្តិ)</p>
       </div>
 
@@ -681,7 +661,25 @@
       </div>
     </div>
 
+    <!-- 🌟 កាតទាំង ៣ នៅទន្ទឹមគ្នា ដោយ «គ្រប់គ្រងមុខវិជ្ជា» នៅមុខគេ -->
     <div class="cards-wrapper">
+      
+      <!-- កាតទី១៖ គ្រប់គ្រងមុខវិជ្ជា (នៅមុខគេបង្អស់) -->
+      <div class="score-card subject" onclick="openSubjectManagement()">
+        <div class="card-top">
+          <div class="card-icon sub">📚</div>
+          <div class="card-info">
+            <h2 class="f-moul" style="color: var(--teal);">គ្រប់គ្រងមុខវិជ្ជា</h2>
+            <p>កំណត់មុខវិជ្ជា និងមេគុណពិន្ទុ</p>
+          </div>
+        </div>
+        <div class="card-bottom">
+          <span class="card-badge">មុខវិជ្ជា · មេគុណ</span>
+          <span class="card-arrow">➔</span>
+        </div>
+      </div>
+
+      <!-- កាតទី២៖ ស្រង់ពិន្ទុខែ -->
       <div class="score-card monthly" onclick="openScoreForm('monthly')">
         <div class="card-top">
           <div class="card-icon m">📋</div>
@@ -696,6 +694,7 @@
         </div>
       </div>
 
+      <!-- កាតទី៣៖ ស្រង់ពិន្ទុឆមាស -->
       <div class="score-card semester" onclick="openScoreForm('semester')">
         <div class="card-top">
           <div class="card-icon s">📝</div>
@@ -709,9 +708,11 @@
           <span class="card-arrow">➔</span>
         </div>
       </div>
+
     </div>
   </div>
 
+  <!-- ══════════════ 2. MAIN SPREADSHEET FORM ══════════════ -->
   <div id="mainForm">
     <div class="top-sub-bar">
       <button type="button" class="btn-back-arrow" onclick="goBackLanding()" title="ត្រឡប់">
@@ -751,7 +752,7 @@
           <option value="ឆមាសទី២">ឆមាសទី 2</option>
         </select>
 
-        <!-- 🌟 ប៊ូតុងបើកគ្រប់គ្រងមុខវិជ្ជា នៅលើ Toolbar -->
+        <!-- ប៊ូតុងរុករកទៅកាន់មុខវិជ្ជា នៅលើ Toolbar -->
         <button type="button" class="pill-btn" onclick="openSubjectManagement()" title="គ្រប់គ្រងមុខវិជ្ជា" style="border-color: rgba(0, 184, 148, 0.4); color: var(--teal);">
           <i class="fa-solid fa-book-bookmark"></i> <span class="btn-label">មុខវិជ្ជា</span>
         </button>
@@ -805,6 +806,7 @@
     </div>
   </div>
 
+  <!-- ══════════════ 3. SCORE REPORT MODAL ══════════════ -->
   <div id="scoreReportModal">
     <div class="viewer-top-bar">
       <button class="pill-btn" onclick="closeScoreReportModal()">⬅ ត្រឡប់</button>
@@ -850,13 +852,11 @@
 
     /* 🌟 អនុគមន៍បើកទំព័រគ្រប់គ្រងមុខវិជ្ជា (subject) */
     function openSubjectManagement() {
-      // ផ្ញើសញ្ញាទៅ Parent Window ប្រសិនបើប្រើ Iframe/Tab
       if (window.parent && window.parent !== window) {
         try {
           window.parent.postMessage({ type: 'NAVIGATE', page: 'subject', target: 'subject.html' }, '*');
         } catch(e) {}
       }
-      // រុករកទៅកាន់ subject.html
       window.location.href = 'subject.html';
     }
 
@@ -1142,7 +1142,7 @@
       document.getElementById('tableArea').innerHTML = '<div style="text-align:center; padding: 50px; color:var(--text-muted);"><i class="fa-solid fa-spinner fa-spin fa-2x"></i><p style="margin-top:10px;">កំពុងទាញយកទិន្នន័យ...</p></div>';
 
       try {
-        // 🌟 ១. ទាញយកមុខវិជ្ជារបស់ថ្នាក់នេះពី Database
+        // ១. ទាញយកមុខវិជ្ជារបស់ថ្នាក់នេះពី Database
         await loadDynamicSubjects(curPure);
 
         // ២. ទាញយកសិស្ស
