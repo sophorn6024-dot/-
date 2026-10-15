@@ -175,6 +175,10 @@ table.stat td.rm{text-align:left;font-size:.89em;padding:.3em .6em;line-height:1
       <input type="hidden" id="inDirectorDate">
       <button type="button" class="date-btn" id="btn_inDirectorDate" data-ph="មិនដាក់" onclick="openDatePicker(event,'inDirectorDate',true)"><i class="fa-regular fa-calendar"></i><span></span></button>
     </div>
+    <div class="pill" style="flex:1;min-width:260px">
+      <span class="lbl"><i class="fa-solid fa-moon" style="color:#f59e0b"></i> ចន្ទគតិ៖</span>
+      <input type="text" id="inLunar" class="fc" style="width:100%" value="ថ្ងៃព្រហស្បតិ៍ ៤កើត ខែអស្សុជ ឆ្នាំមមី អដ្ឋស័ក ពុទ្ធសករាជ ២៥៧០" oninput="render()" title="កាលបរិច្ឆេទចន្ទគតិ">
+    </div>
     <button class="btn" id="btnPage" onclick="togglePagePanel(event)"><i class="fa-solid fa-sliders"></i> កំណត់ទំព័រ</button>
   </div>
 </div>
@@ -191,7 +195,6 @@ table.stat td.rm{text-align:left;font-size:.89em;padding:.3em .6em;line-height:1
     <label>សាលារៀន</label><input id="inSchool" class="fc" value="សាលាបឋមសិក្សាកំពង់ល្ពៅ" oninput="render()">
     <label>ឆ្នាំសិក្សា (ទុកទទេ = ស្វ័យប្រវត្តិ)</label><input id="inYear" class="fc" placeholder="ឧ. 2026-2027" oninput="render()">
     <label>ទីកន្លែង</label><input id="inPlace" class="fc" value="កំពង់ល្ពៅ" oninput="render()">
-    <label>ចន្ទគតិ</label><input id="inLunar" class="fc" value="ថ្ងៃព្រហស្បតិ៍ ៤កើត ខែអស្សុជ ឆ្នាំមមី អដ្ឋស័ក ពុទ្ធសករាជ ២៥៧០" oninput="render()">
     <label class="chk"><input type="checkbox" id="inSkipDrop" onchange="render()"> មិនរាប់សិស្សបោះបង់ការសិក្សា</label>
   </div>
 </div>
