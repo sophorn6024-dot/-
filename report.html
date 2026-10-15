@@ -446,6 +446,58 @@
     .sig-title { font-family: 'Khmer OS Muol Light', 'Moul', cursive; font-size: 11.5px; color: var(--navy); white-space: nowrap; }
     .sig-name { font-family: 'Khmer OS Battambang', 'Battambang', sans-serif; font-weight: bold; font-size: 13.5px; margin-top: 38px; white-space: nowrap; }
 
+    /* 🔎 Student picker (Battambang + search) */
+    .sp-btn, .sp-popup, .sp-popup * {
+      font-family: 'Khmer OS Battambang', 'Battambang', sans-serif !important;
+    }
+    .sp-btn {
+      display: inline-flex; align-items: center; justify-content: space-between; gap: 8px;
+      min-width: 150px; max-width: 210px; height: 30px; padding: 4px 10px;
+      font-size: 12.5px; font-weight: 700; color: var(--text-main);
+      background: var(--input-bg); border: 1.5px solid var(--input-border);
+      border-radius: 7px; cursor: pointer; outline: none; transition: all 0.2s ease;
+    }
+    .sp-btn:hover, .sp-btn.open { border-color: var(--input-focus); box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15); }
+    .sp-btn-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .sp-chev { font-size: 10px; color: #0284c7; transition: transform 0.2s ease; flex-shrink: 0; }
+    .sp-btn.open .sp-chev { transform: rotate(180deg); }
+
+    .sp-popup {
+      display: none; position: fixed; z-index: 99999;
+      background: var(--card-panel-bg); color: var(--text-main);
+      border: 1px solid var(--tb-border); border-radius: 18px;
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
+      padding: 8px; animation: spIn 0.15s ease-out;
+    }
+    .sp-popup.show { display: block; }
+    @keyframes spIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+
+    .sp-search {
+      display: flex; align-items: center; gap: 8px; padding: 0 12px; height: 38px;
+      background: var(--input-bg); border: 1.5px solid var(--input-border);
+      border-radius: 12px; margin-bottom: 6px;
+    }
+    .sp-search:focus-within { border-color: var(--input-focus); }
+    .sp-search i { color: var(--text-muted); font-size: 12px; }
+    .sp-search input {
+      flex: 1; min-width: 0; border: none; outline: none; background: transparent;
+      color: var(--text-main); font-size: 13px; font-weight: 700;
+    }
+    .sp-list { position: relative; overflow-y: auto; scrollbar-width: thin; }
+    .sp-item {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      padding: 10px 14px; border-radius: 12px; cursor: pointer;
+      font-size: 14px; font-weight: 700; color: var(--text-main);
+    }
+    .sp-item:hover { background: var(--ctrl-group-bg); }
+    .sp-item.active { background: rgba(2, 132, 199, 0.15); color: #0284c7; }
+    .sp-item .fa-check { display: none; font-size: 13px; }
+    .sp-item.active .fa-check { display: inline; }
+    .sp-empty { padding: 18px 10px; text-align: center; color: var(--text-muted); font-size: 13px; font-weight: 700; }
+
+    @media screen and (min-width: 769px) and (max-width: 1180px) { .sp-btn { height: 32px; } }
+    @media screen and (max-width: 768px) { .sp-btn { height: 28px; font-size: 11.5px; padding: 2px 8px; min-width: 120px; } }
+
     .score-table tbody tr { height: 22px; }
     .score-table tbody td { height: 22px; line-height: 20px; overflow: hidden; }
     .score-table tbody td.val-cell { font-size: 14px; line-height: 20px; padding: 0 !important; }
@@ -455,7 +507,7 @@
     ========================================================= */
     @media print {
       html, body { background: none !important; padding: 0 !important; margin: 0 !important; width: 297mm; height: 210mm; }
-      .no-print-bar { display: none !important; }
+      .no-print-bar, .sp-popup { display: none !important; }
       .preview-wrapper { padding: 0 !important; gap: 0 !important; zoom: 1 !important; transform: none !important; }
       .booklet-container {
         box-shadow: none !important; margin: 0 !important; width: 297mm !important; height: 210mm !important;
@@ -517,7 +569,11 @@
       <!-- សិស្ស -->
       <div class="panel-pill-box">
         <span class="toolbar-label"><i class="fa-solid fa-user" style="color:#10b981;"></i> សិស្ស៖</span>
-        <select id="studentSelect" class="form-control" style="min-width:130px; max-width:180px;" onchange="renderFilteredView()">
+        <button type="button" class="sp-btn" id="spBtn" onclick="toggleStudentPicker(event)">
+          <span class="sp-btn-label" id="spLabel">🏫 ទាំងថ្នាក់ (ទាំងអស់)</span>
+          <i class="fa-solid fa-chevron-down sp-chev"></i>
+        </button>
+        <select id="studentSelect" style="display:none;" onchange="renderFilteredView()">
           <option value="ALL">🏫 ទាំងថ្នាក់ (ទាំងអស់)</option>
         </select>
       </div>
@@ -550,6 +606,15 @@
   <!-- =========================================================
        📄 BOOKLET PREVIEW CONTAINER (ទំហំធំទូលាយ)
   ========================================================= -->
+  <!-- 🔎 SEARCHABLE STUDENT PICKER POPUP -->
+  <div class="sp-popup" id="spPopup">
+    <div class="sp-search">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" id="spInput" placeholder="ស្វែងរកសិស្ស (ឈ្មោះ ឬ អត្តលេខ)..." autocomplete="off" oninput="renderSpList(this.value)">
+    </div>
+    <div class="sp-list" id="spList"></div>
+  </div>
+
   <div class="preview-wrapper" id="reportContainer" style="display:none;">
     <div style="color:var(--text-muted); text-align: center; padding: 60px 20px; font-size: 15px; font-weight: 600;">
       <i class="fa-solid fa-spinner fa-spin fa-2x" style="color:#0284c7;"></i>
@@ -714,6 +779,87 @@
       }
     }
 
+    /* 3.5 SEARCHABLE STUDENT PICKER */
+    function updateSpLabel() {
+      const sel = document.getElementById('studentSelect');
+      const cur = sel.options[sel.selectedIndex];
+      document.getElementById('spLabel').textContent = cur ? cur.textContent : 'ជ្រើសរើសសិស្ស';
+    }
+
+    function renderSpList(query) {
+      const sel = document.getElementById('studentSelect');
+      const list = document.getElementById('spList');
+      const q = String(query || '').trim().toLowerCase();
+      list.innerHTML = '';
+      let count = 0;
+      Array.from(sel.options).forEach(opt => {
+        const label = opt.textContent;
+        if (q && !label.toLowerCase().includes(q)) return;
+        const item = document.createElement('div');
+        item.className = 'sp-item' + (opt.value === sel.value ? ' active' : '');
+        const span = document.createElement('span');
+        span.textContent = label;
+        const chk = document.createElement('i');
+        chk.className = 'fa-solid fa-check';
+        item.appendChild(span);
+        item.appendChild(chk);
+        item.addEventListener('click', () => chooseStudent(opt.value));
+        list.appendChild(item);
+        count++;
+      });
+      if (!count) {
+        const empty = document.createElement('div');
+        empty.className = 'sp-empty';
+        empty.textContent = 'រកមិនឃើញសិស្សទេ';
+        list.appendChild(empty);
+      }
+    }
+
+    function chooseStudent(value) {
+      const sel = document.getElementById('studentSelect');
+      sel.value = value;
+      updateSpLabel();
+      closeStudentPicker();
+      renderFilteredView();
+    }
+
+    function closeStudentPicker() {
+      document.getElementById('spPopup').classList.remove('show');
+      document.getElementById('spBtn').classList.remove('open');
+    }
+
+    function toggleStudentPicker(e) {
+      if (e) e.stopPropagation();
+      const pop = document.getElementById('spPopup');
+      if (pop.classList.contains('show')) { closeStudentPicker(); return; }
+
+      const btn = document.getElementById('spBtn');
+      const input = document.getElementById('spInput');
+      const list = document.getElementById('spList');
+      input.value = '';
+      renderSpList('');
+
+      const r = btn.getBoundingClientRect();
+      const w = Math.min(Math.max(r.width, 290), window.innerWidth - 16);
+      pop.style.width = w + 'px';
+      pop.style.left = Math.max(8, Math.min(r.left, window.innerWidth - w - 8)) + 'px';
+      pop.style.top = (r.bottom + 6) + 'px';
+      list.style.maxHeight = Math.max(160, Math.min(320, window.innerHeight - r.bottom - 90)) + 'px';
+
+      pop.classList.add('show');
+      btn.classList.add('open');
+
+      const act = list.querySelector('.sp-item.active');
+      if (act) list.scrollTop = act.offsetTop - list.clientHeight / 2 + act.clientHeight / 2;
+      setTimeout(() => input.focus(), 30);
+    }
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('#spPopup') && !e.target.closest('#spBtn')) closeStudentPicker();
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeStudentPicker(); });
+    document.getElementById('controlToolbar').addEventListener('scroll', closeStudentPicker);
+
     /* 4. CLASS SELECTOR (SUPABASE) */
     async function initClasses() {
       const adminBox = document.getElementById('adminClassBox');
@@ -870,6 +1016,7 @@
           opt.textContent = `${s.id} - ${s.name}`;
           sSelect.appendChild(opt);
         });
+        updateSpLabel();
 
         renderFilteredView();
 
