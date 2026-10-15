@@ -197,6 +197,33 @@
       font-family: 'Battambang', 'Siemreap', sans-serif !important;
     }
 
+
+    /* 🔤 Custom dropdown ស៊ុម (Battambang ទាំងស្រុង ព្រោះ native picker លើទូរស័ព្ទមិនគោរព font) */
+    .bb-dropdown { position: relative; }
+    .bb-dropdown, .bb-dropdown * { font-family: 'Battambang', 'Siemreap', sans-serif !important; }
+    .bb-dd-btn {
+      display: inline-flex; align-items: center; justify-content: space-between; gap: 8px;
+      min-width: 170px; height: 32px; padding: 5px 10px;
+      font-size: 13px; font-weight: 700;
+      color: var(--text-main); background: var(--input-bg);
+      border: 1.5px solid var(--input-border); border-radius: 8px; cursor: pointer;
+    }
+    .bb-dd-btn:focus { outline: none; border-color: var(--input-focus); }
+    .bb-dd-menu {
+      display: none; position: absolute; top: calc(100% + 6px); left: 0;
+      min-width: 220px; max-height: 60vh; overflow-y: auto; z-index: 2000;
+      background: var(--card-panel-bg); border: 1.5px solid var(--tb-border);
+      border-radius: 10px; box-shadow: var(--shadow-sm);
+    }
+    .bb-dd-menu.open { display: block; }
+    .bb-dd-item {
+      padding: 10px 14px; font-size: 14px; font-weight: 400; cursor: pointer;
+      color: var(--text-main); border-bottom: 1px solid var(--tb-border);
+    }
+    .bb-dd-item:last-child { border-bottom: none; }
+    .bb-dd-item:hover { background: var(--ctrl-group-bg); }
+    .bb-dd-item.active { background: #0284c7; color: #fff; }
+
     .btn {
       padding: 5px 12px;
       font-family: 'Kantumruy Pro', sans-serif;
@@ -567,20 +594,14 @@
         <!-- ស៊ុម (font Battambang) -->
         <div class="panel-pill-box">
           <span class="toolbar-label font-battambang"><i class="fa-solid fa-border-all" style="color:#7c3aed;"></i> ស៊ុម៖</span>
-          <select id="selectFrame" class="form-control font-battambang" onchange="updateAllFrames()">
-            <option value="">ស៊ុមលំនាំដើម (Kbach)</option>
-            <option value="1">ស៊ុមទី១</option>
-            <option value="2">ស៊ុមទី២</option>
-            <option value="3">ស៊ុមទី៣</option>
-            <option value="4">ស៊ុមទី៤</option>
-            <option value="5">ស៊ុមទី៥</option>
-            <option value="6">ស៊ុមទី៦</option>
-            <option value="7">ស៊ុមទី៧</option>
-            <option value="8">ស៊ុមទី៨</option>
-            <option value="9">ស៊ុមទី៩</option>
-            <option value="10">ស៊ុមទី១០</option>
-            <option value="11">ស៊ុមទី១១</option>
-          </select>
+          <div class="bb-dropdown" id="frameDropdown">
+            <button type="button" class="bb-dd-btn" id="frameDdBtn" onclick="toggleFrameDd(event)">
+              <span id="frameDdText">ស៊ុមលំនាំដើម (Kbach)</span>
+              <i class="fa-solid fa-chevron-down" style="font-size:10px;"></i>
+            </button>
+            <div class="bb-dd-menu" id="frameDdMenu"></div>
+            <input type="hidden" id="selectFrame" value="">
+          </div>
         </div>
 
         <!-- ឆ្នាំសិក្សា -->
@@ -689,18 +710,45 @@
     window.addEventListener('message', e => { if (e.data && (e.data.type === 'THEME_CHANGE' || e.data.theme)) applyTheme(e.data.theme || e.data); });
 
     const FRAME_IMAGES = {
-      "1": "https://lh3.googleusercontent.com/d/1N57PmjOvX02wM-yGow7sef2DrWoGg8qq",
-      "2": "https://lh3.googleusercontent.com/d/1JssVh9vT0J0Iq3PKK0USsBIwngD-OGv2",
-      "3": "https://lh3.googleusercontent.com/d/1Xf0jwMiDuDa8kyN858mISM0iZLzK06GG",
-      "4": "https://lh3.googleusercontent.com/d/1FrGrRAz6now1IbDnK_umDSNNcIMFT5_J",
-      "5": "https://lh3.googleusercontent.com/d/11hrJOsGUv_X4HAOcrKi6gqfDrCGHjEvK",
-      "6": "https://lh3.googleusercontent.com/d/1Ws58mgtFQLxAne6AUoUaovCeirskyj68",
-      "7": "https://lh3.googleusercontent.com/d/1AiYIycD4gxMcFSd6rPBX2TEW-sDIc6qS",
-      "8": "https://lh3.googleusercontent.com/d/13XXPmD2pTLAgmO_5-RB6TjzKEH0x9ybH",
-      "9": "https://lh3.googleusercontent.com/d/17d-TZq4oTkrjtRp_nzXbKbj4vyfJsQ3N",
-      "10": "https://lh3.googleusercontent.com/d/1NBl8VJXqPRvFCLcu9VYUbFXE98-dT8Y7",
-      "11": "https://lh3.googleusercontent.com/d/1cyb6NhrT93aNXrSrDDelvin3alc46lTH"
+      "1": "https://lh3.googleusercontent.com/d/1QKu1DSp6pz3q1QmqXuT94QCPV6qVAsA3",
+      "2": "https://lh3.googleusercontent.com/d/1cyb6NhrT93aNXrSrDDelvin3alc46lTH",
+      "3": "https://lh3.googleusercontent.com/d/1N57PmjOvX02wM-yGow7sef2DrWoGg8qq",
+      "4": "https://lh3.googleusercontent.com/d/17d-TZq4oTkrjtRp_nzXbKbj4vyfJsQ3N",
+      "5": "https://lh3.googleusercontent.com/d/1JssVh9vT0J0Iq3PKK0USsBIwngD-OGv2",
+      "6": "https://lh3.googleusercontent.com/d/1Xf0jwMiDuDa8kyN858mISM0iZLzK06GG",
+      "7": "https://lh3.googleusercontent.com/d/1FrGrRAz6now1IbDnK_umDSNNcIMFT5_J",
+      "8": "https://lh3.googleusercontent.com/d/11hrJOsGUv_X4HAOcrKi6gqfDrCGHjEvK",
+      "9": "https://lh3.googleusercontent.com/d/1Ws58mgtFQLxAne6AUoUaovCeirskyj68",
+      "10": "https://lh3.googleusercontent.com/d/1AiYIycD4gxMcFSd6rPBX2TEW-sDIc6qS",
+      "11": "https://lh3.googleusercontent.com/d/13XXPmD2pTLAgmO_5-RB6TjzKEH0x9ybH",
+      "12": "https://lh3.googleusercontent.com/d/1t7Goe1qGKH8y6Id6wW_dSWcgpE5XESZF",
+      "13": "https://lh3.googleusercontent.com/d/17b236dAOrTqsNe_g3k8yBim1PUFt9urL"
     };
+
+
+    /* 🔽 Custom frame dropdown */
+    function buildFrameDropdown() {
+      const menu = document.getElementById('frameDdMenu');
+      let h = '<div class="bb-dd-item active" data-val="" onclick="pickFrame(\'\', this)">ស៊ុមលំនាំដើម (Kbach)</div>';
+      Object.keys(FRAME_IMAGES).forEach(k => {
+        h += `<div class="bb-dd-item" data-val="${k}" onclick="pickFrame('${k}', this)">ស៊ុមទី${toKhmerDigits(k)}</div>`;
+      });
+      menu.innerHTML = h;
+    }
+    function toggleFrameDd(e) {
+      e.stopPropagation();
+      document.getElementById('frameDdMenu').classList.toggle('open');
+    }
+    function pickFrame(val, el) {
+      document.getElementById('selectFrame').value = val;
+      document.getElementById('frameDdText').innerText = el.innerText;
+      document.querySelectorAll('.bb-dd-item').forEach(i => i.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('frameDdMenu').classList.remove('open');
+      updateAllFrames();
+    }
+    document.addEventListener('click', () => document.getElementById('frameDdMenu')?.classList.remove('open'));
+    buildFrameDropdown();
 
     const NO_PHOTO_SRC = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='150' height='150'><rect width='100%25' height='100%25' fill='%23f0f0f0'/><text x='50%25' y='50%25' font-size='14' text-anchor='middle' fill='%23999' dy='.3em'>NO PHOTO</text></svg>";
 
