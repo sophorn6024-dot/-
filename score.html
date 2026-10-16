@@ -1300,11 +1300,11 @@
         const sRows = rows.filter(r => r.subject_type === 'semester');
 
         dynamicMonthlyGroups = mRows.length > 0 ? buildGroups(mRows) : JSON.parse(JSON.stringify(DEFAULT_MONTHLY_TEMPLATE));
-        dynamicSemesterGroups = sRows.length > 0 ? buildGroups(sRows) : JSON.parse(JSON.stringify(DEFAULT_SEMESTER_TEMPLATE));
+        dynamicSemesterGroups = collapseToMain(sRows.length > 0 ? buildGroups(sRows) : JSON.parse(JSON.stringify(DEFAULT_SEMESTER_TEMPLATE)));
       } catch (err) {
         console.warn('Load dynamic subjects fallback:', err);
         dynamicMonthlyGroups = JSON.parse(JSON.stringify(DEFAULT_MONTHLY_TEMPLATE));
-        dynamicSemesterGroups = JSON.parse(JSON.stringify(DEFAULT_SEMESTER_TEMPLATE));
+        dynamicSemesterGroups = collapseToMain(JSON.parse(JSON.stringify(DEFAULT_SEMESTER_TEMPLATE)));
       }
     }
 
@@ -1327,6 +1327,15 @@
       const fin = out.map(g => (g._bucket && g.cols.length === 1) ? g._orig : g);
       fin.forEach((g, i) => { g.grp = tags[i % tags.length]; delete g._bucket; delete g._orig; });
       return fin;
+    }
+
+    // ពិន្ទុឆមាស ៖ បង្ហាញតែមុខវិជ្ជាមេ (មិនបង្ហាញមុខវិជ្ជារង) — មួយជួរឈរក្នុងមួយមុខវិជ្ជា
+    function collapseToMain(groups) {
+      return groups.map(g => {
+        if (g.cols.length <= 1) return g;
+        const f = g.cols[0];
+        return { label: g.label, grp: g.grp, cols: [{ key: 'sem_' + g.label, label: g.label, maxScore: f.maxScore || 10, coef: f.coef >= 0 ? f.coef : 1 }] };
+      });
     }
 
     function buildGroups(rows) {
