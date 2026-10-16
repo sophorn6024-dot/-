@@ -1143,6 +1143,67 @@
     showAuthScreen();
   }
 
+  /* 🌟 បង្ខំឱ្យចាកចេញភ្លាមៗពេលគណនីត្រូវបានលុបចេញពី Database */
+  function forceLogoutDeleted(reasonMsg) {
+    localStorage.removeItem('krou_supabase_user');
+    localStorage.removeItem('krou_active_page');
+    try { history.replaceState(null, '', ' '); } catch(e) {}
+    currentPage = 'dashboard';
+    CURRENT_USER = null;
+    showAuthScreen();
+    if (reasonMsg) {
+      showLoginError(reasonMsg);
+    }
+  }
+
+  /* 🌟 ផ្ទៀងផ្ទាត់ Session ជាមួយ Supabase (ប្រសិនបើគណនីត្រូវបាន Admin លុប ត្រូវ Logout) */
+  async function verifySession() {
+    if (!CURRENT_USER) {
+      showAuthScreen();
+      return false;
+    }
+
+    try {
+      let query = sb.from(TEACHERS_TABLE).select('*');
+      if (CURRENT_USER.id) {
+        query = query.eq('id', CURRENT_USER.id);
+      } else if (CURRENT_USER.username) {
+        query = query.eq('username', CURRENT_USER.username);
+      } else {
+        forceLogoutDeleted();
+        return false;
+      }
+
+      const { data, error } = await query.maybeSingle();
+
+      if (error) {
+        console.warn('Verify session network issue:', error.message);
+        return true; // កុំ Logout ប្រសិនបើបញ្ហា Network
+      }
+
+      // ⚠️ បើគ្មានទិន្នន័យក្នុង DB មានន័យថា Admin បានលុបគណនីនេះចោលហើយ
+      if (!data) {
+        forceLogoutDeleted('⚠️ គណនីរបស់អ្នកត្រូវបានលុបចេញពីប្រព័ន្ធរួចហើយ! សូមចូលប្រើប្រាស់ដោយគណនីថ្មី។');
+        return false;
+      }
+
+      // ធ្វើបច្ចុប្បន្នភាពទិន្នន័យ Session ចុងក្រោយ
+      CURRENT_USER = data;
+      localStorage.setItem('krou_supabase_user', JSON.stringify(CURRENT_USER));
+
+      TEACHER_NAME = data.teacher_name || '';
+      TEACHER_PHOTO_URL = data.photo_url || '';
+      USER_ROLE = data.role || 'teacher';
+      ASSIGNED_CLASS = data.assigned_classes || data.assigned_class || '';
+      IS_ADMIN = String(USER_ROLE).toLowerCase().trim() === 'admin';
+
+      return true;
+    } catch (err) {
+      console.warn('Verify session error:', err);
+      return true;
+    }
+  }
+
   /* 3. PROFILE & SIDEBAR */
   function renderSidebarProfile() {
     const nameEl = document.getElementById('sidebarTeacherName');
@@ -1210,14 +1271,13 @@
 
   applyTheme(localStorage.getItem('krou_theme_manual') || 'dark');
 
-  /* 5. NAVIGATION & REFRESH PERSISTENCE (🌟 បានកែលម្អមិនឱ្យបាត់ទំព័រពេល Refresh) */
+  /* 5. NAVIGATION & REFRESH PERSISTENCE */
   let currentPage = window.location.hash.replace('#', '') || localStorage.getItem('krou_active_page') || 'dashboard';
 
   function navigate(page, el) {
     if (!page) return;
     currentPage = page;
     
-    // 🌟 កត់ត្រាទំព័របច្ចុប្បន្នដើម្បីឱ្យ Refresh (F5) នៅចាំដដែល
     localStorage.setItem('krou_active_page', page);
     try { history.replaceState(null, '', '#' + page); } catch(e) {}
 
@@ -1226,7 +1286,7 @@
     const isReportChild = ['roster', 'rank', 'honor', 'certificate', 'report', 'remesterrecord'].includes(page);
     let target = el || document.querySelector(`[data-page="${page}"]`);
     if (!target && isReportChild) target = document.querySelector('[data-page="reportsHub"]');
-    if (!target && page === 'subject') target = document.querySelector('[data-page="score"]'); // Highlight score link when in subject
+    if (!target && page === 'subject') target = document.querySelector('[data-page="score"]');
     if (target) target.classList.add('active');
 
     document.querySelectorAll('.m-nav-item').forEach(m => m.classList.remove('active'));
@@ -1267,7 +1327,6 @@
     frame.src = `${page}.html?theme=${encodeURIComponent(currentTheme)}&v=${Date.now()}`;
   }
 
-  /* 🌟 ស្តាប់ការផ្លាស់ប្តូរ Iframe URL ដើម្បីកត់ត្រាទំព័របច្ចុប្បន្នស្វ័យប្រវត្តិ */
   document.getElementById('pageFrame').addEventListener('load', function() {
     document.getElementById('loadingOverlay').classList.remove('show');
     syncThemeToIframe(document.documentElement.getAttribute('data-theme') || 'dark');
@@ -1291,7 +1350,6 @@
     } catch(err) {}
   });
 
-  /* 🌟 ទទួលសញ្ញា PostMessage ពីទំព័រកូន (NAVIGATE, OPEN_PAGE, OPEN_LOGIN) */
   window.addEventListener('message', (ev) => {
     if (!ev.data) return;
     if (ev.data.type === 'NAVIGATE' || ev.data.type === 'OPEN_PAGE') {
@@ -1327,6 +1385,16 @@
   /* 6. STATS & SUPABASE DASHBOARD LOGIC */
   async function refreshStats() {
     if (!CURRENT_USER) return;
+
+    // 🌟 ពិនិត្យឡើងវិញក្រែងលោគណនីទើបត្រូវបានលុប
+    if (CURRENT_USER.id) {
+      const { data: activeCheck } = await sb.from(TEACHERS_TABLE).select('id').eq('id', CURRENT_USER.id).maybeSingle();
+      if (!activeCheck) {
+        forceLogoutDeleted('⚠️ គណនីរបស់អ្នកត្រូវបានលុបចេញពីប្រព័ន្ធ! សូមចូលប្រើប្រាស់ដោយគណនីថ្មី។');
+        return;
+      }
+    }
+
     try {
       const { data: students, error } = await sb
         .from('students')
@@ -1419,7 +1487,7 @@
     navigate('attendance', null);
   }
 
-  /* 🌟 មុខងារឆែកមើលកិច្ចការវត្តមាន និងពិន្ទុថ្ងៃនេះ */
+  /* មុខងារឆែកមើលកិច្ចការវត្តមាន និងពិន្ទុថ្ងៃនេះ */
   async function checkDashboardTasks(targetCls, currentMonth, todayDay, totalClassStudents) {
     try {
       const now = new Date();
@@ -1660,8 +1728,6 @@
     document.getElementById('profileModalBackdrop').classList.remove('show');
   }
 
-  // បង្រួមរូបភាពក្នុង browser ដោយមិនត្រូវការសេវាកម្មបន្ថែម។
-  // លទ្ធផល JPEG ត្រូវមានទំហំតិចជាង 100 KB (ទុកសុវត្ថិភាព 98 KB)។
   function compressTeacherPhoto(file, maxBytes = 98 * 1024) {
     return new Promise((resolve, reject) => {
       if (!file || !file.type || !file.type.startsWith('image/')) {
@@ -1798,8 +1864,12 @@
   /* 9. BOOTSTRAP INITIALIZATION */
   document.getElementById('loginYear').innerText = new Date().getFullYear();
 
-  window.addEventListener('DOMContentLoaded', () => {
-    if (CURRENT_USER && CURRENT_USER.username) {
+  window.addEventListener('DOMContentLoaded', async () => {
+    if (CURRENT_USER && (CURRENT_USER.id || CURRENT_USER.username)) {
+      // 🌟 ត្រួតពិនិត្យថាគណនីនៅមានក្នុង Database ឬអត់ ពេលបើកទំព័រ ឬ Refresh
+      const isValid = await verifySession();
+      if (!isValid) return;
+
       const savedPage = window.location.hash.replace('#', '') || localStorage.getItem('krou_active_page') || 'dashboard';
       currentPage = savedPage;
       showAppScreen(savedPage);
