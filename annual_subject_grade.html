@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-  <title>តារាងនិទ្ទេសតាមមុខវិជ្ជាគោល ប្រចាំឆ្នាំ</title>
+  <title>តារាងនិទ្ទេសតាមមុខវិជ្ជាគោល</title>
 
   <!-- 🔤 Google Fonts Khmer (Battambang & Moul) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -91,7 +91,7 @@
     /* ══════════════ 🌟 CUSTOM DROPDOWN (FONT BATTAMBANG) ══════════════ */
     .dd-wrap { position: relative; display: inline-block; }
     .dd-popup {
-      display: none; position: absolute; top: calc(100% + 6px); left: 0; min-width: 195px; max-height: 280px; overflow-y: auto;
+      display: none; position: absolute; top: calc(100% + 6px); left: 0; min-width: 195px; max-height: 290px; overflow-y: auto;
       background: #ffffff; border-radius: 16px; box-shadow: 0 14px 35px rgba(0, 0, 0, 0.35);
       border: 1px solid #e2e8f0; padding: 6px; z-index: 1000; animation: ddIn .15s ease-out;
     }
@@ -166,7 +166,7 @@
     .stats-pass { color: #2563eb !important; font-weight: 800; }
     .stats-fail { color: #dc2626 !important; font-weight: 800; }
 
-    /* ✍️ Signature Section (ចន្លោះទំនេរសម្រាប់ចុះហត្ថលេខា) */
+    /* ✍️ Signature Section (ចន្លោះទំនេរ) */
     .sign-row {
       display: flex; justify-content: space-between; align-items: flex-start; margin-top: 14px; padding: 0 14px;
     }
@@ -255,7 +255,7 @@
     <div class="auth-card">
       <div class="auth-icon">🔒</div>
       <h2>សូមចូលប្រើប្រាស់ជាមុនសិន!</h2>
-      <p id="authDeniedMsg">លោកអ្នកមិនទាន់បាន Login ចូលក្នុងប្រព័ន្ធនៅឡើយទេ។ សូម Login គណនីរបស់អ្នកដើម្បីមើលតារាងនិទ្ទេសប្រចាំឆ្នាំ។</p>
+      <p id="authDeniedMsg">លោកអ្នកមិនទាន់បាន Login ចូលក្នុងប្រព័ន្ធនៅឡើយទេ។ សូម Login គណនីរបស់អ្នកដើម្បីមើលតារាងនិទ្ទេស។</p>
       <a href="index.html" target="_top" class="btn-login-redirect" onclick="goToIndex(event)">
         <span>🔑</span> <span>ទៅកាន់ទំព័រដើម (Login)</span>
       </a>
@@ -278,7 +278,69 @@
         <div class="dd-popup" id="ddClassSelect"></div>
       </div>
 
-      <!-- 🌟 Dropdown 2: របៀបបង្ហាញនិទ្ទេស (A-F vs ពាក្យខ្មែរ) -->
+      <!-- 📅 Dropdown 2: ជម្រើសកាលកំណត់ (🌟 ប្រចាំឆ្នាំ vs ប្រចាំខែ) -->
+      <div class="dd-wrap">
+        <button type="button" class="tb-btn" id="btnPeriodMode" onclick="toggleDropdown('ddPeriodMode')">
+          <span id="txtPeriodMode">ប្រចាំឆ្នាំ</span>
+          <i class="fa-solid fa-chevron-down" id="chevPeriodMode" style="font-size:11px;"></i>
+        </button>
+        <div class="dd-popup" id="ddPeriodMode">
+          <div class="dd-item active" data-period="ANNUAL" onclick="selectPeriodMode('ANNUAL')">
+            <span>ប្រចាំឆ្នាំ</span>
+            <i class="fa-solid fa-check"></i>
+          </div>
+          <div class="dd-item" data-period="តុលា" onclick="selectPeriodMode('តុលា')">
+            <span>ខែតុលា</span>
+            <i class="fa-solid fa-check" style="display:none;"></i>
+          </div>
+          <div class="dd-item" data-period="វិច្ឆិកា" onclick="selectPeriodMode('វិច្ឆិកា')">
+            <span>ខែវិច្ឆិកា</span>
+            <i class="fa-solid fa-check" style="display:none;"></i>
+          </div>
+          <div class="dd-item" data-period="ធ្នូ" onclick="selectPeriodMode('ធ្នូ')">
+            <span>ខែធ្នូ</span>
+            <i class="fa-solid fa-check" style="display:none;"></i>
+          </div>
+          <div class="dd-item" data-period="មករា" onclick="selectPeriodMode('មករា')">
+            <span>ខែមករា</span>
+            <i class="fa-solid fa-check" style="display:none;"></i>
+          </div>
+          <div class="dd-item" data-period="កុម្ភៈ" onclick="selectPeriodMode('កុម្ភៈ')">
+            <span>ខែកុម្ភៈ</span>
+            <i class="fa-solid fa-check" style="display:none;"></i>
+          </div>
+          <div class="dd-item" data-period="មីនា" onclick="selectPeriodMode('មីនា')">
+            <span>ខែមីនា</span>
+            <i class="fa-solid fa-check" style="display:none;"></i>
+          </div>
+          <div class="dd-item" data-period="មេសា" onclick="selectPeriodMode('មេសា')">
+            <span>ខែមេសា</span>
+            <i class="fa-solid fa-check" style="display:none;"></i>
+          </div>
+          <div class="dd-item" data-period="ឧសភា" onclick="selectPeriodMode('ឧសភា')">
+            <span>ខែឧសភា</span>
+            <i class="fa-solid fa-check" style="display:none;"></i>
+          </div>
+          <div class="dd-item" data-period="មិថុនា" onclick="selectPeriodMode('មិថុនា')">
+            <span>ខែមិថុនា</span>
+            <i class="fa-solid fa-check" style="display:none;"></i>
+          </div>
+          <div class="dd-item" data-period="កក្កដា" onclick="selectPeriodMode('កក្កដា')">
+            <span>ខែកក្កដា</span>
+            <i class="fa-solid fa-check" style="display:none;"></i>
+          </div>
+          <div class="dd-item" data-period="សីហា" onclick="selectPeriodMode('សីហា')">
+            <span>ខែសីហា</span>
+            <i class="fa-solid fa-check" style="display:none;"></i>
+          </div>
+          <div class="dd-item" data-period="កញ្ញា" onclick="selectPeriodMode('កញ្ញា')">
+            <span>ខែកញ្ញា</span>
+            <i class="fa-solid fa-check" style="display:none;"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- 🌟 Dropdown 3: របៀបបង្ហាញនិទ្ទេស (A-F vs ពាក្យខ្មែរ) -->
       <div class="dd-wrap">
         <button type="button" class="tb-btn" id="btnGradeMode" onclick="toggleDropdown('ddGradeMode')">
           <span id="txtGradeMode">និទ្ទេស A-F</span>
@@ -296,7 +358,7 @@
         </div>
       </div>
 
-      <!-- 🌟 Dropdown 3: ជម្រើសមុខវិជ្ជា (ខ្មែរ-គណិត vs គ្រប់មុខវិជ្ជាគោល) -->
+      <!-- 🌟 Dropdown 4: ជម្រើសមុខវិជ្ជា (ខ្មែរ-គណិត vs គ្រប់មុខវិជ្ជាគោល) -->
       <div class="dd-wrap">
         <button type="button" class="tb-btn" id="btnSubjectMode" onclick="toggleDropdown('ddSubjectMode')">
           <span id="txtSubjectMode">គ្រប់មុខវិជ្ជាគោល</span>
@@ -342,7 +404,7 @@
             </div>
           </div>
 
-          <!-- 🏷️ Title of Report -->
+          <!-- 🏷️ Title of Report (ប្រែប្រួលស្វ័យប្រវត្តិតាម ប្រចាំខែ ឬ ប្រចាំឆ្នាំ) -->
           <div class="doc-main-title">
             <h1 class="f-moul" id="lblDocMainTitle">តារាងនិទ្ទេសតាមមុខវិជ្ជាគោល ប្រចាំឆ្នាំ</h1>
             <span id="lblDisplayYear">ឆ្នាំសិក្សា 2026-2027</span>
@@ -450,7 +512,7 @@
 
     async function checkAuthentication() {
       if (!CURRENT_USER || !CURRENT_USER.username) {
-        showAuthDenied('លោកអ្នកមិនទាន់បាន Login ចូលក្នុងប្រព័ន្ធនៅឡើយទេ។ សូម Login គណនីរបស់អ្នកដើម្បីមើលតារាងនិទ្ទេសប្រចាំឆ្នាំ។');
+        showAuthDenied('លោកអ្នកមិនទាន់បាន Login ចូលក្នុងប្រព័ន្ធនៅឡើយទេ។ សូម Login គណនីរបស់អ្នកដើម្បីមើលតារាងនិទ្ទេស។');
         return false;
       }
 
@@ -509,6 +571,7 @@
     const IS_ADMIN = String(USER_ROLE).toLowerCase().trim() === 'admin';
 
     let currentSelectedClass = cleanGrade(USER_CLASS) || '៤(ក)';
+    let currentPeriod = 'ANNUAL';    // 'ANNUAL' | 'តុលា' | 'វិច្ឆិកា'...
     let currentGradeMode = 'AF';     // 'AF' | 'KH'
     let currentSubjectMode = 'ALL';  // 'KM_MA' | 'ALL'
     let rawStudentsList = [];
@@ -535,7 +598,7 @@
       if (!e.target.closest('.dd-wrap')) closeAllDropdowns();
     });
 
-    /* 🌟 Dropdown ជ្រើសរើសថ្នាក់សម្រាប់ Admin */
+    /* 🌟 Dropdown ជ្រើសរើសថ្នាក់ (Admin) */
     function selectClass(cls) {
       currentSelectedClass = cleanGrade(cls);
       document.getElementById('txtClassSelect').innerText = 'ថ្នាក់ទី ' + currentSelectedClass;
@@ -570,8 +633,6 @@
         if (!classes.length) {
           classes = ['១', '២', '៣', '៤(ក)', '៤(ខ)', '៥', '៦'];
         }
-
-        // តម្រៀបថ្នាក់ពីតូចទៅធំ
         classes.sort((a,b) => a.localeCompare(b, 'km'));
 
         dd.innerHTML = classes.map(c => `
@@ -590,6 +651,36 @@
             <i class="fa-solid fa-check" style="${c === currentSelectedClass ? '' : 'display:none;'}"></i>
           </div>
         `).join('');
+      }
+    }
+
+    /* 🌟 Dropdown ជ្រើសរើសកាលកំណត់ (ប្រចាំឆ្នាំ vs ប្រចាំខែ) */
+    function selectPeriodMode(period) {
+      currentPeriod = period;
+      const label = (period === 'ANNUAL') ? 'ប្រចាំឆ្នាំ' : `ខែ${period}`;
+      document.getElementById('txtPeriodMode').innerText = label;
+
+      document.querySelectorAll('#ddPeriodMode .dd-item').forEach(el => {
+        const pVal = el.getAttribute('data-period');
+        const isActive = (pVal === period);
+        el.classList.toggle('active', isActive);
+        const icon = el.querySelector('i');
+        if (icon) icon.style.display = isActive ? 'inline' : 'none';
+      });
+
+      closeAllDropdowns();
+      updateMainDocumentTitle();
+      loadReportData();
+    }
+
+    function updateMainDocumentTitle() {
+      const isKMMA = (currentSubjectMode === 'KM_MA');
+      const pText = (currentPeriod === 'ANNUAL') ? 'ប្រចាំឆ្នាំ' : `ប្រចាំខែ${currentPeriod}`;
+
+      if (isKMMA) {
+        document.getElementById('lblDocMainTitle').innerText = `តារាងនិទ្ទេស ភាសាខ្មែរ និងគណិតវិទ្យា ${pText}`;
+      } else {
+        document.getElementById('lblDocMainTitle').innerText = `តារាងនិទ្ទេសតាមមុខវិជ្ជាគោល ${pText}`;
       }
     }
 
@@ -612,11 +703,8 @@
       document.querySelector('#optSubjKMMA i').style.display = (mode === 'KM_MA') ? 'inline' : 'none';
       document.querySelector('#optSubjALL i').style.display = (mode === 'ALL') ? 'inline' : 'none';
       
-      document.getElementById('lblDocMainTitle').innerText = (mode === 'KM_MA')
-        ? 'តារាងនិទ្ទេស ភាសាខ្មែរ និងគណិតវិទ្យា ប្រចាំឆ្នាំ'
-        : 'តារាងនិទ្ទេសតាមមុខវិជ្ជាគោល ប្រចាំឆ្នាំ';
-
       closeAllDropdowns();
+      updateMainDocumentTitle();
       renderAll();
     }
 
@@ -660,7 +748,6 @@
       const cls = currentSelectedClass;
       document.getElementById('lblDisplayClass').innerText = `ថ្នាក់ទី ${cls || '៤(ក)'}`;
       
-      // 🌟 ទាញយកឈ្មោះគ្រូទទួលបន្ទុកថ្នាក់នេះដោយស្វ័យប្រវត្តិ
       if (IS_ADMIN) {
         try {
           const { data: uData } = await sb.from('users').select('teacher_name').eq('assigned_classes', cls).maybeSingle();
@@ -680,24 +767,39 @@
         const { data: stData, error } = await query;
         if (error) throw error;
 
+        // Query ពិន្ទុតាមខែ ឬ ប្រចាំឆ្នាំពី Table scores
+        let scoreQuery = sb.from('scores').select('*');
+        if (cls) scoreQuery = scoreQuery.eq('assigned_class', cls);
+        if (currentPeriod === 'ANNUAL') {
+          scoreQuery = scoreQuery.eq('score_type', 'annual');
+        } else {
+          scoreQuery = scoreQuery.eq('score_type', 'monthly').eq('period', currentPeriod);
+        }
+        const { data: scoresData } = await scoreQuery;
+        const scoreMap = {};
+        (scoresData || []).forEach(sc => { scoreMap[sc.student_id] = sc; });
+
         if (stData && stData.length > 0) {
-          rawStudentsList = stData.map((s, idx) => ({
-            id: s.id,
-            name: s.student_name,
-            gender: s.gender || 'ប្រុស',
-            scores: {
-              km: 4.63,
-              ma: 6.80,
-              sc: 7.00,
-              ss: 8.00,
-              pe: 7.25,
-              fl: 6.00,
-              art: 9.00,
-              wk: 7.00,
-              ls: 7.00
-            },
-            absence: ''
-          }));
+          rawStudentsList = stData.map((s, idx) => {
+            const sc = scoreMap[s.student_id] || {};
+            return {
+              id: s.id,
+              name: s.student_name,
+              gender: s.gender || 'ប្រុស',
+              scores: {
+                km: parseFloat(sc.khmer || sc.score_khmer || 4.63),
+                ma: parseFloat(sc.math || sc.score_math || 6.80),
+                sc: parseFloat(sc.science || sc.score_science || 7.00),
+                ss: parseFloat(sc.social || sc.score_social || 8.00),
+                pe: parseFloat(sc.pe || sc.score_pe || 7.25),
+                fl: parseFloat(sc.language || sc.score_fl || 6.00),
+                art: parseFloat(sc.art || sc.score_art || 9.00),
+                wk: parseFloat(sc.work || sc.score_work || 7.00),
+                ls: parseFloat(sc.life_skills || sc.score_ls || 7.00)
+              },
+              absence: sc.absence || ''
+            };
+          });
         } else {
           rawStudentsList = [{
             id: 1, name: 'កេះ លីណា', gender: 'ប្រុស',
@@ -865,6 +967,7 @@
 
       const passPct = total ? ((pass / total) * 100).toFixed(2) : "0.00";
       const failPct = total ? ((fail / total) * 100).toFixed(2) : "0.00";
+      const periodLabel = (currentPeriod === 'ANNUAL') ? 'ឆ្នាំនេះ' : 'ខែនេះ';
 
       let statsHtml = '';
       if (isAF) {
@@ -877,7 +980,7 @@
         });
 
         statsHtml = `
-          <div class="stats-top-summary">បញ្ជីបញ្ចូលក្នុងឆ្នាំនេះចំនួន ${total} នាក់ ក្នុងនោះសិស្សស្រី ${female} នាក់ ប្រុស ${male} នាក់</div>
+          <div class="stats-top-summary">បញ្ជីបញ្ចូលក្នុង${periodLabel}ចំនួន ${total} នាក់ ក្នុងនោះសិស្សស្រី ${female} នាក់ ប្រុស ${male} នាក់</div>
           <div class="stats-grid-row">
             <div class="stats-item">និទ្ទេស <strong>A</strong> មាន ${counts.A} នាក់/ស្រី ${countsF.A} នាក់ ត្រូវនឹង ${(total?(counts.A/total*100):0).toFixed(2)}%</div>
             <div class="stats-item">និទ្ទេស <strong>B</strong> មាន ${counts.B} នាក់/ស្រី ${countsF.B} នាក់ ត្រូវនឹង ${(total?(counts.B/total*100):0).toFixed(2)}%</div>
@@ -899,7 +1002,7 @@
         });
 
         statsHtml = `
-          <div class="stats-top-summary">បញ្ជីបញ្ចូលក្នុងឆ្នាំនេះចំនួន ${total} នាក់ ក្នុងនោះសិស្សស្រី ${female} នាក់ ប្រុស ${male} នាក់</div>
+          <div class="stats-top-summary">បញ្ជីបញ្ចូលក្នុង${periodLabel}ចំនួន ${total} នាក់ ក្នុងនោះសិស្សស្រី ${female} នាក់ ប្រុស ${male} នាក់</div>
           <div class="stats-grid-row" style="grid-template-columns: repeat(3, 1fr);">
             <div class="stats-item">និទ្ទេស <strong style="color:#2563eb;">ល្អ</strong> មាន ${counts['ល្អ']} នាក់/ស្រី ${countsF['ល្អ']} នាក់ ត្រូវនឹង ${(total?(counts['ល្អ']/total*100):0).toFixed(2)}%</div>
             <div class="stats-item">និទ្ទេស <strong style="color:#9333ea;">ល្អបង្គួរ</strong> មាន ${counts['ល្អបង្គួរ']} នាក់/ស្រី ${countsF['ល្អបង្គួរ']} នាក់ ត្រូវនឹង ${(total?(counts['ល្អបង្គួរ']/total*100):0).toFixed(2)}%</div>
@@ -990,7 +1093,6 @@
       document.getElementById('psIn_rowH').value = PS.rowH;
     }
 
-    /* 🌟 BROWSER & MOBILE PAPER FIT (RESPONSIVE) */
     function fitPaper() {
       const paper = document.getElementById('printableReportPaper');
       const sc = document.getElementById('paperScaler');
@@ -1029,9 +1131,10 @@
       const isL = (PS.orient === 'landscape');
       closePageSetup();
 
+      const periodLabel = (currentPeriod === 'ANNUAL') ? 'ប្រចាំឆ្នាំ' : `ខែ${currentPeriod}`;
       const opt = {
         margin: [PS.margin, PS.margin, PS.margin, PS.margin],
-        filename: `តារាងនិទ្ទេស_${currentSelectedClass}.pdf`,
+        filename: `តារាងនិទ្ទេស_${currentSelectedClass}_${periodLabel}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2.5, useCORS: true },
         jsPDF: { unit: 'mm', format: [Math.min(pDim[0], pDim[1]), Math.max(pDim[0], pDim[1])], orientation: PS.orient }
