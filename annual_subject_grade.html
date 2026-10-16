@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
   <title>តារាងនិទ្ទេសតាមមុខវិជ្ជាគោល ប្រចាំឆ្នាំ</title>
 
-  <!-- 🔤 Google Fonts Khmer -->
+  <!-- 🔤 Google Fonts Khmer (Battambang & Moul) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;600;700;800;900&family=Moul&display=swap" rel="stylesheet">
@@ -81,6 +81,7 @@
       background: #1e293b; color: #f8fafc; font-size: 13px; font-weight: 700; cursor: pointer;
       display: inline-flex; align-items: center; justify-content: space-between; gap: 8px;
       transition: all .15s ease; outline: none; white-space: nowrap; user-select: none;
+      font-family: 'Khmer OS Battambang', 'Battambang', sans-serif !important;
     }
     .tb-btn:hover { background: #334155; border-color: rgba(255, 255, 255, 0.3); }
     .tb-btn.primary { background: #0284c7; border-color: transparent; }
@@ -90,7 +91,7 @@
     /* ══════════════ 🌟 CUSTOM DROPDOWN (FONT BATTAMBANG) ══════════════ */
     .dd-wrap { position: relative; display: inline-block; }
     .dd-popup {
-      display: none; position: absolute; top: calc(100% + 6px); left: 0; min-width: 195px;
+      display: none; position: absolute; top: calc(100% + 6px); left: 0; min-width: 195px; max-height: 280px; overflow-y: auto;
       background: #ffffff; border-radius: 16px; box-shadow: 0 14px 35px rgba(0, 0, 0, 0.35);
       border: 1px solid #e2e8f0; padding: 6px; z-index: 1000; animation: ddIn .15s ease-out;
     }
@@ -101,6 +102,7 @@
       padding: 10px 14px; border-radius: 12px; font-size: 13.5px; font-weight: 700;
       color: #1e293b; cursor: pointer; display: flex; align-items: center; justify-content: space-between;
       gap: 12px; transition: all .12s; white-space: nowrap;
+      font-family: 'Khmer OS Battambang', 'Battambang', sans-serif !important;
     }
     .dd-item:hover { background: #f1f5f9; }
     .dd-item.active { background: #e0f2fe; color: #0284c7; }
@@ -170,7 +172,7 @@
     }
     .sign-col { text-align: center; min-width: 220px; font-size: 11px; }
     .sign-col .sign-title { font-size: 12px; margin-top: 4px; }
-    .sign-col .sign-space { height: 60px; } /* ចន្លោះទំនេរសម្រាប់ចុះហត្ថលេខាផ្ទាល់ដៃ */
+    .sign-col .sign-space { height: 60px; }
     .sign-col .sign-name { font-weight: 700; font-size: 12.5px; }
 
     .editable-input {
@@ -267,7 +269,16 @@
     <div class="top-toolbar">
       <button type="button" class="tb-btn" onclick="goBack()"><i class="fa-solid fa-arrow-left"></i> ត្រឡប់</button>
       
-      <!-- 🌟 Dropdown 1: របៀបបង្ហាញនិទ្ទេស (A-F vs ពាក្យខ្មែរ) -->
+      <!-- 🏫 Dropdown 1: ជ្រើសរើសថ្នាក់ (🌟 បង្ហាញសម្រាប់តែ Admin) -->
+      <div class="dd-wrap" id="adminClassDropdownWrap" style="display:none;">
+        <button type="button" class="tb-btn" id="btnClassSelect" onclick="toggleDropdown('ddClassSelect')">
+          <span id="txtClassSelect">ថ្នាក់ទី ៤(ក)</span>
+          <i class="fa-solid fa-chevron-down" id="chevClassSelect" style="font-size:11px;"></i>
+        </button>
+        <div class="dd-popup" id="ddClassSelect"></div>
+      </div>
+
+      <!-- 🌟 Dropdown 2: របៀបបង្ហាញនិទ្ទេស (A-F vs ពាក្យខ្មែរ) -->
       <div class="dd-wrap">
         <button type="button" class="tb-btn" id="btnGradeMode" onclick="toggleDropdown('ddGradeMode')">
           <span id="txtGradeMode">និទ្ទេស A-F</span>
@@ -285,7 +296,7 @@
         </div>
       </div>
 
-      <!-- 🌟 Dropdown 2: ជម្រើសមុខវិជ្ជា (ខ្មែរ-គណិត vs គ្រប់មុខវិជ្ជាគោល) -->
+      <!-- 🌟 Dropdown 3: ជម្រើសមុខវិជ្ជា (ខ្មែរ-គណិត vs គ្រប់មុខវិជ្ជាគោល) -->
       <div class="dd-wrap">
         <button type="button" class="tb-btn" id="btnSubjectMode" onclick="toggleDropdown('ddSubjectMode')">
           <span id="txtSubjectMode">គ្រប់មុខវិជ្ជាគោល</span>
@@ -327,7 +338,7 @@
             <div class="doc-left-info">
               <div>ការិយាល័យអប់រំ យុវជន និងកីឡា</div>
               <div>សាលាបឋមសិក្សាកំពង់ល្ពៅ</div>
-              <div id="lblDisplayClass">ថ្នាក់ទី ៤ក</div>
+              <div id="lblDisplayClass">ថ្នាក់ទី ៤(ក)</div>
             </div>
           </div>
 
@@ -356,7 +367,6 @@
               <input type="text" class="editable-input" id="lblLunarDate" value="ថ្ងៃសុក្រ ៥កើត ខែអស្សុជ ឆ្នាំមមែ អដ្ឋស័ក ពុទ្ធសករាជ ២៥៧០">
               <input type="text" class="editable-input" id="lblSolarDate" value="កំពង់ល្ពៅ ថ្ងៃទី១៦ ខែតុលា ឆ្នាំ២០២៦">
               <div class="f-moul sign-title" style="margin-top:6px;">គ្រូទទួលបន្ទុកថ្នាក់</div>
-              <!-- 🌟 ចន្លោះទំនេរសម្រាប់ចុះហត្ថលេខាដោយដៃផ្ទាល់ -->
               <div class="sign-space"></div>
               <div class="sign-name" id="lblTeacherName">សេង សុភាស់</div>
             </div>
@@ -368,7 +378,7 @@
 
   </div> <!-- END #mainPageContent -->
 
-  <!-- ══════════════ ⚙️ MODAL: PAGE SETUP (ការរៀបចំទំព័រ) ══════════════ -->
+  <!-- ══════════════ ⚙️ MODAL: PAGE SETUP ══════════════ -->
   <div class="ps-backdrop" id="psBackdrop" onclick="closePageSetup()"></div>
   <div class="ps-panel" id="psPanel" role="dialog" aria-label="ការរៀបចំទំព័រ">
     <div class="ps-head">
@@ -438,7 +448,6 @@
     }
     const CURRENT_USER = readSession();
 
-    /* 🌟 AUTH GUARD: ត្រួតពិនិត្យការ Login មុនអនុញ្ញាតឱ្យចូលមើល */
     async function checkAuthentication() {
       if (!CURRENT_USER || !CURRENT_USER.username) {
         showAuthDenied('លោកអ្នកមិនទាន់បាន Login ចូលក្នុងប្រព័ន្ធនៅឡើយទេ។ សូម Login គណនីរបស់អ្នកដើម្បីមើលតារាងនិទ្ទេសប្រចាំឆ្នាំ។');
@@ -499,6 +508,7 @@
     const TEACHER_NAME = CURRENT_USER?.teacher_name || "សេង សុភាស់";
     const IS_ADMIN = String(USER_ROLE).toLowerCase().trim() === 'admin';
 
+    let currentSelectedClass = cleanGrade(USER_CLASS) || '៤(ក)';
     let currentGradeMode = 'AF';     // 'AF' | 'KH'
     let currentSubjectMode = 'ALL';  // 'KM_MA' | 'ALL'
     let rawStudentsList = [];
@@ -524,6 +534,64 @@
     document.addEventListener('click', e => {
       if (!e.target.closest('.dd-wrap')) closeAllDropdowns();
     });
+
+    /* 🌟 Dropdown ជ្រើសរើសថ្នាក់សម្រាប់ Admin */
+    function selectClass(cls) {
+      currentSelectedClass = cleanGrade(cls);
+      document.getElementById('txtClassSelect').innerText = 'ថ្នាក់ទី ' + currentSelectedClass;
+      document.getElementById('lblDisplayClass').innerText = 'ថ្នាក់ទី ' + currentSelectedClass;
+      closeAllDropdowns();
+      updateClassDropdownUI();
+      loadReportData();
+    }
+
+    function updateClassDropdownUI() {
+      document.querySelectorAll('#ddClassSelect .dd-item').forEach(el => {
+        const itemClass = el.getAttribute('data-class');
+        const isActive = (itemClass === currentSelectedClass);
+        el.classList.toggle('active', isActive);
+        const icon = el.querySelector('i');
+        if (icon) icon.style.display = isActive ? 'inline' : 'none';
+      });
+    }
+
+    async function initAdminClassDropdown() {
+      if (!IS_ADMIN) {
+        document.getElementById('adminClassDropdownWrap').style.display = 'none';
+        return;
+      }
+
+      document.getElementById('adminClassDropdownWrap').style.display = 'inline-block';
+      const dd = document.getElementById('ddClassSelect');
+
+      try {
+        const { data: stList } = await sb.from('students').select('grade');
+        let classes = [...new Set((stList || []).map(s => cleanGrade(s.grade)).filter(Boolean))];
+        if (!classes.length) {
+          classes = ['១', '២', '៣', '៤(ក)', '៤(ខ)', '៥', '៦'];
+        }
+
+        // តម្រៀបថ្នាក់ពីតូចទៅធំ
+        classes.sort((a,b) => a.localeCompare(b, 'km'));
+
+        dd.innerHTML = classes.map(c => `
+          <div class="dd-item ${c === currentSelectedClass ? 'active' : ''}" data-class="${c}" onclick="selectClass('${c}')">
+            <span>ថ្នាក់ទី ${c}</span>
+            <i class="fa-solid fa-check" style="${c === currentSelectedClass ? '' : 'display:none;'}"></i>
+          </div>
+        `).join('');
+
+        document.getElementById('txtClassSelect').innerText = 'ថ្នាក់ទី ' + currentSelectedClass;
+      } catch(e) {
+        const defaultClasses = ['១', '២', '៣', '៤(ក)', '៤(ខ)', '៥', '៦'];
+        dd.innerHTML = defaultClasses.map(c => `
+          <div class="dd-item ${c === currentSelectedClass ? 'active' : ''}" data-class="${c}" onclick="selectClass('${c}')">
+            <span>ថ្នាក់ទី ${c}</span>
+            <i class="fa-solid fa-check" style="${c === currentSelectedClass ? '' : 'display:none;'}"></i>
+          </div>
+        `).join('');
+      }
+    }
 
     function selectGradeMode(mode) {
       currentGradeMode = mode;
@@ -589,13 +657,24 @@
        4. LOAD DATA (SUPABASE / SAMPLE គំរូ)
     ========================================================= */
     async function loadReportData() {
-      const cls = cleanGrade(USER_CLASS);
-      document.getElementById('lblDisplayClass').innerText = `ថ្នាក់ទី ${cls || '៤ក'}`;
-      document.getElementById('lblTeacherName').innerText = TEACHER_NAME;
+      const cls = currentSelectedClass;
+      document.getElementById('lblDisplayClass').innerText = `ថ្នាក់ទី ${cls || '៤(ក)'}`;
+      
+      // 🌟 ទាញយកឈ្មោះគ្រូទទួលបន្ទុកថ្នាក់នេះដោយស្វ័យប្រវត្តិ
+      if (IS_ADMIN) {
+        try {
+          const { data: uData } = await sb.from('users').select('teacher_name').eq('assigned_classes', cls).maybeSingle();
+          document.getElementById('lblTeacherName').innerText = uData?.teacher_name || TEACHER_NAME;
+        } catch(e) {
+          document.getElementById('lblTeacherName').innerText = TEACHER_NAME;
+        }
+      } else {
+        document.getElementById('lblTeacherName').innerText = TEACHER_NAME;
+      }
 
       try {
         let query = sb.from('students').select('*').order('id', { ascending: true });
-        if (cls && !IS_ADMIN) {
+        if (cls) {
           query = query.in('grade', [cls, `ថ្នាក់ទី${cls}`, `ថ្នាក់ទី ${cls}`]);
         }
         const { data: stData, error } = await query;
@@ -952,7 +1031,7 @@
 
       const opt = {
         margin: [PS.margin, PS.margin, PS.margin, PS.margin],
-        filename: `តារាងនិទ្ទេស_${USER_CLASS}.pdf`,
+        filename: `តារាងនិទ្ទេស_${currentSelectedClass}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2.5, useCORS: true },
         jsPDF: { unit: 'mm', format: [Math.min(pDim[0], pDim[1]), Math.max(pDim[0], pDim[1])], orientation: PS.orient }
@@ -969,7 +1048,8 @@
       const isAuth = await checkAuthentication();
       if (!isAuth) return;
 
-      loadReportData();
+      await initAdminClassDropdown();
+      await loadReportData();
       applyPsStyles();
       setTimeout(fitPaper, 100);
     });
