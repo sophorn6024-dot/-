@@ -47,6 +47,31 @@
       min-height: 100vh; overflow-x: hidden; -webkit-font-smoothing: antialiased;
     }
 
+    /* ══════════════ 🔒 AUTH DENIED WRAPPER ══════════════ */
+    .auth-wrapper {
+      display: none; flex-direction: column; align-items: center; justify-content: center;
+      min-height: 80vh; text-align: center; padding: 30px 20px;
+    }
+    .auth-card {
+      background: var(--surface-card); border: 1.5px solid var(--border); border-radius: 24px;
+      padding: 40px 28px; max-width: 440px; width: 100%; box-shadow: 0 14px 40px rgba(0, 0, 0, 0.4);
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .auth-icon {
+      width: 68px; height: 68px; border-radius: 20px; background: rgba(239, 68, 68, 0.15);
+      color: #ef4444; display: flex; align-items: center; justify-content: center;
+      font-size: 32px; margin-bottom: 16px;
+    }
+    .auth-card h2 { font-size: 18px; margin-bottom: 8px; color: #ef4444; font-weight: 700; }
+    .auth-card p { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 24px; }
+    .btn-login-redirect {
+      background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+      color: #ffffff; padding: 10px 24px; border-radius: 12px; font-weight: 700;
+      font-size: 13.5px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); transition: all 0.2s; cursor: pointer; border: none;
+    }
+    .btn-login-redirect:hover { transform: translateY(-2px); }
+
     /* ══════════════ 🛠️ TOP TOOLBAR ══════════════ */
     .top-toolbar {
       max-width: 1300px; margin: 0 auto 16px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
@@ -154,7 +179,7 @@
     }
     .editable-input:focus { background: rgba(2, 132, 199, 0.08); border-radius: 4px; }
 
-    /* ══════════════ ⚙️ MODAL: PAGE SETUP (ការរៀបចំទំព័រ) ══════════════ */
+    /* ══════════════ ⚙️ MODAL: PAGE SETUP ══════════════ */
     .ps-backdrop { display: none; position: fixed; inset: 0; z-index: 2500; background: rgba(0,0,0,0.6); }
     .ps-backdrop.show { display: block; }
     .ps-panel {
@@ -203,7 +228,7 @@
     @media print {
       * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
       body { background: #fff !important; color: #000 !important; padding: 0 !important; margin: 0 !important; }
-      .top-toolbar, .ps-panel, .ps-backdrop, .dd-popup { display: none !important; }
+      .top-toolbar, .ps-panel, .ps-backdrop, .dd-popup, #authDeniedWrap { display: none !important; }
       .report-paper-wrap { padding: 0 !important; overflow: visible !important; }
       #paperScaler { width: auto !important; height: auto !important; transform: none !important; }
       .report-paper {
@@ -223,112 +248,129 @@
 
 <body>
 
-  <!-- ══════════════ 🛠️ TOP TOOLBAR ══════════════ -->
-  <div class="top-toolbar">
-    <button type="button" class="tb-btn" onclick="goBack()"><i class="fa-solid fa-arrow-left"></i> ត្រឡប់</button>
-    
-    <!-- 🌟 Dropdown 1: របៀបបង្ហាញនិទ្ទេស (A-F vs ពាក្យខ្មែរ) -->
-    <div class="dd-wrap">
-      <button type="button" class="tb-btn" id="btnGradeMode" onclick="toggleDropdown('ddGradeMode')">
-        <span id="txtGradeMode">និទ្ទេស A-F</span>
-        <i class="fa-solid fa-chevron-down" id="chevGradeMode" style="font-size:11px;"></i>
-      </button>
-      <div class="dd-popup" id="ddGradeMode">
-        <div class="dd-item active" id="optGradeAF" onclick="selectGradeMode('AF')">
-          <span>និទ្ទេស A-F</span>
-          <i class="fa-solid fa-check"></i>
-        </div>
-        <div class="dd-item" id="optGradeKH" onclick="selectGradeMode('KH')">
-          <span>និទ្ទេស ពាក្យខ្មែរ</span>
-          <i class="fa-solid fa-check" style="display:none;"></i>
-        </div>
-      </div>
+  <!-- ══════════════ 🔒 0. AUTH DENIED WRAPPER ══════════════ -->
+  <div id="authDeniedWrap" class="auth-wrapper">
+    <div class="auth-card">
+      <div class="auth-icon">🔒</div>
+      <h2>សូមចូលប្រើប្រាស់ជាមុនសិន!</h2>
+      <p id="authDeniedMsg">លោកអ្នកមិនទាន់បាន Login ចូលក្នុងប្រព័ន្ធនៅឡើយទេ។ សូម Login គណនីរបស់អ្នកដើម្បីមើលតារាងនិទ្ទេសប្រចាំឆ្នាំ។</p>
+      <a href="index.html" target="_top" class="btn-login-redirect" onclick="goToIndex(event)">
+        <span>🔑</span> <span>ទៅកាន់ទំព័រដើម (Login)</span>
+      </a>
     </div>
-
-    <!-- 🌟 Dropdown 2: ជម្រើសមុខវិជ្ជា (ខ្មែរ-គណិត vs គ្រប់មុខវិជ្ជាគោល) -->
-    <div class="dd-wrap">
-      <button type="button" class="tb-btn" id="btnSubjectMode" onclick="toggleDropdown('ddSubjectMode')">
-        <span id="txtSubjectMode">គ្រប់មុខវិជ្ជាគោល</span>
-        <i class="fa-solid fa-chevron-down" id="chevSubjectMode" style="font-size:11px;"></i>
-      </button>
-      <div class="dd-popup" id="ddSubjectMode">
-        <div class="dd-item" id="optSubjKMMA" onclick="selectSubjectMode('KM_MA')">
-          <span>ខ្មែរ-គណិត</span>
-          <i class="fa-solid fa-check" style="display:none;"></i>
-        </div>
-        <div class="dd-item active" id="optSubjALL" onclick="selectSubjectMode('ALL')">
-          <span>គ្រប់មុខវិជ្ជាគោល</span>
-          <i class="fa-solid fa-check"></i>
-        </div>
-      </div>
-    </div>
-
-    <button type="button" class="tb-btn" onclick="editDate('teacher')"><i class="fa-regular fa-calendar-days"></i> កាលបរិច្ឆេទហត្ថលេខា</button>
-    <button type="button" class="tb-btn" onclick="editDate('principal')"><i class="fa-regular fa-calendar-check"></i> ថ្ងៃនាយកចុះហត្ថលេខា</button>
-    <button type="button" class="tb-btn" onclick="openPageSetup()"><i class="fa-solid fa-sliders"></i> កំណត់ទំព័រ</button>
-    <button type="button" class="tb-btn" style="background:#059669;" onclick="downloadPDF()"><i class="fa-solid fa-file-pdf"></i> ទាញយក PDF</button>
-    <button type="button" class="tb-btn primary" onclick="printReport()"><i class="fa-solid fa-print"></i> បោះពុម្ព</button>
   </div>
 
-  <!-- ══════════════ 📄 PRINTABLE REPORT PAPER ══════════════ -->
-  <div class="report-paper-wrap">
-    <div id="paperScaler">
-      <div class="report-paper" id="printableReportPaper">
+  <!-- ══════════════ 🌟 MAIN REPORT CONTENT WRAPPER ══════════════ -->
+  <div id="mainPageContent" style="display:none;">
 
-        <!-- 👑 National Header -->
-        <div class="doc-header-national">
-          <h2 class="f-moul">ព្រះរាជាណាចក្រកម្ពុជា</h2>
-          <h3 class="f-moul">ជាតិ សាសនា ព្រះមហាក្សត្រ</h3>
-          <div class="doc-divider">────── ❖ ──────</div>
-        </div>
-
-        <!-- 🏫 School & Class Meta -->
-        <div class="doc-meta-row">
-          <div class="doc-left-info">
-            <div>ការិយាល័យអប់រំ យុវជន និងកីឡា</div>
-            <div>សាលាបឋមសិក្សាកំពង់ល្ពៅ</div>
-            <div id="lblDisplayClass">ថ្នាក់ទី ៤ក</div>
+    <!-- 🛠️ TOP TOOLBAR -->
+    <div class="top-toolbar">
+      <button type="button" class="tb-btn" onclick="goBack()"><i class="fa-solid fa-arrow-left"></i> ត្រឡប់</button>
+      
+      <!-- 🌟 Dropdown 1: របៀបបង្ហាញនិទ្ទេស (A-F vs ពាក្យខ្មែរ) -->
+      <div class="dd-wrap">
+        <button type="button" class="tb-btn" id="btnGradeMode" onclick="toggleDropdown('ddGradeMode')">
+          <span id="txtGradeMode">និទ្ទេស A-F</span>
+          <i class="fa-solid fa-chevron-down" id="chevGradeMode" style="font-size:11px;"></i>
+        </button>
+        <div class="dd-popup" id="ddGradeMode">
+          <div class="dd-item active" id="optGradeAF" onclick="selectGradeMode('AF')">
+            <span>និទ្ទេស A-F</span>
+            <i class="fa-solid fa-check"></i>
+          </div>
+          <div class="dd-item" id="optGradeKH" onclick="selectGradeMode('KH')">
+            <span>និទ្ទេស ពាក្យខ្មែរ</span>
+            <i class="fa-solid fa-check" style="display:none;"></i>
           </div>
         </div>
+      </div>
 
-        <!-- 🏷️ Title of Report -->
-        <div class="doc-main-title">
-          <h1 class="f-moul" id="lblDocMainTitle">តារាងនិទ្ទេសតាមមុខវិជ្ជាគោល ប្រចាំឆ្នាំ</h1>
-          <span id="lblDisplayYear">ឆ្នាំសិក្សា 2026-2027</span>
+      <!-- 🌟 Dropdown 2: ជម្រើសមុខវិជ្ជា (ខ្មែរ-គណិត vs គ្រប់មុខវិជ្ជាគោល) -->
+      <div class="dd-wrap">
+        <button type="button" class="tb-btn" id="btnSubjectMode" onclick="toggleDropdown('ddSubjectMode')">
+          <span id="txtSubjectMode">គ្រប់មុខវិជ្ជាគោល</span>
+          <i class="fa-solid fa-chevron-down" id="chevSubjectMode" style="font-size:11px;"></i>
+        </button>
+        <div class="dd-popup" id="ddSubjectMode">
+          <div class="dd-item" id="optSubjKMMA" onclick="selectSubjectMode('KM_MA')">
+            <span>ខ្មែរ-គណិត</span>
+            <i class="fa-solid fa-check" style="display:none;"></i>
+          </div>
+          <div class="dd-item active" id="optSubjALL" onclick="selectSubjectMode('ALL')">
+            <span>គ្រប់មុខវិជ្ជាគោល</span>
+            <i class="fa-solid fa-check"></i>
+          </div>
         </div>
+      </div>
 
-        <!-- 📊 Main Grade Table -->
-        <div id="tableContainer"></div>
+      <button type="button" class="tb-btn" onclick="editDate('teacher')"><i class="fa-regular fa-calendar-days"></i> កាលបរិច្ឆេទហត្ថលេខា</button>
+      <button type="button" class="tb-btn" onclick="editDate('principal')"><i class="fa-regular fa-calendar-check"></i> ថ្ងៃនាយកចុះហត្ថលេខា</button>
+      <button type="button" class="tb-btn" onclick="openPageSetup()"><i class="fa-solid fa-sliders"></i> កំណត់ទំព័រ</button>
+      <button type="button" class="tb-btn" style="background:#059669;" onclick="downloadPDF()"><i class="fa-solid fa-file-pdf"></i> ទាញយក PDF</button>
+      <button type="button" class="tb-btn primary" onclick="printReport()"><i class="fa-solid fa-print"></i> បោះពុម្ព</button>
+    </div>
 
-        <!-- 📈 Statistics Breakdown -->
-        <div class="stats-container" id="statsContainer"></div>
+    <!-- 📄 PRINTABLE REPORT PAPER -->
+    <div class="report-paper-wrap">
+      <div id="paperScaler">
+        <div class="report-paper" id="printableReportPaper">
 
-        <!-- ✍️ Signatures -->
-        <div class="sign-row">
-          <div class="sign-col" style="margin-top: 36px;">
-            <div class="f-moul sign-title">បានឃើញនិងឯកភាព</div>
-            <div class="f-moul sign-title" style="margin-top:4px;">នាយកសាលា</div>
-            <div class="sign-space"></div>
-            <div class="sign-name" id="lblPrincipalName"></div>
+          <!-- 👑 National Header -->
+          <div class="doc-header-national">
+            <h2 class="f-moul">ព្រះរាជាណាចក្រកម្ពុជា</h2>
+            <h3 class="f-moul">ជាតិ សាសនា ព្រះមហាក្សត្រ</h3>
+            <div class="doc-divider">────── ❖ ──────</div>
           </div>
 
-          <div class="sign-col">
-            <input type="text" class="editable-input" id="lblLunarDate" value="ថ្ងៃសុក្រ ៥កើត ខែអស្សុជ ឆ្នាំមមែ អដ្ឋស័ក ពុទ្ធសករាជ ២៥៧០">
-            <input type="text" class="editable-input" id="lblSolarDate" value="កំពង់ល្ពៅ ថ្ងៃទី១៦ ខែតុលា ឆ្នាំ២០២៦">
-            <div class="f-moul sign-title" style="margin-top:6px;">គ្រូទទួលបន្ទុកថ្នាក់</div>
-            <div class="sign-space">
-              <svg width="76" height="38" viewBox="0 0 100 50">
-                <path d="M 10 35 Q 25 10 40 30 T 70 20 T 90 35" fill="none" stroke="#2563eb" stroke-width="2.5"/>
-                <line x1="15" y1="42" x2="85" y2="42" stroke="#2563eb" stroke-width="2"/>
-              </svg>
+          <!-- 🏫 School & Class Meta -->
+          <div class="doc-meta-row">
+            <div class="doc-left-info">
+              <div>ការិយាល័យអប់រំ យុវជន និងកីឡា</div>
+              <div>សាលាបឋមសិក្សាកំពង់ល្ពៅ</div>
+              <div id="lblDisplayClass">ថ្នាក់ទី ៤ក</div>
             </div>
-            <div class="sign-name" id="lblTeacherName">សេង សុភាស់</div>
           </div>
-        </div>
 
+          <!-- 🏷️ Title of Report -->
+          <div class="doc-main-title">
+            <h1 class="f-moul" id="lblDocMainTitle">តារាងនិទ្ទេសតាមមុខវិជ្ជាគោល ប្រចាំឆ្នាំ</h1>
+            <span id="lblDisplayYear">ឆ្នាំសិក្សា 2026-2027</span>
+          </div>
+
+          <!-- 📊 Main Grade Table -->
+          <div id="tableContainer"></div>
+
+          <!-- 📈 Statistics Breakdown -->
+          <div class="stats-container" id="statsContainer"></div>
+
+          <!-- ✍️ Signatures -->
+          <div class="sign-row">
+            <div class="sign-col" style="margin-top: 36px;">
+              <div class="f-moul sign-title">បានឃើញនិងឯកភាព</div>
+              <div class="f-moul sign-title" style="margin-top:4px;">នាយកសាលា</div>
+              <div class="sign-space"></div>
+              <div class="sign-name" id="lblPrincipalName"></div>
+            </div>
+
+            <div class="sign-col">
+              <input type="text" class="editable-input" id="lblLunarDate" value="ថ្ងៃសុក្រ ៥កើត ខែអស្សុជ ឆ្នាំមមែ អដ្ឋស័ក ពុទ្ធសករាជ ២៥៧០">
+              <input type="text" class="editable-input" id="lblSolarDate" value="កំពង់ល្ពៅ ថ្ងៃទី១៦ ខែតុលា ឆ្នាំ២០២៦">
+              <div class="f-moul sign-title" style="margin-top:6px;">គ្រូទទួលបន្ទុកថ្នាក់</div>
+              <div class="sign-space">
+                <svg width="76" height="38" viewBox="0 0 100 50">
+                  <path d="M 10 35 Q 25 10 40 30 T 70 20 T 90 35" fill="none" stroke="#2563eb" stroke-width="2.5"/>
+                  <line x1="15" y1="42" x2="85" y2="42" stroke="#2563eb" stroke-width="2"/>
+                </svg>
+              </div>
+              <div class="sign-name" id="lblTeacherName">សេង សុភាស់</div>
+            </div>
+          </div>
+
+        </div>
       </div>
     </div>
-  </div>
+
+  </div> <!-- END #mainPageContent -->
 
   <!-- ══════════════ ⚙️ MODAL: PAGE SETUP (ការរៀបចំទំព័រ) ══════════════ -->
   <div class="ps-backdrop" id="psBackdrop" onclick="closePageSetup()"></div>
@@ -389,7 +431,7 @@
 
   <script>
     /* =========================================================
-       1. SUPABASE CLIENT & SESSION
+       1. SUPABASE CLIENT & SESSION VERIFICATION
     ========================================================= */
     const SUPABASE_URL = "https://nggnuobnrxiqjtcwlvwk.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_AHDcUJbuMAfhaocyfm2X7w_O9s06wML";
@@ -399,6 +441,64 @@
       try { return JSON.parse(localStorage.getItem('krou_supabase_user') || 'null'); } catch (e) { return null; }
     }
     const CURRENT_USER = readSession();
+
+    /* 🌟 AUTH GUARD: ត្រួតពិនិត្យការ Login មុនអនុញ្ញាតឱ្យចូលមើល */
+    async function checkAuthentication() {
+      if (!CURRENT_USER || !CURRENT_USER.username) {
+        showAuthDenied('លោកអ្នកមិនទាន់បាន Login ចូលក្នុងប្រព័ន្ធនៅឡើយទេ។ សូម Login គណនីរបស់អ្នកដើម្បីមើលតារាងនិទ្ទេសប្រចាំឆ្នាំ។');
+        return false;
+      }
+
+      // ពិនិត្យជាមួយ Database ក្រែងលោគណនីត្រូវបាន Admin លុប
+      if (CURRENT_USER.id) {
+        try {
+          const { data, error } = await sb
+            .from('users')
+            .select('id')
+            .eq('id', CURRENT_USER.id)
+            .maybeSingle();
+
+          if (!error && !data) {
+            localStorage.removeItem('krou_supabase_user');
+            localStorage.removeItem('krou_active_page');
+            showAuthDenied('គណនីរបស់អ្នកត្រូវបានលុបចេញពីប្រព័ន្ធរួចហើយ! សូមចូលប្រើប្រាស់ដោយគណនីថ្មី។');
+            return false;
+          }
+        } catch(err) {
+          console.warn('Auth check issue:', err);
+        }
+      }
+
+      document.getElementById('authDeniedWrap').style.display = 'none';
+      document.getElementById('mainPageContent').style.display = 'block';
+      return true;
+    }
+
+    function showAuthDenied(msg) {
+      document.getElementById('mainPageContent').style.display = 'none';
+      document.getElementById('authDeniedWrap').style.display = 'flex';
+      if (msg) document.getElementById('authDeniedMsg').innerText = msg;
+    }
+
+    function goToIndex(e) {
+      if (e) e.preventDefault();
+      if (window.parent && window.parent !== window) {
+        try {
+          window.parent.postMessage({ type: 'OPEN_LOGIN', action: 'LOGIN' }, '*');
+          window.parent.location.href = 'index.html';
+          return;
+        } catch(err) {}
+      }
+      window.location.href = 'index.html';
+    }
+
+    function goBack() {
+      if (window.parent && window.parent !== window) {
+        try { window.parent.postMessage({ type: 'NAVIGATE', page: 'reportsHub' }, '*'); return; } catch(e) {}
+      }
+      if (window.history.length > 1) window.history.back();
+    }
+
     const USER_ROLE = CURRENT_USER?.role || "teacher";
     const USER_CLASS = CURRENT_USER?.assigned_classes || CURRENT_USER?.assigned_class || "៤(ក)";
     const TEACHER_NAME = CURRENT_USER?.teacher_name || "សេង សុភាស់";
@@ -410,13 +510,6 @@
 
     function cleanGrade(g) {
       return String(g || '').replace(/^(ថ្នាក់ទី|ថ្នាក់)\s*/, '').trim();
-    }
-
-    function goBack() {
-      if (window.parent && window.parent !== window) {
-        try { window.parent.postMessage({ type: 'NAVIGATE', page: 'reportsHub' }, '*'); return; } catch(e) {}
-      }
-      if (window.history.length > 1) window.history.back();
     }
 
     /* =========================================================
@@ -540,7 +633,6 @@
           }];
         }
       } catch (e) {
-        // Fallback Sample ដូចក្នុងរូបភាព
         rawStudentsList = [{
           id: 1, name: 'កេះ លីណា', gender: 'ប្រុស',
           scores: { km: 4.63, ma: 6.80, sc: 7.00, ss: 8.00, pe: 7.25, fl: 6.00, art: 9.00, wk: 7.00, ls: 7.00 },
@@ -813,7 +905,6 @@
         r.style.height = `${PS.rowH}mm`;
       });
 
-      // Update usable
       document.getElementById('psUsable').innerText = `ផ្ទៃប្រើ ${w - PS.margin * 2}×${h - PS.margin * 2}mm`;
     }
 
@@ -881,7 +972,11 @@
       window.print();
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
+    window.addEventListener('DOMContentLoaded', async () => {
+      // 🌟 ផ្ទៀងផ្ទាត់ការ Login ជាមុនសិន
+      const isAuth = await checkAuthentication();
+      if (!isAuth) return;
+
       loadReportData();
       applyPsStyles();
       setTimeout(fitPaper, 100);
