@@ -4,565 +4,601 @@
   <base target="_top">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-  <title>បញ្ជីរាយនាមសិស្ស</title>
+  <title>ស្រង់វត្តមានសិស្ស</title>
 
-  <!-- 🔤 Google Fonts Khmer & FontAwesome -->
+  <!-- 🔤 Google Fonts Khmer (ដូចទំព័រគ្រប់គ្រងគ្រូបង្រៀន) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Moul&family=Battambang:wght@400;600;700;800;900&family=Kantumruy+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@400;500;600;700&family=Moul&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-  <!-- ⚡ Supabase, SheetJS (Excel) & html2pdf -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <!-- ⚡ Supabase JS Client (v2) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     /* =========================================================
-       🎨 DYNAMIC THEME SYSTEM (LIGHT & DARK MODE)
+       🎨 THEME VARIABLES (យកគំរូតាមទំព័រគ្រប់គ្រងគ្រូបង្រៀន ១០០%)
     ========================================================= */
     :root {
-      --app-bg: #f8fafc;
-      --tb-bg: rgba(255, 255, 255, 0.95);
-      --tb-border: #e2e8f0;
-      --card-panel-bg: #ffffff;
-      --text-main: #0f172a;
-      --text-muted: #64748b;
-      --input-bg: #ffffff;
-      --input-border: #cbd5e1;
-      --input-focus: #0284c7;
-      --ctrl-group-bg: #f1f5f9;
-      --shadow-sm: 0 4px 16px rgba(15, 23, 42, 0.06);
-      --primary: #0284c7;
-      --amber: #d97706;
-      --danger: #dc2626;
+      --bg-app: #f8fafc; --surface: #ffffff; --surface-elevated: #f1f5f9; --surface-card: #ffffff;
+      --border: #e2e8f0; --border-subtle: #cbd5e1; --text-main: #0f172a; --text-muted: #64748b;
+      --input-bg: #ffffff; --input-border: #cbd5e1; --input-focus: #0284c7;
+      --primary: #0284c7; --navy-2: #1e3a8a;
+      --card-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
+      --danger: #dc2626; --danger-bg: #fef2f2; --green: #16a34a; --green-bg: #f0fdf4;
+      --amber: #d97706; --amber-bg: #fef3c7;
     }
-
     [data-theme="dark"] {
-      --app-bg: #090e17;
-      --tb-bg: rgba(15, 23, 42, 0.94);
-      --tb-border: #1e293b;
-      --card-panel-bg: #111e33;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --input-bg: #162642;
-      --input-border: #233f66;
-      --input-focus: #38bdf8;
-      --ctrl-group-bg: #0e1a2d;
-      --shadow-sm: 0 8px 24px rgba(0, 0, 0, 0.45);
-      --primary: #38bdf8;
-      --amber: #fbbf24;
-      --danger: #f87171;
+      --bg-app: #090e17; --surface: #0f172a; --surface-elevated: #162642; --surface-card: #111e33;
+      --border: #1e293b; --border-subtle: #233f66; --text-main: #f8fafc; --text-muted: #94a3b8;
+      --input-bg: #162642; --input-border: #233f66; --input-focus: #38bdf8;
+      --primary: #38bdf8; --navy-2: #38bdf8;
+      --card-shadow: 0 8px 25px rgba(0, 0, 0, 0.45);
+      --danger: #f87171; --danger-bg: rgba(239, 68, 68, 0.15); --green: #34d399; --green-bg: rgba(16, 185, 129, 0.15);
+      --amber: #fbbf24; --amber-bg: rgba(245, 158, 11, 0.15);
     }
 
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-    html, body {
-      width: 100%; min-height: 100%; margin: 0; padding: 0;
-      background: var(--app-bg); color: var(--text-main);
-      font-family: 'Khmer OS Battambang', 'Battambang', 'Kantumruy Pro', sans-serif !important;
-      line-height: 1.4; transition: background 0.25s ease, color 0.25s ease;
-    }
-
-    body { padding: 0 0 120px 0 !important; }
-    .khmer-moul { font-family: 'Khmer OS Muol Light', 'Moul', cursive !important; font-weight: normal; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Kantumruy Pro', sans-serif; }
+    html, body { background: var(--bg-app); color: var(--text-main); transition: background .25s, color .25s; min-height: 100vh; }
+    body { padding: 16px 20px 140px; }
+    .f-moul { font-family: 'Moul', cursive !important; font-weight: normal; }
 
     /* ══════════════ 🔒 AUTH DENIED WRAPPER ══════════════ */
     .auth-wrapper {
-      display: none; flex-direction: column; align-items: center; justify-content: center;
-      min-height: 80vh; text-align: center; padding: 30px 20px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 80vh;
+      text-align: center;
+      padding: 30px 20px;
     }
     .auth-card {
-      background: var(--card-panel-bg); border: 1.5px solid var(--tb-border); border-radius: 24px;
-      padding: 40px 28px; max-width: 440px; width: 100%; box-shadow: var(--shadow-sm);
-      display: flex; flex-direction: column; align-items: center;
+      background: var(--surface-card);
+      border: 1.5px solid var(--border);
+      border-radius: 24px;
+      padding: 40px 28px;
+      max-width: 440px;
+      width: 100%;
+      box-shadow: var(--card-shadow);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
     .auth-icon {
-      width: 68px; height: 68px; border-radius: 20px; background: rgba(239, 68, 68, 0.15);
-      color: #ef4444; display: flex; align-items: center; justify-content: center;
-      font-size: 32px; margin-bottom: 16px;
+      width: 68px;
+      height: 68px;
+      border-radius: 20px;
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--danger);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      margin-bottom: 16px;
     }
-    .auth-card h2 { font-size: 18px; margin-bottom: 8px; color: #ef4444; font-weight: 700; }
+    .auth-card h2 { font-size: 18px; margin-bottom: 8px; color: var(--danger); font-weight: 700; }
     .auth-card p { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 24px; }
     .btn-login-redirect {
-      background: linear-gradient(135deg, #0284c7, #2563eb);
-      color: #ffffff; padding: 10px 24px; border-radius: 12px; font-weight: 700;
-      font-size: 13.5px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
-      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3); transition: all 0.2s; cursor: pointer; border: none;
+      background: linear-gradient(135deg, #0284c7, #7c3aed);
+      color: #ffffff;
+      padding: 10px 24px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 13.5px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
     }
     .btn-login-redirect:hover { transform: translateY(-2px); }
 
-    /* =========================================================
-       🎛️ COMPLETE TOOLBAR (រក្សាទុកចាស់ + បន្ថែមថ្មី)
-    ========================================================= */
-    .no-print-toolbar {
-      position: sticky; top: 0; z-index: 1000; background: var(--tb-bg);
-      backdrop-filter: blur(14px); padding: 8px 16px; display: flex; flex-direction: column;
-      gap: 8px; box-shadow: var(--shadow-sm); border-bottom: 1.5px solid var(--tb-border);
-      margin-bottom: 14px;
+    /* 🍞 TOAST NOTIFICATION */
+    #saveToast {
+      visibility: hidden; min-width: 220px; background: #0f172a; color: #fff; text-align: center;
+      border-radius: 12px; padding: 12px 20px; position: fixed; z-index: 999999; left: 50%; bottom: 24px;
+      transform: translateX(-50%); font-size: 13px; font-weight: 700; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      display: flex; align-items: center; justify-content: center; gap: 8px; opacity: 0; transition: all 0.3s;
+    }
+    #saveToast.show { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(-6px); }
+
+    /* 🎛️ TOP NAVIGATION BAR */
+    .top-nav-bar {
+      background: var(--surface-card); border: 1px solid var(--border); border-radius: 18px; padding: 10px 16px;
+      display: flex; align-items: center; justify-content: space-between; box-shadow: var(--card-shadow);
+      margin-bottom: 16px; gap: 12px; flex-wrap: wrap;
+    }
+    .tabs-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .tab-pill-btn {
+      display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 12px;
+      font-size: 12.5px; font-weight: 700; cursor: pointer; border: 1px solid transparent;
+      background: var(--surface-elevated); color: var(--text-muted); transition: all 0.2s;
+    }
+    .tab-pill-btn:hover { color: var(--text-main); }
+    .tab-pill-btn.active {
+      background: linear-gradient(135deg, #0284c7, #7c3aed); color: #ffffff;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
+    }
+    .date-trigger-btn {
+      display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 12px;
+      border: 1.5px solid var(--border); background: var(--surface-card); color: var(--text-main);
+      font-size: 12.5px; font-weight: 700; cursor: pointer;
+    }
+    .class-select-pill {
+      padding: 8px 16px; border-radius: 12px; border: 1.5px solid var(--border); background: var(--surface-card);
+      color: var(--text-main); font-weight: 700; font-size: 13px; outline: none; cursor: pointer;
     }
 
-    .toolbar-row {
-      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px;
+    /* 📅 CALENDAR POPUP */
+    .calendar-popup {
+      display: none; position: absolute; top: 50px; left: 0; width: 290px; background: var(--surface-card);
+      border: 1px solid var(--border); border-radius: 18px; box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+      padding: 16px; z-index: 100;
+    }
+    .calendar-popup.show { display: block; }
+    .cal-head-selectors { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
+    .cal-head-selectors select {
+      flex: 1; padding: 6px 8px; border-radius: 10px; border: 1px solid var(--border);
+      background: var(--surface-elevated); color: var(--text-main); font-size: 12px; font-weight: 600; outline: none;
+    }
+    .cal-month-title { text-align: center; font-weight: 700; font-size: 13.5px; color: var(--primary); margin-bottom: 8px; }
+    .cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px; }
+    .cal-days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+    .cal-day-cell {
+      height: 32px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; border-radius: 50%; cursor: pointer; color: var(--text-main);
+    }
+    .cal-day-cell:hover { background: rgba(2, 132, 199, 0.15); color: var(--primary); }
+    .cal-day-cell.selected { background: var(--primary) !important; color: #fff !important; }
+    .cal-day-cell.muted { color: var(--text-muted); opacity: 0.4; cursor: default; }
+
+    /* 📊 DAILY LAYOUT */
+    .daily-layout-grid { display: grid; grid-template-columns: 1fr; gap: 16px; align-items: start; }
+    @media(min-width: 960px) {
+      .daily-layout-grid { grid-template-columns: 310px 1fr; }
+      .daily-sidebar-card { position: sticky; top: 14px; z-index: 10; }
+    }
+    .daily-sidebar-card, .daily-list-card, .report-launcher-card {
+      background: var(--surface-card); border: 1px solid var(--border); border-radius: 20px; padding: 18px 20px; box-shadow: var(--card-shadow);
+    }
+    .gender-summary-box { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 10px; }
+    .gender-chip {
+      background: var(--surface-elevated); border: 1px solid var(--border); border-radius: 12px; padding: 8px 4px; text-align: center;
+    }
+    .gender-chip span { display: block; font-size: 11px; color: var(--text-muted); font-weight: 600; }
+    .gender-chip strong { display: block; font-size: 16px; font-weight: 700; color: var(--text-main); margin-top: 2px; }
+
+    .status-counter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 14px 0; }
+    .counter-card { border-radius: 14px; padding: 12px 14px; display: flex; flex-direction: column; justify-content: space-between; height: 74px; }
+    .counter-card.present    { background: var(--green-bg); border: 1px solid var(--green); color: var(--green); }
+    .counter-card.absent     { background: var(--danger-bg); border: 1px solid var(--danger); color: var(--danger); }
+    .counter-card.late       { background: var(--amber-bg); border: 1px solid var(--amber); color: var(--amber); }
+    .counter-card.permission { background: rgba(2, 132, 199, 0.15); border: 1px solid rgba(2, 132, 199, 0.25); color: var(--primary); }
+    .counter-card .c-label { font-size: 11.5px; font-weight: 700; }
+    .counter-card .c-val { font-size: 22px; font-weight: 800; }
+
+    .search-pill-wrap {
+      display: flex; align-items: center; gap: 8px; background: var(--surface-elevated); border: 1.5px solid var(--border); border-radius: 14px; padding: 8px 14px; margin-bottom: 12px;
+    }
+    .search-pill-wrap input { border: none; background: transparent; outline: none; font-size: 13px; color: var(--text-main); width: 100%; }
+
+    .bulk-actions-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+    .btn-bulk {
+      padding: 9px; border-radius: 12px; font-size: 12.5px; font-weight: 700; border: none; cursor: pointer; color: #fff; display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .btn-bulk.present { background: var(--green); }
+    .btn-bulk.absent  { background: var(--danger); }
+
+    .student-item-card {
+      background: var(--surface-elevated); border: 1px solid var(--border); border-radius: 15px; padding: 12px 14px; margin-bottom: 8px; transition: all 0.15s ease;
+    }
+    .student-item-card.has-absent { border-color: rgba(239, 68, 68, 0.4); background: var(--danger-bg); }
+
+    .st-top-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .st-name-title { font-size: 14px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px; cursor: pointer; }
+
+    .quick-status-selector {
+      display: flex; align-items: center; gap: 4px; background: var(--surface-card); padding: 3px; border-radius: 10px; border: 1px solid var(--border); flex-shrink: 0;
+    }
+    .q-btn {
+      padding: 6px 10px; border-radius: 8px; font-size: 11.5px; font-weight: 700; cursor: pointer; border: none; background: transparent; color: var(--text-muted); transition: all 0.15s;
+    }
+    .q-btn:hover { background: var(--surface-elevated); color: var(--text-main); }
+    .q-btn.active-P { background: var(--green-bg); color: var(--green); font-weight: 800; border: 1px solid var(--green); }
+    .q-btn.active-A { background: var(--danger-bg); color: var(--danger); font-weight: 800; border: 1px solid var(--danger); }
+    .q-btn.active-L { background: var(--amber-bg); color: var(--amber); font-weight: 800; border: 1px solid var(--amber); }
+    .q-btn.active-C { background: rgba(2, 132, 199, 0.15); color: var(--primary); font-weight: 800; border: 1px solid rgba(2, 132, 199, 0.25); }
+
+    .st-note-input {
+      width: 100%; margin-top: 8px; padding: 7px 12px; border-radius: 10px; border: 1.5px solid var(--input-border); background: var(--input-bg); color: var(--text-main); font-size: 12px; outline: none;
+    }
+    .st-note-input:focus { border-color: var(--input-focus); }
+
+    /* ACTION SHEET */
+    .action-sheet-backdrop {
+      display: none; position: fixed !important; inset: 0 !important; background: rgba(15, 23, 42, 0.65) !important; backdrop-filter: blur(8px); z-index: 999999 !important; align-items: center !important; justify-content: center !important; padding: 16px !important;
+    }
+    .action-sheet-backdrop.show { display: flex !important; }
+    .action-sheet-card {
+      width: 380px; max-width: 95%; background: var(--surface-card); border: 1.5px solid var(--border); border-radius: 22px; padding: 20px 22px 22px; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6); position: relative; margin: auto !important; animation: popZoom 0.2s ease-out;
+    }
+    @keyframes popZoom { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+    .sheet-header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+    .sheet-student-name { font-size: 16px; font-weight: 700; color: var(--text-main); }
+    .sheet-close-x {
+      background: var(--surface-elevated); border: 1px solid var(--border); color: var(--text-muted); width: 30px; height: 30px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold;
+    }
+    .sheet-options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+    .sheet-choice-btn {
+      padding: 14px 10px; border-radius: 14px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; border: 1.5px solid transparent;
+    }
+    .sheet-choice-btn.p { background: var(--green-bg); color: var(--green); border-color: var(--green); }
+    .sheet-choice-btn.a { background: var(--danger-bg); color: var(--danger); border-color: var(--danger); }
+    .sheet-choice-btn.l { background: var(--amber-bg); color: var(--amber); border-color: var(--amber); }
+    .sheet-choice-btn.c { background: rgba(2, 132, 199, 0.15); color: var(--primary); border-color: rgba(2, 132, 199, 0.25); }
+    .btn-sheet-cancel {
+      width: 100%; padding: 11px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface-elevated); color: var(--text-muted); font-size: 13px; font-weight: 600; cursor: pointer;
     }
 
-    .toolbar-section {
-      display: flex; align-items: center; gap: 7px; flex-wrap: wrap;
+    .report-menu-row {
+      display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-radius: 14px; background: var(--surface-elevated); border: 1px solid var(--border); margin-top: 10px; gap: 10px;
     }
+    .btn-open-report {
+      padding: 8px 16px; border-radius: 11px; background: linear-gradient(135deg, #0284c7, #7c3aed); color: #fff; font-weight: 700; font-size: 12.5px; border: none; cursor: pointer;
+    }
+    .holiday-config-box {
+      background: var(--surface-elevated); border: 1.5px solid var(--border); border-radius: 16px; padding: 16px; margin-top: 12px; margin-bottom: 14px;
+    }
+    .holiday-tag-pill {
+      display: inline-flex; align-items: center; gap: 6px; background: var(--green-bg); color: var(--green); border: 1px solid var(--green); padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; margin: 4px;
+    }
+    .holiday-tag-pill i { cursor: pointer; color: var(--danger); }
 
-    .panel-pill-box {
-      background: var(--ctrl-group-bg); border: 1px solid var(--tb-border);
-      border-radius: 10px; padding: 3px 8px; display: inline-flex; align-items: center; gap: 6px;
+    /* REPORT VIEWER */
+    #reportViewerModal {
+      display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px); z-index: 2000; overflow-y: auto; padding: 12px 14px 40px;
     }
+    .viewer-top-bar {
+      position: sticky; top: 0; background: var(--surface-card); border: 1px solid var(--border); padding: 10px 18px; border-radius: 14px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; z-index: 100; box-shadow: var(--card-shadow);
+    }
+    .report-paper-container {
+      background: #ffffff; color: #0f172a; width: 297mm; max-width: 100%; min-height: 210mm; margin: 0 auto;
+      padding: 8mm 10mm; border-radius: 4px; box-shadow: 0 10px 35px rgba(0,0,0,0.5); font-size: 11px;
+    }
+    .rpt-header-banner { text-align: center; color: #1e3a8a; margin-bottom: 8px; }
+    .print-table {
+      width: 100%; border-collapse: collapse; font-size: 10px; text-align: center; border: 1px solid #334155; margin: 6px 0;
+    }
+    .print-table th, .print-table td {
+      border: 1px solid #334155; padding: 2.5px 1px; vertical-align: middle;
+    }
+    .weekend-merged-cell { background: #fce7f3 !important; color: #be185d !important; font-weight: bold; }
+    .holiday-cell { background: #fee2e2 !important; color: #b91c1c !important; font-weight: bold; }
+    .vertical-sun-box { width: 24px; height: 80px; display: flex; align-items: center; justify-content: center; margin: 0 auto; }
+    .vertical-sun-text {
+      display: inline-block; white-space: nowrap; transform: rotate(-90deg); font-size: 9.5px; font-weight: bold; line-height: 1;
+    }
+    .clean-lunar-input {
+      font-family: inherit; font-size: 11px; font-weight: bold; color: #1e3a8a;
+      border: none !important; background: transparent !important; text-align: center; width: 100%; min-width: 370px; outline: none; margin: 0 auto; display: block; white-space: nowrap;
+    }
+    .report-summary-footer {
+      width: 100%; margin-top: 8px; margin-bottom: 6px; font-size: 10.5px; color: #000000; line-height: 1.8;
+    }
+    .footer-row-1 {
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: nowrap; gap: 10px;
+    }
+    .footer-row-2 { text-align: left; margin-top: 3px; white-space: nowrap; }
 
-    .toolbar-label {
-      font-size: 11.5px; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; gap: 5px; white-space: nowrap;
-    }
-
-    .form-control {
-      padding: 5px 8px; font-size: 12px; font-weight: 600; border: 1.5px solid var(--input-border);
-      border-radius: 7px; outline: none; background: var(--input-bg); color: var(--text-main);
-      transition: all 0.2s ease; height: 32px;
-    }
-    .form-control:focus { border-color: var(--input-focus); box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15); }
-
-    .teacher-class-badge {
-      display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #0284c7, #2563eb);
-      color: #ffffff; padding: 4px 12px; border-radius: 10px; font-weight: 700; font-size: 12px;
-      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25); height: 32px; white-space: nowrap;
-    }
-
-    .btn {
-      padding: 6px 13px; font-size: 12px; font-weight: 700; border-radius: 9px;
-      border: 1px solid transparent; cursor: pointer; display: inline-flex; align-items: center;
-      gap: 6px; transition: all 0.2s; user-select: none; white-space: nowrap; height: 32px; outline: none;
-    }
-    .btn:active { transform: scale(0.96); }
-    .btn-secondary { background: var(--ctrl-group-bg); color: var(--text-main); border-color: var(--input-border); }
-    .btn-secondary:hover { border-color: var(--input-focus); color: var(--input-focus); }
-    .btn-primary { background: #0284c7; color: #fff; }
-    .btn-primary:hover { background: #0369a1; }
-    .btn-success { background: linear-gradient(135deg, #10b981, #059669); color: #fff; }
-    .btn-success:hover { background: linear-gradient(135deg, #059669, #047857); }
-
-    .zoom-btn-group {
-      display: inline-flex; align-items: center; gap: 2px; background: var(--ctrl-group-bg);
-      padding: 2px; border-radius: 8px; border: 1px solid var(--tb-border); height: 32px;
-    }
-    .zoom-btn {
-      background: transparent; border: none; color: var(--text-muted); padding: 4px 8px;
-      border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; height: 26px;
-      display: flex; align-items: center;
-    }
-    .zoom-btn:hover { color: var(--text-main); }
-    .zoom-btn.active { background: #0284c7 !important; color: #ffffff !important; }
-
-    /* =========================================================
-       📄 A4 DOCUMENT CONTAINER & SCALER
-    ========================================================= */
-    .report-paper-wrap {
-      width: 100%; display: flex; justify-content: center; padding: 4px 0 20px; overflow-x: auto;
-    }
-    #paperScaler { margin: 0 auto; position: relative; transition: transform 0.2s; }
-
-    .document-container {
-      width: 297mm; min-height: 210mm; margin: 0 auto; background: #ffffff !important;
-      color: #000000 !important; padding: 12mm 15mm; border-radius: 6px;
-      box-shadow: 0 10px 35px rgba(0,0,0,0.3); position: relative; transform-origin: top left;
-      font-size: 11px; line-height: 1.4;
-    }
-    .document-container * { color: #000 !important; }
-
-    .document-header { position: relative; width: 100%; margin-bottom: 6px; }
-    .school-info { position: absolute; left: 0; top: 10px; text-align: left; font-size: 11.5px; line-height: 1.45; }
-    .school-info .underline { text-decoration: underline; font-weight: 700; }
-    .nation-info { text-align: center; width: 100%; }
-    .nation-info .t1 { font-size: 14.5px; }
-    .nation-info .t2 { font-size: 12.5px; margin-top: 2px; }
-    .ornament { text-align: center; margin: 3px 0 6px 0; font-size: 11px; letter-spacing: 2px; }
-
-    .roster-title-block { text-align: center; margin: 6px 0 12px; }
-    .roster-title-block h1 { font-size: 17px; margin-bottom: 3px; }
-    .roster-title-block .sub-meta { font-size: 12px; font-weight: 700; }
-
-    /* ============ TABLE STYLING ============ */
-    .table-scroll-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; background: #fff !important; }
-    table.roster-table {
-      width: 100%; border-collapse: collapse; font-size: 10.5px; border: 1px solid #000 !important; text-align: center;
-    }
-    table.roster-table th, table.roster-table td {
-      border: 1px solid #000 !important; padding: 5px 3px; vertical-align: middle; white-space: nowrap;
-    }
-    table.roster-table th { background: #f1f5f9 !important; font-weight: 700; font-size: 10.5px; }
-    table.roster-table td.name-cell { text-align: left !important; padding-left: 8px !important; font-weight: 700; }
-
-    th.no-print-col, td.no-print-col { background: #fef9c3 !important; }
-    .dropout-select {
-      width: 100%; padding: 3px 2px; border-radius: 4px; border: 1.5px solid #cbd5e1;
-      font-size: 10.5px; background: #fff; min-height: 26px; font-weight: 600;
-    }
-    .dropout-select.is-dropped {
-      background: #fee2e2 !important; color: #991b1b !important; font-weight: 700 !important; border-color: #ef4444 !important;
-    }
-    tr.row-dropped td { color: #dc2626 !important; font-weight: 700; background-color: #fff1f2 !important; }
-    tr.row-dropped td.no-print-col { color: #334155 !important; font-weight: normal; background-color: #fef9c3 !important; }
-
-    /* ============ FOOTER & TEACHER DRAGGABLE ============ */
-    .footer-container {
-      margin-top: 18px; display: flex; justify-content: space-between; align-items: flex-start;
-      font-size: 11.5px; position: relative; padding: 0 10px;
-    }
-    .footer-left { text-align: center; min-width: 240px; margin-top: 36px; font-weight: 700; }
-    .footer-right { text-align: center; min-width: 260px; font-weight: 700; }
-
-    .inline-input {
-      border: none; border-bottom: 1px dashed #94a3b8; background: transparent;
-      padding: 1px 4px; font-size: 11px; text-align: center; font-weight: 700;
-    }
-
-    .teacher-name-display {
-      font-family: 'Khmer OS Muol Light', 'Moul', cursive !important;
-      font-size: 12.5px; margin-top: 40px; min-height: 24px; text-align: center;
-      display: inline-block; cursor: grab; user-select: none; -webkit-user-select: none;
-      padding: 4px 12px; border: 1px dashed transparent; border-radius: 6px;
-      touch-action: none; white-space: nowrap !important; position: relative; z-index: 50;
-    }
-    .teacher-name-display:hover { border-color: #93c5fd; background: rgba(59,130,246,0.06); }
-    .teacher-name-display.dragging {
-      border-color: #2563eb !important; background: rgba(37,99,235,0.15) !important;
-      cursor: grabbing !important; box-shadow: 0 4px 14px rgba(37,99,235,0.25);
-    }
-
-    /* ══════════════ ⚙️ MODAL: PAGE SETUP ══════════════ */
-    .ps-backdrop { display: none; position: fixed; inset: 0; z-index: 2500; background: rgba(0,0,0,0.6); }
-    .ps-backdrop.show { display: block; }
-    .ps-panel {
-      display: none; position: fixed; z-index: 2600; top: 58px; right: 20px; width: 380px; max-width: calc(100vw - 24px);
-      max-height: calc(100vh - 74px); overflow-y: auto; background: #25272b; color: #f1f5f9;
-      border: 1px solid #3f434a; border-radius: 22px; padding: 18px 20px 16px;
-      box-shadow: 0 24px 60px rgba(0,0,0,.6);
-    }
-    .ps-panel.show { display: block; }
-    .ps-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-    .ps-head h3 { font-size: 16px; font-weight: 800; color: #f8fafc; }
-    .ps-head .ps-reset { background: none; border: none; color: #9ca3af; font-size: 13px; font-weight: 700; cursor: pointer; }
-    .ps-sec { display: flex; align-items: center; gap: 8px; color: #9ca3af; font-size: 13.5px; font-weight: 700; margin: 12px 0 8px; }
-    .ps-sec .ps-line { flex: 1; height: 1px; background: #3f434a; }
-    .ps-grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; margin-bottom: 8px; }
-    .ps-opt {
-      background: #34373d; color: #f1f5f9; border: none; border-radius: 12px; padding: 9px 4px; min-height: 56px;
-      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer; font-size: 13.5px; font-weight: 800;
-    }
-    .ps-opt.active { background: #0284c7; color: #fff; }
-    .ps-row { display: grid; grid-template-columns: 60px auto 1fr; align-items: center; gap: 8px; margin: 10px 0; font-size: 13px; }
-    .ps-row label { color: #f1f5f9; font-weight: 700; }
-    .ps-step { display: inline-flex; align-items: center; gap: 5px; }
-    .ps-step > button { width: 34px; height: 36px; border-radius: 10px; border: none; background: #34373d; color: #f1f5f9; font-size: 16px; font-weight: 700; cursor: pointer; }
-    .ps-val { display: inline-flex; align-items: center; gap: 4px; background: #34373d; border-radius: 10px; height: 36px; padding: 0 8px; width: 88px; }
-    .ps-val input { flex: 1; min-width: 0; width: 100%; background: transparent; border: none; outline: none; text-align: center; color: #f1f5f9; font-size: 14px; font-weight: 700; }
-    .ps-val span { color: #9ca3af; font-size: 12px; }
-
-    /* =========================================================
-       🖨️ PRINT RULES (AUTO PAGE FIT)
-    ========================================================= */
+    @page { size: A4 landscape; margin: 5mm 6mm; }
     @media print {
-      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-      .no-print, .no-print-toolbar, .ps-panel, .ps-backdrop, #authDeniedWrap { display: none !important; }
-      html, body { background: #ffffff !important; padding: 0 !important; margin: 0 !important; }
-      .report-paper-wrap { padding: 0 !important; overflow: visible !important; }
-      #paperScaler { transform: none !important; width: auto !important; height: auto !important; }
-      .document-container {
-        box-shadow: none !important; width: 100% !important; max-width: 100% !important;
-        padding: 0 !important; margin: 0 !important; border-radius: 0 !important;
-      }
-      th.no-print-col, td.no-print-col { display: none !important; }
-      table.roster-table thead { display: table-header-group; }
-      table.roster-table tr { break-inside: avoid; page-break-inside: avoid; }
+      body { background: #fff !important; color: #000 !important; padding: 0 !important; }
+      .auth-wrapper, .top-nav-bar, #tabDailyView, #tabReportsMenu, #saveToast, #statusActionSheetModal, .viewer-top-bar { display: none !important; }
+      #reportViewerModal { display: block !important; position: static !important; padding: 0 !important; background: transparent !important; }
+      .report-paper-container { width: 100% !important; box-shadow: none !important; padding: 0 !important; }
     }
   </style>
 </head>
+
 <body>
 
-  <!-- =========================================================
-       🎛️ COMPLETE TOOLBAR (មុខងារចាស់ + មុខងារថ្មី)
-  ========================================================= -->
-  <div class="no-print no-print-toolbar">
-    
-    <!-- ជួរទី ១ ៖ ចម្រោះទិន្នន័យ (ថ្នាក់, ឆមាស, ទម្រង់តារាង, ឆ្នាំ, គ្រូ) -->
-    <div class="toolbar-row">
-      <div class="toolbar-section">
-        <button type="button" class="btn btn-secondary" onclick="goBack()"><i class="fa-solid fa-arrow-left"></i> <span>ត្រឡប់</span></button>
-
-        <!-- ថ្នាក់ (Admin Select or Teacher Badge) -->
-        <div id="adminClassBox" style="display:none;">
-          <div class="panel-pill-box">
-            <span class="toolbar-label"><i class="fa-solid fa-graduation-cap" style="color:#0284c7;"></i> ថ្នាក់៖</span>
-            <select id="classSelect" class="form-control" onchange="loadRoster()"></select>
-          </div>
-        </div>
-
-        <div id="teacherClassBadge" class="teacher-class-badge" style="display:none;">
-          <i class="fa-solid fa-chalkboard-user"></i>
-          <span id="teacherClassText">ថ្នាក់ទី...</span>
-        </div>
-
-        <!-- ឆមាស (ចាស់) -->
-        <div class="panel-pill-box">
-          <span class="toolbar-label"><i class="fa-solid fa-filter" style="color:#8b5cf6;"></i> ឆមាស៖</span>
-          <select id="semesterSelect" class="form-control" onchange="renderRoster()">
-            <option value="ឆមាសទី១" selected>ឆមាសទី១</option>
-            <option value="ឆមាសទី២">ឆមាសទី២</option>
-            <option value="ទាំងអស់">ទាំងអស់</option>
-          </select>
-        </div>
-
-        <!-- 🌟 ទម្រង់តារាង (ប្តូររវាង ១៣ ជួរថ្មី និង ៨ ជួរចាស់) -->
-        <div class="panel-pill-box">
-          <span class="toolbar-label"><i class="fa-solid fa-table-columns" style="color:#10b981;"></i> ទម្រង់៖</span>
-          <select id="tableFormatSelect" class="form-control" onchange="onTableFormatChange()">
-            <option value="DETAILED" selected>ទម្រង់លម្អិត (១៣ ជួរ ដូចរូបភាព)</option>
-            <option value="SIMPLE">ទម្រង់ទូទៅ (៨ ជួរ ដូចចាស់)</option>
-          </select>
-        </div>
-
-        <!-- ឆ្នាំសិក្សា (ចាស់) -->
-        <div class="panel-pill-box">
-          <span class="toolbar-label"><i class="fa-solid fa-calendar-days" style="color:#f59e0b;"></i> ឆ្នាំ៖</span>
-          <input type="text" id="yearInput" class="form-control" style="width:95px;" oninput="syncTitleYear()">
-        </div>
-
-        <!-- គ្រូបន្ទុកថ្នាក់ (ចាស់) -->
-        <div class="panel-pill-box">
-          <span class="toolbar-label"><i class="fa-solid fa-user-tie" style="color:#06b6d4;"></i> គ្រូ៖</span>
-          <input type="text" id="teacherNameCtrl" class="form-control" placeholder="ឈ្មោះគ្រូ..." oninput="syncTeacherName(this.value)">
-        </div>
-      </div>
-    </div>
-
-    <!-- ជួរទី ២ ៖ ប៊ូតុងសកម្មភាពថ្មី & ចាស់ -->
-    <div class="toolbar-row">
-      <div class="toolbar-section">
-        <!-- 📥 ទាញយក Excel (ថ្មី) -->
-        <button type="button" class="btn btn-secondary" onclick="exportToExcel()">
-          <i class="fa-solid fa-file-excel" style="color:#10b981;"></i> <span>ទាញយក Excel</span>
-        </button>
-
-        <!-- 📅 កាលបរិច្ឆេទហត្ថលេខាគ្រូ (ថ្មី) -->
-        <button type="button" class="btn btn-secondary" onclick="editTeacherDate()">
-          <span style="color:#94a3b8;">ថ្ងៃគ្រូចុះហត្ថលេខា៖</span>
-          <span style="background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:6px;">
-            <i class="fa-regular fa-calendar-days" style="color:#60a5fa;"></i> ជ្រើសថ្ងៃ
-          </span>
-        </button>
-
-        <!-- 📅 ថ្ងៃនាយកចុះហត្ថលេខា (ថ្មី) -->
-        <button type="button" class="btn btn-secondary" onclick="editPrincipalDate()">
-          <span style="color:#94a3b8;">ថ្ងៃនាយកចុះហត្ថលេខា៖</span>
-          <span id="principalDateBadge" style="background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:6px;">
-            <i class="fa-regular fa-calendar-xmark" style="color:#f59e0b;"></i> មិនដាក់
-          </span>
-        </button>
-
-        <!-- ⚙ កំណត់ទំព័រ (ថ្មី) -->
-        <button type="button" class="btn btn-secondary" onclick="openPageSetup()">
-          <i class="fa-solid fa-sliders" style="color:#c084fc;"></i> <span>កំណត់ទំព័រ</span>
-        </button>
-
-        <!-- 🔍 Zoom Controls (ចាស់) -->
-        <div class="zoom-btn-group" title="ពង្រីក/បង្រួមទំហំ">
-          <button type="button" class="zoom-btn active" data-zoom="1" onclick="setZoom(1, this)">100%</button>
-          <button type="button" class="zoom-btn" data-zoom="0.75" onclick="setZoom(0.75, this)">75%</button>
-          <button type="button" class="zoom-btn" id="btnZoomFit" onclick="setFitZoom(this)">សម</button>
-        </div>
-
-        <!-- ↺ Reset ទីតាំងឈ្មោះ (ចាស់) -->
-        <button type="button" class="btn btn-secondary" onclick="resetTeacherNamePosition()" title="ដាក់ឈ្មោះគ្រូត្រឡប់ទីតាំងដើម">
-          <i class="fa-solid fa-rotate-left"></i> <span>ទីតាំង</span>
-        </button>
-
-        <!-- 📥 ទាញយក PDF (ថ្មី) -->
-        <button type="button" class="btn btn-success" onclick="downloadPDF()">
-          <i class="fa-solid fa-file-pdf"></i> <span>ទាញយក PDF</span>
-        </button>
-
-        <!-- 🖨 បោះពុម្ព (ចាស់) -->
-        <button type="button" class="btn btn-primary" onclick="printWhenFontsReady()">
-          <i class="fa-solid fa-print"></i> <span>បោះពុម្ព</span>
-        </button>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- ══════════════ 🔒 AUTH DENIED WRAPPER ══════════════ -->
-  <div id="authDeniedWrap" class="auth-wrapper">
+  <!-- ══════════════ 🔒 1. AUTH DENIED WRAPPER ══════════════ -->
+  <div class="auth-wrapper" id="authDeniedWrap">
     <div class="auth-card">
       <div class="auth-icon">🔒</div>
       <h2>សូមចូលប្រើប្រាស់ជាមុនសិន!</h2>
-      <p id="authDeniedMsg">លោកអ្នកមិនទាន់បាន Login ចូលក្នុងប្រព័ន្ធនៅឡើយទេ។ សូម Login គណនីរបស់អ្នកដើម្បីមើលបញ្ជីរាយនាមសិស្ស។</p>
+      <p>លោកអ្នកមិនទាន់បាន Login ចូលក្នុងប្រព័ន្ធនៅឡើយទេ។ សូម Login គណនីរបស់អ្នកដើម្បីមើល ឬស្រង់វត្តមានសិស្ស។</p>
       <a href="index.html" target="_top" class="btn-login-redirect" onclick="goToIndex(event)">
         <span>🔑</span> <span>ទៅកាន់ទំព័រដើម (Login)</span>
       </a>
     </div>
   </div>
 
-  <!-- ══════════════ 📄 PRINTABLE DOCUMENT CONTAINER ══════════════ -->
-  <div class="report-paper-wrap">
-    <div id="paperScaler">
-      <div class="document-container" id="printPage" style="display:none;">
+  <!-- ══════════════ 🌟 2. MAIN ATTENDANCE PAGE CONTENT ══════════════ -->
+  <div id="pageBody" style="display:none;">
 
-        <div class="document-header">
-          <div class="school-info">
-            <div class="underline">រដ្ឋបាលស្រុកសំឡូត</div>
-            <div>សាលាបឋមសិក្សា ៖ <b>កំពង់ល្ពៅ</b></div>
-            <div id="lblDisplayClass" style="font-weight:700;">ថ្នាក់ទី ៤ក</div>
+    <div id="saveToast"><i class="fa-solid fa-circle-check"></i> បានរក្សាទុកដោយជោគជ័យ</div>
+
+    <div class="top-nav-bar">
+      <div class="tabs-group">
+        <button class="tab-pill-btn active" id="btnTabDaily" onclick="switchNavTab('daily')">
+          <i class="fa-solid fa-calendar-check"></i> វត្តមានប្រចាំថ្ងៃ
+        </button>
+        <button class="tab-pill-btn" id="btnTabReports" onclick="switchNavTab('reports')">
+          <i class="fa-solid fa-chart-pie"></i> របាយការណ៍ & សង្ខេបខែ
+        </button>
+
+        <div style="position: relative;">
+          <button class="date-trigger-btn" id="btnDateDisplay" onclick="toggleCalendarPopup()">
+            <i class="fa-regular fa-calendar" style="color:var(--primary);"></i>
+            <span id="txtDisplayDate">...</span>
+          </button>
+
+          <div class="calendar-popup" id="calPopup">
+            <div class="cal-head-selectors">
+              <select id="calMonthSelect" onchange="renderCalendarDays()">
+                <option value="0">មករា</option><option value="1">កុម្ភៈ</option>
+                <option value="2">មីនា</option><option value="3">មេសា</option>
+                <option value="4">ឧសភា</option><option value="5">មិថុនា</option>
+                <option value="6">កក្កដា</option><option value="7">សីហា</option>
+                <option value="8">កញ្ញា</option><option value="9">តុលា</option>
+                <option value="10">វិច្ឆិកា</option><option value="11">ធ្នូ</option>
+              </select>
+              <select id="calYearSelect" onchange="renderCalendarDays()">
+                <option value="2025">2025</option>
+                <option value="2026">2026</option>
+                <option value="2027">2027</option>
+              </select>
+            </div>
+
+            <div class="cal-month-title" id="calMonthYearTitle">...</div>
+
+            <div class="cal-weekdays">
+              <span>អា</span><span>ច</span><span>អ</span><span>ព</span><span>ព្រ</span><span>សុ</span><span>ស</span>
+            </div>
+
+            <div class="cal-days-grid" id="calDaysGrid"></div>
+
+            <div style="display:flex; justify-content:space-between; margin-top:12px; font-size:12px; font-weight:600;">
+              <span style="color:var(--primary); cursor:pointer;" onclick="selectTodayDate()">ថ្ងៃនេះ</span>
+              <span style="color:var(--text-muted); cursor:pointer;" onclick="toggleCalendarPopup()">បិទ</span>
+            </div>
           </div>
-          <div class="nation-info">
-            <div class="khmer-moul t1">ព្រះរាជាណាចក្រកម្ពុជា</div>
-            <div class="khmer-moul t2">ជាតិ សាសនា ព្រះមហាក្សត្រ</div>
-            <div class="ornament">────── ❖ ──────</div>
+        </div>
+      </div>
+
+      <div>
+        <!-- 🌟 បង្ហាញ Dropdown តែពេល Admin -->
+        <div id="adminClassBox" style="display:none;">
+          <select id="classSelect" class="class-select-pill" onchange="onClassChange()">
+            <option value="">កំពុងទាញយកថ្នាក់...</option>
+          </select>
+        </div>
+
+        <!-- 🌟 ផ្លាកថ្នាក់របស់គ្រូ (ពេលជាគ្រូ Dropdown នឹងត្រូវលាក់) -->
+        <div id="teacherClassBadge" class="class-select-pill" style="display:none; background:linear-gradient(135deg, #0284c7, #7c3aed); color:#fff; border-color:transparent;">
+          <span>🏫</span>
+          <span id="teacherClassText">ថ្នាក់ទី...</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="tabDailyView">
+      <div class="daily-layout-grid">
+        
+        <div class="daily-sidebar-card">
+          <div style="font-size:12px; color:var(--text-muted);">
+            <div>កាលបរិច្ឆេទជ្រើសរើស៖</div>
+            <div style="font-size:15px; font-weight:700; color:var(--text-main); margin-top:2px;" id="lblSelectedDateIso">...</div>
+          </div>
+
+          <div class="gender-summary-box">
+            <div class="gender-chip">
+              <span>ប្រុស</span>
+              <strong id="countMale">0</strong>
+            </div>
+            <div class="gender-chip">
+              <span style="color:#f43f5e;">ស្រី</span>
+              <strong id="countFemale" style="color:#f43f5e;">0</strong>
+            </div>
+            <div class="gender-chip">
+              <span>សរុប</span>
+              <strong id="countTotal">0</strong>
+            </div>
+          </div>
+
+          <div class="status-counter-grid">
+            <div class="counter-card present">
+              <div class="c-label">វត្តមាន</div>
+              <div class="c-val" id="cntPresent">0</div>
+            </div>
+            <div class="counter-card absent">
+              <div class="c-label">អវត្តមាន</div>
+              <div class="c-val" id="cntAbsent">0</div>
+            </div>
+            <div class="counter-card late">
+              <div class="c-label">យឺត</div>
+              <div class="c-val" id="cntLate">0</div>
+            </div>
+            <div class="counter-card permission">
+              <div class="c-label">មានច្បាប់</div>
+              <div class="c-val" id="cntPerm">0</div>
+            </div>
+          </div>
+
+          <div class="search-pill-wrap">
+            <i class="fa-solid fa-magnifying-glass" style="color:var(--text-muted); font-size:12px;"></i>
+            <input type="text" id="searchBox" placeholder="ស្វែងរកឈ្មោះសិស្ស..." oninput="renderDailyList()">
+          </div>
+
+          <div class="bulk-actions-row">
+            <button class="btn-bulk present" onclick="setBulkDailyStatus('P')">
+              <i class="fa-solid fa-check-double"></i> វត្តមានទាំងអស់
+            </button>
+            <button class="btn-bulk absent" onclick="setBulkDailyStatus('A')">
+              <i class="fa-solid fa-xmark"></i> អវត្តមានទាំងអស់
+            </button>
+          </div>
+
+          <div style="background:var(--surface-elevated); border-radius:12px; padding:10px; font-size:11.5px; color:var(--text-muted); line-height:1.45;">
+            💡 <b>ចំណាំ៖</b> ចុចលើ [វត្តមាន | អវត្តមាន | យឺត | ច្បាប់] ដើម្បីប្ដូរវត្តមានរហ័ស ឬចុចលើឈ្មោះសិស្សដើម្បីបើកផ្ទាំងជ្រើសរើស។
           </div>
         </div>
 
-        <div class="roster-title-block">
-          <h1 class="khmer-moul">បញ្ជីរាយនាមសិស្ស</h1>
-          <div class="sub-meta" id="lblSubMetaStats">
-            ឆ្នាំសិក្សា ២០២៦-២០២៧ · សិស្សសរុប ០នាក់ · ស្រី ០នាក់
-          </div>
-        </div>
-
-        <div class="table-scroll-wrap" id="tableContainer"></div>
-
-        <!-- FOOTER & SIGNATURES -->
-        <div class="footer-container">
-          <div class="footer-left">
-            <div id="lblPrincipalDate" style="font-size:11px; margin-bottom:4px; display:none;"></div>
-            <div>បានឃើញ និងឯកភាព</div>
-            <div class="khmer-moul" style="font-size:12px; margin-top:5px;">នាយកសាលា</div>
-            <div class="sign-space" style="height:60px;"></div>
-            <div class="sign-name" id="lblPrincipalName"></div>
+        <div class="daily-list-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid var(--border);">
+            <div>
+              <h3 style="font-size:15px; font-weight:700; color:var(--text-main);">បញ្ជីឈ្មោះសិស្ស</h3>
+              <span style="font-size:11.5px; color:var(--text-muted);">ប្រព័ន្ធរក្សាទុកស្វ័យប្រវត្តិទៅ Supabase</span>
+            </div>
+            <span style="font-size:11.5px; font-weight:700; color:var(--green); background:var(--green-bg); padding:4px 10px; border-radius:20px;">✓ សកម្ម</span>
           </div>
 
-          <div class="footer-right">
-            <div style="font-size:11px; text-align:center; margin-bottom:4px;">
-              <input type="text" id="lblLunarDate" value="ថ្ងៃសុក្រ ៥កើត ខែអស្សុជ ឆ្នាំមមែ អដ្ឋស័ក ពុទ្ធសករាជ ២៥៧០" class="inline-input" style="width:100%;">
-            </div>
-            <div style="margin-top:4px; font-size:11.5px;">
-              <input type="text" id="lblSolarDate" value="ធ្វើនៅកំពង់ល្ពៅ, ថ្ងៃទី១៦ ខែតុលា ឆ្នាំ២០២៦" class="inline-input" style="width:100%;">
-            </div>
-            <div class="khmer-moul" style="font-size:12px; margin-top:6px;">គ្រូបន្ទុកថ្នាក់</div>
-            <div class="sign-space" style="height:60px;">
-              <!-- 🌟 ឈ្មោះគ្រូអាចអូសផ្លាស់ទីទីតាំងបាន (Draggable) មិនបាត់បង់មុខងារឡើយ -->
-              <div class="teacher-name-display" id="teacherNameDisplay" title="ប៉ះឱ្យជាប់ដើម្បីអូសផ្លាស់ទី">&nbsp;</div>
-            </div>
+          <div id="studentListContainer">
+            <div style="text-align:center; padding:40px; color:var(--text-muted);">កំពុងទាញយកទិន្នន័យ...</div>
           </div>
         </div>
 
       </div>
     </div>
-  </div>
 
-  <!-- ══════════════ ⚙️ MODAL: PAGE SETUP ══════════════ -->
-  <div class="ps-backdrop" id="psBackdrop" onclick="closePageSetup()"></div>
-  <div class="ps-panel" id="psPanel" role="dialog" aria-label="ការរៀបចំទំព័រ">
-    <div class="ps-head">
-      <h3>ការរៀបចំទំព័រ</h3>
-      <button type="button" class="ps-reset" onclick="psReset()"><i class="fa-solid fa-rotate-left"></i> ដើមវិញ</button>
-    </div>
+    <div id="tabReportsMenu" style="display:none;">
+      <div class="report-launcher-card" style="max-width: 820px; margin: 0 auto;">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div style="width:40px; height:40px; border-radius:12px; background:rgba(2,132,199,0.15); color:var(--primary); display:flex; align-items:center; justify-content:center; font-size:18px;">📋</div>
+            <div>
+              <h2 class="f-moul" style="font-size:14.5px; color:var(--text-main);">របាយការណ៍អវត្តមាន</h2>
+              <p style="font-size:11.5px; color:var(--text-muted);">ទាញយកជារបាយការណ៍ប្រចាំខែ និងសរុបប្រចាំឆ្នាំ</p>
+            </div>
+          </div>
 
-    <div class="ps-sec"><i class="fa-regular fa-file-lines"></i> ក្រដាស <span class="ps-line"></span></div>
-    <div class="ps-grid4">
-      <button type="button" class="ps-opt" data-paper="A4" onclick="psSetPaper('A4')">A4<small>210×297</small></button>
-      <button type="button" class="ps-opt" data-paper="F4" onclick="psSetPaper('F4')">F4<small>216×330</small></button>
-      <button type="button" class="ps-opt" data-orient="portrait" onclick="psSetOrient('portrait')"><i class="fa-regular fa-file"></i>បញ្ឈរ</button>
-      <button type="button" class="ps-opt active" data-orient="landscape" onclick="psSetOrient('landscape')"><i class="fa-regular fa-file" style="transform:rotate(90deg);"></i>ផ្តេក</button>
-    </div>
-    <div class="ps-grid4">
-      <button type="button" class="ps-opt" data-m="2" onclick="psPreset(2)">តូច<small>2</small></button>
-      <button type="button" class="ps-opt" data-m="5" onclick="psPreset(5)">មធ្យម<small>5</small></button>
-      <button type="button" class="ps-opt active" data-m="10" onclick="psPreset(10)">ធំ<small>10</small></button>
-      <button type="button" class="ps-opt" data-m="15" onclick="psPreset(15)">ធំបំផុត<small>15</small></button>
-    </div>
-    <div class="ps-row">
-      <label>គែម</label>
-      <div class="ps-step">
-        <button type="button" onclick="psStep('margin',-1)">−</button>
-        <div class="ps-val"><input id="psIn_margin" inputmode="decimal" value="10" onchange="psInput('margin', this.value)"><span>mm</span></div>
-        <button type="button" onclick="psStep('margin',1)">+</button>
+          <select id="rptMonthSelect" class="class-select-pill" onchange="renderHolidayConfigSection()">
+            <option value="មករា">មករា</option><option value="កុម្ភៈ">កុម្ភៈ</option>
+            <option value="មីនា">មីនា</option><option value="មេសា">មេសា</option>
+            <option value="ឧសភា">ឧសភា</option><option value="មិថុនា">មិថុនា</option>
+            <option value="កក្កដា">កក្កដា</option><option value="សីហា">សីហា</option>
+            <option value="កញ្ញា">កញ្ញា</option><option value="តុលា">តុលា</option>
+            <option value="វិច្ឆិកា">វិច្ឆិកា</option><option value="ធ្នូ">ធ្នូ</option>
+          </select>
+        </div>
+
+        <div class="holiday-config-box">
+          <div style="font-size:13px; font-weight:700; color:var(--text-main); margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+            <i class="fa-solid fa-umbrella-beach" style="color:var(--green);"></i>
+            <span>កំណត់ថ្ងៃឈប់សម្រាកក្នុងខែ (មិនរាប់ជាថ្ងៃរៀន)៖</span>
+          </div>
+          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:10px; margin-top:10px;">
+            <div style="position: relative;">
+              <button class="date-trigger-btn" onclick="toggleHolidayCalPopup()">
+                <i class="fa-regular fa-calendar-days" style="color:var(--primary);"></i>
+                <span id="selectedHolidayDateTxt">ជ្រើសរើសថ្ងៃទី</span>
+              </button>
+
+              <div class="calendar-popup" id="holidayCalPopup" style="top:46px;">
+                <div class="cal-month-title" id="holidayCalTitle">...</div>
+                <div class="cal-weekdays">
+                  <span>អា</span><span>ច</span><span>អ</span><span>ព</span><span>ព្រ</span><span>សុ</span><span>ស</span>
+                </div>
+                <div class="cal-days-grid" id="holidayCalDaysGrid"></div>
+                <div style="display:flex; justify-content:flex-end; margin-top:10px;">
+                  <span style="color:var(--text-muted); cursor:pointer; font-size:12px; font-weight:600;" onclick="toggleHolidayCalPopup()">បិទ</span>
+                </div>
+              </div>
+            </div>
+
+            <input type="text" id="holidayReasonInput" placeholder="មូលហេតុ (ឧ. បុណ្យភ្ជុំបិណ្ឌ)" style="flex:1; min-width:180px; padding:8px 12px; border-radius:12px; border:1.5px solid var(--input-border); background:var(--input-bg); color:var(--text-main); outline:none; font-size:12.5px;">
+            <button onclick="addHolidayForCurrentMonth()" class="btn-open-report"><i class="fa-solid fa-plus"></i> បន្ថែម</button>
+          </div>
+          <div id="holidayTagsContainer" style="display:flex; flex-wrap:wrap; gap:4px; margin-top:6px;"></div>
+        </div>
+
+        <div class="report-menu-row">
+          <div style="display:flex; align-items:center; gap:10px; font-weight:700; font-size:13.5px; color:var(--text-main);">
+            <span style="font-size:18px;">📄</span>
+            <span>តារាងវត្តមានប្រចាំខែ</span>
+          </div>
+          <button class="btn-open-report" onclick="openReportView('monthly')">
+            <i class="fa-solid fa-print"></i> បើកមើល
+          </button>
+        </div>
+
+        <div class="report-menu-row">
+          <div style="display:flex; align-items:center; gap:10px; font-weight:700; font-size:13.5px; color:var(--text-main);">
+            <span style="font-size:18px;">📊</span>
+            <span>តារាងសរុបអវត្តមានប្រចាំឆ្នាំ</span>
+          </div>
+          <button class="btn-open-report" onclick="openReportView('yearly')">
+            <i class="fa-solid fa-print"></i> បើកមើល
+          </button>
+        </div>
       </div>
-      <div class="ps-hint" id="psUsable">ផ្ទៃប្រើ 277×190mm</div>
     </div>
 
-    <div class="ps-sec"><i class="fa-solid fa-layer-group"></i> អក្សរ និងក្រឡា <span class="ps-line"></span></div>
-    <div class="ps-row">
-      <label>អក្សរ</label>
-      <div class="ps-step">
-        <button type="button" onclick="psStep('font',-1)">−</button>
-        <div class="ps-val"><input id="psIn_font" inputmode="numeric" value="100" onchange="psInput('font', this.value)"><span>%</span></div>
-        <button type="button" onclick="psStep('font',1)">+</button>
-      </div>
-      <div class="ps-hint">ធម្មតា</div>
-    </div>
-    <div class="ps-row">
-      <label>កម្ពស់ជួរ</label>
-      <div class="ps-step">
-        <button type="button" onclick="psStep('rowH',-1)">−</button>
-        <div class="ps-val"><input id="psIn_rowH" inputmode="decimal" value="6.2" onchange="psInput('rowH', this.value)"><span>mm</span></div>
-        <button type="button" onclick="psStep('rowH',1)">+</button>
-      </div>
-      <div class="ps-hint">តាមអក្សរ</div>
-    </div>
-  </div>
+    <div id="statusActionSheetModal" class="action-sheet-backdrop" onclick="closeStatusActionSheet()">
+      <div class="action-sheet-card" onclick="event.stopPropagation()">
+        <div class="sheet-header-row">
+          <div class="sheet-student-name" id="actionSheetStudentName">ឈ្មោះសិស្ស</div>
+          <button type="button" class="sheet-close-x" onclick="closeStatusActionSheet()" title="បិទ">✕</button>
+        </div>
+        
+        <div class="sheet-options-grid">
+          <button type="button" class="sheet-choice-btn p" onclick="selectActionStatus('P')">
+            <i class="fa-solid fa-check"></i> វត្តមាន (P)
+          </button>
+          <button type="button" class="sheet-choice-btn a" onclick="selectActionStatus('A')">
+            <i class="fa-solid fa-xmark"></i> អវត្តមាន (A)
+          </button>
+          <button type="button" class="sheet-choice-btn l" onclick="selectActionStatus('L')">
+            <i class="fa-regular fa-clock"></i> យឺត (L)
+          </button>
+          <button type="button" class="sheet-choice-btn c" onclick="selectActionStatus('C')">
+            <i class="fa-solid fa-shield-halved"></i> មានច្បាប់ (C)
+          </button>
+        </div>
 
+        <button type="button" class="btn-sheet-cancel" onclick="closeStatusActionSheet()">
+          បោះបង់ / បិទ
+        </button>
+      </div>
+    </div>
+
+    <div id="reportViewerModal">
+      <div class="viewer-top-bar">
+        <button class="tab-pill-btn" onclick="closeReportView()">⬅ ត្រឡប់ក្រោយ</button>
+        <div style="display:flex; gap:8px;">
+          <button class="tab-pill-btn" style="background:#059669; color:#fff;" onclick="downloadPDF()"><i class="fa-solid fa-file-pdf"></i> ទាញយក PDF</button>
+          <button class="tab-pill-btn" style="background:linear-gradient(135deg, #0284c7, #7c3aed); color:#fff;" onclick="window.print()"><i class="fa-solid fa-print"></i> បោះពុម្ព</button>
+        </div>
+      </div>
+      <div class="report-paper-container" id="printableReportPaper"></div>
+    </div>
+
+  </div> <!-- END #pageBody -->
+
+  <!-- =========================================================
+       ⚙️ JAVASCRIPT : SUPABASE AUTH GUARD & ATTENDANCE ENGINE
+  ========================================================= -->
   <script>
     /* =========================================================
-       1. SUPABASE CLIENT & AUTH VERIFICATION
+       1. SUPABASE CONFIG
     ========================================================= */
     const SUPABASE_URL = "https://nggnuobnrxiqjtcwlvwk.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_AHDcUJbuMAfhaocyfm2X7w_O9s06wML";
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    const khmerDigits = ['០','១','២','៣','៤','៥','៦','៧','៨','៩'];
-    function toKhmerNum(num) {
-      if (num === null || num === undefined) return '';
-      return num.toString().replace(/\d/g, d => khmerDigits[parseInt(d)]);
-    }
-
+    /* =========================================================
+       2. SESSION & AUTH GUARD (ដូចទំព័រគ្រប់គ្រងគ្រូបង្រៀន)
+    ========================================================= */
     function readSession() {
-      try { return JSON.parse(localStorage.getItem('krou_supabase_user') || 'null'); } catch(e) { return null; }
+      try { return JSON.parse(localStorage.getItem('krou_supabase_user') || 'null'); } catch (e) { return null; }
     }
     const CURRENT_USER = readSession();
-
-    async function checkAuthentication() {
-      if (!CURRENT_USER || !CURRENT_USER.username) {
-        showAuthDenied('លោកអ្នកមិនទាន់បាន Login ចូលក្នុងប្រព័ន្ធនៅឡើយទេ។ សូម Login គណនីរបស់អ្នកដើម្បីមើលបញ្ជីរាយនាមសិស្ស។');
-        return false;
-      }
-
-      if (CURRENT_USER.id) {
-        try {
-          const { data, error } = await sb.from('users').select('id').eq('id', CURRENT_USER.id).maybeSingle();
-          if (!error && !data) {
-            localStorage.removeItem('krou_supabase_user');
-            localStorage.removeItem('krou_active_page');
-            showAuthDenied('គណនីរបស់អ្នកត្រូវបានលុបចេញពីប្រព័ន្ធរួចហើយ! សូមចូលប្រើប្រាស់ដោយគណនីថ្មី។');
-            return false;
-          }
-        } catch(err) {
-          console.warn('Auth check issue:', err);
-        }
-      }
-
-      document.getElementById('authDeniedWrap').style.display = 'none';
-      document.getElementById('printPage').style.display = 'block';
-      return true;
-    }
-
-    function showAuthDenied(msg) {
-      document.getElementById('printPage').style.display = 'none';
-      document.getElementById('authDeniedWrap').style.display = 'flex';
-      if (msg) document.getElementById('authDeniedMsg').innerText = msg;
-    }
 
     function goToIndex(e) {
       if (e) e.preventDefault();
@@ -576,580 +612,944 @@
       window.location.href = 'index.html';
     }
 
-    function goBack() {
-      if (window.parent && window.parent !== window) {
-        try { window.parent.postMessage({ type: 'NAVIGATE', page: 'reportsHub' }, '*'); return; } catch(e) {}
-      }
-      if (window.history.length > 1) window.history.back();
-    }
-
     var USER_ROLE    = CURRENT_USER?.role || "teacher";
-    var USER_CLASS   = CURRENT_USER?.assigned_classes || CURRENT_USER?.assigned_class || "៤(ក)";
+    var USER_CLASS   = CURRENT_USER?.assigned_classes || CURRENT_USER?.assigned_class || "";
     var TEACHER_NAME = CURRENT_USER?.teacher_name || "";
     var IS_ADMIN     = String(USER_ROLE).toLowerCase().trim() === 'admin';
 
-    let allStudentsCache = [];
-    let currentTableFormat = 'DETAILED'; // 'DETAILED' (13 ជួរ) | 'SIMPLE' (8 ជួរ)
+    /* =========================================================
+       3. THEME (យកគំរូតាមទំព័រគ្រប់គ្រងគ្រូបង្រៀន ១០០%)
+    ========================================================= */
+    function applyTheme(theme) { document.documentElement.setAttribute('data-theme', theme || 'dark'); }
+    applyTheme(new URLSearchParams(location.search).get('theme') || localStorage.getItem('krou_theme_manual') || 'dark');
+    window.addEventListener('message', e => {
+      if (e.data && (e.data.type === 'THEME_CHANGE' || e.data.theme)) applyTheme(e.data.theme || e.data);
+    });
 
-    function cleanGrade(g) {
-      return String(g || '').replace(/^ថ្នាក់ទី\s*/, '').trim();
-    }
+    var KHMER_MONTHS = ["មករា","កុម្ភៈ","មីនា","មេសា","ឧសភា","មិថុនា","កក្កដា","សីហា","កញ្ញា","តុលា","វិច្ឆិកា","ធ្នូ"];
+    var WEEKDAYS_KH  = ["អា","ច","អ","ព","ព្រ","សុ","ស"];
+    var KHMER_DIGITS = ['០','១','២','៣','៤','៥','៦','៧','៨','៩'];
 
-    function escapeHtml(value) {
-      if (!value) return '';
-      return String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    var monthlyHolidaysMap = {};
+    KHMER_MONTHS.forEach(m => monthlyHolidaysMap[m] = []);
+
+    var selectedHolidayDay = null;
+    var selectedDate = new Date();
+    var currentClassName = "";
+    var allStudentsCache = [];
+    var rawStudentsData = [];
+    var dailyAttendanceState = {};
+    var studentNotesMap = {};
+    var activeActionSheetSid = null;
+    var saveDebounceTimer = null;
+
+    function toKhmerNum(n) { return String(n).replace(/\d/g, d => KHMER_DIGITS[d]); }
+    function cleanGrade(g) { return String(g || '').replace(/^ថ្នាក់ទី\s*/, '').trim(); }
+
+    function showSaveToast() {
+      var toast = document.getElementById("saveToast");
+      toast.className = "show";
+      setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 1800);
     }
 
     /* =========================================================
-       2. ZOOM & DRAGGABLE TEACHER NAME (ចាស់ - រក្សាទុក ១០០%)
+       4. INIT PAGE
     ========================================================= */
-    function setZoom(scale, btnEl) {
-      const el = document.getElementById('printPage');
-      if (el) el.style.zoom = scale;
-      document.querySelectorAll('.zoom-btn').forEach(b => b.classList.remove('active'));
-      if (btnEl) btnEl.classList.add('active');
+    async function initPage() {
+      // 🌟 ១. ករណីមិនទាន់បាន Login
+      if (!CURRENT_USER || !CURRENT_USER.username) {
+        document.getElementById('pageBody').style.display = 'none';
+        document.getElementById('authDeniedWrap').style.display = 'flex';
+        return;
+      }
+
+      // 🌟 ២. ករណីបាន Login ត្រឹមត្រូវ
+      document.getElementById('authDeniedWrap').style.display = 'none';
+      document.getElementById('pageBody').style.display = 'block';
+
+      updateDateUI();
+
+      var curMonthName = KHMER_MONTHS[selectedDate.getMonth()];
+      var rptSel = document.getElementById('rptMonthSelect');
+      if (rptSel) rptSel.value = curMonthName;
+
+      await loadSchoolHolidays();
+      renderHolidayConfigSection();
+      await loadAllStudentsAndClasses();
     }
 
-    function setFitZoom(btnEl) {
-      const screenW = window.innerWidth;
-      let targetScale = (screenW - 16) / 1120;
-      if (targetScale > 1) targetScale = 1;
-      if (targetScale < 0.35) targetScale = 0.35;
-      setZoom(targetScale, btnEl);
-    }
+    /* 5. ទាញយកសិស្ស និងចាក់សោថ្នាក់គ្រូ */
+    async function loadAllStudentsAndClasses() {
+      var sel = document.getElementById('classSelect');
+      var container = document.getElementById('studentListContainer');
+      var userCls = cleanGrade(USER_CLASS);
 
-    var TEACHER_POS_KEY = 'rosterTeacherTranslate_V2';
-    var curX = 0, curY = 0;
+      if (!IS_ADMIN) {
+        document.getElementById('adminClassBox').style.display = 'none';
+        var badge = document.getElementById('teacherClassBadge');
+        var text = document.getElementById('teacherClassText');
 
-    function initDraggableTeacherName() {
-      var el = document.getElementById('teacherNameDisplay');
-      var page = document.getElementById('printPage');
-      if (!el || !page) return;
-
-      try {
-        var saved = JSON.parse(localStorage.getItem(TEACHER_POS_KEY) || 'null');
-        if (saved && typeof saved.x === 'number' && typeof saved.y === 'number') {
-          curX = saved.x;
-          curY = saved.y;
-          el.style.transform = 'translate(' + curX + 'px, ' + curY + 'px)';
+        if (userCls) {
+          text.innerText = 'ថ្នាក់ទី ' + userCls;
+          badge.style.display = 'inline-flex';
+          sel.innerHTML = '<option value="' + userCls + '">ថ្នាក់ទី ' + userCls + '</option>';
+          sel.value = userCls;
+          currentClassName = userCls;
+        } else {
+          badge.style.display = 'inline-flex';
+          text.innerText = 'មិនទាន់កំណត់ថ្នាក់';
+          container.innerHTML = `<div style="text-align:center; padding:40px; color:var(--amber); font-weight:bold;">
+            ⚠️ គណនីរបស់អ្នកមិនទាន់មានថ្នាក់ទទួលបន្ទុកនៅឡើយទេ។ សូមទាក់ទង Admin។
+          </div>`;
+          return;
         }
-      } catch (e) {
-        localStorage.removeItem(TEACHER_POS_KEY);
+      } else {
+        document.getElementById('teacherClassBadge').style.display = 'none';
+        document.getElementById('adminClassBox').style.display = 'inline-block';
       }
 
-      var isDragging = false;
-      var startMouseX = 0, startMouseY = 0;
-      var initialX = 0, initialY = 0;
+      container.innerHTML = `
+        <div style="text-align:center; padding:35px; color:var(--text-muted);">
+          <i class="fa-solid fa-spinner fa-spin fa-2x" style="color:var(--primary);"></i>
+          <p style="margin-top:10px; font-weight:600;">កំពុងទាញយកទិន្នន័យសិស្សពី Supabase...</p>
+        </div>`;
 
-      function startDrag(clientX, clientY) {
-        isDragging = true;
-        el.classList.add('dragging');
-        startMouseX = clientX;
-        startMouseY = clientY;
-        initialX = curX;
-        initialY = curY;
-      }
-
-      function moveDrag(clientX, clientY, e) {
-        if (!isDragging) return;
-        if (e && e.cancelable) e.preventDefault();
-        var z = parseFloat(page.style.zoom) || 1;
-        var dx = (clientX - startMouseX) / z;
-        var dy = (clientY - startMouseY) / z;
-        curX = initialX + dx;
-        curY = initialY + dy;
-        el.style.transform = 'translate(' + curX + 'px, ' + curY + 'px)';
-      }
-
-      function endDrag() {
-        if (!isDragging) return;
-        isDragging = false;
-        el.classList.remove('dragging');
-        localStorage.setItem(TEACHER_POS_KEY, JSON.stringify({ x: curX, y: curY }));
-      }
-
-      el.addEventListener('mousedown', function(e) { startDrag(e.clientX, e.clientY); e.preventDefault(); });
-      document.addEventListener('mousemove', function(e) { moveDrag(e.clientX, e.clientY); });
-      document.addEventListener('mouseup', endDrag);
-
-      el.addEventListener('touchstart', function(e) {
-        if (e.touches.length === 1) startDrag(e.touches[0].clientX, e.touches[0].clientY);
-      }, { passive: false });
-      document.addEventListener('touchmove', function(e) {
-        if (isDragging) moveDrag(e.touches[0].clientX, e.touches[0].clientY, e);
-      }, { passive: false });
-      document.addEventListener('touchend', endDrag);
-    }
-
-    function resetTeacherNamePosition() {
-      localStorage.removeItem(TEACHER_POS_KEY);
-      curX = 0; curY = 0;
-      var el = document.getElementById('teacherNameDisplay');
-      if (el) el.style.transform = 'translate(0px, 0px)';
-    }
-
-    function syncTeacherName(val) {
-      document.getElementById('teacherNameDisplay').textContent = val || '';
-    }
-
-    function syncTitleYear() {
-      renderRoster();
-    }
-
-    function onTableFormatChange() {
-      currentTableFormat = document.getElementById('tableFormatSelect').value;
-      renderRoster();
-      fitPaper();
-    }
-
-    /* =========================================================
-       3. LOAD DATA FROM SUPABASE
-    ========================================================= */
-    async function initClassesAndRoster() {
       try {
-        const { data, error } = await sb
+        const { data: stList, error: stErr } = await sb
           .from('students')
-          .select('id, student_id, student_name, gender, dob, pob, father_name, father_job, mother_name, mother_job, address, ethnicity, disability, from_class, note, grade, dropout_semester')
+          .select('id, student_id, student_name, gender, grade')
           .order('id', { ascending: true });
 
-        if (error) throw error;
-        allStudentsCache = data || [];
+        if (stErr) throw stErr;
 
-        if (!IS_ADMIN) {
-          document.getElementById('adminClassBox').style.display = 'none';
-          var badge = document.getElementById('teacherClassBadge');
-          var text = document.getElementById('teacherClassText');
-          var cleanCls = cleanGrade(USER_CLASS);
+        if (!stList || stList.length === 0) {
+          container.innerHTML = `<div style="text-align:center; padding:40px; color:var(--amber); font-weight:bold;">
+            ⚠️ តារាង students មិនទាន់មានទិន្នន័យសិស្សនៅឡើយទេ!
+          </div>`;
+          sel.innerHTML = '<option value="">គ្មានថ្នាក់</option>';
+          return;
+        }
 
-          if (cleanCls) {
-            text.innerText = 'ថ្នាក់ទី ' + cleanCls;
-            badge.style.display = 'inline-flex';
-            document.getElementById('lblDisplayClass').innerText = 'ថ្នាក់ទី ' + cleanCls;
-            renderRoster();
-          }
-        } else {
-          document.getElementById('teacherClassBadge').style.display = 'none';
-          document.getElementById('adminClassBox').style.display = 'inline-block';
+        allStudentsCache = stList;
 
-          var select = document.getElementById('classSelect');
-          var uniqueClasses = [...new Set(allStudentsCache.map(s => cleanGrade(s.grade)).filter(Boolean))];
+        if (IS_ADMIN) {
+          var uniqueClasses = [...new Set(stList.map(s => cleanGrade(s.grade)).filter(Boolean))];
           if (!uniqueClasses.length) uniqueClasses = ['១', '២', '៣', '៤(ក)', '៤(ខ)', '៥', '៦'];
-          uniqueClasses.sort((a,b) => a.localeCompare(b, 'km'));
 
-          select.innerHTML = '';
+          sel.innerHTML = '';
           uniqueClasses.forEach(function(c) {
             var opt = document.createElement('option');
             opt.value = c;
             opt.textContent = 'ថ្នាក់ទី ' + c;
-            select.appendChild(opt);
+            sel.appendChild(opt);
           });
 
-          if (uniqueClasses.length > 0) {
-            select.value = cleanGrade(USER_CLASS) || uniqueClasses[0];
-            document.getElementById('lblDisplayClass').innerText = 'ថ្នាក់ទី ' + select.value;
-            renderRoster();
+          if (userCls && uniqueClasses.includes(userCls)) {
+            sel.value = userCls;
+          } else {
+            sel.value = uniqueClasses[0];
           }
+          currentClassName = sel.value;
         }
+
+        await loadDailyAttendanceData();
       } catch (err) {
-        console.error('Error loading students:', err);
-      }
-    }
-
-    function loadRoster() {
-      const cls = document.getElementById('classSelect').value || cleanGrade(USER_CLASS);
-      document.getElementById('lblDisplayClass').innerText = 'ថ្នាក់ទី ' + (cls || '...');
-      renderRoster();
-    }
-
-    /* =========================================================
-       4. DROPOUT LOGIC & TABLE RENDER (ចាស់ + ថ្មី)
-    ========================================================= */
-    function parseDropoutStatus(s) {
-      var val = String(s.dropout_semester || s.dropoutSemester || '').trim();
-      if (!val) return { isDropped: false, semester: '' };
-
-      var norm = val.replace(/\s+/g, '').replace(/1/g, '១').replace(/2/g, '២');
-      if (norm.includes('ឆមាស២') || norm.includes('ឆមាសទី២') || norm === '២') {
-        return { isDropped: true, semester: 'ឆមាសទី២' };
-      }
-      if (norm.includes('ឆមាស១') || norm.includes('ឆមាសទី១') || norm.includes('បោះបង់') || norm === '១') {
-        return { isDropped: true, semester: 'ឆមាសទី១' };
-      }
-      return { isDropped: false, semester: '' };
-    }
-
-    function renderRoster() {
-      var cls = cleanGrade(document.getElementById('classSelect')?.value || USER_CLASS);
-      var currentSemester = document.getElementById('semesterSelect').value;
-      var container = document.getElementById('tableContainer');
-
-      if (!cls) {
-        container.innerHTML = '<div style="text-align:center;padding:30px;color:#64748b;">សូមជ្រើសរើសថ្នាក់</div>';
-        return;
-      }
-
-      var classStudents = allStudentsCache.filter(s => cleanGrade(s.grade) === cls);
-
-      // 👉 ត្រងសិស្ស៖ ឆមាសទី២ លាក់សិស្សបោះបង់ឆមាសទី១ (ចាស់ - រក្សាទុក ១០០%)
-      var displayStudents = classStudents.filter(function(s) {
-        var drop = parseDropoutStatus(s);
-        if (!drop.isDropped) return true;
-        if (currentSemester === 'ឆមាសទី២') {
-          return drop.semester !== 'ឆមាសទី១';
-        }
-        return true;
-      });
-
-      const total = displayStudents.length;
-      let female = 0;
-      displayStudents.forEach(s => {
-        if (s.gender && s.gender.includes('ស្រី')) female++;
-      });
-
-      const yrVal = document.getElementById('yearInput').value || '២០២៦-២០២៧';
-      document.getElementById('lblSubMetaStats').innerText = 
-        `ឆ្នាំសិក្សា ${yrVal} · សិស្សសរុប ${toKhmerNum(total)}នាក់ · ស្រី ${toKhmerNum(female)}នាក់`;
-
-      if (!total) {
-        container.innerHTML = '<div style="text-align:center;padding:30px;color:#64748b;">គ្មានទិន្នន័យសិស្សសម្រាប់ថ្នាក់នេះទេ</div>';
-        return;
-      }
-
-      // 🌟 បង្ហាញតាមទម្រង់ដែលបានជ្រើស (DETAILED = ១៣ ជួរថ្មី | SIMPLE = ៨ ជួរចាស់)
-      if (currentTableFormat === 'DETAILED') {
-        // ទម្រង់លម្អិត ១៣ ជួរ (ដូចរូបភាពថ្មី) + ជួរកត់បោះបង់លើ Screen
-        let rowsHtml = displayStudents.map((s, idx) => {
-          var drop = parseDropoutStatus(s);
-          var sId = escapeHtml(s.student_id || s.id);
-          var isMarkedDropped = (currentSemester === 'ឆមាសទី១' && drop.semester === 'ឆមាសទី១') ||
-                                (currentSemester === 'ឆមាសទី២' && drop.semester === 'ឆមាសទី២') ||
-                                (currentSemester === 'ទាំងអស់' && drop.isDropped);
-          var rowClass = isMarkedDropped ? 'row-dropped' : '';
-
-          return `
-            <tr class="${rowClass}">
-              <td>${toKhmerNum(idx + 1)}</td>
-              <td class="name-cell">${escapeHtml(s.student_name)}</td>
-              <td>${escapeHtml(s.gender || 'ប្រុស')}</td>
-              <td>${escapeHtml(s.dob || '')}</td>
-              <td>${escapeHtml(s.pob || '')}</td>
-              <td>${escapeHtml(s.father_name || '')}</td>
-              <td>${escapeHtml(s.father_job || '')}</td>
-              <td>${escapeHtml(s.mother_name || '')}</td>
-              <td>${escapeHtml(s.mother_job || '')}</td>
-              <td>${escapeHtml(s.address || '')}</td>
-              <td>${escapeHtml(s.ethnicity || '')}</td>
-              <td>${escapeHtml(s.disability || '')}</td>
-              <td>${escapeHtml(s.note || (isMarkedDropped ? 'បោះបង់' : ''))}</td>
-              <td class="no-print-col">
-                <select class="dropout-select ${isMarkedDropped ? 'is-dropped' : ''}" data-id="${sId}" onchange="onDropoutChange(this)">
-                  <option value="" ${!drop.isDropped ? 'selected' : ''}>សកម្ម</option>
-                  <option value="ឆមាសទី១" ${drop.semester === 'ឆមាសទី១' ? 'selected' : ''}>បោះបង់ ឆមាស១</option>
-                  <option value="ឆមាសទី២" ${drop.semester === 'ឆមាសទី២' ? 'selected' : ''}>បោះបង់ ឆមាស២</option>
-                </select>
-              </td>
-            </tr>`;
-        }).join('');
-
+        console.error('Students fetch error:', err);
         container.innerHTML = `
-          <table class="roster-table">
-            <thead>
-              <tr>
-                <th style="width:34px;">ល.រ</th>
-                <th style="width:160px;">នាមត្រកូល និងនាម</th>
-                <th style="width:44px;">ភេទ</th>
-                <th style="width:85px;">ថ្ងៃខែឆ្នាំកំណើត</th>
-                <th style="width:95px;">ទីកន្លែងកំណើត</th>
-                <th style="width:110px;">ឈ្មោះឪពុក</th>
-                <th style="width:75px;">មុខរបរ</th>
-                <th style="width:110px;">ឈ្មោះម្តាយ</th>
-                <th style="width:75px;">មុខរបរ</th>
-                <th style="width:95px;">លំនៅដ្ឋាន</th>
-                <th style="width:75px;">ក្រុមជនជាតិ</th>
-                <th style="width:65px;">ពិការភាព</th>
-                <th style="width:85px;">សេចក្តីផ្សេងៗ</th>
-                <th class="no-print-col" style="width:95px;">សិស្សបោះបង់</th>
-              </tr>
-            </thead>
-            <tbody>${rowsHtml}</tbody>
-          </table>`;
-      } else {
-        // ទម្រង់ទូទៅ ៨ ជួរ (ដូចចាស់)
-        let rowsHtml = displayStudents.map((s, idx) => {
-          var drop = parseDropoutStatus(s);
-          var sId = escapeHtml(s.student_id || s.id);
-          var isMarkedDropped = (currentSemester === 'ឆមាសទី១' && drop.semester === 'ឆមាសទី១') ||
-                                (currentSemester === 'ឆមាសទី២' && drop.semester === 'ឆមាសទី២') ||
-                                (currentSemester === 'ទាំងអស់' && drop.isDropped);
-          var rowClass = isMarkedDropped ? 'row-dropped' : '';
-
-          return `
-            <tr class="${rowClass}">
-              <td>${toKhmerNum(idx + 1)}</td>
-              <td>${sId}</td>
-              <td class="name-cell">${escapeHtml(s.student_name)}</td>
-              <td>${escapeHtml(s.gender || 'ប្រុស')}</td>
-              <td>${escapeHtml(s.dob || '-')}</td>
-              <td>${escapeHtml(s.from_class || '')}</td>
-              <td>${escapeHtml(s.note || (isMarkedDropped ? 'បោះបង់' : ''))}</td>
-              <td class="no-print-col">
-                <select class="dropout-select ${isMarkedDropped ? 'is-dropped' : ''}" data-id="${sId}" onchange="onDropoutChange(this)">
-                  <option value="" ${!drop.isDropped ? 'selected' : ''}>សកម្ម</option>
-                  <option value="ឆមាសទី១" ${drop.semester === 'ឆមាសទី១' ? 'selected' : ''}>បោះបង់ ឆមាស១</option>
-                  <option value="ឆមាសទី២" ${drop.semester === 'ឆមាសទី២' ? 'selected' : ''}>បោះបង់ ឆមាស២</option>
-                </select>
-              </td>
-            </tr>`;
-        }).join('');
-
-        container.innerHTML = `
-          <table class="roster-table">
-            <thead>
-              <tr>
-                <th style="width:38px;">ល.រ</th>
-                <th style="width:75px;">អត្តលេខ</th>
-                <th style="width:180px;">គោត្តនាម និងនាម</th>
-                <th style="width:48px;">ភេទ</th>
-                <th style="width:130px;">ថ្ងៃខែឆ្នាំកំណើត</th>
-                <th style="width:90px;">មកពីថ្នាក់ទី</th>
-                <th style="width:90px;">ផ្សេងៗ</th>
-                <th class="no-print-col" style="width:95px;">សិស្សបោះបង់</th>
-              </tr>
-            </thead>
-            <tbody>${rowsHtml}</tbody>
-          </table>`;
+          <div style="text-align:center; padding:30px; color:var(--danger);">
+            ❌ មិនអាចទាញយកសិស្សបានទេ៖ <b>${err.message || JSON.stringify(err)}</b>
+          </div>`;
       }
     }
 
-    /* 5. UPDATE DROPOUT IN SUPABASE (ចាស់ - រក្សាទុក ១០០%) */
-    async function onDropoutChange(selectEl) {
-      var studentId = selectEl.dataset.id;
-      var semester  = selectEl.value;
+    function onClassChange() {
+      currentClassName = document.getElementById('classSelect').value;
+      loadDailyAttendanceData();
+    }
 
-      var label = semester
-        ? 'តើអ្នកប្រាកដថាចង់កត់ត្រាថាសិស្សនេះបានបោះបង់ការសិក្សា (' + semester + ') មែនទេ?'
-        : 'តើអ្នកប្រាកដថាចង់ត្រឡប់សិស្សនេះទៅជាសកម្មវិញមែនទេ?';
+    /* 6. ទាញយកវត្តមានប្រចាំថ្ងៃ */
+    async function loadDailyAttendanceData() {
+      if (!currentClassName) return;
+      var curPure = cleanGrade(currentClassName);
 
-      if (!confirm(label)) {
-        renderRoster();
-        return;
-      }
+      var usedIds = new Set();
+      rawStudentsData = allStudentsCache
+        .filter(s => cleanGrade(s.grade) === curPure)
+        .map((s, idx) => {
+          var baseId = (s.student_id && String(s.student_id).trim()) 
+                    || (s.id !== null && s.id !== undefined && String(s.id).trim()) 
+                    || ('student_' + idx);
+          
+          var uniqueId = baseId;
+          if (usedIds.has(uniqueId)) {
+            uniqueId = baseId + '_' + idx;
+          }
+          usedIds.add(uniqueId);
 
-      selectEl.disabled = true;
+          return {
+            id: String(uniqueId),
+            name: s.student_name || 'គ្មានឈ្មោះ',
+            sex: s.gender || 'ប្រុស',
+            grade: s.grade,
+            days: {}
+          };
+        });
+
+      var y = selectedDate.getFullYear();
+      var m = selectedDate.getMonth();
+      var firstDateStr = `${y}-${String(m+1).padStart(2,'0')}-01`;
+      var lastDay = new Date(y, m + 1, 0).getDate();
+      var lastDateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(lastDay).padStart(2,'0')}`;
 
       try {
-        const { error } = await sb
-          .from('students')
-          .update({ dropout_semester: semester || null })
-          .eq('student_id', studentId);
+        const { data: attList, error: attErr } = await sb
+          .from('attendance')
+          .select('student_id, attendance_date, status, note, assigned_class')
+          .gte('attendance_date', firstDateStr)
+          .lte('attendance_date', lastDateStr);
+
+        if (attErr) console.warn('Attendance query warning:', attErr);
+
+        var curDay = selectedDate.getDate();
+        dailyAttendanceState = {};
+        studentNotesMap = {};
+
+        (attList || []).forEach(row => {
+          if (cleanGrade(row.assigned_class) === curPure) {
+            var dNum = parseInt(row.attendance_date.split('-')[2], 10);
+            var sid = String(row.student_id);
+            var sObj = rawStudentsData.find(x => x.id === sid);
+            if (sObj) {
+              sObj.days[dNum] = row.status;
+              if (dNum === curDay) {
+                dailyAttendanceState[sObj.id] = row.status;
+                studentNotesMap[sObj.id] = row.note || '';
+              }
+            }
+          }
+        });
+
+        rawStudentsData.forEach(s => {
+          if (!dailyAttendanceState[s.id]) dailyAttendanceState[s.id] = 'P';
+        });
+
+        renderDailyList();
+        updateStatsCounters();
+      } catch (err) {
+        console.error(err);
+        renderDailyList();
+      }
+    }
+
+    function renderDailyList() {
+      var container = document.getElementById('studentListContainer');
+      if (!rawStudentsData.length) {
+        container.innerHTML = `<div style="text-align:center; padding:40px; color:var(--text-muted);">
+          មិនមានសិស្សនៅក្នុងថ្នាក់ទី ${currentClassName} ឡើយ
+        </div>`;
+        updateStatsCounters();
+        return;
+      }
+      var q = (document.getElementById('searchBox').value || '').trim().toLowerCase();
+      var list = rawStudentsData.filter(s => (s.name||'').toLowerCase().includes(q) || (s.id||'').toLowerCase().includes(q));
+
+      var html = '';
+      list.forEach(function(s, idx) {
+        var st = dailyAttendanceState[s.id] || 'P';
+        var isPresent = (st === 'P');
+        var isAbsent = (st === 'A');
+        var noteVal = studentNotesMap[s.id] || '';
+
+        var noteInputHtml = !isPresent ? `
+          <input type="text" class="st-note-input" placeholder="មូលហេតុ / ចំណាំ..." value="${noteVal}" oninput="studentNotesMap['${s.id}']=this.value; triggerDebouncedSave();">
+        ` : '';
+
+        html += `
+          <div class="student-item-card status-${st} ${isAbsent ? 'has-absent' : ''}" id="stCard_${s.id}">
+            <div class="st-top-row">
+              <div class="st-name-title" onclick="openStatusActionSheet('${s.id}', '${s.name}')" title="ចុចដើម្បីបើកផ្ទាំងជ្រើសរើស">
+                <span style="color:var(--text-muted); font-size:12px; width:22px;">${idx + 1}</span>
+                <span>${s.name}</span>
+                <span style="font-size:11px; color:var(--text-muted); font-weight:normal;">(${s.sex || 'ប្រុស'})</span>
+              </div>
+              
+              <div class="quick-status-selector">
+                <button type="button" class="q-btn ${st==='P'?'active-P':''}" onclick="setStudentDirectStatus('${s.id}', 'P')">វត្តមាន</button>
+                <button type="button" class="q-btn ${st==='A'?'active-A':''}" onclick="setStudentDirectStatus('${s.id}', 'A')">អវត្តមាន</button>
+                <button type="button" class="q-btn ${st==='L'?'active-L':''}" onclick="setStudentDirectStatus('${s.id}', 'L')">យឺត</button>
+                <button type="button" class="q-btn ${st==='C'?'active-C':''}" onclick="setStudentDirectStatus('${s.id}', 'C')">ច្បាប់</button>
+              </div>
+            </div>
+            ${noteInputHtml}
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+    }
+
+    function setStudentDirectStatus(sid, code) {
+      dailyAttendanceState[sid] = code;
+      renderDailyList();
+      updateStatsCounters();
+      triggerDebouncedSave();
+    }
+
+    function selectActionStatus(code) {
+      if (activeActionSheetSid) {
+        dailyAttendanceState[activeActionSheetSid] = code;
+        renderDailyList();
+        updateStatsCounters();
+        triggerDebouncedSave();
+      }
+      closeStatusActionSheet();
+    }
+
+    function setBulkDailyStatus(code) {
+      rawStudentsData.forEach(function(s) { dailyAttendanceState[s.id] = code; });
+      renderDailyList();
+      updateStatsCounters();
+      triggerDebouncedSave();
+    }
+
+    function openStatusActionSheet(sid, name) {
+      activeActionSheetSid = sid;
+      document.getElementById('actionSheetStudentName').textContent = name;
+      document.getElementById('statusActionSheetModal').classList.add('show');
+    }
+
+    function closeStatusActionSheet() {
+      var modal = document.getElementById('statusActionSheetModal');
+      if (modal) modal.classList.remove('show');
+      activeActionSheetSid = null;
+    }
+
+    function updateStatsCounters() {
+      var p = 0, a = 0, l = 0, c = 0;
+      var male = 0, female = 0;
+      rawStudentsData.forEach(function(s) {
+        var sexStr = (s.sex || '').toString().trim().toLowerCase();
+        var isF = (sexStr === 'ស្រី' || sexStr === 'f' || sexStr === 'female');
+        if (isF) female++; else male++;
+
+        var st = dailyAttendanceState[s.id] || 'P';
+        if (st === 'P') p++; else if (st === 'A') a++; else if (st === 'L') l++; else if (st === 'C') c++;
+      });
+      document.getElementById('countMale').textContent = male;
+      document.getElementById('countFemale').textContent = female;
+      document.getElementById('countTotal').textContent = rawStudentsData.length;
+
+      document.getElementById('cntPresent').textContent = p;
+      document.getElementById('cntAbsent').textContent = a;
+      document.getElementById('cntLate').textContent = l;
+      document.getElementById('cntPerm').textContent = c;
+    }
+
+    function triggerDebouncedSave() {
+      showSaveToast();
+      clearTimeout(saveDebounceTimer);
+      saveDebounceTimer = setTimeout(saveDailyAttendance, 400);
+    }
+
+    /* រក្សាទុកវត្តមានទៅ Table: attendance */
+    async function saveDailyAttendance() {
+      var y = selectedDate.getFullYear();
+      var m = selectedDate.getMonth();
+      var d = selectedDate.getDate();
+      var isoDate = `${y}-${String(m+1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+      var curPure = cleanGrade(currentClassName);
+
+      var records = rawStudentsData.map(function(s) {
+        if (!s.days) s.days = {};
+        var st = dailyAttendanceState[s.id] || 'P';
+        s.days[d] = st;
+        return {
+          student_id: String(s.id),
+          assigned_class: curPure,
+          attendance_date: isoDate,
+          status: st,
+          note: studentNotesMap[s.id] || ''
+        };
+      });
+
+      try {
+        const { error } = await sb.from('attendance').upsert(records, { onConflict: 'student_id,attendance_date' });
+        if (error) console.error('Save attendance error:', error);
+      } catch (err) {
+        console.warn('Save attendance exception:', err);
+      }
+    }
+
+    /* 7. HOLIDAYS MANAGEMENT */
+    async function loadSchoolHolidays() {
+      var yr = selectedDate.getFullYear();
+      try {
+        const { data, error } = await sb.from('school_holidays').select('*').eq('year', yr);
+        if (!error && data) {
+          KHMER_MONTHS.forEach(m => monthlyHolidaysMap[m] = []);
+          data.forEach(h => {
+            if (!monthlyHolidaysMap[h.month]) monthlyHolidaysMap[h.month] = [];
+            monthlyHolidaysMap[h.month].push({ day: Number(h.day), reason: h.reason || 'ថ្ងៃឈប់សម្រាក' });
+          });
+          KHMER_MONTHS.forEach(m => monthlyHolidaysMap[m].sort((a,b) => a.day - b.day));
+        }
+      } catch(e) {
+        console.warn('Holidays load error:', e);
+      }
+    }
+
+    async function addHolidayForCurrentMonth() {
+      var mName = document.getElementById('rptMonthSelect').value;
+      var reasonInput = document.getElementById('holidayReasonInput');
+      if (!selectedHolidayDay) { alert('សូមចុចលើប្រអប់ប្រតិទិន ដើម្បីជ្រើសរើសថ្ងៃឈប់សម្រាកសិន!'); return; }
+      var reason = (reasonInput.value || 'ថ្ងៃឈប់សម្រាក').trim();
+      var yr = selectedDate.getFullYear();
+
+      try {
+        const { error } = await sb.from('school_holidays').upsert({
+          year: yr, month: mName, day: selectedHolidayDay, reason: reason
+        }, { onConflict: 'year,month,day' });
 
         if (error) throw error;
 
-        var found = allStudentsCache.find(x => String(x.student_id || x.id) === String(studentId));
-        if (found) {
-          found.dropout_semester = semester || null;
-        }
+        if (!monthlyHolidaysMap[mName]) monthlyHolidaysMap[mName] = [];
+        monthlyHolidaysMap[mName] = monthlyHolidaysMap[mName].filter(h => h.day !== selectedHolidayDay);
+        monthlyHolidaysMap[mName].push({ day: selectedHolidayDay, reason: reason });
+        monthlyHolidaysMap[mName].sort((a, b) => a.day - b.day);
 
-        selectEl.disabled = false;
-        renderRoster();
+        reasonInput.value = '';
+        selectedHolidayDay = null;
+        document.getElementById('selectedHolidayDateTxt').textContent = `ជ្រើសរើសថ្ងៃទី (${mName})`;
+        renderHolidayTagsList();
+        showSaveToast();
       } catch (err) {
-        selectEl.disabled = false;
-        alert('មានបញ្ហាក្នុងការរក្សាទុកទៅ Supabase៖ ' + (err.message || err));
-        renderRoster();
+        alert('មានបញ្ហាក្នុងការរក្សាទុកថ្ងៃឈប់៖ ' + (err.message || err));
       }
     }
 
-    /* =========================================================
-       6. EXCEL EXPORT (ថ្មី - SHEETJS)
-    ========================================================= */
-    function exportToExcel() {
-      const cls = cleanGrade(document.getElementById('classSelect')?.value || USER_CLASS);
-      const students = allStudentsCache.filter(s => cleanGrade(s.grade) === cls);
-      if (!students.length) {
-        alert('មិនមានទិន្នន័យសម្រាប់ទាញយកទេ!');
+    async function removeHoliday(mName, dayNum) {
+      var yr = selectedDate.getFullYear();
+      try {
+        const { error } = await sb.from('school_holidays').delete().eq('year', yr).eq('month', mName).eq('day', dayNum);
+        if (error) throw error;
+
+        if (monthlyHolidaysMap[mName]) {
+          monthlyHolidaysMap[mName] = monthlyHolidaysMap[mName].filter(h => h.day !== dayNum);
+          renderHolidayTagsList();
+          showSaveToast();
+        }
+      } catch (err) {
+        alert('មានបញ្ហាក្នុងការលុបថ្ងៃឈប់៖ ' + (err.message || err));
+      }
+    }
+
+    function toggleHolidayCalPopup() {
+      var pop = document.getElementById('holidayCalPopup');
+      pop.classList.toggle('show');
+      if (pop.classList.contains('show')) renderHolidayCalendarDays();
+    }
+
+    function renderHolidayCalendarDays() {
+      var mName = document.getElementById('rptMonthSelect').value;
+      var mIdx = KHMER_MONTHS.indexOf(mName);
+      var currentYear = selectedDate.getFullYear();
+      document.getElementById('holidayCalTitle').textContent = mName + " " + currentYear;
+      var grid = document.getElementById('holidayCalDaysGrid');
+      grid.innerHTML = '';
+
+      var firstDay = new Date(currentYear, mIdx, 1).getDay();
+      var totalDays = new Date(currentYear, mIdx + 1, 0).getDate();
+      var prevTotal = new Date(currentYear, mIdx, 0).getDate();
+
+      for (var p = firstDay - 1; p >= 0; p--) grid.innerHTML += `<div class="cal-day-cell muted">${prevTotal - p}</div>`;
+      for (var d = 1; d <= totalDays; d++) {
+        var isSel = (selectedHolidayDay === d);
+        grid.innerHTML += `<div class="cal-day-cell ${isSel ? 'selected' : ''}" onclick="pickHolidayCalendarDate(${d})">${d}</div>`;
+      }
+    }
+
+    function pickHolidayCalendarDate(d) {
+      selectedHolidayDay = d;
+      var mName = document.getElementById('rptMonthSelect').value;
+      document.getElementById('selectedHolidayDateTxt').textContent = `ថ្ងៃទី ${toKhmerNum(d)}  ${mName}`;
+      toggleHolidayCalPopup();
+    }
+
+    function renderHolidayConfigSection() {
+      selectedHolidayDay = null;
+      var mName = document.getElementById('rptMonthSelect').value;
+      document.getElementById('selectedHolidayDateTxt').textContent = `ជ្រើសរើសថ្ងៃទី (${mName})`;
+      renderHolidayTagsList();
+    }
+
+    function renderHolidayTagsList() {
+      var mName = document.getElementById('rptMonthSelect').value;
+      var container = document.getElementById('holidayTagsContainer');
+      var list = monthlyHolidaysMap[mName] || [];
+      if (list.length === 0) {
+        container.innerHTML = '<span style="font-size:11.5px; color:var(--text-muted); font-style:italic;">មិនទាន់មានថ្ងៃឈប់សម្រាកសម្រាប់ខែនេះទេ</span>';
         return;
       }
-
-      const headers = [
-        "ល.រ", "នាមត្រកូល និងនាម", "ភេទ", "ថ្ងៃខែឆ្នាំកំណើត", "ទីកន្លែងកំណើត",
-        "ឈ្មោះឪពុក", "មុខរបរ", "ឈ្មោះម្តាយ", "មុខរបរ", "លំនៅដ្ឋាន",
-        "ក្រុមជនជាតិ", "ពិការភាព", "សេចក្តីផ្សេងៗ"
-      ];
-
-      const rows = students.map((s, idx) => [
-        idx + 1, s.student_name, s.gender, s.dob, s.pob,
-        s.father_name, s.father_job, s.mother_name, s.mother_job, s.address,
-        s.ethnicity, s.disability, s.note
-      ]);
-
-      const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "បញ្ជីរាយនាមសិស្ស");
-      XLSX.writeFile(wb, `បញ្ជីរាយនាមសិស្ស_ថ្នាក់ទី_${cls}.xlsx`);
-    }
-
-    /* =========================================================
-       7. SIGNATURE DATES (ថ្មី)
-    ========================================================= */
-    function editTeacherDate() {
-      const val = prompt('កែប្រែកាលបរិច្ឆេទចុះហត្ថលេខាគ្រូ៖', document.getElementById('lblSolarDate').value);
-      if (val !== null && val.trim() !== '') document.getElementById('lblSolarDate').value = val.trim();
-    }
-
-    function editPrincipalDate() {
-      const current = document.getElementById('lblPrincipalDate').innerText;
-      const val = prompt('បញ្ចូលកាលបរិច្ឆេទនាយកចុះហត្ថលេខា (ទុកទទេបើមិនដាក់)៖', current);
-      const badge = document.getElementById('principalDateBadge');
-      const lbl = document.getElementById('lblPrincipalDate');
-
-      if (val && val.trim() !== '') {
-        lbl.innerText = val.trim();
-        lbl.style.display = 'block';
-        badge.innerHTML = `<i class="fa-regular fa-calendar-check" style="color:#10b981;"></i> ${val.trim()}`;
-      } else {
-        lbl.innerText = '';
-        lbl.style.display = 'none';
-        badge.innerHTML = `<i class="fa-regular fa-calendar-xmark" style="color:#f59e0b;"></i> មិនដាក់`;
-      }
-    }
-
-    /* =========================================================
-       8. ⚙️ PAGE SETUP ENGINE (ថ្មី)
-    ========================================================= */
-    const PX = 96 / 25.4;
-    const PAPERS = { A4: [210, 297], F4: [216, 330] };
-    let PS = { paper: 'A4', orient: 'landscape', margin: 10, font: 100, rowH: 6.2 };
-
-    function openPageSetup() {
-      document.getElementById('psPanel').classList.add('show');
-      document.getElementById('psBackdrop').classList.add('show');
-    }
-    function closePageSetup() {
-      document.getElementById('psPanel').classList.remove('show');
-      document.getElementById('psBackdrop').classList.remove('show');
-    }
-
-    function psSetPaper(p) { PS.paper = p; updatePsAll(); }
-    function psSetOrient(o) { PS.orient = o; updatePsAll(); }
-    function psPreset(m) { PS.margin = m; updatePsAll(); }
-
-    function psStep(key, dir) {
-      if (key === 'margin') PS.margin = Math.max(2, Math.min(30, PS.margin + dir));
-      if (key === 'font') PS.font = Math.max(70, Math.min(140, PS.font + dir * 5));
-      if (key === 'rowH') PS.rowH = Math.max(3.5, Math.min(25, Number((PS.rowH + dir * 0.4).toFixed(1))));
-      updatePsAll();
-    }
-
-    function psInput(key, val) {
-      const v = parseFloat(val);
-      if (isNaN(v)) return;
-      if (key === 'margin') PS.margin = v;
-      if (key === 'font') PS.font = v;
-      if (key === 'rowH') PS.rowH = v;
-      updatePsAll();
-    }
-
-    function psReset() {
-      PS = { paper: 'A4', orient: 'landscape', margin: 10, font: 100, rowH: 6.2 };
-      updatePsAll();
-    }
-
-    function updatePsAll() {
-      applyPsStyles();
-      fitPaper();
-    }
-
-    function applyPsStyles() {
-      const pDim = PAPERS[PS.paper];
-      const isL = (PS.orient === 'landscape');
-      const w = isL ? pDim[1] : pDim[0];
-      const h = isL ? pDim[0] : pDim[1];
-      const paper = document.getElementById('printPage');
-
-      paper.style.width = `${w}mm`;
-      paper.style.minHeight = `${h}mm`;
-      paper.style.padding = `${PS.margin}mm`;
-      paper.style.fontSize = `${(11 * PS.font) / 100}px`;
-
-      document.querySelectorAll('.roster-table tr').forEach(r => {
-        r.style.height = `${PS.rowH}mm`;
+      var html = '';
+      list.forEach(function(h) {
+        html += `<span class="holiday-tag-pill">ថ្ងៃទី${toKhmerNum(h.day)} (${h.reason}) <i class="fa-solid fa-xmark" onclick="removeHoliday('${mName}', ${h.day})"></i></span>`;
       });
-
-      document.getElementById('psUsable').innerText = `ផ្ទៃប្រើ ${w - PS.margin * 2}×${h - PS.margin * 2}mm`;
-      document.getElementById('psIn_margin').value = PS.margin;
-      document.getElementById('psIn_font').value = PS.font;
-      document.getElementById('psIn_rowH').value = PS.rowH;
-      document.querySelectorAll('[data-paper]').forEach(b => b.classList.toggle('active', b.dataset.paper === PS.paper));
-      document.querySelectorAll('[data-orient]').forEach(b => b.classList.toggle('active', b.dataset.orient === PS.orient));
-      document.querySelectorAll('[data-m]').forEach(b => b.classList.toggle('active', parseFloat(b.dataset.m) === PS.margin));
+      container.innerHTML = html;
     }
 
-    function fitPaper() {
-      const paper = document.getElementById('printPage');
-      const sc = document.getElementById('paperScaler');
-      if (!paper || !sc) return;
+    /* 8. CALENDAR & TAB LOGIC */
+    function switchNavTab(tab) {
+      document.getElementById('btnTabDaily').classList.toggle('active', tab === 'daily');
+      document.getElementById('btnTabReports').classList.toggle('active', tab === 'reports');
+      document.getElementById('tabDailyView').style.display = (tab === 'daily') ? 'block' : 'none';
+      document.getElementById('tabReportsMenu').style.display = (tab === 'reports') ? 'block' : 'none';
 
-      const pDim = PAPERS[PS.paper];
-      const isL = (PS.orient === 'landscape');
-      const wMm = isL ? pDim[1] : pDim[0];
-      const wPx = wMm * PX;
-      const availW = window.innerWidth - 24;
-
-      if (availW < wPx) {
-        const scale = availW / wPx;
-        paper.style.transform = `scale(${scale})`;
-        sc.style.width = `${wPx * scale}px`;
-        sc.style.height = `${paper.offsetHeight * scale}px`;
-      } else {
-        paper.style.transform = 'none';
-        sc.style.width = 'auto';
-        sc.style.height = 'auto';
+      if(tab === 'reports') {
+        var rptSel = document.getElementById('rptMonthSelect');
+        if (rptSel) {
+          rptSel.value = KHMER_MONTHS[selectedDate.getMonth()];
+        }
+        renderHolidayConfigSection();
       }
     }
 
-    window.addEventListener('resize', fitPaper);
+    function updateDateUI() {
+      var d = selectedDate.getDate();
+      var mIdx = selectedDate.getMonth();
+      var y = selectedDate.getFullYear();
+      document.getElementById('txtDisplayDate').textContent = d + " " + KHMER_MONTHS[mIdx] + " " + y;
+      var iso = y + "-" + String(mIdx + 1).padStart(2, '0') + "-" + String(d).padStart(2, '0');
+      document.getElementById('lblSelectedDateIso').textContent = iso;
+    }
+
+    function toggleCalendarPopup() {
+      var pop = document.getElementById('calPopup');
+      pop.classList.toggle('show');
+      if (pop.classList.contains('show')) {
+        document.getElementById('calMonthSelect').value = selectedDate.getMonth();
+        document.getElementById('calYearSelect').value = selectedDate.getFullYear();
+        renderCalendarDays();
+      }
+    }
+
+    function renderCalendarDays() {
+      var m = parseInt(document.getElementById('calMonthSelect').value);
+      var y = parseInt(document.getElementById('calYearSelect').value);
+      var grid = document.getElementById('calDaysGrid');
+      grid.innerHTML = '';
+
+      var firstDay = new Date(y, m, 1).getDay();
+      var totalDays = new Date(y, m + 1, 0).getDate();
+      var prevTotal = new Date(y, m, 0).getDate();
+
+      for (var p = firstDay - 1; p >= 0; p--) grid.innerHTML += `<div class="cal-day-cell muted">${prevTotal - p}</div>`;
+      for (var d = 1; d <= totalDays; d++) {
+        var isSel = (d === selectedDate.getDate() && m === selectedDate.getMonth() && y === selectedDate.getFullYear());
+        grid.innerHTML += `<div class="cal-day-cell ${isSel ? 'selected' : ''}" onclick="pickCalendarDate(${y}, ${m}, ${d})">${d}</div>`;
+      }
+    }
+
+    function pickCalendarDate(y, m, d) {
+      selectedDate = new Date(y, m, d);
+      updateDateUI();
+      toggleCalendarPopup();
+
+      var rptSel = document.getElementById('rptMonthSelect');
+      if (rptSel) rptSel.value = KHMER_MONTHS[m];
+
+      loadDailyAttendanceData();
+    }
+
+    function selectTodayDate() {
+      selectedDate = new Date();
+      updateDateUI();
+      toggleCalendarPopup();
+
+      var rptSel = document.getElementById('rptMonthSelect');
+      if (rptSel) rptSel.value = KHMER_MONTHS[selectedDate.getMonth()];
+
+      loadDailyAttendanceData();
+    }
+
+    function getFullKhmerDateString(dateObj) {
+      var d = dateObj || new Date();
+      var solarDay = toKhmerNum(d.getDate());
+      var solarMonth = KHMER_MONTHS[d.getMonth()];
+      var solarYear = toKhmerNum(d.getFullYear());
+      return {
+        lunarInputHtml: `<input type="text" class="clean-lunar-input" size="48" value="ថ្ងៃពុធ ៤រោច ខែភទ្របទ ឆ្នាំមមី អដ្ឋស័ក ពុទ្ធសករាជ ២៥៧០">`,
+        solarLine: `ធ្វើនៅកំពង់ល្ពៅ, ថ្ងៃទី${solarDay} ខែ${solarMonth} ឆ្នាំ${solarYear}`
+      };
+    }
+
+    function openReportView(type) {
+      var paper = document.getElementById('printableReportPaper');
+      document.getElementById('reportViewerModal').style.display = 'block';
+      paper.innerHTML = '<div style="text-align:center; padding:50px; color:var(--text-muted);"><i class="fa-solid fa-spinner fa-spin fa-2x" style="color:var(--primary);"></i><p style="margin-top:10px;">កំពុងរៀបចំរបាយការណ៍...</p></div>';
+
+      if (type === 'monthly') renderMonthlyPrintReport();
+      else renderYearlyPrintReport();
+    }
+
+    function closeReportView() { document.getElementById('reportViewerModal').style.display = 'none'; }
 
     function downloadPDF() {
-      const element = document.getElementById('printPage');
-      const pDim = PAPERS[PS.paper];
-      const isL = (PS.orient === 'landscape');
-      closePageSetup();
-
-      const opt = {
-        margin: [PS.margin, PS.margin, PS.margin, PS.margin],
-        filename: `បញ្ជីរាយនាមសិស្ស_${cleanGrade(document.getElementById('classSelect')?.value || USER_CLASS)}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2.5, useCORS: true },
-        jsPDF: { unit: 'mm', format: [Math.min(pDim[0], pDim[1]), Math.max(pDim[0], pDim[1])], orientation: PS.orient }
+      var element = document.getElementById('printableReportPaper');
+      var mName = document.getElementById('rptMonthSelect').value;
+      var opt = {
+        margin: [4, 6, 4, 6],
+        filename: 'Attendance_Report_' + (currentClassName || 'Class') + '_' + mName + '.pdf',
+        image: { type: 'jpeg', quality: 1.0 },
+        html2canvas: { scale: 3, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
       };
       html2pdf().from(element).set(opt).save();
     }
 
-    function printWhenFontsReady() {
-      closePageSetup();
-      window.print();
+    /* 9. REPORTS GENERATION */
+    async function renderMonthlyPrintReport() {
+      var mName = document.getElementById('rptMonthSelect').value;
+      var currentYear = selectedDate.getFullYear();
+      var mIdx = KHMER_MONTHS.indexOf(mName);
+      if (mIdx === -1) mIdx = selectedDate.getMonth();
+
+      var endOfMonthDate = new Date(currentYear, mIdx + 1, 0);
+      var khDate = getFullKhmerDateString(endOfMonthDate);
+      var monthHolidays = monthlyHolidaysMap[mName] || [];
+      var holidayDaysList = monthHolidays.map(h => h.day);
+      var curPure = cleanGrade(currentClassName);
+
+      try {
+        var students = rawStudentsData.map(s => ({
+          id: s.id,
+          name: s.name,
+          sex: s.sex,
+          days: {}
+        }));
+
+        var firstStr = `${currentYear}-${String(mIdx+1).padStart(2,'0')}-01`;
+        var lastStr = `${currentYear}-${String(mIdx+1).padStart(2,'0')}-${String(endOfMonthDate.getDate()).padStart(2,'0')}`;
+        
+        const { data: attList } = await sb.from('attendance')
+          .select('student_id, attendance_date, status, assigned_class')
+          .gte('attendance_date', firstStr)
+          .lte('attendance_date', lastStr);
+
+        (attList || []).forEach(r => {
+          if (cleanGrade(r.assigned_class) === curPure) {
+            var dNum = parseInt(r.attendance_date.split('-')[2], 10);
+            var s = students.find(x => x.id === String(r.student_id));
+            if (s) s.days[dNum] = r.status;
+          }
+        });
+
+        var daysCount = endOfMonthDate.getDate();
+        var thDays = '', thWeekdays = '';
+        var sundayCols = [];
+        var nonSchoolDaysCount = 0;
+
+        for (var d = 1; d <= daysCount; d++) {
+          var dow = new Date(currentYear, mIdx, d).getDay();
+          var isSun = (dow === 0);
+          var isHol = holidayDaysList.includes(d);
+
+          if (isSun || isHol) nonSchoolDaysCount++;
+          if (isSun) sundayCols.push(d);
+
+          var cellClass = isSun ? 'weekend-col' : isHol ? 'holiday-cell' : '';
+          thDays += `<th style="width:20px;" class="${cellClass}">${d}</th>`;
+          thWeekdays += `<th class="${cellClass}">${WEEKDAYS_KH[dow]}</th>`;
+        }
+
+        var dailyTotalAbsence = new Array(daysCount + 1).fill(0);
+        var dailyFemaleAbsence = new Array(daysCount + 1).fill(0);
+        var rowsHtml = '';
+        var numStudents = students.length || 1;
+        var totalAllPerm = 0, totalAllAbs = 0;
+        var totalFemalePerm = 0, totalFemaleAbs = 0;
+
+        students.forEach(function(s, idx) {
+          var dayCells = '';
+          var studentPermCount = 0;
+          var studentAbsCount = 0;
+          var sexStr = (s.sex || '').toString().trim().toLowerCase();
+          var isFemale = (sexStr === 'ស្រី' || sexStr === 'f' || sexStr === 'female');
+
+          for (var d = 1; d <= daysCount; d++) {
+            var isSun = sundayCols.includes(d);
+            var isHol = holidayDaysList.includes(d);
+
+            if (isSun) {
+              if (idx === 0) dayCells += `<td class="weekend-merged-cell" rowspan="${numStudents}"><div class="vertical-sun-box"><span class="vertical-sun-text">អាទិត្យ</span></div></td>`;
+            } else if (isHol) {
+              if (idx === 0) {
+                var holObj = monthHolidays.find(h => h.day === d);
+                dayCells += `<td class="holiday-cell" rowspan="${numStudents}"><div class="vertical-sun-box"><span class="vertical-sun-text">${holObj ? holObj.reason : 'ឈប់'}</span></div></td>`;
+              }
+            } else {
+              var code = s.days[d] || 'P';
+              if (code === 'C') studentPermCount++;
+              if (code === 'A') studentAbsCount++;
+              if (code === 'C' || code === 'A') {
+                dailyTotalAbsence[d]++;
+                if (isFemale) dailyFemaleAbsence[d]++;
+              }
+              var mark = (code === 'C') ? 'ច្ប' : (code === 'A') ? 'អច្ប' : '';
+              dayCells += `<td style="font-size:8px; font-weight:bold; color:${code === 'C' ? '#0284c7' : '#dc2626'};">${mark}</td>`;
+            }
+          }
+
+          totalAllPerm += studentPermCount; 
+          totalAllAbs += studentAbsCount;
+          if (isFemale) { totalFemalePerm += studentPermCount; totalFemaleAbs += studentAbsCount; }
+
+          rowsHtml += `
+            <tr>
+              <td>${toKhmerNum(idx + 1)}</td>
+              <td style="text-align:left; padding-left:4px; font-weight:bold;">${s.name}</td>
+              <td>${s.sex || 'ប្រុស'}</td>
+              ${dayCells}
+              <td style="font-weight:bold;">${studentPermCount > 0 ? studentPermCount : ''}</td>
+              <td style="font-weight:bold; color:#dc2626;">${studentAbsCount > 0 ? studentAbsCount : ''}</td>
+              <td style="font-weight:bold;">${(studentPermCount + studentAbsCount) > 0 ? (studentPermCount + studentAbsCount) : ''}</td>
+            </tr>`;
+        });
+
+        var totalDailyCells = '', femaleDailyCells = '';
+        for (var d = 1; d <= daysCount; d++) {
+          var isSun = sundayCols.includes(d);
+          var isHol = holidayDaysList.includes(d);
+          if (isSun || isHol) {
+            totalDailyCells += `<td class="${isHol ? 'holiday-cell' : 'weekend-col'}"></td>`;
+            femaleDailyCells += `<td class="${isHol ? 'holiday-cell' : 'weekend-col'}"></td>`;
+          } else {
+            var tVal = dailyTotalAbsence[d] > 0 ? dailyTotalAbsence[d] : '';
+            var fVal = dailyFemaleAbsence[d] > 0 ? dailyFemaleAbsence[d] : '';
+            totalDailyCells += `<td style="font-weight:bold; font-size:9px;">${tVal}</td>`;
+            femaleDailyCells += `<td style="font-weight:bold; font-size:9px; color:#dc2626;">${fVal}</td>`;
+          }
+        }
+
+        var actualSchoolDays = daysCount - nonSchoolDaysCount;
+        var totalStudents = students.length;
+        var femaleCount = students.filter(s => {
+          var ss = (s.sex || '').toString().trim().toLowerCase();
+          return ss === 'ស្រី' || ss === 'f' || ss === 'female';
+        }).length;
+        
+        var totalSlots = totalStudents * actualSchoolDays;
+        var totalAbsenceTimes = totalAllPerm + totalAllAbs;
+        var actualPresentTimes = Math.max(0, totalSlots - totalAbsenceTimes);
+        var percentAbsent = totalSlots > 0 ? ((totalAbsenceTimes / totalSlots) * 100).toFixed(2) : "0.00";
+        var percentAbsentComma = percentAbsent.replace('.', ',');
+
+        var html = `
+          <div class="rpt-header-banner">
+            <div class="f-moul" style="font-size:15px; margin-bottom:1px;">ព្រះរាជាណាចក្រកម្ពុជា</div>
+            <div class="f-moul" style="font-size:13.5px; margin-bottom:2px;">ជាតិ សាសនា ព្រះមហាក្សត្រ</div>
+            <div style="font-size:11px; letter-spacing:3px; color:#dc2626;">✻ ✻ ✻ 📖 ✻ ✻ ✻</div>
+            
+            <div class="f-moul" style="font-size:14.5px; margin-top:6px; margin-bottom:2px;">បញ្ជីវត្តមានប្រចាំខែ ${mName} ឆ្នាំ ${toKhmerNum(currentYear)}</div>
+            <div style="font-size:12px; font-weight:bold;">ឆ្នាំសិក្សា ២០២៦-២០២៧</div>
+          </div>
+
+          <div style="text-align:left; font-weight:bold; font-size:11px; margin-bottom:4px; line-height: 1.3;">
+            <div>សាលាបឋមសិក្សាកំពង់ល្ពៅ</div>
+            <div>ថ្នាក់ទី ${currentClassName}</div>
+          </div>
+
+          <table class="print-table">
+            <thead>
+              <tr>
+                <th rowspan="2" style="width:24px;">ល.រ</th>
+                <th rowspan="2" style="width:125px;">គោត្តនាម និងនាម</th>
+                <th rowspan="2" style="width:28px;">ភេទ</th>
+                ${thDays}
+                <th rowspan="2" style="width:22px;">ច្ប</th>
+                <th rowspan="2" style="width:22px;">អច្ប</th>
+                <th rowspan="2" style="width:24px;">សរុប</th>
+              </tr>
+              <tr>${thWeekdays}</tr>
+            </thead>
+            <tbody>
+              ${rowsHtml}
+              <tr style="font-weight:bold; background:#f8fafc;">
+                <td colspan="3">សរុបអវត្តមានក្នុងមួយថ្ងៃ</td>
+                ${totalDailyCells}
+                <td>${totalAllPerm}</td><td>${totalAllAbs}</td><td>${totalAllPerm + totalAllAbs}</td>
+              </tr>
+              <tr style="font-weight:bold; background:#f8fafc;">
+                <td colspan="3">ក្នុងនោះស្រី</td>
+                ${femaleDailyCells}
+                <td>${totalFemalePerm}</td><td>${totalFemaleAbs}</td><td>${totalFemalePerm + totalFemaleAbs}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="report-summary-footer">
+            <div class="footer-row-1">
+              <span>បញ្ឈប់បញ្ជីសិស្សត្រឹម &nbsp;&nbsp;<strong>${totalStudents} នាក់/ ស្រី ${femaleCount} នាក់</strong></span>
+              <span>ចំនួនពេលដែលសិស្សត្រូវមករៀន &nbsp;<strong>${totalSlots}</strong></span>
+              <span>ចំនួនពេលអវត្តមាន &nbsp;<strong>${totalAbsenceTimes}</strong></span>
+              <span>ចំនួនពេលដែលសិស្សត្រូវមករៀនពិតប្រាកដ &nbsp;<strong>${actualPresentTimes}</strong></span>
+              <span>ភាគរយអវត្តមាន &nbsp;<strong>${percentAbsentComma}%</strong></span>
+            </div>
+            <div class="footer-row-2">
+              បញ្ឈប់បញ្ជីក្នុងខែនេះនូវ ចំនួន &nbsp;<strong>${actualSchoolDays} ពេល</strong>
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-top:20px; padding:0 20px;">
+            <div style="text-align:center; min-width:180px; margin-top:42px;">
+              <div class="f-moul" style="font-size:12px; color:#1e3a8a;">បានឃើញ និងឯកភាព</div>
+              <div style="font-size:12px; font-weight:bold; color:#1e3a8a; margin-top:4px;">នាយកសាលា</div>
+            </div>
+
+            <div style="text-align:center; min-width:370px;">
+              ${khDate.lunarInputHtml}
+              <div style="font-size:11px; color:#1e3a8a; margin-top:3px;">${khDate.solarLine}</div>
+              <div class="f-moul" style="font-size:12px; color:#1e3a8a; margin-top:4px;">គ្រូទទួលបន្ទុកថ្នាក់</div>
+              <div style="font-size:13px; font-weight:bold; color:#1e3a8a; margin-top:38px;">${TEACHER_NAME || ''}</div>
+            </div>
+          </div>
+        `;
+        document.getElementById('printableReportPaper').innerHTML = html;
+      } catch (err) {
+        document.getElementById('printableReportPaper').innerHTML = `<div style="color:var(--danger); text-align:center; padding:30px;">⚠️ មិនអាចរៀបចំរបាយការណ៍បានទេ៖ ${err.message || err}</div>`;
+      }
     }
 
-    /* 9. BOOTSTRAP INITIALIZATION */
-    window.addEventListener('DOMContentLoaded', async () => {
-      const isAuth = await checkAuthentication();
-      if (!isAuth) return;
+    async function renderYearlyPrintReport() {
+      var currentYear = selectedDate.getFullYear();
+      var endOfYearDate = new Date(currentYear, 8, 0);
+      var khDate = getFullKhmerDateString(endOfYearDate);
+      var curPure = cleanGrade(currentClassName);
 
-      var now = new Date();
-      var startYear  = now.getMonth() >= 7 ? now.getFullYear() : now.getFullYear() - 1;
-      var schoolYear = toKhmerNum(startYear) + '-' + toKhmerNum(startYear + 1);
-      document.getElementById('yearInput').value = schoolYear;
+      var sem1Months = ["វិច្ឆិកា", "ធ្នូ", "មករា", "កុម្ភៈ", "មីនា", "មេសា"];
+      var sem2Months = ["ឧសភា", "មិថុនា", "កក្កដា", "សីហា", "កញ្ញា", "តុលា"];
 
-      if (TEACHER_NAME) {
-        document.getElementById('teacherNameCtrl').value = TEACHER_NAME;
-        document.getElementById('teacherNameDisplay').textContent = TEACHER_NAME;
+      try {
+        var students = rawStudentsData.map(s => ({
+          id: s.id,
+          name: s.name,
+          sex: s.sex
+        }));
+
+        const { data: attList } = await sb.from('attendance')
+          .select('student_id, attendance_date, status, assigned_class')
+          .in('status', ['C', 'A']);
+
+        var mData = {};
+        (attList || []).forEach(r => {
+          if (cleanGrade(r.assigned_class) === curPure) {
+            var dt = new Date(r.attendance_date);
+            var mName = KHMER_MONTHS[dt.getMonth()];
+            var sid = String(r.student_id);
+            if (!mData[mName]) mData[mName] = {};
+            if (!mData[mName][sid]) mData[mName][sid] = { c: 0, a: 0 };
+            if (r.status === 'C') mData[mName][sid].c++;
+            if (r.status === 'A') mData[mName][sid].a++;
+          }
+        });
+
+        var thS1 = sem1Months.map(m => `<th colspan="2" style="font-size:8px; padding:3px 0;"><div class="vertical-sun-box" style="height:42px;"><span class="vertical-sun-text">${m}</span></div></th>`).join('');
+        var thS2 = sem2Months.map(m => `<th colspan="2" style="font-size:8px; padding:3px 0;"><div class="vertical-sun-box" style="height:42px;"><span class="vertical-sun-text">${m}</span></div></th>`).join('');
+        
+        var subCA = '<th style="font-size:7px;">ច្ប</th><th style="font-size:7px;">អច្ប</th>';
+        var thSub1 = sem1Months.map(() => subCA).join('') + subCA;
+        var thSub2 = sem2Months.map(() => subCA).join('') + subCA;
+
+        var rowsHtml = '';
+        students.forEach(function(s, idx) {
+          var s1C = 0, s1A = 0, s2C = 0, s2A = 0;
+          var s1Cells = '', s2Cells = '';
+
+          sem1Months.forEach(function(m) {
+            var rec = (mData[m] && mData[m][s.id]) ? mData[m][s.id] : { c: 0, a: 0 };
+            s1C += (rec.c || 0); s1A += (rec.a || 0);
+            s1Cells += `<td>${rec.c || ''}</td><td>${rec.a || ''}</td>`;
+          });
+          s1Cells += `<td style="font-weight:bold;">${s1C}</td><td style="font-weight:bold; color:var(--danger);">${s1A}</td>`;
+
+          sem2Months.forEach(function(m) {
+            var rec = (mData[m] && mData[m][s.id]) ? mData[m][s.id] : { c: 0, a: 0 };
+            s2C += (rec.c || 0); s2A += (rec.a || 0);
+            s2Cells += `<td>${rec.c || ''}</td><td>${rec.a || ''}</td>`;
+          });
+          s2Cells += `<td style="font-weight:bold;">${s2C}</td><td style="font-weight:bold; color:var(--danger);">${s2A}</td>`;
+
+          var totC = s1C + s2C, totA = s1A + s2A;
+
+          rowsHtml += `
+            <tr>
+              <td>${toKhmerNum(idx + 1)}</td>
+              <td>${s.id}</td>
+              <td style="text-align:left; padding-left:4px; font-weight:bold; white-space:nowrap;">${s.name}</td>
+              <td>${s.sex || 'ប្រុស'}</td>
+              ${s1Cells}
+              ${s2Cells}
+              <td style="font-weight:bold;">${totC}</td>
+              <td style="font-weight:bold; color:var(--danger);">${totA}</td>
+              <td style="font-weight:bold;">${totC + totA}</td>
+            </tr>
+          `;
+        });
+
+        var html = `
+          <div class="rpt-header-banner">
+            <div class="f-moul" style="font-size:15px; margin-bottom:1px;">ព្រះរាជាណាចក្រកម្ពុជា</div>
+            <div class="f-moul" style="font-size:13.5px; margin-bottom:2px;">ជាតិ សាសនា ព្រះមហាក្សត្រ</div>
+            <div style="font-size:11px; letter-spacing:3px; color:#dc2626;">✻ ✻ ✻ 📖 ✻ ✻ ✻</div>
+            
+            <div class="f-moul" style="font-size:14.5px; margin-top:6px; margin-bottom:2px;">តារាងសរុបអវត្តមានប្រចាំឆ្នាំ</div>
+            <div style="font-size:12px; font-weight:bold;">ឆ្នាំសិក្សា ២០២៦-២០២៧</div>
+          </div>
+
+          <table class="print-table">
+            <thead>
+              <tr>
+                <th rowspan="3" style="width:24px;">ល.រ</th>
+                <th rowspan="3" style="width:35px;">អត្តលេខ</th>
+                <th rowspan="3" style="width:115px;">គោត្តនាម និងនាម</th>
+                <th rowspan="3" style="width:28px;">ភេទ</th>
+                <th colspan="14">ឆមាសទី១</th>
+                <th colspan="14">ឆមាសទី២</th>
+                <th colspan="3" rowspan="2">ចំនួនអវត្តមានប្រចាំឆ្នាំ</th>
+              </tr>
+              <tr>
+                ${thS1}<th colspan="2">សរុប</th>
+                ${thS2}<th colspan="2">សរុប</th>
+              </tr>
+              <tr>
+                ${thSub1}${thSub2}
+                <th style="font-size:7px;">ច្ប</th>
+                <th style="font-size:7px;">អច្ប</th>
+                <th style="font-size:7px;">សរុប</th>
+              </tr>
+            </thead>
+            <tbody>${rowsHtml}</tbody>
+          </table>
+
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-top:20px; padding:0 20px;">
+            <div style="text-align:center; min-width:180px; margin-top:42px;">
+              <div class="f-moul" style="font-size:12px; color:#1e3a8a;">បានឃើញ និងឯកភាព</div>
+              <div style="font-size:12px; font-weight:bold; color:#1e3a8a; margin-top:4px;">នាយកសាលា</div>
+            </div>
+
+            <div style="text-align:center; min-width:370px;">
+              ${khDate.lunarInputHtml}
+              <div style="font-size:11px; color:#1e3a8a; margin-top:3px;">${khDate.solarLine}</div>
+              <div class="f-moul" style="font-size:12px; color:#1e3a8a; margin-top:4px;">គ្រូទទួលបន្ទុកថ្នាក់</div>
+              <div style="font-size:13px; font-weight:bold; color:#1e3a8a; margin-top:38px;">${TEACHER_NAME || ''}</div>
+            </div>
+          </div>
+        `;
+        document.getElementById('printableReportPaper').innerHTML = html;
+      } catch (err) {
+        document.getElementById('printableReportPaper').innerHTML = `<div style="color:var(--danger); text-align:center; padding:30px;">⚠️ មិនអាចរៀបចំរបាយការណ៍ប្រចាំឆ្នាំបានទេ៖ ${err.message || err}</div>`;
       }
+    }
 
-      initDraggableTeacherName();
-      await initClassesAndRoster();
-      applyPsStyles();
-      setTimeout(fitPaper, 100);
-    });
+    window.addEventListener('DOMContentLoaded', initPage);
   </script>
 </body>
 </html>
