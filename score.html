@@ -310,9 +310,9 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      flex-wrap: wrap;
       gap: 6px;
-      overflow-x: auto;
-      white-space: nowrap;
+      overflow-x: visible;
       z-index: 50;
     }
     .top-toolbar::-webkit-scrollbar { height: 3px; }
@@ -321,8 +321,10 @@
     .tb-group {
       display: inline-flex;
       align-items: center;
+      flex-wrap: wrap;
       gap: 6px;
-      flex-shrink: 0;
+      flex-shrink: 1;
+      min-width: 0;
     }
 
     .pill-select, .pill-btn {
@@ -1306,7 +1308,31 @@
       }
     }
 
+    // ដាក់មុខវិជ្ជារងដែលរក្សាទុកជាជួរតែមួយ (flat) ចូលក្រុមមុខវិជ្ជាមេដោយស្វ័យប្រវត្តិ
+    function autoGroupFlat(groups) {
+      const BUCKETS = [
+        { re: /អំណាន|ស្ដាប់|ស្តាប់|សរសេរ|តែងសេចក្ដី|តែងសេចក្តី|និយាយ/, label: 'ភាសាខ្មែរ' },
+        { re: /ចំនួន|រង្វាស់|ធរណីមាត្រ|ពិជគណិត|ស្ថិតិ/, label: 'គណិតវិទ្យា' },
+        { re: /គេហវិទ្យា|អប់រំសិល្បៈ|អប់រំកាយ|សុខភាព|បំណិនជីវិត/, label: 'អប់រំកាយសុខភាព សិល្បៈ' }
+      ];
+      const tags = ['kh', 'ma', 'sc', 'so', 'ar', 'fo', 'res'];
+      const out = [];
+      groups.forEach(g => {
+        const b = (g.cols.length === 1) ? BUCKETS.find(x => x.re.test(g.cols[0].label)) : null;
+        const prev = out[out.length - 1];
+        if (b && prev && prev._bucket === b.label) { prev.cols.push(g.cols[0]); }
+        else if (b) { out.push({ label: b.label, grp: g.grp, cols: [g.cols[0]], _bucket: b.label, _orig: g }); }
+        else { out.push(g); }
+      });
+      const fin = out.map(g => (g._bucket && g.cols.length === 1) ? g._orig : g);
+      fin.forEach((g, i) => { g.grp = tags[i % tags.length]; delete g._bucket; delete g._orig; });
+      return fin;
+    }
+
     function buildGroups(rows) {
+      return autoGroupFlat(buildGroupsRaw(rows));
+    }
+    function buildGroupsRaw(rows) {
       const parents = rows.filter(r => !r.parent_id);
       const colorTags = ['kh', 'ma', 'sc', 'so', 'ar', 'fo', 'res'];
 
@@ -2081,6 +2107,11 @@
       document.getElementById('scoreReportModal').style.display = 'none';
     }
     function downloadScorePDF() {
+      // PDF ពិតប្រាកដ (vector) ៖ ប្រើប្រព័ន្ធបោះពុម្ពរបស់ browser → «Save as PDF» ដើម្បីឱ្យអក្សរមុតគ្រប់កម្រិតពង្រីក
+      try { showToast && showToast('សូមជ្រើស «Save as PDF» ក្នុងប្រអប់បោះពុម្ព ដើម្បីបាន PDF ច្បាស់'); } catch (e) {}
+      setTimeout(printScoreReport, 250);
+    }
+    function downloadScorePDFRaster() {
       const element = document.getElementById('printableScorePaper');
       const scaler = document.getElementById('scorePaperScaler');
       const cls = document.getElementById('classSelect').value || cleanGrade(USER_CLASS);
