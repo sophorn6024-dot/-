@@ -2097,11 +2097,16 @@
       document.querySelectorAll('.page-guide').forEach(g => { g.style.display = 'none'; });
 
       const restore = () => applyPageSetup();
+      // ជ្រើសរេដូលុយស្យុងខ្ពស់បំផុតដែលឧបករណ៍អាចទ្រទ្រង់បាន (កំណត់ដោយចំនួនភីកសែលសរុប)
+      const pxW = (d[0] - 2 * m) * 96 / 25.4;
+      const pxH = Math.max(element.scrollHeight, 10);
+      const maxPx = /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent) ? 14e6 : 30e6;
+      const pdfScale = Math.max(2, Math.min(5, Math.sqrt(maxPx / (pxW * Math.min(pxH, (d[1] - 2 * m) * 96 / 25.4)))));
       html2pdf().set({
         margin: [m, m, m, m],
         filename: `Score_Report_${cls}_${period}.pdf`,
-        image: { type: 'jpeg', quality: 1.0 },
-        html2canvas: { scale: 3, useCORS: true },
+        image: { type: 'png' },
+        html2canvas: { scale: pdfScale, useCORS: true, letterRendering: true },
         jsPDF: { unit: 'mm', format: [Math.min(d[0], d[1]), Math.max(d[0], d[1])], orientation: PS.orient },
         pagebreak: { mode: ['css', 'legacy'], avoid: ['tr'] }
       }).from(element).save().then(restore).catch(restore);
