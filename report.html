@@ -60,8 +60,17 @@
       print-color-adjust: exact !important;
     }
 
+    /* 🌟 បង្ខំឱ្យ DROPDOWN, SELECT និង BUTTON ទាំងអស់ប្រើ FONT BATTAMBANG 100% */
+    .sp-btn, .sp-popup, .sp-popup *,
+    .mp-btn, .mp-popup, .mp-popup *,
+    .form-control, select, option,
+    .panel-pill-box, .toolbar-label, .btn {
+      font-family: 'Khmer OS Battambang', 'Battambang', sans-serif !important;
+      font-weight: 700 !important;
+    }
+
     body {
-      font-family: 'Khmer OS Battambang', 'Battambang', 'Kantumruy Pro', sans-serif;
+      font-family: 'Khmer OS Battambang', 'Battambang', sans-serif;
       background-color: var(--app-bg);
       color: var(--text-main);
       font-size: 14px;
@@ -75,7 +84,7 @@
 
     .f-moul { font-family: 'Khmer OS Muol Light', 'Moul', cursive; font-weight: normal; letter-spacing: 0.3px; }
     .f-bold { font-family: 'Khmer OS Battambang', 'Battambang', sans-serif; font-weight: 700; }
-    .f-regular { font-family: 'Khmer OS Battambang', 'Battambang', 'Kantumruy Pro', sans-serif; font-weight: 400; }
+    .f-regular { font-family: 'Khmer OS Battambang', 'Battambang', sans-serif; font-weight: 400; }
 
     /* ══════════════ 🔒 AUTH DENIED WRAPPER ══════════════ */
     .auth-wrapper {
@@ -130,7 +139,7 @@
     }
 
     /* =========================================================
-       🎛️ SLEEK SINGLE-ROW TOOLBAR (សន្សំទំហំ & ស្អាតលើ TABLET)
+       🎛️ SLEEK SINGLE-ROW TOOLBAR
     ========================================================= */
     .no-print-bar {
       position: sticky;
@@ -172,7 +181,7 @@
     }
 
     .toolbar-label {
-      font-size: 11.5px;
+      font-size: 12px;
       font-weight: 700;
       color: var(--text-muted);
       display: flex;
@@ -183,9 +192,8 @@
 
     .form-control {
       padding: 4px 7px;
-      font-family: 'Kantumruy Pro', sans-serif;
-      font-size: 12px;
-      font-weight: 600;
+      font-size: 12.5px;
+      font-weight: 700;
       border: 1.5px solid var(--input-border);
       border-radius: 7px;
       outline: none;
@@ -199,25 +207,9 @@
       box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15);
     }
 
-    .teacher-class-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      background: linear-gradient(135deg, #0284c7, #2563eb);
-      color: #ffffff;
-      padding: 3px 10px;
-      border-radius: 9px;
-      font-weight: 700;
-      font-size: 12px;
-      height: 30px;
-      white-space: nowrap;
-      user-select: none;
-    }
-
     .btn {
-      padding: 4px 10px;
-      font-family: 'Kantumruy Pro', sans-serif;
-      font-size: 12px;
+      padding: 4px 11px;
+      font-size: 12.5px;
       font-weight: 700;
       border-radius: 8px;
       border: 1px solid transparent;
@@ -268,7 +260,6 @@
       font-weight: 700;
       cursor: pointer;
       transition: all 0.15s ease;
-      font-family: 'Kantumruy Pro', sans-serif;
       height: 24px;
       display: flex;
       align-items: center;
@@ -281,35 +272,175 @@
     }
 
     /* =========================================================
-       📱 TABLET & MOBILE RESPONSIVE TWEAKS
+       🌟 1. CUSTOM MONTH PICKER (រចនាដូចរូបភាព ១០០%)
     ========================================================= */
-    /* ── Tablet Optimization (768px - 1100px) ── */
-    @media screen and (min-width: 769px) and (max-width: 1180px) {
-      .no-print-bar {
-        padding: 8px 16px;
-        gap: 8px;
-      }
-      .panel-pill-box { padding: 3px 8px; }
-      .form-control, .btn { height: 32px; font-size: 12.5px; }
-      .zoom-btn-group { height: 32px; }
-      .zoom-btn { height: 26px; font-size: 11.5px; }
-      .preview-wrapper {
-        padding: 14px 10px;
-        gap: 18px;
-      }
+    .mp-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      min-width: 86px;
+      height: 30px;
+      padding: 4px 10px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text-main);
+      background: var(--input-bg);
+      border: 1.5px solid var(--input-border);
+      border-radius: 7px;
+      cursor: pointer;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+    .mp-btn:hover, .mp-btn.open {
+      border-color: var(--input-focus);
+      box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15);
+    }
+    .mp-btn-label {
+      white-space: nowrap;
+    }
+    .mp-chev {
+      font-size: 10px;
+      color: #0284c7;
+      transition: transform 0.2s ease;
+      flex-shrink: 0;
+    }
+    .mp-btn.open .mp-chev {
+      transform: rotate(180deg);
     }
 
-    /* ── Mobile Optimization (<768px) ── */
+    .mp-popup {
+      display: none;
+      position: fixed;
+      z-index: 99999;
+      background: #ffffff;
+      color: #0f172a;
+      border: 1px solid #e2e8f0;
+      border-radius: 22px;
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
+      padding: 8px 6px;
+      width: 140px;
+      animation: mpIn 0.15s ease-out;
+    }
+    .mp-popup.show { display: block; }
+    @keyframes mpIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .mp-list {
+      max-height: 320px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+    }
+    .mp-list::-webkit-scrollbar { width: 4px; }
+    .mp-list::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+
+    .mp-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 9px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 700;
+      color: #1e293b;
+      border-bottom: 1px solid #f1f5f9;
+      transition: all 0.15s ease;
+    }
+    .mp-item:last-child {
+      border-bottom: none;
+    }
+    .mp-item:hover {
+      background: #f8fafc;
+      color: #0284c7;
+    }
+    .mp-item.active {
+      background: #e0f2fe !important;
+      color: #0284c7 !important;
+      border-bottom-color: transparent;
+    }
+    .mp-item .fa-check {
+      display: none;
+      position: absolute;
+      right: 12px;
+      font-size: 11px;
+      color: #0284c7;
+    }
+    .mp-item.active .fa-check {
+      display: inline;
+    }
+
+    /* =========================================================
+       🔎 2. CUSTOM STUDENT PICKER
+    ========================================================= */
+    .sp-btn {
+      display: inline-flex; align-items: center; justify-content: space-between; gap: 8px;
+      min-width: 150px; max-width: 210px; height: 30px; padding: 4px 10px;
+      font-size: 12.5px; font-weight: 700; color: var(--text-main);
+      background: var(--input-bg); border: 1.5px solid var(--input-border);
+      border-radius: 7px; cursor: pointer; outline: none; transition: all 0.2s ease;
+    }
+    .sp-btn:hover, .sp-btn.open { border-color: var(--input-focus); box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15); }
+    .sp-btn-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .sp-chev { font-size: 10px; color: #0284c7; transition: transform 0.2s ease; flex-shrink: 0; }
+    .sp-btn.open .sp-chev { transform: rotate(180deg); }
+
+    .sp-popup {
+      display: none; position: fixed; z-index: 99999;
+      background: var(--card-panel-bg); color: var(--text-main);
+      border: 1px solid var(--tb-border); border-radius: 18px;
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
+      padding: 8px; animation: spIn 0.15s ease-out;
+    }
+    .sp-popup.show { display: block; }
+    @keyframes spIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+
+    .sp-search {
+      display: flex; align-items: center; gap: 8px; padding: 0 12px; height: 38px;
+      background: var(--input-bg); border: 1.5px solid var(--input-border);
+      border-radius: 12px; margin-bottom: 6px;
+    }
+    .sp-search:focus-within { border-color: var(--input-focus); }
+    .sp-search i { color: var(--text-muted); font-size: 12px; }
+    .sp-search input {
+      flex: 1; min-width: 0; border: none; outline: none; background: transparent;
+      color: var(--text-main); font-size: 13px; font-weight: 700;
+    }
+    .sp-list { position: relative; overflow-y: auto; scrollbar-width: thin; }
+    .sp-item {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      padding: 10px 14px; border-radius: 12px; cursor: pointer;
+      font-size: 14px; font-weight: 700; color: var(--text-main);
+    }
+    .sp-item:hover { background: var(--ctrl-group-bg); }
+    .sp-item.active { background: rgba(2, 132, 199, 0.15); color: #0284c7; }
+    .sp-item .fa-check { display: none; font-size: 13px; }
+    .sp-item.active .fa-check { display: inline; }
+    .sp-empty { padding: 18px 10px; text-align: center; color: var(--text-muted); font-size: 13px; font-weight: 700; }
+
+    /* =========================================================
+       📱 RESPONSIVE ADJUSTMENTS
+    ========================================================= */
+    @media screen and (min-width: 769px) and (max-width: 1180px) {
+      .no-print-bar { padding: 8px 16px; gap: 8px; }
+      .panel-pill-box { padding: 3px 8px; }
+      .form-control, .btn, .sp-btn, .mp-btn { height: 32px; font-size: 12.5px; }
+      .zoom-btn-group { height: 32px; }
+      .zoom-btn { height: 26px; font-size: 11.5px; }
+      .preview-wrapper { padding: 14px 10px; gap: 18px; }
+    }
+
     @media screen and (max-width: 768px) {
       body { padding-bottom: 40px; }
-      .no-print-bar {
-        padding: 6px 10px;
-        gap: 6px;
-      }
+      .no-print-bar { padding: 6px 10px; gap: 6px; }
       .tb-group { gap: 4px; }
       .panel-pill-box { padding: 2px 6px; }
-      .form-control { height: 28px; font-size: 11px; padding: 2px 5px; }
-      .btn { height: 28px; padding: 2px 7px; font-size: 11px; gap: 4px; }
+      .form-control, .btn { height: 28px; font-size: 11px; padding: 2px 6px; }
+      .sp-btn, .mp-btn { height: 28px; font-size: 11.5px; padding: 2px 8px; }
+      .sp-btn { min-width: 120px; }
+      .mp-btn { min-width: 74px; }
       .zoom-btn-group { height: 28px; }
       .zoom-btn { height: 22px; padding: 1px 5px; font-size: 10px; }
       .preview-wrapper {
@@ -432,7 +563,7 @@
     }
 
     .th-grade { width: 8.8%; white-space: nowrap; padding: 1px 0 !important; }
-    .grade-range { font-size: 8.8px; font-weight: normal; white-space: nowrap; display: inline-block; letter-spacing: -0.3px; font-family: 'Arial', 'Kantumruy Pro', sans-serif; line-height: 1.1; }
+    .grade-range { font-size: 8.8px; font-weight: normal; white-space: nowrap; display: inline-block; letter-spacing: -0.3px; font-family: 'Arial', sans-serif; line-height: 1.1; }
 
     .summary-text { font-size: 12.5px; margin-top: 3px; line-height: 1.45; color: var(--navy); }
     .summary-row { display: flex; justify-content: space-between; flex-wrap: wrap; }
@@ -446,58 +577,6 @@
     .sig-title { font-family: 'Khmer OS Muol Light', 'Moul', cursive; font-size: 11.5px; color: var(--navy); white-space: nowrap; }
     .sig-name { font-family: 'Khmer OS Battambang', 'Battambang', sans-serif; font-weight: bold; font-size: 13.5px; margin-top: 38px; white-space: nowrap; }
 
-    /* 🔎 Student picker (Battambang + search) */
-    .sp-btn, .sp-popup, .sp-popup * {
-      font-family: 'Khmer OS Battambang', 'Battambang', sans-serif !important;
-    }
-    .sp-btn {
-      display: inline-flex; align-items: center; justify-content: space-between; gap: 8px;
-      min-width: 150px; max-width: 210px; height: 30px; padding: 4px 10px;
-      font-size: 12.5px; font-weight: 700; color: var(--text-main);
-      background: var(--input-bg); border: 1.5px solid var(--input-border);
-      border-radius: 7px; cursor: pointer; outline: none; transition: all 0.2s ease;
-    }
-    .sp-btn:hover, .sp-btn.open { border-color: var(--input-focus); box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15); }
-    .sp-btn-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .sp-chev { font-size: 10px; color: #0284c7; transition: transform 0.2s ease; flex-shrink: 0; }
-    .sp-btn.open .sp-chev { transform: rotate(180deg); }
-
-    .sp-popup {
-      display: none; position: fixed; z-index: 99999;
-      background: var(--card-panel-bg); color: var(--text-main);
-      border: 1px solid var(--tb-border); border-radius: 18px;
-      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
-      padding: 8px; animation: spIn 0.15s ease-out;
-    }
-    .sp-popup.show { display: block; }
-    @keyframes spIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
-
-    .sp-search {
-      display: flex; align-items: center; gap: 8px; padding: 0 12px; height: 38px;
-      background: var(--input-bg); border: 1.5px solid var(--input-border);
-      border-radius: 12px; margin-bottom: 6px;
-    }
-    .sp-search:focus-within { border-color: var(--input-focus); }
-    .sp-search i { color: var(--text-muted); font-size: 12px; }
-    .sp-search input {
-      flex: 1; min-width: 0; border: none; outline: none; background: transparent;
-      color: var(--text-main); font-size: 13px; font-weight: 700;
-    }
-    .sp-list { position: relative; overflow-y: auto; scrollbar-width: thin; }
-    .sp-item {
-      display: flex; align-items: center; justify-content: space-between; gap: 10px;
-      padding: 10px 14px; border-radius: 12px; cursor: pointer;
-      font-size: 14px; font-weight: 700; color: var(--text-main);
-    }
-    .sp-item:hover { background: var(--ctrl-group-bg); }
-    .sp-item.active { background: rgba(2, 132, 199, 0.15); color: #0284c7; }
-    .sp-item .fa-check { display: none; font-size: 13px; }
-    .sp-item.active .fa-check { display: inline; }
-    .sp-empty { padding: 18px 10px; text-align: center; color: var(--text-muted); font-size: 13px; font-weight: 700; }
-
-    @media screen and (min-width: 769px) and (max-width: 1180px) { .sp-btn { height: 32px; } }
-    @media screen and (max-width: 768px) { .sp-btn { height: 28px; font-size: 11.5px; padding: 2px 8px; min-width: 120px; } }
-
     .score-table tbody tr { height: 22px; }
     .score-table tbody td { height: 22px; line-height: 20px; overflow: hidden; }
     .score-table tbody td.val-cell { font-size: 14px; line-height: 20px; padding: 0 !important; }
@@ -507,7 +586,7 @@
     ========================================================= */
     @media print {
       html, body { background: none !important; padding: 0 !important; margin: 0 !important; width: 297mm; height: 210mm; }
-      .no-print-bar, .sp-popup { display: none !important; }
+      .no-print-bar, .sp-popup, .mp-popup { display: none !important; }
       .preview-wrapper { padding: 0 !important; gap: 0 !important; zoom: 1 !important; transform: none !important; }
       .booklet-container {
         box-shadow: none !important; margin: 0 !important; width: 297mm !important; height: 210mm !important;
@@ -540,7 +619,7 @@
     
     <!-- ផ្នែកខាងឆ្វេង ៖ ជម្រើសទិន្នន័យ (Filters) -->
     <div class="tb-group">
-      <!-- ថ្នាក់ -->
+      <!-- 🌟 ថ្នាក់៖ បង្ហាញតែសម្រាប់ ADMIN ប៉ុណ្ណោះ (គ្រូមិនបាច់បង្ហាញឡើយ) -->
       <div class="panel-pill-box" id="adminClassBox" style="display:none;">
         <span class="toolbar-label"><i class="fa-solid fa-graduation-cap" style="color:#0284c7;"></i> ថ្នាក់៖</span>
         <select id="classSelect" class="form-control" onchange="onClassChange()">
@@ -548,22 +627,14 @@
         </select>
       </div>
 
-      <div id="teacherClassBadge" class="teacher-class-badge" style="display:none;">
-        <i class="fa-solid fa-chalkboard-user"></i>
-        <span id="teacherClassText">ថ្នាក់ទី...</span>
-      </div>
-
-      <!-- ខែ -->
+      <!-- 🌟 ខែ៖ ប៊ូតុងរចនាថ្មីស្អាតបេះបិទតាមរូបភាព -->
       <div class="panel-pill-box">
         <span class="toolbar-label"><i class="fa-solid fa-calendar-days" style="color:#f59e0b;"></i> ខែ៖</span>
-        <select id="monthSelect" class="form-control" onchange="loadReportData()">
-          <option value="មករា">មករា</option><option value="កុម្ភៈ">កុម្ភៈ</option>
-          <option value="មីនា">មីនា</option><option value="មេសា">មេសា</option>
-          <option value="ឧសភា">ឧសភា</option><option value="មិថុនា">មិថុនា</option>
-          <option value="កក្កដា">កក្កដា</option><option value="សីហា">សីហា</option>
-          <option value="កញ្ញា">កញ្ញា</option><option value="តុលា">តុលា</option>
-          <option value="វិច្ឆិកា">វិច្ឆិកា</option><option value="ធ្នូ">ធ្នូ</option>
-        </select>
+        <button type="button" class="mp-btn" id="mpBtn" onclick="toggleMonthPicker(event)">
+          <span class="mp-btn-label" id="mpLabel">តុលា</span>
+          <i class="fa-solid fa-chevron-down mp-chev" id="mpChev"></i>
+        </button>
+        <input type="hidden" id="monthSelect" value="តុលា">
       </div>
 
       <!-- សិស្ស -->
@@ -589,7 +660,7 @@
         <i class="fa-solid fa-book-open"></i> <span id="txtCoverToggle">ក្រប</span>
       </button>
 
-      <!-- 🔍 Zoom Buttons (មានប៊ូតុង សម / Fit សម្រាប់ Tablet & Phone) -->
+      <!-- Zoom Buttons -->
       <div class="zoom-btn-group" title="ពង្រីក/បង្រួមទំហំ">
         <button type="button" class="zoom-btn active" id="zFit" onclick="setFitZoom()">សម</button>
         <button type="button" class="zoom-btn" id="z75" onclick="setZoom(0.75, 'z75')">75%</button>
@@ -604,8 +675,13 @@
   </div>
 
   <!-- =========================================================
-       📄 BOOKLET PREVIEW CONTAINER (ទំហំធំទូលាយ)
+       📄 BOOKLET PREVIEW CONTAINER
   ========================================================= -->
+  <!-- 📅 CUSTOM MONTH PICKER POPUP (រចនាដូចរូបភាព ១០០%) -->
+  <div class="mp-popup" id="mpPopup">
+    <div class="mp-list" id="mpList"></div>
+  </div>
+
   <!-- 🔎 SEARCHABLE STUDENT PICKER POPUP -->
   <div class="sp-popup" id="spPopup">
     <div class="sp-search">
@@ -712,12 +788,15 @@
 
       const now = new Date();
       const curMonth = KHMER_MONTHS[now.getMonth()];
-      const mSel = document.getElementById('monthSelect');
-      if (mSel && curMonth) mSel.value = curMonth;
+      const mInput = document.getElementById('monthSelect');
+      if (mInput && curMonth) {
+        mInput.value = curMonth;
+        const mpLabel = document.getElementById('mpLabel');
+        if (mpLabel) mpLabel.textContent = curMonth;
+      }
 
       await initClasses();
 
-      // 📱 Tablet & Mobile Auto-Fit (screen <= 1180px)
       if (window.innerWidth <= 1180) {
         setFitZoom();
       }
@@ -741,7 +820,6 @@
       document.getElementById(btnId)?.classList.add('active');
     }
 
-    // 📱 មុខងារតម្រឹមទំហំសៀវភៅឱ្យសមល្មមនឹងទទឹងអេក្រង់ Tablet & Phone
     function setFitZoom() {
       const screenW = window.innerWidth;
       const targetW = showCover ? 1125 : 610;
@@ -779,7 +857,63 @@
       }
     }
 
-    /* 3.5 SEARCHABLE STUDENT PICKER */
+    /* =========================================================
+       🌟 3.5 CUSTOM MONTH PICKER LOGIC (ដូចរូបភាព)
+    ========================================================= */
+    function toggleMonthPicker(e) {
+      if (e) e.stopPropagation();
+      closeStudentPicker();
+      const pop = document.getElementById('mpPopup');
+      if (pop.classList.contains('show')) { closeMonthPicker(); return; }
+
+      const btn = document.getElementById('mpBtn');
+      renderMpList();
+
+      const r = btn.getBoundingClientRect();
+      const w = 140;
+      pop.style.width = w + 'px';
+      pop.style.left = Math.max(8, Math.min(r.left, window.innerWidth - w - 8)) + 'px';
+      pop.style.top = (r.bottom + 6) + 'px';
+
+      pop.classList.add('show');
+      btn.classList.add('open');
+
+      const act = pop.querySelector('.mp-item.active');
+      if (act) {
+        const list = document.getElementById('mpList');
+        list.scrollTop = act.offsetTop - list.clientHeight / 2 + act.clientHeight / 2;
+      }
+    }
+
+    function renderMpList() {
+      const list = document.getElementById('mpList');
+      const curMonth = document.getElementById('monthSelect').value;
+      list.innerHTML = '';
+      KHMER_MONTHS.forEach(m => {
+        const item = document.createElement('div');
+        item.className = 'mp-item' + (m === curMonth ? ' active' : '');
+        item.innerHTML = `<span>${m}</span><i class="fa-solid fa-check"></i>`;
+        item.onclick = (e) => {
+          e.stopPropagation();
+          chooseMonth(m);
+        };
+        list.appendChild(item);
+      });
+    }
+
+    function chooseMonth(m) {
+      document.getElementById('monthSelect').value = m;
+      document.getElementById('mpLabel').textContent = m;
+      closeMonthPicker();
+      loadReportData();
+    }
+
+    function closeMonthPicker() {
+      document.getElementById('mpPopup')?.classList.remove('show');
+      document.getElementById('mpBtn')?.classList.remove('open');
+    }
+
+    /* 3.6 SEARCHABLE STUDENT PICKER */
     function updateSpLabel() {
       const sel = document.getElementById('studentSelect');
       const cur = sel.options[sel.selectedIndex];
@@ -824,12 +958,13 @@
     }
 
     function closeStudentPicker() {
-      document.getElementById('spPopup').classList.remove('show');
-      document.getElementById('spBtn').classList.remove('open');
+      document.getElementById('spPopup')?.classList.remove('show');
+      document.getElementById('spBtn')?.classList.remove('open');
     }
 
     function toggleStudentPicker(e) {
       if (e) e.stopPropagation();
+      closeMonthPicker();
       const pop = document.getElementById('spPopup');
       if (pop.classList.contains('show')) { closeStudentPicker(); return; }
 
@@ -856,36 +991,45 @@
 
     document.addEventListener('click', (e) => {
       if (!e.target.closest('#spPopup') && !e.target.closest('#spBtn')) closeStudentPicker();
+      if (!e.target.closest('#mpPopup') && !e.target.closest('#mpBtn')) closeMonthPicker();
     });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeStudentPicker(); });
-    document.getElementById('controlToolbar').addEventListener('scroll', closeStudentPicker);
+    document.addEventListener('keydown', (e) => { 
+      if (e.key === 'Escape') {
+        closeStudentPicker(); 
+        closeMonthPicker();
+      }
+    });
+    document.getElementById('controlToolbar').addEventListener('scroll', () => {
+      closeStudentPicker();
+      closeMonthPicker();
+    });
 
-    /* 4. CLASS SELECTOR (SUPABASE) */
+    /* =========================================================
+       4. CLASS SELECTOR (🌟 ADMIN ទើបបង្ហាញ គ្រូមិនបាច់បង្ហាញ)
+    ========================================================= */
     async function initClasses() {
       const adminBox = document.getElementById('adminClassBox');
-      const teacherBadge = document.getElementById('teacherClassBadge');
       const select = document.getElementById('classSelect');
       const cleanCls = cleanGrade(USER_CLASS);
 
       if (!IS_ADMIN) {
-        adminBox.style.display = 'none';
+        // 🌟 បើជាគ្រូ លាក់ប្រអប់ថ្នាក់ទាំងស្រុង មិនបាច់បង្ហាញលើ Toolbar ឡើយ
+        if (adminBox) adminBox.style.display = 'none';
+
         if (cleanCls) {
-          document.getElementById('teacherClassText').innerText = 'ថ្នាក់ទី ' + cleanCls;
-          teacherBadge.style.display = 'none';
           select.innerHTML = `<option value="${cleanCls}">ថ្នាក់ទី ${cleanCls}</option>`;
           select.value = cleanCls;
+          currentClassName = cleanCls;
           onClassChange();
         } else {
-          teacherBadge.style.display = 'none';
-          document.getElementById('teacherClassText').innerText = 'មិនទាន់កំណត់ថ្នាក់';
           document.getElementById('reportContainer').innerHTML = 
             '<div style="text-align:center; padding:50px; color:#f59e0b; font-weight:700;">⚠️ គណនីរបស់អ្នកមិនទាន់មានថ្នាក់ទទួលបន្ទុកឡើយ។ សូមទាក់ទង Admin។</div>';
         }
         return;
       }
 
-      teacherBadge.style.display = 'none';
-      adminBox.style.display = 'inline-flex';
+      // 🌟 ប្រសិនបើជា Admin ទើបបង្ហាញប្រអប់ជ្រើសរើសថ្នាក់
+      if (adminBox) adminBox.style.display = 'inline-flex';
 
       try {
         const { data, error } = await sb.from('students').select('grade');
