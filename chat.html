@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
-  <title>ក្រុមធំ-ដោះស្រាយចម្ងល់</title>
+  <title>សារសន្ទនា</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,7 +15,7 @@
 
   <style>
     /* =========================================================
-       🎨 THEME PALETTE MATCHING THE SCREENSHOT EXACTLY
+       🎨 THEME PALETTE (MODERN CLEAN CHAT)
     ========================================================= */
     :root, [data-theme="light"] {
       --chat-bg: #eaf4f9;
@@ -27,7 +27,6 @@
       --chat-text: #0f172a;
       --chat-text-muted: #64748b;
       --chat-primary: #0284c7;
-      --chat-primary-hover: #0369a1;
 
       --bubble-in-bg: #ffffff;
       --bubble-in-border: #e2e8f0;
@@ -43,7 +42,6 @@
       --chip-inactive-text: #475569;
 
       --bottom-card-bg: #ffffff;
-      --quote-bg: #f1f5f9;
       --card-shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
     }
 
@@ -57,7 +55,6 @@
       --chat-text: #f8fafc;
       --chat-text-muted: #94a3b8;
       --chat-primary: #38bdf8;
-      --chat-primary-hover: #0284c7;
 
       --bubble-in-bg: #0e202c;
       --bubble-in-border: #183347;
@@ -73,7 +70,6 @@
       --chip-inactive-text: #94a3b8;
 
       --bottom-card-bg: #0e202c;
-      --quote-bg: #162b3b;
       --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
     }
 
@@ -91,7 +87,7 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ══════════════ 🔒 AUTH DENIED WRAPPER ══════════════ */
+    /* ══════════════ 🔒 AUTH WRAPPER ══════════════ */
     .auth-wrapper {
       display: none;
       flex-direction: column;
@@ -144,7 +140,7 @@
       border: none;
     }
 
-    /* 📱 MAIN APP WRAPPER (MATCHING SCREENSHOT LAYOUT) */
+    /* 📱 APP CONTAINER */
     .chat-app-wrapper {
       position: fixed !important;
       inset: 0 !important;
@@ -159,7 +155,7 @@
       z-index: 10;
     }
 
-    /* ============ 1. HEADER (EXACTLY AS SCREENSHOT) ============ */
+    /* ============ 1. HEADER ============ */
     .chat-header {
       flex: 0 0 auto;
       padding: max(10px, env(safe-area-inset-top)) 16px 10px 16px;
@@ -198,8 +194,8 @@
       width: 38px;
       height: 38px;
       border-radius: 50%;
-      background: #ffffff;
-      border: 1px solid var(--chat-border);
+      background: #0284c7;
+      color: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -207,7 +203,6 @@
       flex-shrink: 0;
       box-shadow: 0 2px 6px rgba(0,0,0,0.06);
     }
-    .header-avatar img { width: 100%; height: 100%; object-fit: cover; }
     .header-title-text {
       font-size: 15px;
       font-weight: 700;
@@ -260,11 +255,10 @@
       font-family: inherit;
     }
 
-    /* ============ 2. CHAT MESSAGES BODY ============ */
+    /* ============ 2. MESSAGES BODY ============ */
     .chat-messages {
       flex: 1 1 auto;
       min-height: 0;
-      /* 🌟 ទុកកន្លែងខាងក្រោមសម្រាប់ Bottom Card រាងកោង */
       padding: 14px 14px calc(130px + env(safe-area-inset-bottom, 0px)) 14px;
       overflow-y: auto;
       display: flex;
@@ -274,7 +268,7 @@
       position: relative;
     }
 
-    /* 📅 DATE PILL (ដូចពាក្យ «ម្សិលមិញ» ក្នុងរូប) */
+    /* 📅 DYNAMIC DATE PILL */
     .date-pill {
       align-self: center;
       background: rgba(0, 0, 0, 0.05);
@@ -290,7 +284,6 @@
       color: #94a3b8;
     }
 
-    /* MESSAGE GROUPS */
     .msg-group {
       display: flex;
       gap: 10px;
@@ -303,7 +296,7 @@
     .msg-group.incoming { align-self: flex-start; }
     .msg-group.outgoing { align-self: flex-end; flex-direction: row-reverse; }
 
-    /* AVATARS */
+    /* DYNAMIC AVATARS */
     .msg-avatar {
       width: 38px;
       height: 38px;
@@ -320,8 +313,8 @@
       box-shadow: 0 2px 5px rgba(0,0,0,0.08);
     }
     .msg-avatar img { width: 100%; height: 100%; object-fit: cover; }
-    .msg-avatar.robot-avatar { background: #8b5cf6; }
-    .msg-avatar.user-green   { background: #059669; }
+    .msg-avatar.admin-role { background: #9333ea; }
+    .msg-avatar.user-role  { background: #059669; }
 
     .msg-content-wrap { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
     
@@ -331,11 +324,10 @@
       color: #0d9488;
       margin-left: 2px;
     }
-    .msg-sender-label.robot { color: #c026d3; }
-    [data-theme="dark"] .msg-sender-label.robot { color: #f472b6; }
+    .msg-sender-label.is-admin { color: #d97706; }
+    [data-theme="dark"] .msg-sender-label.is-admin { color: #f59e0b; }
     .msg-group.outgoing .msg-sender-label { text-align: right; color: var(--chat-primary); }
 
-    /* BUBBLE */
     .msg-bubble {
       background: var(--bubble-in-bg);
       border: 1px solid var(--bubble-in-border);
@@ -355,17 +347,6 @@
       color: var(--bubble-out-text);
       border-top-left-radius: 18px;
       border-top-right-radius: 4px;
-    }
-
-    /* QUOTE BOX (ដូចក្នុងរូប Reply Box) */
-    .quote-box {
-      background: var(--quote-bg);
-      border-radius: 10px;
-      padding: 7px 10px;
-      font-size: 12.5px;
-      color: var(--chat-text-muted);
-      margin-bottom: 6px;
-      border-left: 3px solid var(--chat-primary);
     }
 
     .msg-footer {
@@ -391,7 +372,7 @@
     .msg-group.outgoing .btn-delete-msg { color: var(--bubble-out-time); }
     .btn-delete-msg:hover { opacity: 1; color: #ef4444 !important; }
 
-    /* 🎙️ AUDIO MESSAGE WAVEFORM (ដូចរូបភាពគំរូ ១០០%) */
+    /* 🎙️ AUDIO MESSAGE WAVEFORM */
     .audio-player-card {
       display: flex;
       align-items: center;
@@ -436,9 +417,7 @@
       width: 2.5px;
       background: #cbd5e1;
       border-radius: 2px;
-      transition: height 0.2s, background 0.2s;
     }
-    .waveform-bar.active { background: #0284c7; }
     .audio-timing {
       font-size: 10.5px;
       color: var(--chat-text-muted);
@@ -456,7 +435,7 @@
       cursor: pointer; 
     }
 
-    /* ⏬ FLOATING SCROLL-TO-BOTTOM BUTTON (ដូចក្នុងរូប) */
+    /* ⏬ FLOATING SCROLL DOWN BUTTON */
     .btn-scroll-down {
       position: absolute;
       right: 16px;
@@ -474,7 +453,6 @@
       justify-content: center;
       font-size: 14px;
       z-index: 80;
-      transition: transform 0.2s, opacity 0.2s;
     }
     [data-theme="dark"] .btn-scroll-down {
       background: #11222e;
@@ -483,7 +461,7 @@
     }
     .btn-scroll-down:active { transform: scale(0.92); }
 
-    /* ============ 🌟 3. BOTTOM INPUT CARD (ដូចក្នុងរូប ១០០%) ============ */
+    /* ============ 🌟 3. BOTTOM INPUT CARD ============ */
     .chat-bottom-card {
       position: absolute !important;
       bottom: 0 !important;
@@ -501,7 +479,7 @@
       gap: 8px !important;
     }
 
-    /* CHIP TABS ROW (ជំនួយការ AI, ជជែកទូទៅ, ជាមួយម្ចាស់ប្រព័ន្ធ) */
+    /* FILTER TABS */
     .chip-tabs-row {
       display: flex;
       align-items: center;
@@ -523,9 +501,6 @@
       cursor: pointer;
       white-space: nowrap;
       transition: all 0.15s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
     }
     .chip-tab.active {
       background: var(--chip-active-bg);
@@ -533,7 +508,7 @@
     }
     .chip-tab:active { transform: scale(0.95); }
 
-    /* BOTTOM INPUT & ACTIONS ROW */
+    /* INPUT & ACTIONS */
     .input-actions-row {
       display: flex;
       align-items: center;
@@ -557,7 +532,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: color 0.15s;
     }
     .btn-left-icon:hover { color: var(--chat-primary); }
 
@@ -574,7 +548,6 @@
     }
     .chat-text-input::placeholder { color: #94a3b8; font-size: 14px; }
 
-    /* MIC / SEND CIRCLE BUTTON */
     .btn-round-action {
       width: 42px;
       height: 42px;
@@ -655,10 +628,6 @@
       display: flex; align-items: center; gap: 10px; padding: 8px 10px;
       background: var(--chat-surface-card); border-radius: 12px; border: 1px solid var(--chat-border);
     }
-    .member-item.is-current-user {
-      background: rgba(2, 132, 199, 0.08) !important;
-      border: 1.5px solid #0284c7 !important;
-    }
     .member-avatar {
       width: 36px; height: 36px; border-radius: 50%;
       background: #0284c7; color: #fff; font-weight: 700;
@@ -688,19 +657,19 @@
     </div>
   </div>
 
-  <!-- 📱 CHAT APP WRAPPER (MATCHING SCREENSHOT) -->
+  <!-- 📱 CHAT APP WRAPPER -->
   <div class="chat-app-wrapper" id="chatApp" style="display:none;">
 
-    <!-- 1. HEADER (ដូចរូបគំរូ) -->
+    <!-- 1. HEADER -->
     <div class="chat-header">
       <div class="header-left">
         <button class="btn-back" type="button" onclick="goToIndex(event)" title="ថយក្រោយ">
           <i class="fa-solid fa-arrow-left"></i>
         </button>
         <div class="header-avatar" onclick="openMembersModal()">
-          <img src="https://images.unsplash.com/photo-1544717305-2782549b5136?w=100&auto=format&fit=crop&q=60" alt="Logo" onerror="this.src=''; this.parentElement.innerHTML='<i class=\'fa-solid fa-graduation-cap\' style=\'color:#0284c7;\'></i>'">
+          <i class="fa-solid fa-comments"></i>
         </div>
-        <span class="header-title-text" id="roomTitle">ក្រុមធំ-ដោះស្រាយចម្ងល់</span>
+        <span class="header-title-text" id="roomTitle">បន្ទប់សន្ទនារួម (គ្រូបង្រៀន)</span>
       </div>
 
       <div class="header-right">
@@ -720,9 +689,7 @@
     </div>
 
     <!-- 2. MESSAGES CONTAINER -->
-    <div class="chat-messages" id="chatBox" onscroll="handleChatScroll()">
-      <div class="date-pill">ម្សិលមិញ</div>
-    </div>
+    <div class="chat-messages" id="chatBox" onscroll="handleChatScroll()"></div>
 
     <!-- ⏬ FLOATING SCROLL DOWN BUTTON -->
     <button class="btn-scroll-down" id="btnScrollDown" type="button" onclick="scrollToBottom(true)" title="ទៅកាន់សារចុងក្រោយ">
@@ -738,18 +705,18 @@
       <div class="emoji-drawer-grid" id="emojiGrid"></div>
     </div>
 
-    <!-- 🌟 3. BOTTOM INPUT CARD (ដូចក្នុងរូបភាពគំរូ ១០០%) -->
+    <!-- 🌟 3. BOTTOM INPUT CARD -->
     <div class="chat-bottom-card" id="chatBottomCard">
-      <!-- CHIP TABS ROW -->
+      <!-- CHIP FILTER TABS -->
       <div class="chip-tabs-row">
         <button type="button" class="chip-tab active" onclick="switchFilter(this, 'all')">
-          <span>ជំនួយការ AI</span>
+          <span>សារទាំងអស់</span>
         </button>
-        <button type="button" class="chip-tab" onclick="switchFilter(this, 'general')">
-          <span>ជជែកទូទៅ</span>
+        <button type="button" class="chip-tab" onclick="switchFilter(this, 'teacher')">
+          <span>សារលោកគ្រូ/អ្នកគ្រូ</span>
         </button>
         <button type="button" class="chip-tab" onclick="switchFilter(this, 'admin')">
-          <span>ជាមួយម្ចាស់ប្រព័ន្ធ</span>
+          <span>សារអ្នកគ្រប់គ្រង (Admin)</span>
         </button>
       </div>
 
@@ -758,9 +725,6 @@
         <div class="action-icons-left">
           <button class="btn-left-icon" type="button" onclick="toggleEmojiPicker()" title="Emoji">
             <i class="fa-regular fa-face-smile"></i>
-          </button>
-          <button class="btn-left-icon" type="button" onclick="triggerVideoNote()" title="វីដេអូ">
-            <i class="fa-solid fa-video"></i>
           </button>
           <button class="btn-left-icon" type="button" onclick="document.getElementById('imageFileInput').click()" title="រូបភាព">
             <i class="fa-regular fa-image"></i>
@@ -859,6 +823,7 @@
       return String(t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     }
 
+    /* ⚡ 5. FETCH & CACHE TEACHERS DYNAMICALLY */
     async function loadTeachersCache() {
       try {
         const { data, error } = await sb
@@ -877,23 +842,39 @@
       } catch(e) {}
     }
 
-    /* RENDER AVATAR (GREEN USER OR ROBOT) */
-    function renderAvatar(senderCode, senderName, senderRole) {
+    /* 🌟 អនុគមន៍ទាញយកឈ្មោះ និង Profile ពិតប្រាកដចេញពី Database ដោយស្វ័យប្រវត្តិ */
+    function getSenderInfo(senderCode, senderName, senderRole) {
       const codeKey = (senderCode || '').toLowerCase();
       const nameKey = (senderName || '').trim();
       const teacherObj = teachersMap[codeKey] || teachersMap[nameKey];
 
-      const photoUrl = teacherObj ? safeUrl(teacherObj.photo_url) : '';
-      const initial = senderName ? senderName.charAt(0) : 'ស';
-      const isAdm = (String(senderRole || '').toLowerCase() === 'admin');
+      // ទាញយកឈ្មោះពិតជាក់ស្តែង
+      const displayName = (teacherObj && teacherObj.teacher_name) 
+        ? teacherObj.teacher_name 
+        : (senderName || 'អ្នកប្រើប្រាស់');
 
-      if (photoUrl) {
-        return `<div class="msg-avatar"><img src="${escapeHtml(photoUrl)}" alt="Avatar" onerror="this.outerHTML='<span>${initial}</span>'"></div>`;
-      }
+      // ទាញយកតួនាទី ឬថ្នាក់បង្រៀនជាក់ស្តែង
+      const roleStr = String((teacherObj && teacherObj.role) || senderRole || '').toLowerCase();
+      const isAdm = (roleStr === 'admin');
+
+      let sub = '';
       if (isAdm) {
-        return `<div class="msg-avatar robot-avatar"><i class="fa-solid fa-robot"></i></div>`;
+        sub = 'Admin';
+      } else if (teacherObj && teacherObj.assigned_classes) {
+        sub = 'ថ្នាក់ទី ' + teacherObj.assigned_classes;
       }
-      return `<div class="msg-avatar user-green"><span>${initial}</span></div>`;
+
+      const photoUrl = teacherObj ? safeUrl(teacherObj.photo_url) : '';
+      const initial = displayName ? displayName.trim().charAt(0) : 'U';
+
+      return {
+        displayName,
+        sub,
+        fullNameWithSub: sub ? `${displayName} • ${sub}` : displayName,
+        photoUrl,
+        initial,
+        isAdm
+      };
     }
 
     /* EMOJI SETUP */
@@ -918,12 +899,12 @@
       input.focus();
     }
 
-    /* 5. INITIALIZATION */
+    /* 6. INITIALIZATION */
     window.addEventListener('DOMContentLoaded', () => {
       if (!checkAuthentication()) return;
       initNativeEmojiGrid();
 
-      // បង្ហាញទិន្នន័យពី Cache ភ្លាមៗ (Instant Loading)
+      // បង្ហាញភ្លាមៗពី Cache
       if (allCachedMessages.length > 0) {
         renderMessages(allCachedMessages, true);
       }
@@ -959,7 +940,7 @@
       }
     }
 
-    /* 6. LOAD & RENDER MESSAGES */
+    /* 7. LOAD & RENDER MESSAGES */
     async function loadMessages() {
       try {
         const { data, error } = await sb
@@ -977,6 +958,21 @@
       } catch (err) {}
     }
 
+    /* 📅 DYNAMIC DATE SEPARATOR */
+    function getDateLabel(isoStr) {
+      if (!isoStr) return '';
+      try {
+        const d = new Date(isoStr);
+        const today = new Date();
+        const yesterday = new Date();
+        yesterday.setDate(today.getDate() - 1);
+
+        if (d.toDateString() === today.toDateString()) return 'ថ្ងៃនេះ';
+        if (d.toDateString() === yesterday.toDateString()) return 'ម្សិលមិញ';
+        return d.toLocaleDateString('km-KH', { day: 'numeric', month: 'short', year: 'numeric' });
+      } catch(e) { return ''; }
+    }
+
     function renderMessages(messages, autoScroll = true) {
       const box = document.getElementById('chatBox');
       if (!messages || messages.length === 0) {
@@ -988,21 +984,31 @@
       const myName = (CURRENT_USER?.teacher_name || '').trim();
       const isAdmUser = String(CURRENT_USER?.role || '').toLowerCase() === 'admin';
 
-      let html = '<div class="date-pill">ម្សិលមិញ</div>';
+      let html = '';
+      let lastDateLabel = '';
+
       messages.forEach(m => {
+        // បង្ហាញស្លាកថ្ងៃខែដោយស្វ័យប្រវត្តិ
+        const currentDateLabel = getDateLabel(m.created_at);
+        if (currentDateLabel && currentDateLabel !== lastDateLabel) {
+          html += `<div class="date-pill">${currentDateLabel}</div>`;
+          lastDateLabel = currentDateLabel;
+        }
+
         const senderCode = (m.sender_code || '').toLowerCase();
         const senderName = (m.sender_name || '').trim();
         const isMe = (senderCode && senderCode === myCode) || (senderName === myName);
         const rowClass = isMe ? 'outgoing' : 'incoming';
-        const senderIsAdm = (String(m.sender_role || '').toLowerCase() === 'admin');
 
-        const avatarHtml = renderAvatar(m.sender_code, m.sender_name, m.sender_role);
+        // 🌟 ទាញយកឈ្មោះ និង Profile ពិតប្រាកដចេញពី Database
+        const sender = getSenderInfo(m.sender_code, m.sender_name, m.sender_role);
 
-        let senderTitle = m.sender_name;
-        if (senderIsAdm) {
-          senderTitle = '🤖 ជំនួយការ AI • KrouDigital';
+        // Avatar
+        let avatarHtml = '';
+        if (sender.photoUrl) {
+          avatarHtml = `<div class="msg-avatar"><img src="${escapeHtml(sender.photoUrl)}" alt="Avatar" onerror="this.outerHTML='<span>${escapeHtml(sender.initial)}</span>'"></div>`;
         } else {
-          senderTitle = `${m.sender_name} • វិទ្យាល័យ`;
+          avatarHtml = `<div class="msg-avatar ${sender.isAdm ? 'admin-role' : 'user-role'}"><span>${escapeHtml(sender.initial)}</span></div>`;
         }
 
         let contentHtml = '';
@@ -1030,12 +1036,7 @@
             ${m.caption ? `<div>${escapeHtml(m.caption)}</div>` : ''}
           `;
         } else {
-          // Quote box rendering for AI / responses
-          let quoteHtml = '';
-          if (senderIsAdm && m.caption) {
-            quoteHtml = `<div class="quote-box">${escapeHtml(m.caption)}</div>`;
-          }
-          contentHtml = quoteHtml + formatLinks(escapeHtml(m.content));
+          contentHtml = formatLinks(escapeHtml(m.content));
         }
 
         let deleteBtnHtml = '';
@@ -1053,7 +1054,7 @@
           <div class="msg-group ${rowClass}" id="msg_${m.id}">
             ${avatarHtml}
             <div class="msg-content-wrap">
-              <div class="msg-sender-label ${senderIsAdm ? 'robot' : ''}">${escapeHtml(senderTitle)}</div>
+              <div class="msg-sender-label ${sender.isAdm ? 'is-admin' : ''}">${escapeHtml(sender.fullNameWithSub)}</div>
               <div class="msg-bubble">
                 ${contentHtml}
                 <div class="msg-footer">
@@ -1077,7 +1078,7 @@
       return heights.map(h => `<div class="waveform-bar" style="height:${h}px"></div>`).join('');
     }
 
-    /* 7. AUDIO PLAYBACK WITH SPEED (1x -> 1.5x -> 2x) */
+    /* 8. AUDIO PLAYBACK WITH SPEED (1x -> 1.5x -> 2x) */
     let currentAudio = null;
     let currentPlayBtn = null;
 
@@ -1113,7 +1114,7 @@
       }
     }
 
-    /* 8. SEND & UPLOAD ACTIONS */
+    /* 9. SEND & UPLOAD ACTIONS */
     function handleInputState(val) {
       const hasText = val.trim().length > 0;
       document.getElementById('micIcon').style.display = hasText ? 'none' : 'inline-block';
@@ -1141,7 +1142,7 @@
       try {
         const payload = {
           room_id: CURRENT_ROOM,
-          sender_name: CURRENT_USER?.teacher_name || 'លោកគ្រូ/អ្នកគ្រូ',
+          sender_name: CURRENT_USER?.teacher_name || CURRENT_USER?.username || 'លោកគ្រូ/អ្នកគ្រូ',
           sender_code: CURRENT_USER?.username || CURRENT_USER?.teacher_id || 'USER',
           sender_role: CURRENT_USER?.role || 'teacher',
           type: 'text',
@@ -1159,7 +1160,7 @@
     function switchFilter(el, type) {
       document.querySelectorAll('.chip-tab').forEach(b => b.classList.remove('active'));
       el.classList.add('active');
-      if (type === 'general') {
+      if (type === 'teacher') {
         renderMessages(allCachedMessages.filter(m => String(m.sender_role).toLowerCase() !== 'admin'));
       } else if (type === 'admin') {
         renderMessages(allCachedMessages.filter(m => String(m.sender_role).toLowerCase() === 'admin'));
@@ -1168,11 +1169,7 @@
       }
     }
 
-    function triggerVideoNote() {
-      alert('មុខងារវីដេអូខ្លី (Video Note) នឹងត្រូវបានបើកដំណើរការឆាប់ៗនេះ!');
-    }
-
-    /* 9. IMAGE UPLOAD & CANVAS COMPRESS */
+    /* 10. IMAGE UPLOAD & CANVAS COMPRESS */
     function compressImage(file, maxWidth = 1200, quality = 0.75) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -1210,7 +1207,7 @@
         
         const payload = {
           room_id: CURRENT_ROOM,
-          sender_name: CURRENT_USER?.teacher_name || 'លោកគ្រូ/អ្នកគ្រូ',
+          sender_name: CURRENT_USER?.teacher_name || CURRENT_USER?.username || 'លោកគ្រូ/អ្នកគ្រូ',
           sender_code: CURRENT_USER?.username || CURRENT_USER?.teacher_id || 'USER',
           sender_role: CURRENT_USER?.role || 'teacher',
           type: 'image',
@@ -1228,7 +1225,7 @@
       }
     }
 
-    /* 10. VOICE RECORDING (iOS & Android Compatible) */
+    /* 11. VOICE RECORDING */
     let mediaRecorder = null;
     let audioChunks = [];
     let recInterval = null;
@@ -1272,7 +1269,7 @@
               try {
                 const payload = {
                   room_id: CURRENT_ROOM,
-                  sender_name: CURRENT_USER?.teacher_name || 'លោកគ្រូ/អ្នកគ្រូ',
+                  sender_name: CURRENT_USER?.teacher_name || CURRENT_USER?.username || 'លោកគ្រូ/អ្នកគ្រូ',
                   sender_code: CURRENT_USER?.username || CURRENT_USER?.teacher_id || 'USER',
                   sender_role: CURRENT_USER?.role || 'teacher',
                   type: 'audio',
@@ -1361,7 +1358,7 @@
           </div>
           <div class="member-info">
             <div class="m-name">${escapeHtml(t.teacher_name || t.username)}</div>
-            <div class="m-sub">${t.role === 'admin' ? 'អ្នកគ្រប់គ្រង (Admin)' : 'គ្រូបង្រៀន'}</div>
+            <div class="m-sub">${t.role === 'admin' ? 'អ្នកគ្រប់គ្រង (Admin)' : (t.assigned_classes ? 'ថ្នាក់ទី ' + t.assigned_classes : 'គ្រូបង្រៀន')}</div>
           </div>
         </div>
       `).join('');
