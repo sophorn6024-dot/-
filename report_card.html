@@ -609,8 +609,8 @@
 
     <!-- ជួរទី១ -->
     <div class="tb-row-1">
-      <!-- ប៊ូតុងត្រឡប់ -->
-      <button type="button" class="pill-btn" onclick="goBackToScore()" title="ត្រឡប់ទៅស្រង់ពិន្ទុ">
+      <!-- ប៊ូតុងត្រឡប់ → ទៅទំព័រ «របាយការណ៍» -->
+      <button type="button" class="pill-btn" onclick="goBackToReports()" title="ត្រឡប់ទៅបញ្ជីរបាយការណ៍">
         <i class="fa-solid fa-arrow-left"></i>
         <span class="btn-label">ត្រឡប់</span>
       </button>
@@ -742,13 +742,16 @@
       window.location.href = 'index.html';
     }
 
-    function goBackToScore() {
-      if (window.parent && window.parent !== window) {
-        try {
-          window.parent.postMessage({ type: 'NAVIGATE', page: 'score', target: 'score.html' }, '*');
-        } catch(e) {}
-      }
-      window.location.href = 'score.html';
+    /* ត្រឡប់ទៅទំព័រ «របាយការណ៍» (reportsHub) ក្នុង index.html */
+    function goBackToReports() {
+      closeAllDropdowns();
+      try {
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage({ type: 'NAVIGATE', page: 'reportsHub' }, '*');
+          return;
+        }
+      } catch (e) {}
+      window.location.href = 'index.html#reportsHub';
     }
 
     const ALL_MONTHS = ['វិច្ឆិកា','ធ្នូ','មករា','កុម្ភៈ','មីនា','មេសា','ឧសភា','មិថុនា','កក្កដា','សីហា','កញ្ញា','តុលា'];
