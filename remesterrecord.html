@@ -9,7 +9,7 @@
   <!-- 🔤 Google Fonts Khmer & FontAwesome -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;700&family=Kantumruy+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Moul&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;700;900&family=Moul&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <!-- ⚡ Supabase JS Client (v2) -->
@@ -60,8 +60,17 @@
       print-color-adjust: exact !important;
     }
 
+    /* 🌟 បង្ខំឱ្យប៊ូតុង និង DROPDOWN ទាំងអស់ប្រើ FONT BATTAMBANG 100% */
+    .sp-btn, .sp-popup, .sp-popup *,
+    .custom-dd-btn, .custom-dd-popup, .custom-dd-popup *,
+    .form-control, select, option, input, button,
+    .panel-pill-box, .toolbar-label, .btn {
+      font-family: 'Khmer OS Battambang', 'Battambang', sans-serif !important;
+      font-weight: 700 !important;
+    }
+
     body {
-      font-family: 'Khmer OS Battambang', 'Battambang', 'Kantumruy Pro', sans-serif;
+      font-family: 'Khmer OS Battambang', 'Battambang', sans-serif;
       background-color: var(--app-bg);
       color: var(--text-main);
       font-size: 14px;
@@ -75,7 +84,7 @@
 
     .f-moul { font-family: 'Khmer OS Muol Light', 'Moul', cursive; font-weight: normal; letter-spacing: 0.3px; }
     .f-bold { font-family: 'Khmer OS Battambang', 'Battambang', sans-serif; font-weight: 700; }
-    .f-regular { font-family: 'Khmer OS Battambang', 'Battambang', 'Kantumruy Pro', sans-serif; font-weight: 400; }
+    .f-regular { font-family: 'Khmer OS Battambang', 'Battambang', sans-serif; font-weight: 400; }
 
     /* ══════════════ 🔒 AUTH DENIED WRAPPER ══════════════ */
     .auth-wrapper {
@@ -130,7 +139,7 @@
     }
 
     /* =========================================================
-       🎛️ SLEEK SINGLE-ROW TOOLBAR (សន្សំទំហំ & ស្អាតលើ TABLET)
+       🎛️ SLEEK SINGLE-ROW TOOLBAR
     ========================================================= */
     .no-print-bar {
       position: sticky;
@@ -150,6 +159,7 @@
       -webkit-overflow-scrolling: touch;
       white-space: nowrap;
     }
+
     .no-print-bar::-webkit-scrollbar { height: 3px; }
     .no-print-bar::-webkit-scrollbar-thumb { background: rgba(2, 132, 199, 0.25); border-radius: 3px; }
 
@@ -171,7 +181,7 @@
     }
 
     .toolbar-label {
-      font-size: 11.5px;
+      font-size: 12px;
       font-weight: 700;
       color: var(--text-muted);
       display: flex;
@@ -182,9 +192,8 @@
 
     .form-control {
       padding: 4px 7px;
-      font-family: 'Kantumruy Pro', sans-serif;
-      font-size: 12px;
-      font-weight: 600;
+      font-size: 12.5px;
+      font-weight: 700;
       border: 1.5px solid var(--input-border);
       border-radius: 7px;
       outline: none;
@@ -198,25 +207,9 @@
       box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15);
     }
 
-    .teacher-class-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      background: linear-gradient(135deg, #0284c7, #2563eb);
-      color: #ffffff;
-      padding: 3px 10px;
-      border-radius: 9px;
-      font-weight: 700;
-      font-size: 12px;
-      height: 30px;
-      white-space: nowrap;
-      user-select: none;
-    }
-
     .btn {
-      padding: 4px 10px;
-      font-family: 'Kantumruy Pro', sans-serif;
-      font-size: 12px;
+      padding: 4px 11px;
+      font-size: 12.5px;
       font-weight: 700;
       border-radius: 8px;
       border: 1px solid transparent;
@@ -262,7 +255,6 @@
       font-weight: 700;
       cursor: pointer;
       transition: all 0.15s ease;
-      font-family: 'Kantumruy Pro', sans-serif;
       height: 24px;
       display: flex;
       align-items: center;
@@ -275,12 +267,127 @@
     }
 
     /* =========================================================
-       📱 TABLET & MOBILE RESPONSIVE TWEAKS
+       🌟 CUSTOM DROPDOWN SYSTEM (រចនាដូចរូបភាព ១០០% - BATTAMBANG)
+    ========================================================= */
+    .custom-dd-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      min-width: 135px;
+      height: 30px;
+      padding: 4px 10px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text-main);
+      background: var(--input-bg);
+      border: 1.5px solid var(--input-border);
+      border-radius: 7px;
+      cursor: pointer;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+    .custom-dd-btn:hover, .custom-dd-btn.open {
+      border-color: var(--input-focus);
+      box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15);
+    }
+    .custom-dd-label {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .custom-dd-chev {
+      font-size: 10px;
+      color: #0284c7;
+      transition: transform 0.2s ease;
+      flex-shrink: 0;
+    }
+    .custom-dd-btn.open .custom-dd-chev {
+      transform: rotate(180deg);
+    }
+
+    .custom-dd-popup {
+      display: none;
+      position: fixed;
+      z-index: 99999;
+      background: #ffffff;
+      color: #0f172a;
+      border: 1px solid #e2e8f0;
+      border-radius: 22px;
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
+      padding: 8px 6px;
+      animation: ddPopIn 0.15s ease-out;
+    }
+    .custom-dd-popup.show { display: block; }
+    @keyframes ddPopIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .custom-dd-list {
+      max-height: 320px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+    }
+    .custom-dd-list::-webkit-scrollbar { width: 4px; }
+    .custom-dd-list::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+
+    .custom-dd-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 9px 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #1e293b;
+      border-bottom: 1px solid #f1f5f9;
+      transition: all 0.15s ease;
+    }
+    .custom-dd-item:last-child {
+      border-bottom: none;
+    }
+    .custom-dd-item:hover {
+      background: #f8fafc;
+      color: #0284c7;
+    }
+    .custom-dd-item.active {
+      background: #e0f2fe !important;
+      color: #0284c7 !important;
+      border-bottom-color: transparent;
+    }
+    .custom-dd-item .fa-check {
+      display: none;
+      font-size: 11px;
+      color: #0284c7;
+    }
+    .custom-dd-item.active .fa-check {
+      display: inline;
+    }
+
+    /* 🔎 Search Box ក្នុង Student Picker */
+    .sp-search {
+      display: flex; align-items: center; gap: 8px; padding: 0 12px; height: 38px;
+      background: #f8fafc; border: 1.5px solid #cbd5e1;
+      border-radius: 12px; margin-bottom: 6px;
+    }
+    .sp-search:focus-within { border-color: #0284c7; }
+    .sp-search i { color: #64748b; font-size: 12px; }
+    .sp-search input {
+      flex: 1; min-width: 0; border: none; outline: none; background: transparent;
+      color: #0f172a; font-size: 13px; font-weight: 700;
+    }
+    .sp-empty { padding: 18px 10px; text-align: center; color: #64748b; font-size: 13px; font-weight: 700; }
+
+    /* =========================================================
+       📱 RESPONSIVE ADJUSTMENTS
     ========================================================= */
     @media screen and (min-width: 769px) and (max-width: 1180px) {
       .no-print-bar { padding: 8px 16px; gap: 8px; }
       .panel-pill-box { padding: 3px 8px; }
-      .form-control, .btn { height: 32px; font-size: 12.5px; }
+      .form-control, .btn, .custom-dd-btn { height: 32px; font-size: 12.5px; }
       .zoom-btn-group { height: 32px; }
       .zoom-btn { height: 26px; font-size: 11.5px; }
       .preview-wrapper { padding: 14px 10px; gap: 18px; }
@@ -291,8 +398,8 @@
       .no-print-bar { padding: 6px 10px; gap: 6px; }
       .tb-group { gap: 4px; }
       .panel-pill-box { padding: 2px 6px; }
-      .form-control { height: 28px; font-size: 11px; padding: 2px 5px; }
-      .btn { height: 28px; padding: 2px 7px; font-size: 11px; gap: 4px; }
+      .form-control, .btn { height: 28px; font-size: 11.5px; padding: 2px 6px; }
+      .custom-dd-btn { height: 28px; font-size: 11.5px; padding: 2px 8px; min-width: 110px; }
       .zoom-btn-group { height: 28px; }
       .zoom-btn { height: 22px; padding: 1px 5px; font-size: 10px; }
       .preview-wrapper {
@@ -396,7 +503,7 @@
     ========================================================= */
     @media print {
       html, body { background: none !important; padding: 0 !important; margin: 0 !important; width: 297mm; height: 210mm; }
-      .no-print-bar { display: none !important; }
+      .no-print-bar, .custom-dd-popup { display: none !important; }
       .preview-wrapper { padding: 0 !important; gap: 0 !important; zoom: 1 !important; transform: none !important; }
       .sheet-page {
         box-shadow: none !important; margin: 0 !important; width: 297mm !important; height: 210mm !important;
@@ -428,7 +535,7 @@
     
     <!-- ផ្នែកខាងឆ្វេង ៖ Filters -->
     <div class="tb-group">
-      <!-- ថ្នាក់ -->
+      <!-- 🌟 ថ្នាក់៖ បង្ហាញតែសម្រាប់ ADMIN ប៉ុណ្ណោះ (គ្រូមិនបាច់បង្ហាញឡើយ) -->
       <div class="panel-pill-box" id="adminClassBox" style="display:none;">
         <span class="toolbar-label"><i class="fa-solid fa-graduation-cap" style="color:#0284c7;"></i> ថ្នាក់៖</span>
         <select id="classSelect" class="form-control" onchange="onClassSelectChange()">
@@ -436,28 +543,26 @@
         </select>
       </div>
 
-      <div id="teacherClassBadge" class="teacher-class-badge" style="display:none;">
-        <i class="fa-solid fa-chalkboard-user"></i>
-        <span id="teacherClassText">ថ្នាក់ទី...</span>
-      </div>
-
-      <!-- សិស្ស -->
+      <!-- 🌟 សិស្ស៖ ប៊ូតុងរចនាថ្មីស្អាតបេះបិទតាមរូបភាព (Font Battambang) -->
       <div class="panel-pill-box">
         <span class="toolbar-label"><i class="fa-solid fa-user" style="color:#10b981;"></i> សិស្ស៖</span>
-        <select id="studentSelect" class="form-control" style="min-width:130px; max-width:180px;" onchange="renderSemesterView()">
+        <button type="button" class="custom-dd-btn" id="spBtn" onclick="toggleStudentPicker(event)">
+          <span class="custom-dd-label" id="spLabel">🏫 ទាំងថ្នាក់</span>
+          <i class="fa-solid fa-chevron-down custom-dd-chev" id="spChev"></i>
+        </button>
+        <select id="studentSelect" style="display:none;" onchange="renderSemesterView()">
           <option value="ALL">🏫 ទាំងថ្នាក់</option>
         </select>
       </div>
 
-      <!-- សន្លឹក -->
+      <!-- 🌟 សន្លឹក៖ ប៊ូតុងរចនាថ្មីស្អាតបេះបិទតាមរូបភាព (Font Battambang) -->
       <div class="panel-pill-box">
         <span class="toolbar-label"><i class="fa-solid fa-file-lines" style="color:#f59e0b;"></i> សន្លឹក៖</span>
-        <select id="sheetFilterSelect" class="form-control" onchange="renderSemesterView()">
-          <option value="ALL">ទាំងអស់ (៣ សន្លឹក)</option>
-          <option value="1">សន្លឹកទី១ (ក្របក្រៅ)</option>
-          <option value="2">សន្លឹកទី២ (ក្របក្នុង)</option>
-          <option value="3" selected>សន្លឹកទី៣ (លទ្ធផលប្រឡង)</option>
-        </select>
+        <button type="button" class="custom-dd-btn" id="sheetBtn" onclick="toggleSheetPicker(event)" style="min-width: 160px;">
+          <span class="custom-dd-label" id="sheetLabel">សន្លឹកទី៣ (លទ្ធផលប្រឡង)</span>
+          <i class="fa-solid fa-chevron-down custom-dd-chev" id="sheetChev"></i>
+        </button>
+        <input type="hidden" id="sheetFilterSelect" value="3">
       </div>
     </div>
 
@@ -479,6 +584,23 @@
       </button>
     </div>
 
+  </div>
+
+  <!-- =========================================================
+       🌟 POPUPS ជ្រើសរើសសិស្ស & សន្លឹក (រចនាដូចរូបភាព ១០០%)
+  ========================================================= -->
+  <!-- 1. POPUP សិស្ស -->
+  <div class="custom-dd-popup" id="spPopup" style="width: 240px;">
+    <div class="sp-search">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" id="spInput" placeholder="ស្វែងរកសិស្ស..." autocomplete="off" oninput="renderSpList(this.value)">
+    </div>
+    <div class="custom-dd-list" id="spList"></div>
+  </div>
+
+  <!-- 2. POPUP សន្លឹក -->
+  <div class="custom-dd-popup" id="sheetPopup" style="width: 195px;">
+    <div class="custom-dd-list" id="sheetList"></div>
   </div>
 
   <!-- =========================================================
@@ -562,6 +684,14 @@
       { key: 'foreign',   label: 'ភាសាបរទេស' }
     ];
 
+    /* បញ្ជីជម្រើសសន្លឹក */
+    const SHEET_OPTIONS = [
+      { id: 'ALL', label: 'ទាំងអស់ (៣ សន្លឹក)' },
+      { id: '1',   label: 'សន្លឹកទី១ (ក្របក្រៅ)' },
+      { id: '2',   label: 'សន្លឹកទី២ (ក្របក្នុង)' },
+      { id: '3',   label: 'សន្លឹកទី៣ (លទ្ធផលប្រឡង)' }
+    ];
+
     let bundleData = null;
 
     function setZoom(scale, btnId) {
@@ -573,7 +703,7 @@
 
     function setFitZoom() {
       const screenW = window.innerWidth;
-      const targetW = 1125; // 297mm Landscape Booklet Width
+      const targetW = 1125;
       let scale = (screenW - 20) / targetW;
       if (scale > 1) scale = 1;
       if (scale < 0.28) scale = 0.28;
@@ -593,7 +723,6 @@
       }, 100);
     }
 
-    // ── COMPETITION RANKING HELPER ──
     function computeCompetitionRanks(items) {
       const valid = items.filter(x => x.val !== '' && x.val !== null && !isNaN(Number(x.val)));
       valid.sort((a, b) => Number(b.val) - Number(a.val));
@@ -628,31 +757,31 @@
       }
     });
 
+    /* =========================================================
+       🌟 4.1 CLASS SELECTOR (លាក់សម្រាប់គ្រូ បង្ហាញតែ ADMIN)
+    ========================================================= */
     async function initClasses() {
       const adminBox = document.getElementById('adminClassBox');
-      const teacherBadge = document.getElementById('teacherClassBadge');
       const select = document.getElementById('classSelect');
       const cleanCls = cleanGrade(USER_CLASS);
 
       if (!IS_ADMIN) {
-        adminBox.style.display = 'none';
+        // 🌟 ប្រសិនបើជាគ្រូ លាក់ប្រអប់ថ្នាក់ទាំងស្រុង មិនបាច់បង្ហាញលើ Toolbar ឡើយ
+        if (adminBox) adminBox.style.display = 'none';
+
         if (cleanCls) {
-          document.getElementById('teacherClassText').innerText = 'ថ្នាក់ទី ' + cleanCls;
-          teacherBadge.style.display = 'inline-flex';
           select.innerHTML = `<option value="${cleanCls}">ថ្នាក់ទី ${cleanCls}</option>`;
           select.value = cleanCls;
           loadSemesterData();
         } else {
-          teacherBadge.style.display = 'inline-flex';
-          document.getElementById('teacherClassText').innerText = 'មិនទាន់កំណត់ថ្នាក់';
           document.getElementById('semesterContainer').innerHTML = 
             '<div style="text-align:center; padding:50px; color:#f59e0b; font-weight:700;">⚠️ គណនីរបស់អ្នកមិនទាន់មានថ្នាក់ទទួលបន្ទុកឡើយ។ សូមទាក់ទង Admin។</div>';
         }
         return;
       }
 
-      teacherBadge.style.display = 'none';
-      adminBox.style.display = 'inline-flex';
+      // 🌟 ប្រសិនបើជា Admin ទើបបង្ហាញប្រអប់ជ្រើសរើសថ្នាក់
+      if (adminBox) adminBox.style.display = 'inline-flex';
 
       try {
         const { data, error } = await sb.from('students').select('grade');
@@ -674,6 +803,136 @@
       loadSemesterData();
     }
 
+    /* =========================================================
+       🌟 4.2 CUSTOM DROPDOWNS: POPUP LOGIC (ដូចរូបភាព ១០០%)
+    ========================================================= */
+    function closeAllPopups() {
+      document.getElementById('spPopup')?.classList.remove('show');
+      document.getElementById('spBtn')?.classList.remove('open');
+      document.getElementById('sheetPopup')?.classList.remove('show');
+      document.getElementById('sheetBtn')?.classList.remove('open');
+    }
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('#spPopup') && !e.target.closest('#spBtn') &&
+          !e.target.closest('#sheetPopup') && !e.target.closest('#sheetBtn')) {
+        closeAllPopups();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAllPopups(); });
+    document.getElementById('controlToolbar').addEventListener('scroll', closeAllPopups);
+
+    /* ── A. POPUP សន្លឹក (SHEET PICKER) ── */
+    function toggleSheetPicker(e) {
+      if (e) e.stopPropagation();
+      const pop = document.getElementById('sheetPopup');
+      const btn = document.getElementById('sheetBtn');
+      if (pop.classList.contains('show')) { closeAllPopups(); return; }
+
+      closeAllPopups();
+      renderSheetList();
+
+      const r = btn.getBoundingClientRect();
+      const w = 195;
+      pop.style.width = w + 'px';
+      pop.style.left = Math.max(8, Math.min(r.left, window.innerWidth - w - 8)) + 'px';
+      pop.style.top = (r.bottom + 6) + 'px';
+
+      pop.classList.add('show');
+      btn.classList.add('open');
+    }
+
+    function renderSheetList() {
+      const list = document.getElementById('sheetList');
+      const curVal = document.getElementById('sheetFilterSelect').value;
+      list.innerHTML = '';
+
+      SHEET_OPTIONS.forEach(opt => {
+        const item = document.createElement('div');
+        item.className = 'custom-dd-item' + (opt.id === curVal ? ' active' : '');
+        item.innerHTML = `<span>${opt.label}</span><i class="fa-solid fa-check"></i>`;
+        item.onclick = (e) => {
+          e.stopPropagation();
+          chooseSheet(opt.id, opt.label);
+        };
+        list.appendChild(item);
+      });
+    }
+
+    function chooseSheet(val, label) {
+      document.getElementById('sheetFilterSelect').value = val;
+      document.getElementById('sheetLabel').textContent = label;
+      closeAllPopups();
+      renderSemesterView();
+    }
+
+    /* ── B. POPUP សិស្ស (STUDENT PICKER) ── */
+    function updateSpLabel() {
+      const sel = document.getElementById('studentSelect');
+      const cur = sel.options[sel.selectedIndex];
+      document.getElementById('spLabel').textContent = cur ? cur.textContent : 'ជ្រើសរើសសិស្ស';
+    }
+
+    function renderSpList(query) {
+      const sel = document.getElementById('studentSelect');
+      const list = document.getElementById('spList');
+      const q = String(query || '').trim().toLowerCase();
+      list.innerHTML = '';
+      let count = 0;
+
+      Array.from(sel.options).forEach(opt => {
+        const label = opt.textContent;
+        if (q && !label.toLowerCase().includes(q)) return;
+        const item = document.createElement('div');
+        item.className = 'custom-dd-item' + (opt.value === sel.value ? ' active' : '');
+        item.innerHTML = `<span>${label}</span><i class="fa-solid fa-check"></i>`;
+        item.addEventListener('click', (e) => {
+          e.stopPropagation();
+          chooseStudent(opt.value);
+        });
+        list.appendChild(item);
+        count++;
+      });
+
+      if (!count) {
+        const empty = document.createElement('div');
+        empty.className = 'sp-empty';
+        empty.textContent = 'រកមិនឃើញសិស្សទេ';
+        list.appendChild(empty);
+      }
+    }
+
+    function chooseStudent(value) {
+      const sel = document.getElementById('studentSelect');
+      sel.value = value;
+      updateSpLabel();
+      closeAllPopups();
+      renderSemesterView();
+    }
+
+    function toggleStudentPicker(e) {
+      if (e) e.stopPropagation();
+      const pop = document.getElementById('spPopup');
+      const btn = document.getElementById('spBtn');
+      if (pop.classList.contains('show')) { closeAllPopups(); return; }
+
+      closeAllPopups();
+      const input = document.getElementById('spInput');
+      input.value = '';
+      renderSpList('');
+
+      const r = btn.getBoundingClientRect();
+      const w = Math.min(Math.max(r.width, 240), window.innerWidth - 16);
+      pop.style.width = w + 'px';
+      pop.style.left = Math.max(8, Math.min(r.left, window.innerWidth - w - 8)) + 'px';
+      pop.style.top = (r.bottom + 6) + 'px';
+
+      pop.classList.add('show');
+      btn.classList.add('open');
+      setTimeout(() => input.focus(), 30);
+    }
+
     /* 5. FETCH SEMESTER DATA BUNDLE FROM SUPABASE */
     async function loadSemesterData() {
       const cls = document.getElementById('classSelect').value || cleanGrade(USER_CLASS);
@@ -689,7 +948,6 @@
         </div>`;
 
       try {
-        // ក. ទាញយកសិស្សក្នុងថ្នាក់
         const { data: stList, error: stErr } = await sb
           .from('students')
           .select('*')
@@ -719,7 +977,6 @@
 
         const studentIds = students.map(s => s.id);
 
-        // ខ. ទាញយកពិន្ទុប្រឡងឆមាសទី១ និងទី២
         const { data: scData, error: scErr } = await sb
           .from('scores')
           .select('student_id, score_type, period, scores, total, average, rank, grade_label')
@@ -732,7 +989,6 @@
         const sem1RankMap = {}, sem2RankMap = {}, yearRankMap = {};
         const s1MonthlyAvgMap = {}, s2MonthlyAvgMap = {};
 
-        // គណនាពិន្ទុប្រចាំខែសម្រាប់ Sem 1 & Sem 2
         const s1Months = ['វិច្ឆិកា', 'ធ្នូ', 'មករា', 'កុម្ភៈ', 'មីនា', 'មេសា'];
         const s2Months = ['ឧសភា', 'មិថុនា', 'កក្កដា', 'សីហា', 'កញ្ញា', 'តុលា'];
 
@@ -740,21 +996,18 @@
           const sId = st.id;
           const myScores = (scData || []).filter(r => String(r.student_id) === sId);
 
-          // ប្រឡងឆមាសទី១
           const e1 = myScores.find(r => r.score_type === 'semester' && r.period === 'ឆមាសទី១');
           if (e1) {
             sem1Scores[sId] = Object.assign({}, e1.scores || {}, { avg: e1.average, total: e1.total });
             sem1RankMap[sId] = { rank: e1.rank, avg: e1.average, grade: e1.grade_label };
           }
 
-          // ប្រឡងឆមាសទី២
           const e2 = myScores.find(r => r.score_type === 'semester' && r.period === 'ឆមាសទី២');
           if (e2) {
             sem2Scores[sId] = Object.assign({}, e2.scores || {}, { avg: e2.average, total: e2.total });
             sem2RankMap[sId] = { rank: e2.rank, avg: e2.average, grade: e2.grade_label };
           }
 
-          // មធ្យមភាគពិន្ទុខែ Sem 1
           let sum1 = 0, c1 = 0;
           s1Months.forEach(m => {
             const r = myScores.find(sc => sc.score_type === 'monthly' && sc.period === m);
@@ -762,7 +1015,6 @@
           });
           if (c1 > 0) s1MonthlyAvgMap[sId] = (sum1 / c1).toFixed(2);
 
-          // មធ្យមភាគពិន្ទុខែ Sem 2
           let sum2 = 0, c2 = 0;
           s2Months.forEach(m => {
             const r = myScores.find(sc => sc.score_type === 'monthly' && sc.period === m);
@@ -771,7 +1023,6 @@
           if (c2 > 0) s2MonthlyAvgMap[sId] = (sum2 / c2).toFixed(2);
         });
 
-        // គ. ទាញយកវត្តមាន Sem 1 & Sem 2
         const attMap = {};
         students.forEach(st => attMap[st.id] = { sem1_p:0, sem1_a:0, sem2_p:0, sem2_a:0 });
 
@@ -786,8 +1037,7 @@
           const sid = String(r.student_id);
           if (!attMap[sid]) return;
           const dt = new Date(r.attendance_date);
-          const m = dt.getMonth() + 1; // 1 to 12
-          // Sem 1 months: 11, 12, 1, 2, 3, 4
+          const m = dt.getMonth() + 1;
           const isSem1 = [11, 12, 1, 2, 3, 4].includes(m);
           if (isSem1) {
             if (r.status === 'C') attMap[sid].sem1_p++;
@@ -820,6 +1070,7 @@
           opt.textContent = `${s.id} - ${s.name}`;
           sSelect.appendChild(opt);
         });
+        updateSpLabel();
 
         renderSemesterView();
 
@@ -847,7 +1098,6 @@
 
       const totalClassCount = studentsList.length;
 
-      // 🌟 គណនាចំណាត់ថ្នាក់តាមមុខវិជ្ជានីមួយៗ
       const s1SubRanks = {}, s2SubRanks = {};
       const s1TotList = [], s2TotList = [];
       const s1AvgList = [], s2AvgList = [], yAvgList = [];
@@ -864,7 +1114,6 @@
         s2SubRanks[sub.key] = computeCompetitionRanks(s2Items);
       });
 
-      // គណនាពិន្ទុសរុប និងមធ្យមភាគ
       studentsList.forEach(st => {
         const s1 = (bundleData.sem1Scores && bundleData.sem1Scores[st.id]) ? bundleData.sem1Scores[st.id] : {};
         const s2 = (bundleData.sem2Scores && bundleData.sem2Scores[st.id]) ? bundleData.sem2Scores[st.id] : {};
