@@ -1029,7 +1029,8 @@
     function onReportTypeChange(val) {
       reportMode = val;
       if (val === 'monthly') { CS.month.show('flex'); CS.semester.hide(); }
-      else { CS.month.hide(); CS.semester.show('flex'); }
+      else if (val === 'semester') { CS.month.hide(); CS.semester.show('flex'); }
+      else { CS.month.hide(); CS.semester.hide(); }
       loadRealDataForClass(currentClassName);
     }
 
@@ -1065,7 +1066,8 @@
       });
       CS.type.setOptions([
         { value: 'monthly',  label: 'ព្រឹត្តិបត្រខែ' },
-        { value: 'semester', label: 'ព្រឹត្តិបត្រឆមាស' }
+        { value: 'semester', label: 'ព្រឹត្តិបត្រឆមាស' },
+        { value: 'yearly',   label: 'ព្រឹត្តិបត្រប្រចាំឆ្នាំ' }
       ]);
       CS.type.setValue('monthly');
 
@@ -1159,12 +1161,15 @@
           return;
         }
 
+        // ព្រឹត្តិបត្រប្រចាំឆ្នាំ ប្រើទិន្នន័យប្រភេទ semester (ឆមាសទី១ + ទី២)
+        const dataType = (reportMode === 'yearly') ? 'semester' : reportMode;
+
         // ២. ទាញយកមុខវិជ្ជា
         const { data: dbSubData } = await sb
           .from('subjects')
           .select('*')
           .or(`assigned_class.eq.${pure},assigned_class.eq.all`)
-          .eq('subject_type', reportMode)
+          .eq('subject_type', dataType)
           .order('sort_order', { ascending: true })
           .order('id', { ascending: true });
 
@@ -1174,7 +1179,7 @@
           .from('scores')
           .select('*')
           .in('assigned_class', classVariants)
-          .eq('score_type', reportMode);
+          .eq('score_type', dataType);
 
         const scoreMap = {};
         const scoreMapS1 = {};
@@ -1302,6 +1307,57 @@
               monthlyGroups: activeGroups
             };
 
+          } else if (reportMode === 'yearly') {
+            const yList = (dbSubData && dbSubData.length > 0)
+              ? dbSubData.map(x => ({ name: x.name, code: x.code || `sub_${x.id}`, id: x.id, max: Number(x.max_score)||10 }))
+              : JSON.parse(JSON.stringify(DEFAULT_SEMESTER_TEMPLATE));
+
+            let t1 = 0, c1 = 0, t2 = 0, c2 = 0;
+            const yearSubjects = [];
+
+            yList.forEach(sub => {
+              const v1 = getSubjectScore(sc1, sub);
+              const v2 = getSubjectScore(sc2, sub);
+              if (v1 === null && v2 === null) return;
+
+              if (v1 !== null) { t1 += v1; c1++; }
+              if (v2 !== null) { t2 += v2; c2++; }
+
+              let subAvg;
+              if (v1 !== null && v2 !== null) subAvg = (v1 + v2) / 2;
+              else subAvg = (v1 !== null) ? v1 : v2;
+
+              yearSubjects.push({
+                name: sub.name,
+                max: sub.max || 10,
+                s1: (v1 !== null) ? v1 : '-',
+                s2: (v2 !== null) ? v2 : '-',
+                avg: subAvg,
+                grade: calculateGrade(subAvg)
+              });
+            });
+
+            const avg1 = c1 > 0 ? (t1 / c1) : 0;
+            const avg2 = c2 > 0 ? (t2 / c2) : 0;
+            let yearAvg = 0;
+            if (c1 > 0 && c2 > 0) yearAvg = (avg1 + avg2) / 2;
+            else if (c1 > 0) yearAvg = avg1;
+            else if (c2 > 0) yearAvg = avg2;
+
+            return {
+              id: st.student_id || st.id,
+              name: st.student_name || 'គ្មានឈ្មោះ',
+              gender: st.gender || 'ប្រុស',
+              grade: pure,
+              avgSem1: avg1,
+              avgSem2: avg2,
+              avgScore: yearAvg,
+              gradeLabel: yearAvg > 0 ? calculateGrade(yearAvg) : '-',
+              absentUnexcused: unexcusedMap[sid1] || unexcusedMap[sid2] || 0,
+              absentExcused: excusedMap[sid1] || excusedMap[sid2] || 0,
+              semSubjects: yearSubjects
+            };
+
           } else {
             const semList = (dbSubData && dbSubData.length > 0)
               ? dbSubData.map(x => ({ name: x.name, code: x.code || `sub_${x.id}`, id: x.id, max: Number(x.max_score)||10 }))
@@ -1416,7 +1472,8 @@
 
       const totalAbsent = (st.absentUnexcused || 0) + (st.absentExcused || 0);
       const isMonthly = (reportMode === 'monthly');
-      const docTitle = isMonthly ? `ព្រឹត្តិបត្រពិន្ទុ ខែ ${selectedMonth}` : `ព្រឹត្តិបត្រពិន្ទុ ${selectedSemester}`;
+      const docTitle = isMonthly ? `ព្រឹត្តិបត្រពិន្ទុ ខែ ${selectedMonth}`
+        : (reportMode === 'yearly' ? `ព្រឹត្តិបត្រពិន្ទុប្រចាំឆ្នាំ` : `ព្រឹត្តិបត្រពិន្ទុ ${selectedSemester}`);
       const solarDateStr = isMonthly ? getAutoSolarDate(selectedMonth) : getAutoSolarDate('តុលា');
 
       const displayGrade = cleanGrade(st.grade) || cleanGrade(currentClassName) || getTeacherClass() || '...';
@@ -1498,6 +1555,66 @@
             </td>
             <td colspan="3" class="summary-cell-text">
               សរុប ៖ ${totalAbsent}
+            </td>
+          </tr>
+        `;
+
+      } else if (reportMode === 'yearly') {
+        theadHtml = `
+          <tr>
+            <th style="width: 32px;">ល.រ</th>
+            <th style="min-width: 140px;">មុខវិជ្ជា</th>
+            <th style="width: 72px;">ពិន្ទុអតិបរមា</th>
+            <th style="width: 78px;">ឆមាសទី១</th>
+            <th style="width: 78px;">ឆមាសទី២</th>
+            <th style="width: 72px;">មធ្យមភាគ</th>
+            <th style="width: 54px;">និទ្ទេស</th>
+            <th style="width: 78px;">សេចក្តីផ្សេងៗ</th>
+          </tr>
+        `;
+
+        const ySubs = st.semSubjects || [];
+        if (ySubs.length === 0) {
+          tbodyHtml = `<tr><td colspan="8" style="padding: 24px; color:#ef4444; font-weight:bold;">⚠️ សិស្សនេះមិនទាន់មានពិន្ទុប្រឡងឆមាសនៅឡើយទេ</td></tr>`;
+        } else {
+          ySubs.forEach((row, i) => {
+            const avgTxt = Number(row.avg).toFixed(2).replace(/\.00$/, '');
+            tbodyHtml += `
+              <tr>
+                <td>${i + 1}</td>
+                <td class="sub-name">${row.name}</td>
+                <td>${row.max}</td>
+                <td>${row.s1}</td>
+                <td>${row.s2}</td>
+                <td class="bold-val">${avgTxt}</td>
+                <td class="gr-${row.grade}">${formatGrade(row.grade)}</td>
+                <td></td>
+              </tr>
+            `;
+          });
+        }
+
+        summaryRowsHtml = `
+          <tr style="background:#f8fafc;">
+            <td colspan="3" class="summary-cell-text" style="text-align:left; padding-left:10px;">
+              មធ្យមភាគឆមាសទី១ ${st.avgSem1 > 0 ? st.avgSem1.toFixed(2) : '-'}
+            </td>
+            <td colspan="2" class="summary-cell-text">
+              មធ្យមភាគឆមាសទី២ ${st.avgSem2 > 0 ? st.avgSem2.toFixed(2) : '-'}
+            </td>
+            <td colspan="3" class="summary-cell-text">
+              មធ្យមភាគប្រចាំឆ្នាំ ${st.avgScore > 0 ? st.avgScore.toFixed(2) : '-'}
+            </td>
+          </tr>
+          <tr style="background:#f8fafc;">
+            <td colspan="3" class="summary-cell-text" style="text-align:left; padding-left:10px;">
+              ចំណាត់ថ្នាក់ប្រចាំឆ្នាំទី <span style="color:#dc2626; font-weight:800;">${st.rank}</span>
+            </td>
+            <td colspan="2" class="summary-cell-text gr-${st.gradeLabel}">
+              និទ្ទេស ${formatGrade(st.gradeLabel)}
+            </td>
+            <td colspan="3" class="summary-cell-text">
+              អវត្តមាន ឥតច្បាប់ ${st.absentUnexcused} • មានច្បាប់ ${st.absentExcused} • សរុប ${totalAbsent}
             </td>
           </tr>
         `;
