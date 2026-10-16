@@ -19,7 +19,7 @@
     ========================================================= */
     :root, [data-theme="light"] {
       --chat-bg: #f1f5f9;
-      --chat-shell-bg: #e2e8f0;
+      --chat-shell-bg: #cbd5e1;
       --chat-surface: #ffffff;
       --chat-surface-card: #f8fafc;
       --chat-border: #e2e8f0;
@@ -70,7 +70,6 @@
     html, body {
       width: 100%;
       height: 100%;
-      height: 100dvh;
       margin: 0;
       padding: 0;
       overflow: hidden;
@@ -80,43 +79,13 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* 📱 RESPONSIVE OUTER SHELL (Centered on Tablet & Desktop) */
-    .chat-app-shell {
-      width: 100%;
-      height: 100%;
-      height: 100dvh;
-      display: flex;
-      justify-content: center;
-      background: var(--chat-shell-bg);
-    }
-
-    .chat-app-wrapper {
-      width: 100%;
-      max-width: 860px; /* Desktop & Tablet view limit */
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      background: var(--chat-bg);
-      border-left: 1px solid var(--chat-border);
-      border-right: 1px solid var(--chat-border);
-      overflow: hidden;
-    }
-
-    @media (max-width: 860px) {
-      .chat-app-wrapper {
-        border-left: none;
-        border-right: none;
-      }
-    }
-
     /* ══════════════ 🔒 AUTH DENIED WRAPPER ══════════════ */
     .auth-wrapper {
       display: none;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 100dvh;
+      min-height: 100vh;
       text-align: center;
       padding: 20px;
       background: var(--chat-bg);
@@ -163,10 +132,37 @@
       border: none;
     }
 
-    /* ============ 1. HEADER (SAFE AREA ADAPTIVE) ============ */
+    /* 📱 FIXED CHAT WRAPPER (ជាប់ពេញអេក្រង់រហូត មិនឱ្យធ្លាក់បាត់កន្លែងផ្ញើសារ) */
+    .chat-app-wrapper {
+      position: fixed !important;
+      top: 0 !important;
+      bottom: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      width: 100% !important;
+      max-width: 860px !important;
+      margin: 0 auto !important;
+      height: 100% !important;
+      display: flex !important;
+      flex-direction: column !important;
+      background: var(--chat-bg);
+      border-left: 1px solid var(--chat-border);
+      border-right: 1px solid var(--chat-border);
+      overflow: hidden !important;
+      z-index: 10;
+    }
+
+    @media (max-width: 860px) {
+      .chat-app-wrapper {
+        border-left: none;
+        border-right: none;
+      }
+    }
+
+    /* ============ 1. HEADER ============ */
     .room-header-wrap {
       flex: 0 0 auto;
-      padding: max(8px, env(safe-area-inset-top)) 12px 6px 12px;
+      padding: max(8px, env(safe-area-inset-top)) 12px 8px 12px;
       z-index: 30;
       background: var(--chat-bg);
       border-bottom: 1px solid var(--chat-border);
@@ -190,8 +186,8 @@
       flex: 1;
     }
     .room-badge-logo {
-      width: 34px;
-      height: 34px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       background: #0284c7;
       display: flex;
@@ -199,7 +195,7 @@
       justify-content: center;
       flex-shrink: 0;
       color: #ffffff;
-      font-size: 14px;
+      font-size: 13.5px;
     }
     .room-title-text {
       font-size: 13.5px;
@@ -260,13 +256,13 @@
     .chat-messages {
       flex: 1 1 auto;
       min-height: 0;
-      padding: 12px 12px;
+      /* 🌟 Padding-bottom គ្រប់គ្រាន់ដើម្បីកុំឱ្យបាំងសារចុងក្រោយ */
+      padding: 10px 12px calc(76px + env(safe-area-inset-bottom, 0px)) 12px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
       gap: 12px;
       -webkit-overflow-scrolling: touch;
-      scroll-behavior: smooth;
     }
     .chat-messages::-webkit-scrollbar { width: 5px; }
     .chat-messages::-webkit-scrollbar-thumb { background: var(--chat-border); border-radius: 4px; }
@@ -382,17 +378,24 @@
       outline: none; 
     }
 
-    /* ============ 3. BOTTOM INPUT BAR (RESPONSIVE TOUCH) ============ */
+    /* ============ 🌟 3. BOTTOM INPUT BAR (ជាប់បាតអេក្រង់រហូត ១០០%) ============ */
     .chat-bottom-bar {
-      flex: 0 0 auto;
-      width: 100%;
-      background: var(--bottom-bar-bg);
-      border-top: 1px solid var(--chat-border);
-      padding: 8px 10px max(8px, env(safe-area-inset-bottom)) 10px;
-      z-index: 40;
+      position: absolute !important;
+      bottom: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      width: 100% !important;
+      background: var(--bottom-bar-bg) !important;
+      border-top: 1.5px solid var(--chat-border) !important;
+      padding: 8px 10px max(10px, env(safe-area-inset-bottom)) 10px !important;
+      z-index: 9999 !important;
+      display: flex !important;
+      align-items: center !important;
+      box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.12) !important;
     }
     .input-capsule {
       width: 100%;
+      min-width: 0;
       background: var(--chat-input-bg);
       border: 1.5px solid var(--chat-border);
       border-radius: 9999px;
@@ -412,16 +415,15 @@
     }
     .left-action-btn:hover { color: #0284c7; }
 
-    /* 🌟 Font-size 16px prevents iOS Safari from auto-zooming screen */
     .chat-input-field {
       flex: 1; 
-      min-width: 0;
+      min-width: 50px;
       background: transparent; 
       border: none; 
       outline: none;
       color: var(--chat-text); 
       font-family: inherit;
-      font-size: 16px; 
+      font-size: 16px; /* ទប់ស្កាត់ iOS Auto-zoom */
       padding: 6px 2px;
     }
     .chat-input-field::placeholder { color: var(--chat-text-muted); font-size: 13.5px; }
@@ -450,7 +452,7 @@
     /* Emoji Picker Drawer */
     .emoji-picker-drawer {
       position: absolute;
-      bottom: calc(60px + max(8px, env(safe-area-inset-bottom)));
+      bottom: calc(64px + max(8px, env(safe-area-inset-bottom)));
       left: 10px;
       right: 10px;
       max-width: 360px;
@@ -458,7 +460,7 @@
       border: 1.5px solid var(--chat-border);
       border-radius: 18px;
       box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
-      z-index: 100;
+      z-index: 10000;
       display: none;
       flex-direction: column;
       overflow: hidden;
@@ -486,7 +488,7 @@
     .modal-overlay {
       position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7);
       backdrop-filter: blur(4px); display: none; align-items: center;
-      justify-content: center; z-index: 1000; padding: 12px;
+      justify-content: center; z-index: 20000; padding: 12px;
     }
     .modal-card {
       width: 100%; max-width: 440px; background: var(--chat-surface); border: 1px solid var(--chat-border);
@@ -543,79 +545,77 @@
     </div>
   </div>
 
-  <!-- 📱 RESPONSIVE OUTER SHELL -->
-  <div class="chat-app-shell">
-    <div class="chat-app-wrapper" id="chatApp" style="display:none;">
+  <!-- 📱 CHAT APP WRAPPER -->
+  <div class="chat-app-wrapper" id="chatApp" style="display:none;">
 
-      <!-- 1. FLOATING ROOM HEADER -->
-      <div class="room-header-wrap">
-        <div class="room-header-card">
-          <div class="room-left" onclick="openMembersModal()" title="មើលសមាជិក">
-            <div class="room-badge-logo">
-              <i class="fa-solid fa-comments"></i>
-            </div>
-            <span class="room-title-text" id="roomTitle">បន្ទប់សន្ទនារួម (គ្រូបង្រៀន)</span>
+    <!-- 1. FLOATING ROOM HEADER -->
+    <div class="room-header-wrap">
+      <div class="room-header-card">
+        <div class="room-left" onclick="openMembersModal()" title="មើលសមាជិក">
+          <div class="room-badge-logo">
+            <i class="fa-solid fa-comments"></i>
           </div>
-
-          <div class="room-right">
-            <button type="button" class="room-action-btn" onclick="toggleSearch()" title="ស្វែងរកសារ">
-              <i class="fa-solid fa-magnifying-glass"></i>
-            </button>
-
-            <button type="button" class="room-action-btn" onclick="openMembersModal()" title="សមាជិកក្រុម">
-              <i class="fa-solid fa-users"></i>
-            </button>
-          </div>
+          <span class="room-title-text" id="roomTitle">បន្ទប់សន្ទនារួម (គ្រូបង្រៀន)</span>
         </div>
-      </div>
 
-      <!-- Search Bar -->
-      <div class="search-bar-inline" id="searchBar">
-        <input type="text" id="searchInput" class="search-input-field" placeholder="វាយពាក្យស្វែងរកសារ..." oninput="filterMessages(this.value)">
-        <button type="button" onclick="toggleSearch()" style="background:none; border:none; color:#ef4444; font-size:15px; cursor:pointer; padding:4px;">✕</button>
-      </div>
+        <div class="room-right">
+          <button type="button" class="room-action-btn" onclick="toggleSearch()" title="ស្វែងរកសារ">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
 
-      <!-- 2. CHAT MESSAGES BODY (បើកភ្លាមបង្ហាញភ្លាម គ្មានរង់ចាំ) -->
-      <div class="chat-messages" id="chatBox"></div>
-
-      <!-- Emoji Picker Drawer -->
-      <div class="emoji-picker-drawer" id="emojiDrawer">
-        <div class="emoji-drawer-header">
-          <span>😀 រូបសញ្ញា EMOJI</span>
-          <button type="button" onclick="toggleEmojiPicker()" style="background:none; border:none; color:var(--chat-text-muted); cursor:pointer; font-size:14px;">✕</button>
-        </div>
-        <div class="emoji-drawer-grid" id="emojiGrid"></div>
-      </div>
-
-      <!-- 3. BOTTOM INPUT BAR (FLEXBOX PINNED TO BOTTOM) -->
-      <div class="chat-bottom-bar" id="chatBottomBar">
-        <div class="input-capsule">
-          <div class="left-actions">
-            <button class="left-action-btn" type="button" onclick="toggleEmojiPicker()" title="Emoji">
-              <i class="fa-regular fa-face-smile"></i>
-            </button>
-
-            <button class="left-action-btn" type="button" onclick="document.getElementById('imageFileInput').click()" title="ផ្ញើរូបភាព">
-              <i class="fa-regular fa-image"></i>
-            </button>
-            <input type="file" id="imageFileInput" accept="image/*" style="display:none" onchange="handleImageUpload(this)">
-          </div>
-
-          <div class="recording-banner" id="recIndicator">
-            <span>🔴 កំពុងថត (<span id="recTimer">0:00</span>)</span>
-            <button type="button" onclick="cancelRecording()" style="background:transparent; border:none; color:var(--chat-text-muted); cursor:pointer; font-size:11px;">[បោះបង់]</button>
-          </div>
-
-          <input type="text" id="msgInput" class="chat-input-field" placeholder="ផ្ញើសារ..." onfocus="closeEmojiPicker(); scrollToBottom();" oninput="handleInputState(this.value)" onkeydown="if(event.key==='Enter') sendMsg()">
-
-          <button class="right-circle-btn" id="mainActionBtn" type="button" onclick="handleMainAction()" title="ផ្ញើសារ / ថតសំឡេង">
-            <i class="fa-solid fa-microphone" id="micIcon" style="font-size:15px;"></i>
-            <i class="fa-solid fa-paper-plane" id="sendIcon" style="font-size:14px; display:none;"></i>
+          <button type="button" class="room-action-btn" onclick="openMembersModal()" title="សមាជិកក្រុម">
+            <i class="fa-solid fa-users"></i>
           </button>
         </div>
       </div>
-
     </div>
+
+    <!-- Search Bar -->
+    <div class="search-bar-inline" id="searchBar">
+      <input type="text" id="searchInput" class="search-input-field" placeholder="វាយពាក្យស្វែងរកសារ..." oninput="filterMessages(this.value)">
+      <button type="button" onclick="toggleSearch()" style="background:none; border:none; color:#ef4444; font-size:15px; cursor:pointer; padding:4px;">✕</button>
+    </div>
+
+    <!-- 2. CHAT MESSAGES BODY -->
+    <div class="chat-messages" id="chatBox"></div>
+
+    <!-- Emoji Picker Drawer -->
+    <div class="emoji-picker-drawer" id="emojiDrawer">
+      <div class="emoji-drawer-header">
+        <span>😀 រូបសញ្ញា EMOJI</span>
+        <button type="button" onclick="toggleEmojiPicker()" style="background:none; border:none; color:var(--chat-text-muted); cursor:pointer; font-size:14px;">✕</button>
+      </div>
+      <div class="emoji-drawer-grid" id="emojiGrid"></div>
+    </div>
+
+    <!-- 🌟 3. BOTTOM INPUT BAR (ជាប់នៅបាតរហូត មិនអាចបាត់បាន) -->
+    <div class="chat-bottom-bar" id="chatBottomBar">
+      <div class="input-capsule">
+        <div class="left-actions">
+          <button class="left-action-btn" type="button" onclick="toggleEmojiPicker()" title="Emoji">
+            <i class="fa-regular fa-face-smile"></i>
+          </button>
+
+          <button class="left-action-btn" type="button" onclick="document.getElementById('imageFileInput').click()" title="ផ្ញើរូបភាព">
+            <i class="fa-regular fa-image"></i>
+          </button>
+          <input type="file" id="imageFileInput" accept="image/*" style="display:none" onchange="handleImageUpload(this)">
+        </div>
+
+        <div class="recording-banner" id="recIndicator">
+          <span>🔴 កំពុងថត (<span id="recTimer">0:00</span>)</span>
+          <button type="button" onclick="cancelRecording()" style="background:transparent; border:none; color:var(--chat-text-muted); cursor:pointer; font-size:11px;">[បោះបង់]</button>
+        </div>
+
+        <input type="text" id="msgInput" class="chat-input-field" placeholder="ផ្ញើសារ..." onfocus="closeEmojiPicker(); scrollToBottom();" oninput="handleInputState(this.value)" onkeydown="if(event.key==='Enter') sendMsg()">
+
+        <button class="right-circle-btn" id="mainActionBtn" type="button" onclick="handleMainAction()" title="ផ្ញើសារ / ថតសំឡេង">
+          <i class="fa-solid fa-microphone" id="micIcon" style="font-size:15px;"></i>
+          <i class="fa-solid fa-paper-plane" id="sendIcon" style="font-size:14px; display:none;"></i>
+        </button>
+      </div>
+    </div>
+
   </div>
 
   <!-- 👥 MEMBERS MODAL DIALOG -->
@@ -771,7 +771,7 @@
       if (!checkAuthentication()) return;
       initNativeEmojiGrid();
 
-      // ⚡ បង្ហាញទិន្នន័យពី Cache ភ្លាមមួយរំពេច
+      // ⚡ បង្ហាញទិន្នន័យពី Cache ភ្លាមៗតែម្តង
       if (allCachedMessages.length > 0) {
         renderMessages(allCachedMessages, true);
       }
@@ -792,11 +792,18 @@
 
       setInterval(loadMessages, 8000);
 
-      // Support dynamic virtual keyboard scrolling for mobile
+      /* 📱 ដោះស្រាយបញ្ហាក្តារចុចទូរស័ព្ទ (Virtual Keyboard Adjustment) */
       if (window.visualViewport) {
-        window.visualViewport.addEventListener('resize', () => {
+        const adjustViewport = () => {
+          const app = document.getElementById('chatApp');
+          if (app) {
+            app.style.height = `${window.visualViewport.height}px`;
+            app.style.top = `${window.visualViewport.offsetTop}px`;
+          }
           scrollToBottom();
-        });
+        };
+        window.visualViewport.addEventListener('resize', adjustViewport);
+        window.visualViewport.addEventListener('scroll', adjustViewport);
       }
     });
 
@@ -985,7 +992,7 @@
       }
     }
 
-    /* ⚡ បង្រួមរូបភាពស្វ័យប្រវត្តិតាម Canvas (Fluid Responsive Compression) */
+    /* ⚡ បង្រួមរូបភាពស្វ័យប្រវត្តិតាម Canvas */
     function compressImage(file, maxWidth = 1200, quality = 0.75) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -1055,7 +1062,7 @@
       }
     }
 
-    /* 9. VOICE RECORDING (iOS & Android Responsive Audio) */
+    /* 9. VOICE RECORDING */
     let mediaRecorder = null;
     let audioChunks = [];
     let recInterval = null;
