@@ -95,6 +95,19 @@ html,body{width:100%;min-height:100vh;background:var(--app-bg);color:var(--text)
 .pg-info label{display:block;font-size:12.5px;color:var(--muted);margin:8px 0 3px}
 .pg-info .fc{width:100%}
 .pg-info .chk{display:flex;align-items:center;gap:8px;color:var(--text);margin-top:12px;cursor:pointer;font-size:13px}
+
+/* ===== Custom select + month/year picker (Battambang) ===== */
+.cs-btn{display:inline-flex;align-items:center;justify-content:space-between;gap:10px;min-width:150px;font-family:'Battambang',sans-serif!important;font-weight:400!important;font-size:13.5px!important;cursor:pointer;text-align:left}
+.cs-btn i{font-size:11px;color:var(--muted)}
+#selPop{padding:6px;min-width:180px}
+.sel-item{padding:10px 14px;font-size:14.5px;border-radius:9px;cursor:pointer;font-family:'Battambang',sans-serif;color:var(--text)}
+.sel-item:hover{background:var(--chip-hover)}
+.sel-item.on{background:var(--accent);color:#fff;font-weight:700}
+.dp-sel{flex:1;min-width:0;height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;border:1px solid var(--pop-line);background:var(--chip);color:var(--text);border-radius:10px;font-family:'Battambang',sans-serif;font-size:15px;cursor:pointer}
+.dp-sel i{font-size:11px;color:var(--muted)}
+.dp-pick{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;max-height:290px;overflow:auto;position:relative}
+.dp-pick button{height:42px;border:none;border-radius:10px;background:var(--chip);color:var(--text);font-family:'Battambang',sans-serif;font-size:14px;cursor:pointer}
+.dp-pick button.on{background:var(--accent);color:#fff;font-weight:700}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;padding:8px 16px;border-radius:10px;font-size:13px;z-index:3000;display:none;border:1px solid #334155}
 
 /* ===== ក្រដាសរបាយការណ៍ ===== */
@@ -184,6 +197,7 @@ table.stat td.rm{text-align:left;font-size:.89em;padding:.3em .6em;line-height:1
 
 <!-- Date picker popover -->
 <div class="pop" id="dpPop"></div>
+<div class="pop" id="selPop"></div>
 
 <!-- Page setup popover -->
 <div class="pop" id="pgPop">
@@ -241,15 +255,15 @@ function placePop(pop,anchor){
   pop.style.maxHeight=Math.max(220,window.innerHeight-top-12)+'px';
 }
 function closePops(){
-  ['dpPop','pgPop'].forEach(id=>document.getElementById(id).style.display='none');
+  ['dpPop','pgPop','selPop'].forEach(id=>document.getElementById(id).style.display='none');
   document.querySelectorAll('.date-btn.open').forEach(b=>b.classList.remove('open'));
 }
 document.addEventListener('click',closePops);
-['dpPop','pgPop'].forEach(id=>document.getElementById(id).addEventListener('click',e=>e.stopPropagation()));
+['dpPop','pgPop','selPop'].forEach(id=>document.getElementById(id).addEventListener('click',e=>e.stopPropagation()));
 window.addEventListener('resize',closePops);
 
 /* ================= Date picker ================= */
-const DP={id:null,clearable:false,vy:0,vm:0};
+const DP={id:null,clearable:false,vy:0,vm:0,mode:'days'};
 function dateLabel(iso){
   const m=String(iso||'').match(/^(\d{4})-(\d{2})-(\d{2})$/); if(!m)return '';
   return (+m[3])+' '+MONTHS[+m[2]-1]+' '+m[1];
@@ -263,16 +277,28 @@ function setDateValue(id,iso){
 function openDatePicker(e,id,clearable){
   e.stopPropagation(); const btn=document.getElementById('btn_'+id);
   const wasOpen=btn.classList.contains('open'); closePops(); if(wasOpen)return;
-  DP.id=id; DP.clearable=clearable;
+  DP.id=id; DP.clearable=clearable; DP.mode='days';
   const v=document.getElementById(id).value, base=v?new Date(v+'T00:00:00'):new Date();
   DP.vy=base.getFullYear(); DP.vm=base.getMonth();
   btn.classList.add('open'); renderDp(); placePop(document.getElementById('dpPop'),btn);
 }
 function renderDp(){
   const sel=document.getElementById(DP.id).value, today=isoLocal(new Date()), ny=new Date().getFullYear();
-  const y0=Math.min(DP.vy,ny)-8, y1=Math.max(DP.vy,ny)+4;
-  let years='';for(let y=y0;y<=y1;y++)years+=`<option value="${y}" ${y===DP.vy?'selected':''}>${y}</option>`;
-  const months=MONTHS.map((m,i)=>`<option value="${i}" ${i===DP.vm?'selected':''}>${m}</option>`).join('');
+  const top=`<div class="dp-top">
+    <button type="button" class="dp-sel" onclick="DP.mode=DP.mode==='months'?'days':'months';renderDp()"><span>${MONTHS[DP.vm]}</span><i class="fa-solid fa-chevron-down"></i></button>
+    <button type="button" class="dp-sel" onclick="DP.mode=DP.mode==='years'?'days':'years';renderDp()"><span>${DP.vy}</span><i class="fa-solid fa-chevron-down"></i></button></div>`;
+  const pop=document.getElementById('dpPop');
+  if(DP.mode==='months'){
+    pop.innerHTML=top+`<div class="dp-pick">${MONTHS.map((m,i)=>`<button type="button" class="${i===DP.vm?'on':''}" onclick="DP.vm=${i};DP.mode='days';renderDp()">${m}</button>`).join('')}</div>`;
+    return;
+  }
+  if(DP.mode==='years'){
+    const y0=Math.min(DP.vy,ny)-12, y1=Math.max(DP.vy,ny)+6; let ys='';
+    for(let y=y0;y<=y1;y++)ys+=`<button type="button" class="${y===DP.vy?'on':''}" onclick="DP.vy=${y};DP.mode='days';renderDp()">${y}</button>`;
+    pop.innerHTML=top+`<div class="dp-pick">${ys}</div>`;
+    const pk=pop.querySelector('.dp-pick'), on=pk.querySelector('.on'); if(on)pk.scrollTop=on.offsetTop-pk.clientHeight/2+20;
+    return;
+  }
   const first=new Date(DP.vy,DP.vm,1).getDay();
   let cells='';
   for(let i=0;i<42;i++){
@@ -280,11 +306,30 @@ function renderDp(){
     const cls=['dp-day']; if(d.getMonth()!==DP.vm)cls.push('out'); if(iso===today)cls.push('today'); if(iso===sel)cls.push('sel');
     cells+=`<button type="button" class="${cls.join(' ')}" onclick="pickDate('${iso}')">${d.getDate()}</button>`;
   }
-  document.getElementById('dpPop').innerHTML=`
-    <div class="dp-top"><select onchange="DP.vm=+this.value;renderDp()">${months}</select><select onchange="DP.vy=+this.value;renderDp()">${years}</select></div>
+  pop.innerHTML=top+`
     <div class="dp-title">${MONTHS[DP.vm]} ${DP.vy}</div>
     <div class="dp-grid">${WD.map(w=>`<div class="dp-wd">${w}</div>`).join('')}${cells}</div>
     <div class="dp-foot"><a onclick="pickDate('${today}')">ថ្ងៃនេះ</a>${DP.clearable?'<a class="clr" onclick="pickDate(\'\')">លុប</a>':''}</div>`;
+}
+/* ===== Custom select (Battambang) ===== */
+function enhanceSelect(id){
+  const sel=document.getElementById(id); if(!sel)return;
+  let btn=document.getElementById('csb_'+id);
+  if(!btn){
+    btn=document.createElement('button'); btn.type='button'; btn.id='csb_'+id; btn.className='fc cs-btn';
+    sel.parentNode.insertBefore(btn,sel); sel.style.display='none';
+    btn.addEventListener('click',e=>{e.stopPropagation();openSelPop(sel,btn)});
+  }
+  const o=sel.options[sel.selectedIndex];
+  btn.innerHTML=`<span>${esc(o?o.text:'')}</span><i class="fa-solid fa-chevron-down"></i>`;
+}
+function openSelPop(sel,btn){
+  const pop=document.getElementById('selPop'), was=pop.style.display==='block'&&pop._for===sel.id;
+  closePops(); if(was)return;
+  pop._for=sel.id;
+  pop.innerHTML=[...sel.options].map((o,i)=>`<div class="sel-item${i===sel.selectedIndex?' on':''}" data-v="${esc(o.value)}">${esc(o.text)}</div>`).join('');
+  pop.querySelectorAll('.sel-item').forEach(el=>el.addEventListener('click',()=>{sel.value=el.dataset.v;enhanceSelect(sel.id);closePops();sel.dispatchEvent(new Event('change'))}));
+  pop.style.minWidth=btn.offsetWidth+'px'; placePop(pop,btn);
 }
 function pickDate(iso){setDateValue(DP.id,iso);closePops();render()}
 
@@ -395,7 +440,7 @@ async function initClasses(){
   if(!IS_ADMIN){
     box.style.display='none';
     if(!mine){showMsg('⚠️ គណនីរបស់អ្នកមិនទាន់មានថ្នាក់ទទួលបន្ទុកឡើយ។ សូមទាក់ទង Admin។','#f59e0b');return}
-    sel.innerHTML=`<option value="${esc(mine)}">${esc(mine)}</option>`; sel.value=mine; loadData(); return;
+    sel.innerHTML=`<option value="${esc(mine)}">${esc(mine)}</option>`; sel.value=mine; enhanceSelect('selectClass'); loadData(); return;
   }
   box.style.display='inline-flex';
   try{
@@ -403,7 +448,7 @@ async function initClasses(){
     let cls=[...new Set((data||[]).map(d=>cleanGrade(d.grade)).filter(Boolean))].sort();
     if(!cls.length)cls=['១','២','៣','៤','៥','៦'];
     sel.innerHTML='<option value="ALL">គ្រប់ថ្នាក់ (ទាំងសាលា)</option>'+cls.map(c=>`<option value="${esc(c)}">ថ្នាក់ទី ${esc(c)}</option>`).join('');
-    sel.value=(mine&&cls.includes(mine))?mine:'ALL'; loadData();
+    sel.value=(mine&&cls.includes(mine))?mine:'ALL'; enhanceSelect('selectClass'); loadData();
   }catch(e){sel.innerHTML='<option value="">កំហុសទាញយកថ្នាក់</option>'}
 }
 
