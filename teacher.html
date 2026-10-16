@@ -175,6 +175,14 @@
       border: 1px solid rgba(2,132,199,.25); padding: 6px 12px; border-radius: 8px; font-size: 11.5px; font-weight: 700; cursor: pointer;
     }
     .photo-upload-label:hover { filter: brightness(1.1); }
+    
+    /* 🌟 ប៊ូតុងលុបរូបថត */
+    .photo-remove-btn {
+      display: none; align-items: center; gap: 6px; background: var(--danger-bg); color: var(--danger);
+      border: 1px solid rgba(239, 68, 68, 0.35); padding: 6px 12px; border-radius: 8px; font-size: 11.5px; font-weight: 700; cursor: pointer;
+      transition: all .15s;
+    }
+    .photo-remove-btn:hover { background: rgba(239, 68, 68, 0.22); }
     #fPhoto { display: none; }
 
     .form-section { margin-bottom: 20px; }
@@ -187,7 +195,7 @@
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; }
     .field.full { grid-column: 1 / -1; }
     .field label { display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 700; margin-bottom: 5px; color: var(--text-muted); }
-    .required { color: var(--danger); }
+    .required { color: var(--danger); font-weight: bold; }
     .input-wrap { position: relative; }
     .input-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 13px; color: var(--text-muted); pointer-events: none; }
     .field input, .field select {
@@ -370,7 +378,7 @@
           <div class="modal-header-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
           <div>
             <h3 id="modalTitle">បន្ថែមគ្រូថ្មី</h3>
-            <p id="modalSubtitle">បំពេញព័ត៌មានខាងក្រោម ដើម្បីបង្កើតគណនីគ្រូថ្មី</p>
+            <p id="modalSubtitle">បំពេញព័ត៌មានចាំបាច់ខាងក្រោម ដើម្បីបង្កើតគណនីគ្រូថ្មី</p>
           </div>
         </div>
         <button type="button" class="modal-close" onclick="closeModal()">✕</button>
@@ -389,7 +397,13 @@
             <div style="flex:1;">
               <strong style="font-size:13px; color:var(--text-main);">រូបថតគ្រូ</strong>
               <p style="font-size:11px; color:var(--text-muted); margin:3px 0 8px;">រូបថតនឹងត្រូវបង្រួម ≤ 100 KB ដោយស្វ័យប្រវត្តិ។</p>
-              <label class="photo-upload-label" for="fPhoto"><i class="fa-solid fa-image"></i> ជ្រើសរើសរូបថត</label>
+              <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                <label class="photo-upload-label" for="fPhoto"><i class="fa-solid fa-image"></i> ជ្រើសរើសរូបថត</label>
+                <!-- 🌟 ប៊ូតុងលុបរូបថត -->
+                <button type="button" class="photo-remove-btn" id="removePhotoBtn" onclick="removeTeacherPhoto()">
+                  <i class="fa-solid fa-trash-can"></i> លុបរូបថត
+                </button>
+              </div>
               <input type="file" id="fPhoto" accept="image/*" onchange="onPhotoPicked(event)">
             </div>
           </div>
@@ -400,11 +414,7 @@
               <h4>ព័ត៌មានផ្ទាល់ខ្លួន</h4>
             </div>
             <div class="form-grid">
-              <div class="field">
-                <label>អត្តលេខ <span class="required">*</span></label>
-                <div class="input-wrap"><span class="input-icon"><i class="fa-solid fa-hashtag"></i></span>
-                  <input type="text" id="fCode" placeholder="ឧ. T001" required></div>
-              </div>
+              <!-- 🌟 ព័ត៌មានចាំបាច់ * -->
               <div class="field">
                 <label>ឈ្មោះគ្រូ <span class="required">*</span></label>
                 <div class="input-wrap"><span class="input-icon"><i class="fa-solid fa-user"></i></span>
@@ -415,20 +425,27 @@
                 <div class="input-wrap"><span class="input-icon"><i class="fa-solid fa-venus-mars"></i></span>
                   <select id="fSex"><option value="ប្រុស">ប្រុស</option><option value="ស្រី">ស្រី</option></select></div>
               </div>
+
+              <!-- ព័ត៌មានបន្ថែម (មិនបង្ខំ) -->
               <div class="field">
-                <label>លេខទូរសព្ទ <span class="required">*</span></label>
+                <label>អត្តលេខ (បើមាន)</label>
+                <div class="input-wrap"><span class="input-icon"><i class="fa-solid fa-hashtag"></i></span>
+                  <input type="text" id="fCode" placeholder="ឧ. T001"></div>
+              </div>
+              <div class="field">
+                <label>លេខទូរសព្ទ</label>
                 <div class="input-wrap"><span class="input-icon"><i class="fa-solid fa-phone"></i></span>
-                  <input type="text" id="fPhone" placeholder="ឧ. 012 345 678" required></div>
+                  <input type="text" id="fPhone" placeholder="ឧ. 012 345 678"></div>
               </div>
 
-              <!-- 📅 ថ្ងៃខែឆ្នាំកំណើត ដោយប្រើ Custom Calendar Popup -->
+              <!-- 📅 ថ្ងៃខែឆ្នាំកំណើត (មិនបង្ខំ) -->
               <div class="field" style="position: relative;">
-                <label>ថ្ងៃខែឆ្នាំកំណើត <span class="required">*</span></label>
+                <label>ថ្ងៃខែឆ្នាំកំណើត</label>
                 <div class="dob-picker-trigger" id="fDobTrigger" onclick="toggleDobCalendar(event)">
                   <span id="fDobText" style="color: var(--text-muted);">ជ្រើសរើសថ្ងៃខែឆ្នាំ</span>
                   <span style="font-size: 14px; color: var(--primary);"><i class="fa-solid fa-calendar-days"></i></span>
                 </div>
-                <input type="hidden" id="fDob" required value="">
+                <input type="hidden" id="fDob" value="">
 
                 <!-- 📅 POPUP KHMER CALENDAR -->
                 <div class="dob-cal-popup" id="dobCalPopup" onclick="event.stopPropagation()">
@@ -454,9 +471,9 @@
               </div>
 
               <div class="field">
-                <label>ទីកន្លែងបច្ចុប្បន្ន <span class="required">*</span></label>
+                <label>ទីកន្លែងបច្ចុប្បន្ន</label>
                 <div class="input-wrap"><span class="input-icon"><i class="fa-solid fa-location-dot"></i></span>
-                  <input type="text" id="fAddress" placeholder="ភូមិ, ឃុំ, ស្រុក, ខេត្ត" required></div>
+                  <input type="text" id="fAddress" placeholder="ភូមិ, ឃុំ, ស្រុក, ខេត្ត"></div>
               </div>
             </div>
           </div>
@@ -558,6 +575,7 @@
     let teachers = [];
     let editingId = null;
     let pickedPhotoBase64 = null;
+    let photoDeleteRequested = false;
 
     /* =========================================================
        3. 🌈 THEME INHERITANCE FROM PARENT (index.html)
@@ -575,7 +593,6 @@
       root.style.setProperty('--input-focus', primaryColor);
     }
 
-    // ១. អានពណ៌ Theme ពី URL ឬ localStorage
     const urlParams = new URLSearchParams(window.location.search);
     const themeParam = urlParams.get('theme') || localStorage.getItem('krou_theme_manual') || 'dark';
     applyTheme(themeParam);
@@ -589,7 +606,6 @@
       );
     }
 
-    // ២. ទទួលសញ្ញា Theme ផ្ទាល់ពី Form មេ (index.html)
     window.addEventListener('message', e => {
       if (!e.data) return;
       if (e.data.type === 'THEME_CHANGE' || e.data.theme) {
@@ -622,7 +638,6 @@
       toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
     }
 
-    // 🌟 បង្រួមរូបភាពស្វ័យប្រវត្តិកុំឱ្យលើស 100 KB
     function compressTeacherPhoto(file, maxBytes = 98 * 1024) {
       return new Promise((resolve, reject) => {
         if (!file || !file.type || !file.type.startsWith('image/')) {
@@ -665,6 +680,33 @@
         };
         reader.readAsDataURL(file);
       });
+    }
+
+    /* 🌟 បង្ហាញ ឬលាក់ Preview និងប៊ូតុងលុបរូបថត */
+    function setPhotoPreview(src) {
+      const preview = document.getElementById('photoPreview');
+      const placeholder = document.getElementById('photoPlaceholder');
+      const removeBtn = document.getElementById('removePhotoBtn');
+      if (src) {
+        preview.src = src;
+        preview.style.display = 'block';
+        placeholder.style.display = 'none';
+        if (removeBtn) removeBtn.style.display = 'inline-flex';
+      } else {
+        preview.removeAttribute('src');
+        preview.style.display = 'none';
+        placeholder.style.display = 'flex';
+        if (removeBtn) removeBtn.style.display = 'none';
+      }
+    }
+
+    function removeTeacherPhoto() {
+      if (!confirm('តើអ្នកពិតជាចង់លុបរូបថតគ្រូនេះមែនទេ?')) return;
+      pickedPhotoBase64 = null;
+      photoDeleteRequested = true;
+      document.getElementById('fPhoto').value = '';
+      setPhotoPreview('');
+      showToast('🗑️ រូបថតត្រូវបានដកចេញ (នឹងលុបជាស្ថាពរពេលចុច «រក្សាទុក»)');
     }
 
     /* =========================================================
@@ -860,12 +902,12 @@
           <tr>
             <td>${toKhmerNum(i + 1)}</td>
             <td>${photoCell}</td>
-            <td><strong>${escapeHtml(t.teacher_id)}</strong></td>
+            <td><strong>${escapeHtml(t.teacher_id || '—')}</strong></td>
             <td class="name-cell">${escapeHtml(t.teacher_name)}</td>
             <td>${escapeHtml(t.gender || 'ប្រុស')}</td>
-            <td>${escapeHtml(t.phone)}</td>
+            <td>${escapeHtml(t.phone || '—')}</td>
             <td>${escapeHtml(t.dob || '—')}</td>
-            <td>${escapeHtml(t.address)}</td>
+            <td>${escapeHtml(t.address || '—')}</td>
             <td><span class="badge-user">${escapeHtml(t.username)}</span></td>
             <td><span class="badge-role ${isAdmin ? 'admin' : 'teacher'}">${isAdmin ? 'Admin' : 'គ្រូ'}</span></td>
             <td>${assignedCls}</td>
@@ -906,10 +948,8 @@
       try {
         showToast('⏳ កំពុងបង្រួមរូបថត...');
         pickedPhotoBase64 = await compressTeacherPhoto(file);
-        const preview = document.getElementById('photoPreview');
-        preview.src = pickedPhotoBase64;
-        preview.style.display = 'block';
-        document.getElementById('photoPlaceholder').style.display = 'none';
+        photoDeleteRequested = false;
+        setPhotoPreview(pickedPhotoBase64);
         showToast('✅ រូបថតត្រៀមរួចរាល់ (≤ 100 KB)');
       } catch (e) {
         showToast('❌ មិនអាចអានរូបភាពបាន៖ ' + e.message, true);
@@ -919,10 +959,11 @@
     function openModal() {
       editingId = null;
       pickedPhotoBase64 = null;
+      photoDeleteRequested = false;
       closeDobCalendar();
 
       document.getElementById('modalTitle').innerText = 'បន្ថែមគ្រូថ្មី';
-      document.getElementById('modalSubtitle').innerText = 'បំពេញព័ត៌មានខាងក្រោម ដើម្បីបង្កើតគណនីគ្រូថ្មី';
+      document.getElementById('modalSubtitle').innerText = 'បំពេញព័ត៌មានចាំបាច់ខាងក្រោម ដើម្បីបង្កើតគណនីគ្រូថ្មី';
       document.getElementById('footerModeText').innerText = '➕ កំពុងបង្កើតគណនីគ្រូថ្មី';
       document.getElementById('teacherForm').reset();
       document.getElementById('fAssignedClass').value = '';
@@ -934,8 +975,10 @@
       document.getElementById('fPassword').required = true;
       document.getElementById('passwordRequired').style.display = 'inline';
       document.getElementById('passHint').innerText = 'ប្រើ Password ដែលពិបាកទាយ និងមិនគួរចែករំលែក។';
-      document.getElementById('photoPreview').style.display = 'none';
-      document.getElementById('photoPlaceholder').style.display = 'flex';
+      
+      document.getElementById('fPhoto').value = '';
+      setPhotoPreview('');
+
       document.getElementById('fRole').value = 'teacher';
       onRoleChange();
       document.getElementById('modalBackdrop').classList.add('show');
@@ -946,6 +989,7 @@
       if (!t) return;
       editingId = t.id;
       pickedPhotoBase64 = null;
+      photoDeleteRequested = false;
       closeDobCalendar();
 
       document.getElementById('modalTitle').innerText = 'កែប្រែព័ត៌មានគ្រូ';
@@ -979,18 +1023,9 @@
       onRoleChange();
       document.getElementById('fAssignedClass').value = t.assigned_classes || '';
 
-      const preview = document.getElementById('photoPreview');
-      const placeholder = document.getElementById('photoPlaceholder');
-      const photo = safeUrl(t.photo_url);
-      if (photo) {
-        preview.src = photo;
-        preview.style.display = 'block';
-        placeholder.style.display = 'none';
-      } else {
-        preview.style.display = 'none';
-        placeholder.style.display = 'flex';
-      }
       document.getElementById('fPhoto').value = '';
+      setPhotoPreview(safeUrl(t.photo_url));
+
       document.getElementById('modalBackdrop').classList.add('show');
     }
 
@@ -1007,6 +1042,7 @@
     }
 
     async function isDuplicate(column, value) {
+      if (!value) return false;
       let q = sb.from(USERS_TABLE).select('id').eq(column, value);
       if (editingId !== null) q = q.neq('id', editingId);
       const { data, error } = await q.limit(1);
@@ -1018,18 +1054,21 @@
       ev.preventDefault();
 
       const role = document.getElementById('fRole').value;
+      const codeVal = document.getElementById('fCode').value.trim();
+
       const payload = {
-        teacher_id: document.getElementById('fCode').value.trim(),
         teacher_name: document.getElementById('fName').value.trim(),
         gender: document.getElementById('fSex').value,
-        phone: document.getElementById('fPhone').value.trim(),
-        dob: document.getElementById('fDob').value || null,
-        address: document.getElementById('fAddress').value.trim(),
         username: document.getElementById('fUsername').value.trim(),
         role: role,
         assigned_classes: role === 'admin' ? '' : document.getElementById('fAssignedClass').value.trim(),
+        teacher_id: codeVal || null,
+        phone: document.getElementById('fPhone').value.trim() || null,
+        dob: document.getElementById('fDob').value || null,
+        address: document.getElementById('fAddress').value.trim() || null,
         updated_at: new Date().toISOString()
       };
+      
       const password = document.getElementById('fPassword').value;
 
       if (editingId === null && !password) {
@@ -1037,14 +1076,20 @@
         return false;
       }
       if (password) payload.password = password;
-      if (pickedPhotoBase64) payload.photo_url = pickedPhotoBase64;
+
+      // 🌟 ដោះស្រាយការលុប ឬប្ដូររូបថត
+      if (pickedPhotoBase64) {
+        payload.photo_url = pickedPhotoBase64;
+      } else if (photoDeleteRequested) {
+        payload.photo_url = null;
+      }
 
       const saveBtn = document.getElementById('saveBtn');
       saveBtn.disabled = true;
       saveBtn.innerText = '⏳ កំពុងរក្សា...';
 
       try {
-        if (await isDuplicate('teacher_id', payload.teacher_id)) {
+        if (payload.teacher_id && await isDuplicate('teacher_id', payload.teacher_id)) {
           showToast('⚠️ អត្តលេខនេះមានរួចហើយ', true);
           return false;
         }
