@@ -91,7 +91,7 @@
     /* ══════════════ 🌟 CUSTOM DROPDOWN (FONT BATTAMBANG) ══════════════ */
     .dd-wrap { position: relative; display: inline-block; }
     .dd-popup {
-      display: none; position: absolute; top: calc(100% + 6px); left: 0; min-width: 195px; max-height: 290px; overflow-y: auto;
+      display: none; position: absolute; top: calc(100% + 6px); left: 0; min-width: 205px; max-height: 290px; overflow-y: auto;
       background: #ffffff; border-radius: 16px; box-shadow: 0 14px 35px rgba(0, 0, 0, 0.35);
       border: 1px solid #e2e8f0; padding: 6px; z-index: 1000; animation: ddIn .15s ease-out;
     }
@@ -106,6 +106,7 @@
     }
     .dd-item:hover { background: #f1f5f9; }
     .dd-item.active { background: #e0f2fe; color: #0284c7; }
+    .dd-item-left { display: flex; align-items: center; gap: 8px; }
     .dd-item i { font-size: 13px; }
 
     /* ══════════════ 📄 PAPER SCALER & CONTAINER ══════════════ */
@@ -159,12 +160,12 @@
 
     /* 📈 Statistics Breakdown */
     .stats-container { margin: 10px 0 14px; font-size: 11px; line-height: 1.6; }
-    .stats-top-summary { font-weight: 700; margin-bottom: 4px; }
+    .stats-top-summary { font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
     .stats-grid-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px 14px; margin-bottom: 4px; }
     .stats-item { font-size: 10.5px; }
     .stats-item strong { font-weight: 800; }
-    .stats-pass { color: #2563eb !important; font-weight: 800; }
-    .stats-fail { color: #dc2626 !important; font-weight: 800; }
+    .stats-pass { color: #2563eb !important; font-weight: 800; display: flex; align-items: center; gap: 6px; }
+    .stats-fail { color: #dc2626 !important; font-weight: 800; display: flex; align-items: center; gap: 6px; }
 
     /* ✍️ Signature Section (ចន្លោះទំនេរ) */
     .sign-row {
@@ -265,76 +266,84 @@
   <!-- ══════════════ 🌟 MAIN REPORT CONTENT WRAPPER ══════════════ -->
   <div id="mainPageContent" style="display:none;">
 
-    <!-- 🛠️ TOP TOOLBAR -->
+    <!-- 🛠️ TOP TOOLBAR (WITH DESCRIPTIVE ICONS) -->
     <div class="top-toolbar">
-      <button type="button" class="tb-btn" onclick="goBack()"><i class="fa-solid fa-arrow-left"></i> ត្រឡប់</button>
+      <button type="button" class="tb-btn" onclick="goBack()">
+        <i class="fa-solid fa-arrow-left"></i> <span>ត្រឡប់</span>
+      </button>
       
-      <!-- 🏫 Dropdown 1: ជ្រើសរើសថ្នាក់ (🌟 បង្ហាញសម្រាប់តែ Admin) -->
+      <!-- 🏫 Dropdown 1: ជ្រើសរើសថ្នាក់ (Admin) -->
       <div class="dd-wrap" id="adminClassDropdownWrap" style="display:none;">
         <button type="button" class="tb-btn" id="btnClassSelect" onclick="toggleDropdown('ddClassSelect')">
-          <span id="txtClassSelect">ថ្នាក់ទី ៤(ក)</span>
-          <i class="fa-solid fa-chevron-down" id="chevClassSelect" style="font-size:11px;"></i>
+          <span style="display:flex; align-items:center; gap:7px;">
+            <i class="fa-solid fa-school" style="color:#38bdf8;"></i>
+            <span id="txtClassSelect">ថ្នាក់ទី ៤(ក)</span>
+          </span>
+          <i class="fa-solid fa-chevron-down" id="chevClassSelect" style="font-size:11px; margin-left:4px;"></i>
         </button>
         <div class="dd-popup" id="ddClassSelect"></div>
       </div>
 
-      <!-- 📅 Dropdown 2: ជម្រើសកាលកំណត់ (🌟 ប្រចាំឆ្នាំ vs ប្រចាំខែ) -->
+      <!-- 📅 Dropdown 2: ជម្រើសកាលកំណត់ (ប្រចាំឆ្នាំ vs ប្រចាំខែ) -->
       <div class="dd-wrap">
         <button type="button" class="tb-btn" id="btnPeriodMode" onclick="toggleDropdown('ddPeriodMode')">
-          <span id="txtPeriodMode">ប្រចាំឆ្នាំ</span>
-          <i class="fa-solid fa-chevron-down" id="chevPeriodMode" style="font-size:11px;"></i>
+          <span style="display:flex; align-items:center; gap:7px;">
+            <i class="fa-solid fa-calendar-check" style="color:#fbbf24;"></i>
+            <span id="txtPeriodMode">ប្រចាំឆ្នាំ</span>
+          </span>
+          <i class="fa-solid fa-chevron-down" id="chevPeriodMode" style="font-size:11px; margin-left:4px;"></i>
         </button>
         <div class="dd-popup" id="ddPeriodMode">
           <div class="dd-item active" data-period="ANNUAL" onclick="selectPeriodMode('ANNUAL')">
-            <span>ប្រចាំឆ្នាំ</span>
+            <span class="dd-item-left"><i class="fa-solid fa-calendar-days" style="color:#eab308;"></i> ប្រចាំឆ្នាំ</span>
             <i class="fa-solid fa-check"></i>
           </div>
           <div class="dd-item" data-period="តុលា" onclick="selectPeriodMode('តុលា')">
-            <span>ខែតុលា</span>
+            <span class="dd-item-left"><i class="fa-regular fa-calendar" style="color:var(--primary);"></i> ខែតុលា</span>
             <i class="fa-solid fa-check" style="display:none;"></i>
           </div>
           <div class="dd-item" data-period="វិច្ឆិកា" onclick="selectPeriodMode('វិច្ឆិកា')">
-            <span>ខែវិច្ឆិកា</span>
+            <span class="dd-item-left"><i class="fa-regular fa-calendar" style="color:var(--primary);"></i> ខែវិច្ឆិកា</span>
             <i class="fa-solid fa-check" style="display:none;"></i>
           </div>
           <div class="dd-item" data-period="ធ្នូ" onclick="selectPeriodMode('ធ្នូ')">
-            <span>ខែធ្នូ</span>
+            <span class="dd-item-left"><i class="fa-regular fa-calendar" style="color:var(--primary);"></i> ខែធ្នូ</span>
             <i class="fa-solid fa-check" style="display:none;"></i>
           </div>
           <div class="dd-item" data-period="មករា" onclick="selectPeriodMode('មករា')">
-            <span>ខែមករា</span>
+            <span class="dd-item-left"><i class="fa-regular fa-calendar" style="color:var(--primary);"></i> ខែមករា</span>
             <i class="fa-solid fa-check" style="display:none;"></i>
           </div>
           <div class="dd-item" data-period="កុម្ភៈ" onclick="selectPeriodMode('កុម្ភៈ')">
-            <span>ខែកុម្ភៈ</span>
+            <span class="dd-item-left"><i class="fa-regular fa-calendar" style="color:var(--primary);"></i> ខែកុម្ភៈ</span>
             <i class="fa-solid fa-check" style="display:none;"></i>
           </div>
           <div class="dd-item" data-period="មីនា" onclick="selectPeriodMode('មីនា')">
-            <span>ខែមីនា</span>
+            <span class="dd-item-left"><i class="fa-regular fa-calendar" style="color:var(--primary);"></i> ខែមីនា</span>
             <i class="fa-solid fa-check" style="display:none;"></i>
           </div>
           <div class="dd-item" data-period="មេសា" onclick="selectPeriodMode('មេសា')">
-            <span>ខែមេសា</span>
+            <span class="dd-item-left"><i class="fa-regular fa-calendar" style="color:var(--primary);"></i> ខែមេសា</span>
             <i class="fa-solid fa-check" style="display:none;"></i>
           </div>
           <div class="dd-item" data-period="ឧសភា" onclick="selectPeriodMode('ឧសភា')">
-            <span>ខែឧសភា</span>
+            <span class="dd-item-left"><i class="fa-regular fa-calendar" style="color:var(--primary);"></i> ខែឧសភា</span>
             <i class="fa-solid fa-check" style="display:none;"></i>
           </div>
           <div class="dd-item" data-period="មិថុនា" onclick="selectPeriodMode('មិថុនា')">
-            <span>ខែមិថុនា</span>
+            <span class="dd-item-left"><i class="fa-regular fa-calendar" style="color:var(--primary);"></i> ខែមិថុនា</span>
             <i class="fa-solid fa-check" style="display:none;"></i>
           </div>
           <div class="dd-item" data-period="កក្កដា" onclick="selectPeriodMode('កក្កដា')">
-            <span>ខែកក្កដា</span>
+            <span class="dd-item-left"><i class="fa-regular fa-calendar" style="color:var(--primary);"></i> ខែកក្កដា</span>
             <i class="fa-solid fa-check" style="display:none;"></i>
           </div>
           <div class="dd-item" data-period="សីហា" onclick="selectPeriodMode('សីហា')">
-            <span>ខែសីហា</span>
+            <span class="dd-item-left"><i class="fa-regular fa-calendar" style="color:var(--primary);"></i> ខែសីហា</span>
             <i class="fa-solid fa-check" style="display:none;"></i>
           </div>
           <div class="dd-item" data-period="កញ្ញា" onclick="selectPeriodMode('កញ្ញា')">
-            <span>ខែកញ្ញា</span>
+            <span class="dd-item-left"><i class="fa-regular fa-calendar" style="color:var(--primary);"></i> ខែកញ្ញា</span>
             <i class="fa-solid fa-check" style="display:none;"></i>
           </div>
         </div>
@@ -343,16 +352,19 @@
       <!-- 🌟 Dropdown 3: របៀបបង្ហាញនិទ្ទេស (A-F vs ពាក្យខ្មែរ) -->
       <div class="dd-wrap">
         <button type="button" class="tb-btn" id="btnGradeMode" onclick="toggleDropdown('ddGradeMode')">
-          <span id="txtGradeMode">និទ្ទេស A-F</span>
-          <i class="fa-solid fa-chevron-down" id="chevGradeMode" style="font-size:11px;"></i>
+          <span style="display:flex; align-items:center; gap:7px;">
+            <i class="fa-solid fa-award" style="color:#f43f5e;"></i>
+            <span id="txtGradeMode">និទ្ទេស A-F</span>
+          </span>
+          <i class="fa-solid fa-chevron-down" id="chevGradeMode" style="font-size:11px; margin-left:4px;"></i>
         </button>
         <div class="dd-popup" id="ddGradeMode">
           <div class="dd-item active" id="optGradeAF" onclick="selectGradeMode('AF')">
-            <span>និទ្ទេស A-F</span>
+            <span class="dd-item-left"><i class="fa-solid fa-font" style="color:#0284c7;"></i> និទ្ទេស A-F</span>
             <i class="fa-solid fa-check"></i>
           </div>
           <div class="dd-item" id="optGradeKH" onclick="selectGradeMode('KH')">
-            <span>និទ្ទេស ពាក្យខ្មែរ</span>
+            <span class="dd-item-left"><i class="fa-solid fa-pen-nib" style="color:#10b981;"></i> និទ្ទេស ពាក្យខ្មែរ</span>
             <i class="fa-solid fa-check" style="display:none;"></i>
           </div>
         </div>
@@ -361,26 +373,39 @@
       <!-- 🌟 Dropdown 4: ជម្រើសមុខវិជ្ជា (ខ្មែរ-គណិត vs គ្រប់មុខវិជ្ជាគោល) -->
       <div class="dd-wrap">
         <button type="button" class="tb-btn" id="btnSubjectMode" onclick="toggleDropdown('ddSubjectMode')">
-          <span id="txtSubjectMode">គ្រប់មុខវិជ្ជាគោល</span>
-          <i class="fa-solid fa-chevron-down" id="chevSubjectMode" style="font-size:11px;"></i>
+          <span style="display:flex; align-items:center; gap:7px;">
+            <i class="fa-solid fa-book-open" style="color:#34d399;"></i>
+            <span id="txtSubjectMode">គ្រប់មុខវិជ្ជាគោល</span>
+          </span>
+          <i class="fa-solid fa-chevron-down" id="chevSubjectMode" style="font-size:11px; margin-left:4px;"></i>
         </button>
         <div class="dd-popup" id="ddSubjectMode">
           <div class="dd-item" id="optSubjKMMA" onclick="selectSubjectMode('KM_MA')">
-            <span>ខ្មែរ-គណិត</span>
+            <span class="dd-item-left"><i class="fa-solid fa-calculator" style="color:#0284c7;"></i> ខ្មែរ-គណិត</span>
             <i class="fa-solid fa-check" style="display:none;"></i>
           </div>
           <div class="dd-item active" id="optSubjALL" onclick="selectSubjectMode('ALL')">
-            <span>គ្រប់មុខវិជ្ជាគោល</span>
+            <span class="dd-item-left"><i class="fa-solid fa-layer-group" style="color:#8b5cf6;"></i> គ្រប់មុខវិជ្ជាគោល</span>
             <i class="fa-solid fa-check"></i>
           </div>
         </div>
       </div>
 
-      <button type="button" class="tb-btn" onclick="editDate('teacher')"><i class="fa-regular fa-calendar-days"></i> កាលបរិច្ឆេទហត្ថលេខា</button>
-      <button type="button" class="tb-btn" onclick="editDate('principal')"><i class="fa-regular fa-calendar-check"></i> ថ្ងៃនាយកចុះហត្ថលេខា</button>
-      <button type="button" class="tb-btn" onclick="openPageSetup()"><i class="fa-solid fa-sliders"></i> កំណត់ទំព័រ</button>
-      <button type="button" class="tb-btn" style="background:#059669;" onclick="downloadPDF()"><i class="fa-solid fa-file-pdf"></i> ទាញយក PDF</button>
-      <button type="button" class="tb-btn primary" onclick="printReport()"><i class="fa-solid fa-print"></i> បោះពុម្ព</button>
+      <button type="button" class="tb-btn" onclick="editDate('teacher')">
+        <i class="fa-solid fa-file-signature" style="color:#60a5fa;"></i> <span>កាលបរិច្ឆេទហត្ថលេខា</span>
+      </button>
+      <button type="button" class="tb-btn" onclick="editDate('principal')">
+        <i class="fa-solid fa-stamp" style="color:#f59e0b;"></i> <span>ថ្ងៃនាយកចុះហត្ថលេខា</span>
+      </button>
+      <button type="button" class="tb-btn" onclick="openPageSetup()">
+        <i class="fa-solid fa-sliders" style="color:#c084fc;"></i> <span>កំណត់ទំព័រ</span>
+      </button>
+      <button type="button" class="tb-btn" style="background:#059669;" onclick="downloadPDF()">
+        <i class="fa-solid fa-file-pdf"></i> <span>ទាញយក PDF</span>
+      </button>
+      <button type="button" class="tb-btn primary" onclick="printReport()">
+        <i class="fa-solid fa-print"></i> <span>បោះពុម្ព</span>
+      </button>
     </div>
 
     <!-- 📄 PRINTABLE REPORT PAPER -->
@@ -404,7 +429,7 @@
             </div>
           </div>
 
-          <!-- 🏷️ Title of Report (ប្រែប្រួលស្វ័យប្រវត្តិតាម ប្រចាំខែ ឬ ប្រចាំឆ្នាំ) -->
+          <!-- 🏷️ Title of Report -->
           <div class="doc-main-title">
             <h1 class="f-moul" id="lblDocMainTitle">តារាងនិទ្ទេសតាមមុខវិជ្ជាគោល ប្រចាំឆ្នាំ</h1>
             <span id="lblDisplayYear">ឆ្នាំសិក្សា 2026-2027</span>
@@ -571,7 +596,7 @@
     const IS_ADMIN = String(USER_ROLE).toLowerCase().trim() === 'admin';
 
     let currentSelectedClass = cleanGrade(USER_CLASS) || '៤(ក)';
-    let currentPeriod = 'ANNUAL';    // 'ANNUAL' | 'តុលា' | 'វិច្ឆិកា'...
+    let currentPeriod = 'ANNUAL';
     let currentGradeMode = 'AF';     // 'AF' | 'KH'
     let currentSubjectMode = 'ALL';  // 'KM_MA' | 'ALL'
     let rawStudentsList = [];
@@ -581,7 +606,7 @@
     }
 
     /* =========================================================
-       2. DROPDOWN HANDLERS (FONT BATTAMBANG)
+       2. DROPDOWN HANDLERS (FONT BATTAMBANG & ICONS)
     ========================================================= */
     function toggleDropdown(id) {
       const p = document.getElementById(id);
@@ -598,7 +623,6 @@
       if (!e.target.closest('.dd-wrap')) closeAllDropdowns();
     });
 
-    /* 🌟 Dropdown ជ្រើសរើសថ្នាក់ (Admin) */
     function selectClass(cls) {
       currentSelectedClass = cleanGrade(cls);
       document.getElementById('txtClassSelect').innerText = 'ថ្នាក់ទី ' + currentSelectedClass;
@@ -613,7 +637,7 @@
         const itemClass = el.getAttribute('data-class');
         const isActive = (itemClass === currentSelectedClass);
         el.classList.toggle('active', isActive);
-        const icon = el.querySelector('i');
+        const icon = el.querySelector('.fa-check');
         if (icon) icon.style.display = isActive ? 'inline' : 'none';
       });
     }
@@ -637,7 +661,7 @@
 
         dd.innerHTML = classes.map(c => `
           <div class="dd-item ${c === currentSelectedClass ? 'active' : ''}" data-class="${c}" onclick="selectClass('${c}')">
-            <span>ថ្នាក់ទី ${c}</span>
+            <span class="dd-item-left"><i class="fa-solid fa-school" style="color:var(--primary);"></i> ថ្នាក់ទី ${c}</span>
             <i class="fa-solid fa-check" style="${c === currentSelectedClass ? '' : 'display:none;'}"></i>
           </div>
         `).join('');
@@ -647,14 +671,13 @@
         const defaultClasses = ['១', '២', '៣', '៤(ក)', '៤(ខ)', '៥', '៦'];
         dd.innerHTML = defaultClasses.map(c => `
           <div class="dd-item ${c === currentSelectedClass ? 'active' : ''}" data-class="${c}" onclick="selectClass('${c}')">
-            <span>ថ្នាក់ទី ${c}</span>
+            <span class="dd-item-left"><i class="fa-solid fa-school" style="color:var(--primary);"></i> ថ្នាក់ទី ${c}</span>
             <i class="fa-solid fa-check" style="${c === currentSelectedClass ? '' : 'display:none;'}"></i>
           </div>
         `).join('');
       }
     }
 
-    /* 🌟 Dropdown ជ្រើសរើសកាលកំណត់ (ប្រចាំឆ្នាំ vs ប្រចាំខែ) */
     function selectPeriodMode(period) {
       currentPeriod = period;
       const label = (period === 'ANNUAL') ? 'ប្រចាំឆ្នាំ' : `ខែ${period}`;
@@ -664,7 +687,7 @@
         const pVal = el.getAttribute('data-period');
         const isActive = (pVal === period);
         el.classList.toggle('active', isActive);
-        const icon = el.querySelector('i');
+        const icon = el.querySelector('.fa-check');
         if (icon) icon.style.display = isActive ? 'inline' : 'none';
       });
 
@@ -689,8 +712,8 @@
       document.getElementById('txtGradeMode').innerText = (mode === 'AF') ? 'និទ្ទេស A-F' : 'និទ្ទេស ពាក្យខ្មែរ';
       document.getElementById('optGradeAF').classList.toggle('active', mode === 'AF');
       document.getElementById('optGradeKH').classList.toggle('active', mode === 'KH');
-      document.querySelector('#optGradeAF i').style.display = (mode === 'AF') ? 'inline' : 'none';
-      document.querySelector('#optGradeKH i').style.display = (mode === 'KH') ? 'inline' : 'none';
+      document.querySelector('#optGradeAF .fa-check').style.display = (mode === 'AF') ? 'inline' : 'none';
+      document.querySelector('#optGradeKH .fa-check').style.display = (mode === 'KH') ? 'inline' : 'none';
       closeAllDropdowns();
       renderAll();
     }
@@ -700,8 +723,8 @@
       document.getElementById('txtSubjectMode').innerText = (mode === 'KM_MA') ? 'ខ្មែរ-គណិត' : 'គ្រប់មុខវិជ្ជាគោល';
       document.getElementById('optSubjKMMA').classList.toggle('active', mode === 'KM_MA');
       document.getElementById('optSubjALL').classList.toggle('active', mode === 'ALL');
-      document.querySelector('#optSubjKMMA i').style.display = (mode === 'KM_MA') ? 'inline' : 'none';
-      document.querySelector('#optSubjALL i').style.display = (mode === 'ALL') ? 'inline' : 'none';
+      document.querySelector('#optSubjKMMA .fa-check').style.display = (mode === 'KM_MA') ? 'inline' : 'none';
+      document.querySelector('#optSubjALL .fa-check').style.display = (mode === 'ALL') ? 'inline' : 'none';
       
       closeAllDropdowns();
       updateMainDocumentTitle();
@@ -767,7 +790,6 @@
         const { data: stData, error } = await query;
         if (error) throw error;
 
-        // Query ពិន្ទុតាមខែ ឬ ប្រចាំឆ្នាំពី Table scores
         let scoreQuery = sb.from('scores').select('*');
         if (cls) scoreQuery = scoreQuery.eq('assigned_class', cls);
         if (currentPeriod === 'ANNUAL') {
@@ -980,7 +1002,10 @@
         });
 
         statsHtml = `
-          <div class="stats-top-summary">បញ្ជីបញ្ចូលក្នុង${periodLabel}ចំនួន ${total} នាក់ ក្នុងនោះសិស្សស្រី ${female} នាក់ ប្រុស ${male} នាក់</div>
+          <div class="stats-top-summary">
+            <i class="fa-solid fa-users" style="color:var(--primary);"></i>
+            <span>បញ្ជីបញ្ចូលក្នុង${periodLabel}ចំនួន <strong>${total}</strong> នាក់ ក្នុងនោះសិស្សស្រី <strong>${female}</strong> នាក់ ប្រុស <strong>${male}</strong> នាក់</span>
+          </div>
           <div class="stats-grid-row">
             <div class="stats-item">និទ្ទេស <strong>A</strong> មាន ${counts.A} នាក់/ស្រី ${countsF.A} នាក់ ត្រូវនឹង ${(total?(counts.A/total*100):0).toFixed(2)}%</div>
             <div class="stats-item">និទ្ទេស <strong>B</strong> មាន ${counts.B} នាក់/ស្រី ${countsF.B} នាក់ ត្រូវនឹង ${(total?(counts.B/total*100):0).toFixed(2)}%</div>
@@ -989,8 +1014,14 @@
             <div class="stats-item">និទ្ទេស <strong>E</strong> មាន ${counts.E} នាក់/ស្រី ${countsF.E} នាក់ ត្រូវនឹង ${(total?(counts.E/total*100):0).toFixed(2)}%</div>
             <div class="stats-item">និទ្ទេស <strong>F</strong> មាន ${counts.F} នាក់/ស្រី ${countsF.F} នាក់ ត្រូវនឹង ${(total?(counts.F/total*100):0).toFixed(2)}%</div>
           </div>
-          <div class="stats-pass">សិស្សជាប់មធ្យមភាគចំនួន ${pass} នាក់ ក្នុងនោះសិស្សស្រី ${passF} នាក់ ត្រូវនឹង ${passPct}%</div>
-          <div class="stats-fail">សិស្សធ្លាក់មធ្យមភាគចំនួន ${fail} នាក់ ក្នុងនោះសិស្សស្រី ${failF} នាក់ ត្រូវនឹង ${failPct}%</div>
+          <div class="stats-pass">
+            <i class="fa-solid fa-circle-check"></i>
+            <span>សិស្សជាប់មធ្យមភាគចំនួន <strong>${pass}</strong> នាក់ ក្នុងនោះសិស្សស្រី <strong>${passF}</strong> នាក់ ត្រូវនឹង <strong>${passPct}%</strong></span>
+          </div>
+          <div class="stats-fail">
+            <i class="fa-solid fa-circle-xmark"></i>
+            <span>សិស្សធ្លាក់មធ្យមភាគចំនួន <strong>${fail}</strong> នាក់ ក្នុងនោះសិស្សស្រី <strong>${failF}</strong> នាក់ ត្រូវនឹង <strong>${failPct}%</strong></span>
+          </div>
         `;
       } else {
         const counts = { 'ល្អ': 0, 'ល្អបង្គួរ': 0, 'មធ្យម': 0, 'ខ្សោយ': 0 };
@@ -1002,15 +1033,24 @@
         });
 
         statsHtml = `
-          <div class="stats-top-summary">បញ្ជីបញ្ចូលក្នុង${periodLabel}ចំនួន ${total} នាក់ ក្នុងនោះសិស្សស្រី ${female} នាក់ ប្រុស ${male} នាក់</div>
+          <div class="stats-top-summary">
+            <i class="fa-solid fa-users" style="color:var(--primary);"></i>
+            <span>បញ្ជីបញ្ចូលក្នុង${periodLabel}ចំនួន <strong>${total}</strong> នាក់ ក្នុងនោះសិស្សស្រី <strong>${female}</strong> នាក់ ប្រុស <strong>${male}</strong> នាក់</span>
+          </div>
           <div class="stats-grid-row" style="grid-template-columns: repeat(3, 1fr);">
             <div class="stats-item">និទ្ទេស <strong style="color:#2563eb;">ល្អ</strong> មាន ${counts['ល្អ']} នាក់/ស្រី ${countsF['ល្អ']} នាក់ ត្រូវនឹង ${(total?(counts['ល្អ']/total*100):0).toFixed(2)}%</div>
             <div class="stats-item">និទ្ទេស <strong style="color:#9333ea;">ល្អបង្គួរ</strong> មាន ${counts['ល្អបង្គួរ']} នាក់/ស្រី ${countsF['ល្អបង្គួរ']} នាក់ ត្រូវនឹង ${(total?(counts['ល្អបង្គួរ']/total*100):0).toFixed(2)}%</div>
             <div class="stats-item">និទ្ទេស <strong style="color:#16a34a;">មធ្យម</strong> មាន ${counts['មធ្យម']} នាក់/ស្រី ${countsF['មធ្យម']} នាក់ ត្រូវនឹង ${(total?(counts['មធ្យម']/total*100):0).toFixed(2)}%</div>
             <div class="stats-item">និទ្ទេស <strong style="color:#dc2626;">ខ្សោយ</strong> មាន ${counts['ខ្សោយ']} នាក់/ស្រី ${countsF['ខ្សោយ']} នាក់ ត្រូវនឹង ${(total?(counts['ខ្សោយ']/total*100):0).toFixed(2)}%</div>
           </div>
-          <div class="stats-pass">សិស្សជាប់មធ្យមភាគចំនួន ${pass} នាក់ ក្នុងនោះសិស្សស្រី ${passF} នាក់ ត្រូវនឹង ${passPct}%</div>
-          <div class="stats-fail">សិស្សធ្លាក់មធ្យមភាគចំនួន ${fail} នាក់ ក្នុងនោះសិស្សស្រី ${failF} នាក់ ត្រូវនឹង ${failPct}%</div>
+          <div class="stats-pass">
+            <i class="fa-solid fa-circle-check"></i>
+            <span>សិស្សជាប់មធ្យមភាគចំនួន <strong>${pass}</strong> នាក់ ក្នុងនោះសិស្សស្រី <strong>${passF}</strong> នាក់ ត្រូវនឹង <strong>${passPct}%</strong></span>
+          </div>
+          <div class="stats-fail">
+            <i class="fa-solid fa-circle-xmark"></i>
+            <span>សិស្សធ្លាក់មធ្យមភាគចំនួន <strong>${fail}</strong> នាក់ ក្នុងនោះសិស្សស្រី <strong>${failF}</strong> នាក់ ត្រូវនឹង <strong>${failPct}%</strong></span>
+          </div>
         `;
       }
       document.getElementById('statsContainer').innerHTML = statsHtml;
@@ -1093,6 +1133,7 @@
       document.getElementById('psIn_rowH').value = PS.rowH;
     }
 
+    /* 🌟 BROWSER & MOBILE PAPER FIT (RESPONSIVE) */
     function fitPaper() {
       const paper = document.getElementById('printableReportPaper');
       const sc = document.getElementById('paperScaler');
