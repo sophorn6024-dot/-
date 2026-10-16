@@ -122,6 +122,18 @@ video.vid{display:block;max-width:min(17.5rem,66vw);max-height:18.75rem;border-r
 .cmenu button.danger,.cmenu button.danger i{color:#ef4444}
 .row.flash .bub{animation:flash 1.3s}
 @keyframes flash{0%,65%{box-shadow:0 0 0 3px var(--primary)}100%{box-shadow:var(--shadow)}}
+.av[data-act],.mem{cursor:pointer}
+.prof{max-width:22rem;padding:1.6rem 1.2rem 1.3rem;position:relative;text-align:center;overflow-y:auto}
+.pclose{position:absolute;top:.5rem;right:.5rem}
+.pav{width:6.5rem;height:6.5rem;border-radius:50%;margin:0 auto .8rem;overflow:hidden;display:flex;align-items:center;justify-content:center;color:#fff;font-size:2.6rem;font-weight:700;box-shadow:var(--shadow);background:#0d7a5f}
+.pav img{width:100%;height:100%;object-fit:cover;background:#fff}
+.pname{font-size:1.2rem;font-weight:700}
+.prole{display:inline-block;margin:.4rem 0 1rem;background:var(--chip-on);color:var(--chip-on-text);font-size:.8rem;font-weight:700;padding:.2rem .8rem;border-radius:1rem}
+.prows{display:flex;flex-direction:column;gap:.5rem;text-align:left}
+.prow{display:flex;align-items:center;gap:.8rem;background:var(--card);border-radius:.9rem;padding:.6rem .9rem}
+.prow>i{width:1.2rem;text-align:center;color:var(--primary)}
+.prow small{display:block;font-size:.75rem;color:var(--muted)}
+.prow b,.prow a{font-size:.95rem;font-weight:600;color:var(--text);text-decoration:none;word-break:break-word}
 </style>
 </head>
 <body>
@@ -160,6 +172,7 @@ video.vid{display:block;max-width:min(17.5rem,66vw);max-height:18.75rem;border-r
 </div>
 
 <div class="overlay" id="memModal" onclick="if(event.target===this)closeMembers()"><div class="modal"><div class="mhead"><span><i class="fa-solid fa-user-group"></i> សមាជិកទាំងអស់</span><button class="icon-btn" onclick="closeMembers()">✕</button></div><div class="mlist" id="memList"></div></div></div>
+<div class="overlay" id="profModal" style="z-index:120" onclick="if(event.target===this)closeProfile()"><div class="modal prof"><button class="icon-btn pclose" onclick="closeProfile()" title="បិទ">✕</button><div id="profBody"></div></div></div>
 <div class="overlay lightbox" id="lightbox" onclick="this.style.display='none'"><img id="lbImg" alt=""></div>
 <div class="toast" id="toast"></div>
 
@@ -196,9 +209,9 @@ if(window.visualViewport){visualViewport.addEventListener('resize',fitViewport);
 /* ---------- users (from database) ---------- */
 let users={};try{users=JSON.parse(localStorage.getItem('krou_teachers_cache')||'{}');Object.values(users).forEach(u=>{delete u.password;delete u.phone;delete u.dob;delete u.address})}catch(e){}
 async function loadUsers(){
-  try{const{data,error}=await sb.from('users').select('id, teacher_id, teacher_name, username, role, assigned_classes, photo_url');if(error||!data)return;
+  try{const{data,error}=await sb.from('users').select('id, teacher_id, teacher_name, username, role, assigned_classes, photo_url, gender, phone');if(error||!data)return;
     users={};data.forEach(u=>{if(u.username)users[String(u.username).toLowerCase()]=u;if(u.teacher_id)users[String(u.teacher_id).toLowerCase()]=u;if(u.teacher_name)users[String(u.teacher_name).trim()]=u});
-    try{localStorage.setItem('krou_teachers_cache',JSON.stringify(users))}catch(e){}}catch(e){}
+    try{localStorage.setItem('krou_teachers_cache',JSON.stringify(users,(k,v)=>k==='phone'?undefined:v))}catch(e){}}catch(e){}
 }
 const PALETTE=['#0d7a5f','#2563eb','#c2410c','#7c3aed','#0891b2','#be185d','#4d7c0f','#b45309'];
 function hue(s){let h=0;for(const c of String(s))h=(h*31+c.charCodeAt(0))>>>0;return PALETTE[h%PALETTE.length]}
@@ -285,12 +298,13 @@ function render(stick){
     const prev=list[i-1],next=list[i+1];
     const same=(a,b)=>a&&b&&String(a.sender_code||a.sender_name)===String(b.sender_code||b.sender_name)&&dateLabel(a.created_at)===dateLabel(b.created_at)&&Math.abs(new Date(b.created_at)-new Date(a.created_at))<300000;
     const first=!same(prev,m),last=!same(m,next);
+    const wk=esc(m.sender_code||m.sender_name||'');
     let av='';
     {
       if(!last)av='<div class="av sp"></div>';
-      else if(s.photo)av=`<div class="av"><img src="${esc(s.photo)}" data-ini="${esc(s.initial)}" alt=""></div>`;
-      else if(s.isAdmin)av=`<div class="av"><img src="logo.png" data-ini="${esc(s.initial)}" alt=""></div>`;
-      else av=`<div class="av" style="background:${s.color}">${esc(s.initial)}</div>`;
+      else if(s.photo)av=`<div class="av" data-act="profile" data-who="${wk}"><img src="${esc(s.photo)}" data-ini="${esc(s.initial)}" alt=""></div>`;
+      else if(s.isAdmin)av=`<div class="av" data-act="profile" data-who="${wk}"><img src="logo.png" data-ini="${esc(s.initial)}" alt=""></div>`;
+      else av=`<div class="av" data-act="profile" data-who="${wk}" style="background:${s.color}">${esc(s.initial)}</div>`;
     }
     const who=(!mine&&first)?`<div class="who ${s.isAdmin?'admin':''}">${esc(s.name)}${s.sub?' · '+esc(s.sub):''}</div>`:'';
     const del='';
@@ -315,6 +329,7 @@ box.addEventListener('click',e=>{
   switch(el.dataset.act){
     case'older':loadOlder();break;
     case'goto':gotoMsg(el.dataset.id);break;
+    case'profile':openProfile(el.dataset.who);break;
     case'del':deleteMsg(id);break;
     case'zoom':$('lbImg').src=el.src;$('lightbox').style.display='flex';break;
     case'play':playAudio(el,row);break;
@@ -527,7 +542,7 @@ function toggleSearch(){const b=$('searchBar'),on=b.style.display==='flex';b.sty
 function onSearch(v){query=v;render(false)}
 async function openMembers(){
   $('memModal').style.display='flex';drawMembers(uniqueUsers(Object.values(users)));
-  try{const{data}=await sb.from('users').select('id, teacher_id, teacher_name, username, role, assigned_classes, photo_url').order('id',{ascending:true});if(data)drawMembers(data)}catch(e){}
+  try{const{data}=await sb.from('users').select('id, teacher_id, teacher_name, username, role, assigned_classes, photo_url, gender, phone').order('id',{ascending:true});if(data)drawMembers(data)}catch(e){}
 }
 const uniqueUsers=a=>{const s=new Set();return a.filter(u=>{const k=u.id||u.username;if(s.has(k))return false;s.add(k);return true})};
 const isMeUser=u=>!!MY_CODE&&[u.username,u.teacher_id].some(x=>String(x||'').toLowerCase()===MY_CODE);
@@ -536,9 +551,32 @@ function drawMembers(list){
   list=list.slice().sort((a,b)=>rank(a)-rank(b));
   $('memList').innerHTML=list.length?list.map(u=>{
     const nm=u.teacher_name||u.username||'',p=safeUrl(u.photo_url),me=isMeUser(u);
-    return`<div class="mem${me?' me':''}"><div class="av" style="background:${hue(u.username||nm)}">${p?`<img src="${esc(p)}" data-ini="${esc(nm.charAt(0))}" alt="">`:esc(nm.charAt(0)||'U')}</div><div><b>${esc(nm)}${me?'<span class="chip">គណនីរបស់អ្នក</span>':''}</b><small>${esc(userSub(u)||'គ្រូបង្រៀន')}</small></div></div>`}).join(''):'<div class="empty">មិនមានបញ្ជីសមាជិកឡើយ</div>';
+    return`<div class="mem${me?' me':''}" data-who="${esc(u.username||u.teacher_id||nm)}"><div class="av" style="background:${hue(u.username||nm)}">${p?`<img src="${esc(p)}" data-ini="${esc(nm.charAt(0))}" alt="">`:esc(nm.charAt(0)||'U')}</div><div><b>${esc(nm)}${me?'<span class="chip">គណនីរបស់អ្នក</span>':''}</b><small>${esc(userSub(u)||'គ្រូបង្រៀន')}</small></div></div>`}).join(''):'<div class="empty">មិនមានបញ្ជីសមាជិកឡើយ</div>';
 }
+$('memList').addEventListener('click',e=>{const r=e.target.closest('.mem');if(r)openProfile(r.dataset.who)});
 function closeMembers(){$('memModal').style.display='none'}
+
+/* ---------- profile card ---------- */
+function openProfile(key){
+  const k=String(key||'').trim();
+  const u=users[k.toLowerCase()]||users[k]||null;
+  const name=(u&&u.teacher_name)||k||'អ្នកប្រើប្រាស់';
+  const isAdm=String((u&&u.role)||'').toLowerCase()==='admin';
+  const photo=safeUrl(u&&u.photo_url),ini=name.trim().charAt(0)||'U';
+  const me=u?isMeUser(u):(k.toLowerCase()===MY_CODE);
+  const row=(ic,lb,v)=>`<div class="prow"><i class="fa-solid ${ic}"></i><div><small>${lb}</small>${v}</div></div>`;
+  let rows='';
+  if(u&&u.assigned_classes)rows+=row('fa-chalkboard-user','ថ្នាក់ទទួលបន្ទុក','<b>ថ្នាក់ទី '+esc(u.assigned_classes)+'</b>');
+  if(u&&u.gender)rows+=row('fa-venus-mars','ភេទ','<b>'+esc(u.gender)+'</b>');
+  if(u&&u.phone){const tel=String(u.phone).replace(/[^0-9+]/g,'');rows+=row('fa-phone','លេខទូរសព្ទ',tel?`<a href="tel:${tel}">${esc(u.phone)}</a>`:'<b>'+esc(u.phone)+'</b>')}
+  if(u&&u.teacher_id)rows+=row('fa-id-badge','អត្តលេខគ្រូ','<b>'+esc(u.teacher_id)+'</b>');
+  if(!rows)rows='<div class="empty" style="padding:.5rem">មិនមានព័ត៌មានបន្ថែមទេ</div>';
+  const av=photo?`<img src="${esc(photo)}" data-ini="${esc(ini)}" alt="">`:(isAdm?`<img src="logo.png" data-ini="${esc(ini)}" alt="">`:esc(ini));
+  $('profBody').innerHTML=`<div class="pav" style="${photo||isAdm?'':'background:'+hue(k||name)}">${av}</div><div class="pname">${esc(name)}</div><div class="prole">${isAdm?'អ្នកគ្រប់គ្រង (Admin)':'គ្រូបង្រៀន'}${me?' · គណនីរបស់អ្នក':''}</div><div class="prows">${rows}</div>`;
+  $('profModal').style.display='flex';
+}
+function closeProfile(){$('profModal').style.display='none'}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeProfile();closeMembers();closeMenu();$('lightbox').style.display='none'}});
 
 /* ---------- init ---------- */
 window.addEventListener('DOMContentLoaded',()=>{
