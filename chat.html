@@ -195,14 +195,14 @@ let ME=null;try{ME=JSON.parse(localStorage.getItem('krou_supabase_user')||'null'
 const MY_CODE=String(ME?.username||ME?.teacher_id||'').toLowerCase();
 const MY_NAME=String(ME?.teacher_name||ME?.username||'').trim();
 const IS_ADMIN=String(ME?.role||'').toLowerCase()==='admin';
-function goIndex(){try{if(window.parent&&window.parent!==window){window.parent.location.href='index.html';return}}catch(e){}location.href='index.html'}
+function goIndex(){if(window.parent&&window.parent!==window){try{window.parent.postMessage({type:'NAVIGATE',page:'dashboard'},'*');return}catch(e){}}location.href='index.html'}
 function applyTheme(t){document.documentElement.setAttribute('data-theme',t==='dark'?'dark':'light')}
 applyTheme((()=>{try{const u=new URLSearchParams(location.search).get('theme');let p=null;try{p=window.parent.document.documentElement.getAttribute('data-theme')}catch(e){}return u||p||localStorage.getItem('krou_theme_manual')||'light'}catch(e){return'light'}})());
 window.addEventListener('message',e=>{if(e.data&&e.data.type==='THEME_CHANGE')applyTheme(e.data.theme)});
 window.addEventListener('storage',e=>{if(e.key==='krou_theme_manual'&&e.newValue)applyTheme(e.newValue)});
 
 /* ---------- viewport (keyboard-safe on all devices) ---------- */
-function fitViewport(){const h=(window.visualViewport?window.visualViewport.height:window.innerHeight);document.documentElement.style.setProperty('--vh',h+'px');if(nearBottom(260))scrollBottom()}
+function fitViewport(){const framed=window.self!==window.top;const h=(!framed&&window.visualViewport)?window.visualViewport.height:window.innerHeight;document.documentElement.style.setProperty('--vh',h+'px');if(nearBottom(260))scrollBottom()}
 window.addEventListener('resize',fitViewport);
 if(window.visualViewport){visualViewport.addEventListener('resize',fitViewport);visualViewport.addEventListener('scroll',()=>window.scrollTo(0,0))}
 
