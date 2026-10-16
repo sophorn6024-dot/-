@@ -1632,7 +1632,7 @@
           h += `<th class="th-group-${g.grp} th-vertical-cell" rowspan="2"><div class="th-vertical-wrap">${g.cols[0].label}</div></th>`;
         }
       });
-      h += `<th class="th-group-res" colspan="${RES_COLS.length}" style="font-weight:700;">លទ្ធផល</th></tr><tr>`;
+      h += `<th class="th-group-res" colspan="${RES_COLS.length}" style="font-weight:700;">${scoreType === 'semester' ? 'លទ្ធផលឆមាស' : 'លទ្ធផល'}</th></tr><tr>`;
 
       grps.forEach(g => {
         if (g.cols.length > 1) {
@@ -2129,7 +2129,7 @@
           theadHtml += `<th class="th-rpt-group" rowspan="2" style="width:28px;"><div class="th-rpt-vert-box"><span class="th-rpt-vert">${g.cols[0].label}</span></div></th>`;
         }
       });
-      theadHtml += '<th class="th-rpt-group" colspan="5">លទ្ធផល</th><th class="th-rpt-group" rowspan="2" style="width:28px;"><div class="th-rpt-vert-box"><span class="th-rpt-vert">អវត្តមាន</span></div></th></tr><tr>';
+      theadHtml += `<th class="th-rpt-group" colspan="5">${scoreType === 'semester' ? 'លទ្ធផលឆមាស' : 'លទ្ធផល'}</th><th class="th-rpt-group" rowspan="2" style="width:28px;"><div class="th-rpt-vert-box"><span class="th-rpt-vert">អវត្តមាន</span></div></th></tr><tr>`;
       grps.forEach(g => {
         if (g.cols.length > 1) {
           g.cols.forEach(c => {
