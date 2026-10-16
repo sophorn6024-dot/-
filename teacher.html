@@ -7,7 +7,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;600;700;800&family=Kantumruy+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <!-- ⚡ Supabase JS Client (v2) -->
@@ -17,8 +17,9 @@
     :root {
       --bg-app: #f8fafc; --surface: #ffffff; --surface-elevated: #f1f5f9; --surface-card: #ffffff;
       --border: #e2e8f0; --border-subtle: #cbd5e1; --text-main: #0f172a; --text-muted: #64748b;
-      --input-bg: #ffffff; --input-border: #cbd5e1; --input-focus: #0284c7;
-      --primary: #0284c7; --navy-2: #1e3a8a;
+      --input-bg: #ffffff; --input-border: #cbd5e1;
+      --primary: #0284c7; --primary-hover: #0369a1; --primary-soft: rgba(2, 132, 199, 0.15);
+      --input-focus: var(--primary);
       --card-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
       --danger: #dc2626; --danger-bg: #fef2f2; --green: #16a34a; --green-bg: #f0fdf4;
       --amber: #d97706; --amber-bg: #fef3c7;
@@ -26,68 +27,40 @@
     [data-theme="dark"] {
       --bg-app: #090e17; --surface: #0f172a; --surface-elevated: #162642; --surface-card: #111e33;
       --border: #1e293b; --border-subtle: #233f66; --text-main: #f8fafc; --text-muted: #94a3b8;
-      --input-bg: #162642; --input-border: #233f66; --input-focus: #38bdf8;
-      --primary: #38bdf8; --navy-2: #38bdf8;
+      --input-bg: #162642; --input-border: #233f66;
+      --primary: #38bdf8; --primary-hover: #0284c7; --primary-soft: rgba(56, 189, 248, 0.15);
+      --input-focus: var(--primary);
       --card-shadow: 0 8px 25px rgba(0, 0, 0, 0.45);
       --danger: #f87171; --danger-bg: rgba(239, 68, 68, 0.15); --green: #34d399; --green-bg: rgba(16, 185, 129, 0.15);
       --amber: #fbbf24; --amber-bg: rgba(245, 158, 11, 0.15);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Kantumruy Pro', sans-serif; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Kantumruy Pro', 'Battambang', sans-serif; }
     html, body { background: var(--bg-app); color: var(--text-main); transition: background .25s, color .25s; min-height: 100vh; }
     body { padding: 22px 24px 60px; }
 
     /* ══════════════ 🔒 AUTH & PERMISSION WRAPPERS ══════════════ */
     .auth-wrapper {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 80vh;
-      text-align: center;
-      padding: 30px 20px;
+      display: none; flex-direction: column; align-items: center; justify-content: center;
+      min-height: 80vh; text-align: center; padding: 30px 20px;
     }
     .auth-card {
-      background: var(--surface-card);
-      border: 1.5px solid var(--border);
-      border-radius: 24px;
-      padding: 40px 28px;
-      max-width: 440px;
-      width: 100%;
-      box-shadow: var(--card-shadow);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      background: var(--surface-card); border: 1.5px solid var(--border); border-radius: 24px;
+      padding: 40px 28px; max-width: 440px; width: 100%; box-shadow: var(--card-shadow);
+      display: flex; flex-direction: column; align-items: center;
     }
     .auth-icon {
-      width: 68px;
-      height: 68px;
-      border-radius: 20px;
-      background: rgba(239, 68, 68, 0.15);
-      color: #ef4444;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 32px;
-      margin-bottom: 16px;
+      width: 68px; height: 68px; border-radius: 20px; background: rgba(239, 68, 68, 0.15);
+      color: #ef4444; display: flex; align-items: center; justify-content: center;
+      font-size: 32px; margin-bottom: 16px;
     }
     .auth-card h2 { font-size: 18px; margin-bottom: 8px; color: #ef4444; font-weight: 700; }
     .auth-card p { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 24px; }
     .btn-login-redirect {
-      background: linear-gradient(135deg, #0284c7, #7c3aed);
-      color: #ffffff;
-      padding: 10px 24px;
-      border-radius: 12px;
-      font-weight: 700;
-      font-size: 13.5px;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
-      transition: all 0.2s;
-      cursor: pointer;
-      border: none;
+      background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+      color: #ffffff; padding: 10px 24px; border-radius: 12px; font-weight: 700;
+      font-size: 13.5px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); transition: all 0.2s; cursor: pointer; border: none;
     }
     .btn-login-redirect:hover { transform: translateY(-2px); }
 
@@ -95,16 +68,16 @@
     .page-title { display: flex; align-items: center; gap: 14px; }
     .page-title-icon {
       width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center;
-      font-size: 24px; background: linear-gradient(135deg, #0284c7, #7c3aed); color: #fff;
-      box-shadow: 0 8px 20px rgba(2, 132, 199, 0.25);
+      font-size: 24px; background: linear-gradient(135deg, var(--primary), var(--primary-hover)); color: #fff;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
     }
-    .page-head h2 { font-size: 18px; color: var(--navy-2); }
+    .page-head h2 { font-size: 18px; color: var(--primary); }
     .page-head p { font-size: 12.5px; color: var(--text-muted); margin-top: 3px; }
 
     .add-btn {
-      background: linear-gradient(135deg, #0284c7, #7c3aed); color: #fff; border: none; padding: 10px 18px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-hover)); color: #fff; border: none; padding: 10px 18px;
       border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px;
-      box-shadow: 0 6px 18px rgba(2, 132, 199, 0.3); transition: all .2s; user-select: none;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2); transition: all .2s; user-select: none;
     }
     .add-btn:hover { transform: translateY(-2px); }
     .add-btn:active { transform: scale(0.97); }
@@ -116,8 +89,8 @@
       width: 100%; padding: 10px 14px 10px 40px; border-radius: 12px; border: 1.5px solid var(--border);
       font-size: 13px; outline: none; background: var(--surface-card); color: var(--text-main); transition: all .2s;
     }
-    .search-bar input:focus { border-color: var(--input-focus); box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15); }
-    .count-pill { font-size: 12px; font-weight: 700; padding: 5px 14px; border-radius: 20px; background: rgba(99,102,241,.15); color: #818cf8; }
+    .search-bar input:focus { border-color: var(--input-focus); box-shadow: 0 0 0 3px var(--primary-soft); }
+    .count-pill { font-size: 12px; font-weight: 700; padding: 5px 14px; border-radius: 20px; background: var(--primary-soft); color: var(--primary); }
 
     .table-panel {
       background: var(--surface-card); border-radius: 18px; border: 1px solid var(--border);
@@ -125,7 +98,7 @@
     }
     table { width: 100%; border-collapse: collapse; font-size: 13px; }
     thead th {
-      background: linear-gradient(90deg, #1e3a8a, #4338ca); color: #fff; text-align: center;
+      background: linear-gradient(90deg, var(--primary), var(--primary-hover)); color: #fff; text-align: center;
       padding: 13px 10px; font-weight: 700; white-space: nowrap;
     }
     tbody td { padding: 11px 10px; border-bottom: 1px solid var(--border); text-align: center; white-space: nowrap; color: var(--text-main); }
@@ -139,14 +112,13 @@
     .avatar-thumb { object-fit: cover; display: inline-block; background: var(--surface-elevated); border: 1px solid var(--border); }
     .avatar-fallback {
       display: inline-flex; align-items: center; justify-content: center;
-      background: linear-gradient(135deg, #0284c7, #7c3aed); color: #fff; font-weight: 700; font-size: 13px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-hover)); color: #fff; font-weight: 700; font-size: 13px;
     }
 
     .badge-user { background: var(--green-bg); color: var(--green); font-weight: 700; padding: 4px 10px; border-radius: 20px; font-size: 11.5px; }
     .badge-role { font-weight: 700; padding: 4px 12px; border-radius: 20px; font-size: 11.5px; }
     .badge-role.admin { background: var(--amber-bg); color: var(--amber); }
-    .badge-role.teacher { background: rgba(2, 132, 199, 0.15); color: #0284c7; }
-    [data-theme="dark"] .badge-role.teacher { color: #38bdf8; }
+    .badge-role.teacher { background: var(--primary-soft); color: var(--primary); }
 
     .row-actions { display: flex; gap: 6px; justify-content: center; }
     .icon-btn {
@@ -154,7 +126,7 @@
       display: flex; align-items: center; justify-content: center; font-size: 13px; transition: all .18s;
     }
     .icon-btn:hover { transform: translateY(-2px); }
-    .icon-btn.edit { background: rgba(2,132,199,.12); color: #0284c7; border-color: rgba(2,132,199,.25); }
+    .icon-btn.edit { background: var(--primary-soft); color: var(--primary); border-color: rgba(2,132,199,.25); }
     .icon-btn.del { background: var(--danger-bg); color: var(--danger); border-color: rgba(239,68,68,.3); }
 
     /* MODAL */
@@ -170,7 +142,7 @@
       border: 1px solid var(--border); animation: modalIn .26s cubic-bezier(.2,.8,.2,1) both;
     }
     @keyframes modalIn { from { opacity: 0; transform: translateY(18px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
-    .modal-header { position: relative; padding: 18px 22px; background: linear-gradient(135deg, #0284c7, #4f46e5, #7c3aed); color: #fff; }
+    .modal-header { position: relative; padding: 18px 22px; background: linear-gradient(135deg, var(--primary), var(--primary-hover)); color: #fff; }
     .modal-header-inner { display: flex; align-items: center; gap: 13px; }
     .modal-header-icon {
       width: 46px; height: 46px; border-radius: 13px; background: rgba(255,255,255,.18);
@@ -199,17 +171,17 @@
       display: flex; align-items: center; justify-content: center; flex-direction: column; color: var(--text-muted); gap: 3px;
     }
     .photo-upload-label {
-      display: inline-flex; align-items: center; gap: 6px; background: rgba(2,132,199,.12); color: #0284c7;
+      display: inline-flex; align-items: center; gap: 6px; background: var(--primary-soft); color: var(--primary);
       border: 1px solid rgba(2,132,199,.25); padding: 6px 12px; border-radius: 8px; font-size: 11.5px; font-weight: 700; cursor: pointer;
     }
-    .photo-upload-label:hover { background: rgba(2,132,199,.2); }
+    .photo-upload-label:hover { filter: brightness(1.1); }
     #fPhoto { display: none; }
 
     .form-section { margin-bottom: 20px; }
     .section-title { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
     .section-title-icon {
       width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
-      font-size: 14px; background: rgba(2,132,199,.15); color: #0284c7;
+      font-size: 14px; background: var(--primary-soft); color: var(--primary);
     }
     .section-title h4 { font-size: 13px; font-weight: 700; color: var(--text-main); }
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; }
@@ -222,7 +194,7 @@
       width: 100%; height: 40px; padding: 8px 12px 8px 36px; border-radius: 10px; border: 1.5px solid var(--input-border);
       font-size: 13px; outline: none; background: var(--input-bg); color: var(--text-main); transition: all .2s;
     }
-    .field input:focus, .field select:focus { border-color: var(--input-focus); box-shadow: 0 0 0 3px rgba(2,132,199,.15); }
+    .field input:focus, .field select:focus { border-color: var(--input-focus); box-shadow: 0 0 0 3px var(--primary-soft); }
     .password-toggle {
       position: absolute; right: 8px; top: 50%; transform: translateY(-50%); border: none; background: transparent;
       cursor: pointer; color: var(--text-muted); font-size: 14px; padding: 6px;
@@ -237,9 +209,77 @@
     .btn { padding: 8px 18px; border-radius: 10px; font-size: 12.5px; font-weight: 700; cursor: pointer; border: none; transition: all .2s; }
     .btn.cancel { background: var(--surface-elevated); color: var(--text-main); border: 1px solid var(--border); }
     .btn.cancel:hover { background: var(--border); }
-    .btn.save { background: linear-gradient(135deg, #0284c7, #7c3aed); color: #fff; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3); }
+    .btn.save { background: linear-gradient(135deg, var(--primary), var(--primary-hover)); color: #fff; box-shadow: 0 4px 14px rgba(0,0,0,0.25); }
     .btn.save:hover { transform: translateY(-1px); }
     .btn:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+
+    /* =========================================================
+       📅 STYLES: KHMER CALENDAR POPUP FOR TEACHER DOB
+    ========================================================= */
+    .dob-picker-trigger {
+      width: 100%; height: 40px; border-radius: 10px; border: 1.5px solid var(--input-border);
+      background: var(--input-bg); color: var(--text-main); padding: 0 12px;
+      font-size: 13px; font-weight: 600; display: flex; align-items: center;
+      justify-content: space-between; cursor: pointer; user-select: none; transition: all .2s;
+    }
+    .dob-picker-trigger:hover, .dob-picker-trigger.active {
+      border-color: var(--input-focus); box-shadow: 0 0 0 3px var(--primary-soft);
+    }
+    .dob-cal-popup {
+      display: none; position: absolute; bottom: calc(100% + 8px); left: 0;
+      width: 295px; max-width: calc(100vw - 40px); background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: 22px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+      padding: 16px 14px 12px; z-index: 10050; animation: calPopAnim .18s ease-out;
+    }
+    .dob-cal-popup.show { display: block; }
+    @keyframes calPopAnim {
+      from { opacity: 0; transform: translateY(6px) scale(0.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .dob-cal-selectors {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;
+    }
+    .dob-select-wrap { position: relative; }
+    .dob-select-wrap select {
+      width: 100%; height: 38px; border-radius: 12px; border: 1px solid var(--border);
+      background: var(--surface-elevated); color: var(--text-main); font-size: 13px; font-weight: 700;
+      padding: 0 28px 0 12px; outline: none; cursor: pointer; appearance: none; -webkit-appearance: none;
+    }
+    .dob-select-wrap select:focus { border-color: var(--primary); }
+    .dob-select-arrow {
+      position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+      pointer-events: none; font-size: 11px; color: var(--primary); font-weight: bold;
+    }
+    .dob-cal-weekdays {
+      display: grid; grid-template-columns: repeat(7, 1fr); text-align: center;
+      font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 8px;
+    }
+    .dob-cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+    .dob-cal-cell {
+      height: 35px; display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; border-radius: 50%; cursor: pointer;
+      color: var(--text-main); transition: all .15s;
+    }
+    .dob-cal-cell:hover { background: var(--primary-soft); color: var(--primary); }
+    .dob-cal-cell.other-month { color: var(--text-muted); opacity: 0.38; font-weight: 500; }
+    .dob-cal-cell.selected {
+      background: var(--primary) !important; color: #ffffff !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    .dob-cal-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--border);
+    }
+    .dob-btn-today {
+      background: transparent; border: none; color: var(--primary);
+      font-size: 13px; font-weight: 700; cursor: pointer; padding: 4px 8px; border-radius: 8px;
+    }
+    .dob-btn-today:hover { background: var(--primary-soft); }
+    .dob-btn-close {
+      background: transparent; border: none; color: var(--text-muted);
+      font-size: 13px; font-weight: 700; cursor: pointer; padding: 4px 8px; border-radius: 8px;
+    }
+    .dob-btn-close:hover { color: var(--text-main); }
 
     .toast {
       position: fixed; bottom: 24px; right: 24px; background: #0f172a; color: #fff; padding: 12px 20px; border-radius: 12px;
@@ -259,7 +299,7 @@
 
 <body>
 
-  <!-- ══════════════ 🔒 1. AUTH DENIED WRAPPER (ពេលមិនទាន់ LOGIN) ══════════════ -->
+  <!-- ══════════════ 🔒 1. AUTH DENIED WRAPPER ══════════════ -->
   <div class="auth-wrapper" id="authDeniedWrap">
     <div class="auth-card">
       <div class="auth-icon">🔒</div>
@@ -271,7 +311,7 @@
     </div>
   </div>
 
-  <!-- ══════════════ 🚫 2. NO PERMISSION WRAPPER (LOGIN ហើយតែជាគ្រូ មិនមែន ADMIN) ══════════════ -->
+  <!-- ══════════════ 🚫 2. NO PERMISSION WRAPPER (គ្រូធម្មតាមិនមែន ADMIN) ══════════════ -->
   <div class="auth-wrapper" id="deniedWrap">
     <div class="auth-card">
       <div class="auth-icon" style="background: rgba(245, 158, 11, 0.15); color: #d97706;">🚫</div>
@@ -348,7 +388,7 @@
             </div>
             <div style="flex:1;">
               <strong style="font-size:13px; color:var(--text-main);">រូបថតគ្រូ</strong>
-              <p style="font-size:11px; color:var(--text-muted); margin:3px 0 8px;">រូបថតនឹងត្រូវបង្រួមដោយស្វ័យប្រវត្តិ មុនរក្សាទុក។</p>
+              <p style="font-size:11px; color:var(--text-muted); margin:3px 0 8px;">រូបថតនឹងត្រូវបង្រួម ≤ 100 KB ដោយស្វ័យប្រវត្តិ។</p>
               <label class="photo-upload-label" for="fPhoto"><i class="fa-solid fa-image"></i> ជ្រើសរើសរូបថត</label>
               <input type="file" id="fPhoto" accept="image/*" onchange="onPhotoPicked(event)">
             </div>
@@ -380,11 +420,39 @@
                 <div class="input-wrap"><span class="input-icon"><i class="fa-solid fa-phone"></i></span>
                   <input type="text" id="fPhone" placeholder="ឧ. 012 345 678" required></div>
               </div>
-              <div class="field">
+
+              <!-- 📅 ថ្ងៃខែឆ្នាំកំណើត ដោយប្រើ Custom Calendar Popup -->
+              <div class="field" style="position: relative;">
                 <label>ថ្ងៃខែឆ្នាំកំណើត <span class="required">*</span></label>
-                <div class="input-wrap"><span class="input-icon"><i class="fa-solid fa-calendar"></i></span>
-                  <input type="date" id="fDob" required></div>
+                <div class="dob-picker-trigger" id="fDobTrigger" onclick="toggleDobCalendar(event)">
+                  <span id="fDobText" style="color: var(--text-muted);">ជ្រើសរើសថ្ងៃខែឆ្នាំ</span>
+                  <span style="font-size: 14px; color: var(--primary);"><i class="fa-solid fa-calendar-days"></i></span>
+                </div>
+                <input type="hidden" id="fDob" required value="">
+
+                <!-- 📅 POPUP KHMER CALENDAR -->
+                <div class="dob-cal-popup" id="dobCalPopup" onclick="event.stopPropagation()">
+                  <div class="dob-cal-selectors">
+                    <div class="dob-select-wrap">
+                      <select id="dobCalMonth" onchange="renderDobCalendarDays()"></select>
+                      <span class="dob-select-arrow">⌵</span>
+                    </div>
+                    <div class="dob-select-wrap">
+                      <select id="dobCalYear" onchange="renderDobCalendarDays()"></select>
+                      <span class="dob-select-arrow">⌵</span>
+                    </div>
+                  </div>
+                  <div class="dob-cal-weekdays">
+                    <span>អា</span><span>ច</span><span>អ</span><span>ព</span><span>ព្រ</span><span>សុ</span><span>ស</span>
+                  </div>
+                  <div class="dob-cal-grid" id="dobCalDaysGrid"></div>
+                  <div class="dob-cal-footer">
+                    <button type="button" class="dob-btn-today" onclick="selectDobToday()">ថ្ងៃនេះ</button>
+                    <button type="button" class="dob-btn-close" onclick="closeDobCalendar()">បិទ</button>
+                  </div>
+                </div>
               </div>
+
               <div class="field">
                 <label>ទីកន្លែងបច្ចុប្បន្ន <span class="required">*</span></label>
                 <div class="input-wrap"><span class="input-icon"><i class="fa-solid fa-location-dot"></i></span>
@@ -463,6 +531,7 @@
     const USERS_TABLE = 'users';
 
     const LIST_COLUMNS = 'id,teacher_id,teacher_name,gender,phone,dob,address,username,role,assigned_classes,photo_url';
+    const KHMER_MONTHS = ['មករា','កុម្ភៈ','មីនា','មេសា','ឧសភា','មិថុនា','កក្កដា','សីហា','កញ្ញា','តុលា','វិច្ឆិកា','ធ្នូ'];
 
     /* =========================================================
        2. SESSION & AUTH GUARD
@@ -491,12 +560,44 @@
     let pickedPhotoBase64 = null;
 
     /* =========================================================
-       3. THEME
+       3. 🌈 THEME INHERITANCE FROM PARENT (index.html)
     ========================================================= */
-    function applyTheme(theme) { document.documentElement.setAttribute('data-theme', theme || 'dark'); }
-    applyTheme(new URLSearchParams(location.search).get('theme') || localStorage.getItem('krou_theme_manual') || 'dark');
+    function applyTheme(theme) { 
+      document.documentElement.setAttribute('data-theme', theme || 'dark'); 
+    }
+
+    function applyPrimaryColor(primaryColor, primaryHover, primarySoft) {
+      if (!primaryColor) return;
+      const root = document.documentElement;
+      root.style.setProperty('--primary', primaryColor);
+      root.style.setProperty('--primary-hover', primaryHover || primaryColor);
+      root.style.setProperty('--primary-soft', primarySoft || 'rgba(2, 132, 199, 0.15)');
+      root.style.setProperty('--input-focus', primaryColor);
+    }
+
+    // ១. អានពណ៌ Theme ពី URL ឬ localStorage
+    const urlParams = new URLSearchParams(window.location.search);
+    const themeParam = urlParams.get('theme') || localStorage.getItem('krou_theme_manual') || 'dark';
+    applyTheme(themeParam);
+
+    const primaryParam = urlParams.get('primary') || localStorage.getItem('krou_theme_primary');
+    if (primaryParam) {
+      applyPrimaryColor(
+        primaryParam,
+        localStorage.getItem('krou_theme_primary_hover'),
+        localStorage.getItem('krou_theme_primary_soft')
+      );
+    }
+
+    // ២. ទទួលសញ្ញា Theme ផ្ទាល់ពី Form មេ (index.html)
     window.addEventListener('message', e => {
-      if (e.data && (e.data.type === 'THEME_CHANGE' || e.data.theme)) applyTheme(e.data.theme || e.data);
+      if (!e.data) return;
+      if (e.data.type === 'THEME_CHANGE' || e.data.theme) {
+        applyTheme(e.data.theme || e.data);
+        if (e.data.primary) {
+          applyPrimaryColor(e.data.primary, e.data.primaryHover, e.data.primarySoft);
+        }
+      }
     });
 
     /* =========================================================
@@ -521,33 +622,178 @@
       toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
     }
 
-    function resizeImage(file, maxSize) {
-      maxSize = maxSize || 300;
+    // 🌟 បង្រួមរូបភាពស្វ័យប្រវត្តិកុំឱ្យលើស 100 KB
+    function compressTeacherPhoto(file, maxBytes = 98 * 1024) {
       return new Promise((resolve, reject) => {
-        const fr = new FileReader();
-        fr.onload = e => {
+        if (!file || !file.type || !file.type.startsWith('image/')) {
+          reject(new Error('សូមជ្រើសរើសឯកសាររូបថតដែលត្រឹមត្រូវ។'));
+          return;
+        }
+        const reader = new FileReader();
+        reader.onerror = () => reject(new Error('មិនអាចអានឯកសាររូបថតបានទេ។'));
+        reader.onload = () => {
           const img = new Image();
-          img.onload = () => {
-            const r = Math.min(1, maxSize / Math.max(img.width, img.height));
-            const c = document.createElement('canvas');
-            c.width = Math.round(img.width * r);
-            c.height = Math.round(img.height * r);
-            c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
-            resolve(c.toDataURL('image/jpeg', 0.8));
+          img.onerror = () => reject(new Error('មិនអាចបើករូបថតនេះបានទេ។'));
+          img.onload = async () => {
+            try {
+              const canvas = document.createElement('canvas');
+              let scale = Math.min(1, 1200 / Math.max(img.naturalWidth, img.naturalHeight));
+              let quality = 0.85;
+              let blob = null;
+              for (let attempt = 0; attempt < 16; attempt++) {
+                canvas.width = Math.max(1, Math.round(img.naturalWidth * scale));
+                canvas.height = Math.max(1, Math.round(img.naturalHeight * scale));
+                const ctx = canvas.getContext('2d', { alpha: false });
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                blob = await new Promise(res => canvas.toBlob(res, 'image/jpeg', quality));
+                if (blob && blob.size <= maxBytes) break;
+                if (quality > 0.45) quality -= 0.10;
+                else scale *= 0.8;
+              }
+              if (!blob || blob.size > maxBytes) {
+                throw new Error('មិនអាចបង្រួមរូបថតឱ្យក្រោម 100 KB បានទេ។');
+              }
+              const fr = new FileReader();
+              fr.onload = () => resolve(fr.result);
+              fr.onerror = () => reject(new Error('មិនអាចបម្លែងរូបថតបានទេ។'));
+              fr.readAsDataURL(blob);
+            } catch (err) { reject(err); }
           };
-          img.onerror = reject;
-          img.src = e.target.result;
+          img.src = reader.result;
         };
-        fr.onerror = reject;
-        fr.readAsDataURL(file);
+        reader.readAsDataURL(file);
       });
     }
 
     /* =========================================================
-       5. INIT WITH AUTH & ROLE GUARD
+       5. 📅 KHMER CALENDAR ENGINE FOR TEACHER DOB
+    ========================================================= */
+    let dobCalCurrentYear = 1995;
+    let dobCalCurrentMonth = 0;
+
+    function initDobCalendarSelectors() {
+      const monthSel = document.getElementById('dobCalMonth');
+      const yearSel = document.getElementById('dobCalYear');
+      if (!monthSel || !yearSel) return;
+
+      monthSel.innerHTML = KHMER_MONTHS.map((m, idx) => `<option value="${idx}">${m}</option>`).join('');
+      
+      let yearsHtml = '';
+      const thisYear = new Date().getFullYear();
+      for (let y = thisYear + 5; y >= 1940; y--) {
+        yearsHtml += `<option value="${y}">${y}</option>`;
+      }
+      yearSel.innerHTML = yearsHtml;
+    }
+
+    function renderDobCalendarDays() {
+      const monthSel = document.getElementById('dobCalMonth');
+      const yearSel = document.getElementById('dobCalYear');
+      const grid = document.getElementById('dobCalDaysGrid');
+      if (!monthSel || !yearSel || !grid) return;
+
+      dobCalCurrentMonth = parseInt(monthSel.value, 10);
+      dobCalCurrentYear = parseInt(yearSel.value, 10);
+
+      grid.innerHTML = '';
+
+      const firstDayIndex = new Date(dobCalCurrentYear, dobCalCurrentMonth, 1).getDay();
+      const daysInCurrentMonth = new Date(dobCalCurrentYear, dobCalCurrentMonth + 1, 0).getDate();
+      const daysInPrevMonth = new Date(dobCalCurrentYear, dobCalCurrentMonth, 0).getDate();
+
+      const selectedIso = document.getElementById('fDob').value || '';
+      let selY = null, selM = null, selD = null;
+      if (selectedIso) {
+        const parts = selectedIso.split('-').map(Number);
+        selY = parts[0];
+        selM = parts[1] - 1;
+        selD = parts[2];
+      }
+
+      for (let p = firstDayIndex - 1; p >= 0; p--) {
+        const dayNum = daysInPrevMonth - p;
+        const cell = document.createElement('div');
+        cell.className = 'dob-cal-cell other-month';
+        cell.innerText = dayNum;
+        cell.onclick = () => {
+          let prevM = dobCalCurrentMonth - 1;
+          let prevY = dobCalCurrentYear;
+          if (prevM < 0) { prevM = 11; prevY--; }
+          pickDobDate(prevY, prevM, dayNum);
+        };
+        grid.appendChild(cell);
+      }
+
+      for (let d = 1; d <= daysInCurrentMonth; d++) {
+        const cell = document.createElement('div');
+        const isSelected = (selY === dobCalCurrentYear && selM === dobCalCurrentMonth && selD === d);
+        cell.className = `dob-cal-cell ${isSelected ? 'selected' : ''}`;
+        cell.innerText = d;
+        cell.onclick = () => pickDobDate(dobCalCurrentYear, dobCalCurrentMonth, d);
+        grid.appendChild(cell);
+      }
+    }
+
+    function pickDobDate(year, monthIndex, day) {
+      const formattedDate = `${year}-${String(monthIndex + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      document.getElementById('fDob').value = formattedDate;
+      document.getElementById('fDobText').innerText = `${day} ${KHMER_MONTHS[monthIndex]} ${year}`;
+      document.getElementById('fDobText').style.color = 'var(--text-main)';
+      closeDobCalendar();
+    }
+
+    function selectDobToday() {
+      const now = new Date();
+      pickDobDate(now.getFullYear(), now.getMonth(), now.getDate());
+    }
+
+    function toggleDobCalendar(ev) {
+      if (ev) ev.stopPropagation();
+      const popup = document.getElementById('dobCalPopup');
+      const trigger = document.getElementById('fDobTrigger');
+      const isShowing = popup.classList.contains('show');
+
+      if (isShowing) {
+        closeDobCalendar();
+      } else {
+        const currentVal = document.getElementById('fDob').value;
+        if (currentVal) {
+          const parts = currentVal.split('-').map(Number);
+          dobCalCurrentYear = parts[0];
+          dobCalCurrentMonth = parts[1] - 1;
+        } else {
+          dobCalCurrentYear = 1995;
+          dobCalCurrentMonth = 0;
+        }
+        document.getElementById('dobCalMonth').value = dobCalCurrentMonth;
+        document.getElementById('dobCalYear').value = dobCalCurrentYear;
+        renderDobCalendarDays();
+        popup.classList.add('show');
+        trigger.classList.add('active');
+      }
+    }
+
+    function closeDobCalendar() {
+      const popup = document.getElementById('dobCalPopup');
+      const trigger = document.getElementById('fDobTrigger');
+      if (popup) popup.classList.remove('show');
+      if (trigger) trigger.classList.remove('active');
+    }
+
+    document.addEventListener('click', (ev) => {
+      if (!ev.target.closest('#fDobTrigger') && !ev.target.closest('#dobCalPopup')) {
+        closeDobCalendar();
+      }
+    });
+
+    /* =========================================================
+       6. INIT WITH AUTH & ROLE GUARD
     ========================================================= */
     function initPage() {
-      // 🌟 ១. ករណីមិនទាន់បាន Login
+      initDobCalendarSelectors();
+
       if (!CURRENT_USER || !CURRENT_USER.username) {
         document.getElementById('pageBody').style.display = 'none';
         document.getElementById('deniedWrap').style.display = 'none';
@@ -555,7 +801,6 @@
         return;
       }
 
-      // 🌟 ២. ករណីបាន Login តែជាគ្រូធម្មតា (មិនមែន Admin)
       if (!IS_ADMIN) {
         document.getElementById('pageBody').style.display = 'none';
         document.getElementById('authDeniedWrap').style.display = 'none';
@@ -563,7 +808,6 @@
         return;
       }
 
-      // 🌟 ៣. ករណីជា Admin ត្រឹមត្រូវ
       document.getElementById('authDeniedWrap').style.display = 'none';
       document.getElementById('deniedWrap').style.display = 'none';
       document.getElementById('pageBody').style.display = 'block';
@@ -571,7 +815,7 @@
     }
 
     /* =========================================================
-       6. READ
+       7. READ
     ========================================================= */
     async function loadTeachers() {
       const body = document.getElementById('tableBody');
@@ -620,7 +864,7 @@
             <td class="name-cell">${escapeHtml(t.teacher_name)}</td>
             <td>${escapeHtml(t.gender || 'ប្រុស')}</td>
             <td>${escapeHtml(t.phone)}</td>
-            <td>${escapeHtml(t.dob)}</td>
+            <td>${escapeHtml(t.dob || '—')}</td>
             <td>${escapeHtml(t.address)}</td>
             <td><span class="badge-user">${escapeHtml(t.username)}</span></td>
             <td><span class="badge-role ${isAdmin ? 'admin' : 'teacher'}">${isAdmin ? 'Admin' : 'គ្រូ'}</span></td>
@@ -636,7 +880,7 @@
     }
 
     /* =========================================================
-       7. MODAL
+       8. MODAL & SAVE OPERATIONS
     ========================================================= */
     function onRoleChange() {
       const role = document.getElementById('fRole').value;
@@ -660,24 +904,33 @@
         return;
       }
       try {
-        pickedPhotoBase64 = await resizeImage(file, 300);
+        showToast('⏳ កំពុងបង្រួមរូបថត...');
+        pickedPhotoBase64 = await compressTeacherPhoto(file);
         const preview = document.getElementById('photoPreview');
         preview.src = pickedPhotoBase64;
         preview.style.display = 'block';
         document.getElementById('photoPlaceholder').style.display = 'none';
+        showToast('✅ រូបថតត្រៀមរួចរាល់ (≤ 100 KB)');
       } catch (e) {
-        showToast('❌ មិនអាចអានរូបភាពបាន', true);
+        showToast('❌ មិនអាចអានរូបភាពបាន៖ ' + e.message, true);
       }
     }
 
     function openModal() {
       editingId = null;
       pickedPhotoBase64 = null;
+      closeDobCalendar();
+
       document.getElementById('modalTitle').innerText = 'បន្ថែមគ្រូថ្មី';
       document.getElementById('modalSubtitle').innerText = 'បំពេញព័ត៌មានខាងក្រោម ដើម្បីបង្កើតគណនីគ្រូថ្មី';
       document.getElementById('footerModeText').innerText = '➕ កំពុងបង្កើតគណនីគ្រូថ្មី';
       document.getElementById('teacherForm').reset();
       document.getElementById('fAssignedClass').value = '';
+
+      document.getElementById('fDob').value = '';
+      document.getElementById('fDobText').innerText = 'ជ្រើសរើសថ្ងៃខែឆ្នាំ';
+      document.getElementById('fDobText').style.color = 'var(--text-muted)';
+
       document.getElementById('fPassword').required = true;
       document.getElementById('passwordRequired').style.display = 'inline';
       document.getElementById('passHint').innerText = 'ប្រើ Password ដែលពិបាកទាយ និងមិនគួរចែករំលែក។';
@@ -693,6 +946,7 @@
       if (!t) return;
       editingId = t.id;
       pickedPhotoBase64 = null;
+      closeDobCalendar();
 
       document.getElementById('modalTitle').innerText = 'កែប្រែព័ត៌មានគ្រូ';
       document.getElementById('modalSubtitle').innerText = 'កែប្រែព័ត៌មានរបស់គ្រូ ហើយចុចរក្សាទុក';
@@ -702,7 +956,18 @@
       document.getElementById('fName').value = t.teacher_name || '';
       document.getElementById('fSex').value = String(t.gender || '').includes('ស្រី') ? 'ស្រី' : 'ប្រុស';
       document.getElementById('fPhone').value = t.phone || '';
-      document.getElementById('fDob').value = t.dob || '';
+
+      const dobVal = t.dob || '';
+      document.getElementById('fDob').value = dobVal;
+      if (dobVal) {
+        const parts = dobVal.split('-').map(Number);
+        document.getElementById('fDobText').innerText = `${parts[2]} ${KHMER_MONTHS[parts[1] - 1]} ${parts[0]}`;
+        document.getElementById('fDobText').style.color = 'var(--text-main)';
+      } else {
+        document.getElementById('fDobText').innerText = 'ជ្រើសរើសថ្ងៃខែឆ្នាំ';
+        document.getElementById('fDobText').style.color = 'var(--text-muted)';
+      }
+
       document.getElementById('fAddress').value = t.address || '';
       document.getElementById('fUsername').value = t.username || '';
       document.getElementById('fPassword').value = '';
@@ -729,7 +994,10 @@
       document.getElementById('modalBackdrop').classList.add('show');
     }
 
-    function closeModal() { document.getElementById('modalBackdrop').classList.remove('show'); }
+    function closeModal() { 
+      closeDobCalendar();
+      document.getElementById('modalBackdrop').classList.remove('show'); 
+    }
 
     function togglePassword() {
       const input = document.getElementById('fPassword');
@@ -738,9 +1006,6 @@
       else { input.type = 'password'; icon.className = 'fa-solid fa-eye'; }
     }
 
-    /* =========================================================
-       8. CREATE / UPDATE
-    ========================================================= */
     async function isDuplicate(column, value) {
       let q = sb.from(USERS_TABLE).select('id').eq(column, value);
       if (editingId !== null) q = q.neq('id', editingId);
