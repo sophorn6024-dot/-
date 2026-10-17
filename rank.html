@@ -9,7 +9,7 @@
   <!-- 🔤 Google Fonts Khmer & FontAwesome -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Moul&family=Kantumruy+Pro:wght@400;500;600;700&family=Noto+Sans+Khmer:wght@400;500;600;700&family=Noto+Serif+Khmer:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Moul&family=Kantumruy+Pro:wght@400;500;600;700&family=Noto+Sans+Khmer:wght@400;500;600;700&family=Noto+Serif+Khmer:wght@400;500;600;700&family=Battambang:wght@400;700&family=Fasthand&family=Koulen&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <!-- ⚡ Supabase JS Client (v2) -->
@@ -199,6 +199,31 @@
       text-align: center; background-color: #f8fafc; color: #000; font-weight: 600;
     }
 
+    .inline-input { font-family: inherit; }
+
+    /* 🔤 FONT SWITCHER */
+    .font-dd-btn {
+      display: inline-flex; align-items: center; justify-content: space-between; gap: 8px;
+      min-width: 175px; height: 32px; padding: 4px 10px; font-family: inherit; font-size: 13px; font-weight: 600;
+      color: var(--text-main); background: var(--input-bg); border: 1.5px solid var(--input-border);
+      border-radius: 8px; cursor: pointer; outline: none; transition: all 0.2s ease;
+    }
+    .font-dd-btn:hover, .font-dd-btn.open { border-color: var(--input-focus); box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15); }
+    .font-dd-popup {
+      display: none; position: fixed; z-index: 99999; width: 240px; background: #ffffff; color: #0f172a;
+      border: 1px solid #e2e8f0; border-radius: 16px; box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35); padding: 6px;
+    }
+    .font-dd-popup.show { display: block; }
+    .font-dd-item {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 12px;
+      border-radius: 10px; cursor: pointer; font-size: 14.5px; color: #1e293b; border-bottom: 1px solid #f1f5f9;
+    }
+    .font-dd-item:last-child { border-bottom: none; }
+    .font-dd-item:hover { background: #f8fafc; color: #0284c7; }
+    .font-dd-item.active { background: #e0f2fe; color: #0284c7; }
+    .font-dd-item .fa-check { display: none; font-size: 11px; }
+    .font-dd-item.active .fa-check { display: inline; }
+
     .teacher-name-display {
       font-family: 'Moul', cursive; font-size: 12px; color: #000; margin-top: 6px; min-height: 20px;
       text-align: center; display: inline-block; cursor: grab; user-select: none; padding: 4px 10px;
@@ -290,6 +315,14 @@
       </div>
 
       <div class="cp-group">
+        <div class="panel-pill-box">
+          <span class="toolbar-label"><i class="fa-solid fa-font" style="color:#f59e0b;"></i> ពុម្ពអក្សរ៖</span>
+          <button type="button" class="font-dd-btn" id="fontBtn" onclick="toggleFontPicker(event)">
+            <span id="fontLabel">ពុម្ពអក្សរដើម</span>
+            <i class="fa-solid fa-chevron-down" style="font-size:10px; color:#0284c7;"></i>
+          </button>
+        </div>
+
         <div class="zoom-btn-group" title="ពង្រីក/បង្រួមទំហំមើល">
           <button type="button" class="zoom-btn active" data-zoom="1" onclick="setZoom(1, this)">100%</button>
           <button type="button" class="zoom-btn" data-zoom="0.75" onclick="setZoom(0.75, this)">75%</button>
@@ -348,6 +381,11 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- 🔤 POPUP ជ្រើសរើសពុម្ពអក្សរ -->
+  <div class="font-dd-popup no-print" id="fontPopup">
+    <div id="fontList"></div>
   </div>
 
   <!-- =========================================================
@@ -626,8 +664,70 @@
       return { A:'#0070c0', B:'#16a34a', C:'#b45309', D:'#7030a0', E:'#0891b2', F:'#dc2626' }[code] || '#000000';
     }
 
+    /* ── 🔤 FONT SWITCHER ── */
+    const DOC_FONTS = [
+      { id: 'default',    label: 'ពុម្ពអក្សរដើម (បច្ចុប្បន្ន)', family: "'Noto Serif Khmer','Kantumruy Pro','Noto Sans Khmer',sans-serif" },
+      { id: 'cn',         label: 'Khmer CN Battambang',          family: "'Khmer CN Battambang','Battambang',sans-serif" },
+      { id: 'battambang', label: 'Battambang',                   family: "'Battambang',sans-serif" },
+      { id: 'fasthand',   label: 'Khmer OS Fasthand',            family: "'Khmer OS Fasthand','Fasthand',cursive" },
+      { id: 'koulen',     label: 'Kh Koulen',                    family: "'Kh Koulen','Koulen',sans-serif" }
+    ];
+    const DOC_FONT_KEY = 'rankDocFont_v1';
+
+    function getSavedFontId() {
+      try { return localStorage.getItem(DOC_FONT_KEY) || 'default'; } catch(e) { return 'default'; }
+    }
+
+    function applyDocFont(id) {
+      const f = DOC_FONTS.find(x => x.id === id) || DOC_FONTS[0];
+      const page = document.getElementById('printPage');
+      if (page) page.style.fontFamily = f.family;
+      const lbl = document.getElementById('fontLabel');
+      if (lbl) lbl.textContent = f.label;
+      try { localStorage.setItem(DOC_FONT_KEY, f.id); } catch(e) {}
+    }
+
+    function closeFontPicker() {
+      document.getElementById('fontPopup')?.classList.remove('show');
+      document.getElementById('fontBtn')?.classList.remove('open');
+    }
+
+    function toggleFontPicker(e) {
+      if (e) e.stopPropagation();
+      const pop = document.getElementById('fontPopup');
+      const btn = document.getElementById('fontBtn');
+      if (pop.classList.contains('show')) { closeFontPicker(); return; }
+
+      const cur = getSavedFontId();
+      const list = document.getElementById('fontList');
+      list.innerHTML = '';
+      DOC_FONTS.forEach(f => {
+        const item = document.createElement('div');
+        item.className = 'font-dd-item' + (f.id === cur ? ' active' : '');
+        item.style.fontFamily = f.family;
+        item.innerHTML = '<span>' + f.label + '</span><i class="fa-solid fa-check"></i>';
+        item.onclick = (ev) => { ev.stopPropagation(); applyDocFont(f.id); closeFontPicker(); };
+        list.appendChild(item);
+      });
+
+      const r = btn.getBoundingClientRect();
+      const w = 240;
+      pop.style.left = Math.max(8, Math.min(r.left, window.innerWidth - w - 8)) + 'px';
+      pop.style.top = (r.bottom + 6) + 'px';
+      pop.classList.add('show');
+      btn.classList.add('open');
+    }
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('#fontPopup') && !e.target.closest('#fontBtn')) closeFontPicker();
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeFontPicker(); });
+    window.addEventListener('scroll', closeFontPicker, true);
+
     window.addEventListener('DOMContentLoaded', async () => {
       if (!checkAuthentication()) return;
+
+      applyDocFont(getSavedFontId());
 
       const now = new Date();
       document.getElementById('currentYearTxt').textContent = toKhmerNum(now.getFullYear());
