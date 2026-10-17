@@ -78,25 +78,35 @@
     }
     .tb-btn {
       height: 38px; padding: 0 13px; border-radius: 11px; border: 1px solid rgba(255, 255, 255, 0.15);
-      background: #1e293b; color: #f8fafc; font-size: 12.5px; font-weight: 700; cursor: pointer;
+      background: #1e293b; color: #f8fafc; font-size: 13px; font-weight: 700; cursor: pointer;
       display: inline-flex; align-items: center; justify-content: space-between; gap: 8px;
       transition: all .15s ease; outline: none; white-space: nowrap; user-select: none;
+      font-family: 'Khmer OS Battambang', 'Battambang', sans-serif !important;
     }
     .tb-btn:hover { background: #334155; border-color: rgba(255, 255, 255, 0.3); }
     .tb-btn.primary { background: #2563eb; border-color: transparent; }
     .tb-btn.primary:hover { background: #1d4ed8; }
 
-    .tb-select-wrap { display: inline-flex; align-items: center; gap: 6px; }
-    .tb-select-label { font-size: 12.5px; font-weight: 700; color: #cbd5e1; white-space: nowrap; }
-    .tb-select-box {
-      height: 38px; border-radius: 11px; border: 1.5px solid #38bdf8;
-      background: #1e293b; color: #f8fafc; padding: 0 12px; font-size: 13px; font-weight: 700;
-      outline: none; cursor: pointer; display: flex; align-items: center; gap: 6px;
+    /* 🌟 Custom Dropdown Using Font Battambang */
+    .dd-wrap { position: relative; display: inline-block; }
+    .dd-popup {
+      display: none; position: absolute; top: calc(100% + 6px); left: 0; min-width: 210px; max-height: 290px; overflow-y: auto;
+      background: #ffffff; border-radius: 16px; box-shadow: 0 14px 35px rgba(0, 0, 0, 0.35);
+      border: 1px solid #e2e8f0; padding: 6px; z-index: 1000; animation: ddIn .15s ease-out;
+    }
+    .dd-popup.show { display: block; }
+    @keyframes ddIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+    .dd-item {
+      padding: 10px 14px; border-radius: 12px; font-size: 13.5px; font-weight: 700;
+      color: #1e293b; cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; transition: all .12s; white-space: nowrap;
       font-family: 'Khmer OS Battambang', 'Battambang', sans-serif !important;
     }
-    .tb-select-box option {
-      background: #1e293b; color: #f8fafc; font-family: 'Khmer OS Battambang', 'Battambang', sans-serif !important;
-    }
+    .dd-item:hover { background: #f1f5f9; }
+    .dd-item.active { background: #e0f2fe; color: #0284c7; }
+    .dd-item-left { display: flex; align-items: center; gap: 8px; }
+    .dd-item i { font-size: 13px; }
 
     /* ══════════════ 📄 PAPER CONTAINER (A4 PORTRAIT) ══════════════ */
     .report-paper-wrap {
@@ -112,7 +122,7 @@
     }
     .rules-paper * { color: #000000; }
 
-    /* 🖼️ Kbach Flower Pattern Border (ដូចរូប PDF) */
+    /* 🖼️ Kbach Flower Pattern Border */
     .kbach-border-frame {
       position: absolute; inset: 5mm; pointer-events: none;
       border: 8px solid transparent;
@@ -146,27 +156,33 @@
 
     .rules-title-box { text-align: center; margin-bottom: 10px; }
     .rules-title-box h1 {
-      font-size: 20px; color: #b91c1c !important; margin-bottom: 6px;
+      font-size: 21px; color: #b91c1c !important; margin-bottom: 6px;
     }
     .rules-preamble {
-      font-size: 14.5px; font-weight: 600; text-align: left; text-indent: 32px; margin-bottom: 10px; line-height: 1.6;
+      font-size: 14.5px; font-weight: 600; text-align: left; text-indent: 32px; margin-bottom: 10px; line-height: 1.65;
     }
 
-    /* 📜 Articles (ប្រការ) : 3-Column Clean Aligned Grid & Larger Font */
+    /* 📜 Articles (ប្រការ) : 3-Column Clean Aligned Grid & Font Size ធំល្មមស្អាត */
     .rules-list {
-      display: flex; flex-direction: column; gap: 5.5px;
+      display: flex; flex-direction: column; gap: 6px;
     }
     .rule-row {
       display: grid;
       grid-template-columns: 118px 20px 1fr;
       align-items: baseline;
-      font-size: 14.5px;
-      line-height: 1.65;
+      font-size: 14.8px;
+      line-height: 1.7;
     }
-    .rule-name { font-weight: 800; white-space: nowrap; color: #000; font-size: 14.5px; }
-    .rule-colon { font-weight: 800; text-align: center; color: #000; font-size: 14.5px; }
-    .rule-body { text-align: justify; font-weight: 500; color: #000; font-size: 14.5px; }
+    .rule-name { font-weight: 800; white-space: nowrap; color: #000; font-size: 14.8px; }
+    .rule-colon { font-weight: 800; text-align: center; color: #000; font-size: 14.8px; }
+    .rule-body { text-align: justify; font-weight: 500; color: #000; font-size: 14.8px; }
     .rule-body p { margin-bottom: 2px; }
+
+    /* 🌟 ការពារសញ្ញាខណ្ឌ « ។ » មិនឱ្យធ្លាក់ជួរតែឯង */
+    .nowrap-punct {
+      white-space: nowrap !important;
+      display: inline-block;
+    }
 
     /* ✍️ Signature Section */
     .sign-row {
@@ -174,7 +190,7 @@
     }
     .sign-col { text-align: center; min-width: 230px; font-size: 13px; }
     .sign-col .sign-title { font-size: 14px; margin-top: 4px; }
-    .sign-col .sign-space { height: 60px; } /* ចន្លោះទំនេរស្អាត */
+    .sign-col .sign-space { height: 60px; }
     .sign-col .sign-name { font-weight: 700; font-size: 14px; }
 
     .editable-text {
@@ -373,19 +389,37 @@
         <i class="fa-solid fa-arrow-left"></i> <span>ត្រឡប់</span>
       </button>
 
-      <!-- 🏫 ថ្នាក់ Dropdown (Font Battambang ១០០%) -->
-      <div class="tb-select-wrap">
-        <span class="tb-select-label"><i class="fa-solid fa-school" style="color:#38bdf8;"></i> ថ្នាក់៖</span>
-        <select class="tb-select-box" id="classSelect" onchange="onClassChange(this.value)"></select>
+      <!-- 🏫 ថ្នាក់ Dropdown (Custom Font Battambang) -->
+      <div class="dd-wrap">
+        <button type="button" class="tb-btn" id="btnClassSelect" onclick="toggleDropdown('ddClassSelect')">
+          <span style="display:flex; align-items:center; gap:7px;">
+            <i class="fa-solid fa-school" style="color:#38bdf8;"></i>
+            <span id="txtClassSelect">ថ្នាក់ទី ៤(ក)</span>
+          </span>
+          <i class="fa-solid fa-chevron-down" style="font-size:11px; margin-left:4px;"></i>
+        </button>
+        <div class="dd-popup" id="ddClassSelect"></div>
       </div>
 
-      <!-- 🌟 ទម្រង់ Dropdown (Font Battambang ១០០%) -->
-      <div class="tb-select-wrap">
-        <span class="tb-select-label">ទម្រង់</span>
-        <select class="tb-select-box" id="rulesFormatSelect" onchange="onFormatChange(this.value)">
-          <option value="CLASS" selected>1 · បទបញ្ជាផ្ទៃក្នុងថ្នាក់រៀន ⌵</option>
-          <option value="SCHOOL">2 · បទបញ្ជាផ្ទៃក្នុងសាលារៀន ⌵</option>
-        </select>
+      <!-- 🌟 ទម្រង់ Dropdown (Custom Font Battambang) -->
+      <div class="dd-wrap">
+        <button type="button" class="tb-btn" id="btnRulesFormat" onclick="toggleDropdown('ddRulesFormat')">
+          <span style="display:flex; align-items:center; gap:7px;">
+            <i class="fa-solid fa-file-shield" style="color:#10b981;"></i>
+            <span id="txtRulesFormat">1 · បទបញ្ជាផ្ទៃក្នុងថ្នាក់រៀន</span>
+          </span>
+          <i class="fa-solid fa-chevron-down" style="font-size:11px; margin-left:4px;"></i>
+        </button>
+        <div class="dd-popup" id="ddRulesFormat">
+          <div class="dd-item active" id="optFmtClass" onclick="selectRulesFormat('CLASS', '1 · បទបញ្ជាផ្ទៃក្នុងថ្នាក់រៀន')">
+            <span class="dd-item-left"><i class="fa-solid fa-chalkboard-user" style="color:#2563eb;"></i> 1 · បទបញ្ជាផ្ទៃក្នុងថ្នាក់រៀន</span>
+            <i class="fa-solid fa-check"></i>
+          </div>
+          <div class="dd-item" id="optFmtSchool" onclick="selectRulesFormat('SCHOOL', '2 · បទបញ្ជាផ្ទៃក្នុងសាលារៀន')">
+            <span class="dd-item-left"><i class="fa-solid fa-school-flag" style="color:#8b5cf6;"></i> 2 · បទបញ្ជាផ្ទៃក្នុងសាលារៀន</span>
+            <i class="fa-solid fa-check" style="display:none;"></i>
+          </div>
+        </div>
       </div>
 
       <!-- 📅 ថ្ងៃអ្នកធ្វើចុះហត្ថលេខា (បើកប្រតិទិនខ្មែរស្អាត) -->
@@ -470,75 +504,75 @@
                 <span class="rule-colon">៖</span>
                 <div class="rule-body">
                   <p>កុមារទាំងពីរភេទអាចចូលរៀនថ្នាក់ទី១ ត្រូវមានអាយុ៦ឆ្នាំ ឬយ៉ាងតិច៧០ខែ</p>
-                  <p>សិស្សទាំងអស់ត្រូវកាត់សក់ខ្លី តាមភេទភាព ភាពឆើតឆាយនិងគ្រឿងអលង្ការត្រូវបានហាមឃាត់នៅក្នុងសាលារៀន ។</p>
+                  <p>សិស្សទាំងអស់ត្រូវកាត់សក់ខ្លី តាមភេទភាព ភាពឆើតឆាយនិងគ្រឿងអលង្ការត្រូវបានហាមឃាត់នៅក្នុង<span class="nowrap-punct">សាលារៀន ។</span></p>
                 </div>
               </div>
 
               <div class="rule-row">
                 <span class="rule-name">ប្រការពីរ</span>
                 <span class="rule-colon">៖</span>
-                <div class="rule-body">សិស្សទាំងអស់ត្រូវស្អាតជានិច្ច និងស្លៀកពាក់សមរម្យ ។</div>
+                <div class="rule-body">សិស្សទាំងអស់ត្រូវស្អាតជានិច្ច និងស្លៀកពាក់<span class="nowrap-punct">សមរម្យ ។</span></div>
               </div>
 
               <div class="rule-row">
                 <span class="rule-name">ប្រការបី</span>
                 <span class="rule-colon">៖</span>
-                <div class="rule-body">សិស្សទាំងអស់ត្រូវមករៀនឱ្យបានទាន់ពេលវេលា ។</div>
+                <div class="rule-body">សិស្សទាំងអស់ត្រូវមករៀនឱ្យបាន<span class="nowrap-punct">ទាន់ពេលវេលា ។</span></div>
               </div>
 
               <div class="rule-row">
                 <span class="rule-name">ប្រការបួន</span>
                 <span class="rule-colon">៖</span>
-                <div class="rule-body">ក្រោយពេលគោរពទង់ជាតិរួចសិស្សត្រូវឈរនៅមុខថ្នាក់ក្រោមការត្រួតត្រារបស់លោកគ្រូ អ្នកគ្រូ ឬប្រធានថ្នាក់ ។</div>
+                <div class="rule-body">ក្រោយពេលគោរពទង់ជាតិរួចសិស្សត្រូវឈរនៅមុខថ្នាក់ក្រោមការត្រួតត្រារបស់លោកគ្រូ អ្នកគ្រូ ឬ<span class="nowrap-punct">ប្រធានថ្នាក់ ។</span></div>
               </div>
 
               <div class="rule-row">
                 <span class="rule-name">ប្រការប្រាំ</span>
                 <span class="rule-colon">៖</span>
-                <div class="rule-body">សិស្សទាំងអស់ត្រូវគោរពទង់ជាតិរាល់ព្រឹក ឬល្ងាច ។</div>
+                <div class="rule-body">សិស្សទាំងអស់ត្រូវគោរពទង់ជាតិរាល់ព្រឹក <span class="nowrap-punct">ឬល្ងាច ។</span></div>
               </div>
 
               <div class="rule-row">
                 <span class="rule-name">ប្រការប្រាំមួយ</span>
                 <span class="rule-colon">៖</span>
-                <div class="rule-body">សិស្សទាំងអស់ត្រូវចូលរួមសូត្រ នមស្ការ ព្រះរតនត្រ័យ ក្រោយពេលគោរពទង់ជាតិ ។</div>
+                <div class="rule-body">សិស្សទាំងអស់ត្រូវចូលរួមសូត្រ នមស្ការ ព្រះរតនត្រ័យ ក្រោយពេល<span class="nowrap-punct">គោរពទង់ជាតិ ។</span></div>
               </div>
 
               <div class="rule-row">
                 <span class="rule-name">ប្រការប្រាំពីរ</span>
                 <span class="rule-colon">៖</span>
-                <div class="rule-body">សិស្សមិនត្រូវឈប់ឥតច្បាប់ដោយប្រការផ្សេងៗ ឈប់មួយពេល ត្រូវសុំច្បាប់បញ្ជាក់មូលហេតុច្បាស់លាស់ ឬអាណាព្យាបាលមកសុំផ្ទាល់ ។</div>
+                <div class="rule-body">សិស្សមិនត្រូវឈប់ឥតច្បាប់ដោយប្រការផ្សេងៗ ឈប់មួយពេល ត្រូវសុំច្បាប់បញ្ជាក់មូលហេតុច្បាស់លាស់ ឬអាណាព្យាបាល<span class="nowrap-punct">មកសុំផ្ទាល់ ។</span></div>
               </div>
 
               <div class="rule-row">
                 <span class="rule-name">ប្រការប្រាំបី</span>
                 <span class="rule-colon">៖</span>
-                <div class="rule-body">ពេលម៉ោងរៀនសិស្សត្រូវខិតខំរៀន ត្រូវមានសណ្តាប់ធ្នាប់មិនត្រូវរំខានដល់មិត្តរួមថ្នាក់ ។</div>
+                <div class="rule-body">ពេលម៉ោងរៀនសិស្សត្រូវខិតខំរៀន ត្រូវមានសណ្តាប់ធ្នាប់មិនត្រូវរំខានដល់<span class="nowrap-punct">មិត្តរួមថ្នាក់ ។</span></div>
               </div>
 
               <div class="rule-row">
                 <span class="rule-name">ប្រការប្រាំបួន</span>
                 <span class="rule-colon">៖</span>
-                <div class="rule-body">ពេលចេញលេងត្រូវប្រកាន់អាកប្បកិរិយាសមរម្យ មិនទាត់ធាក់ មិនត្រូវឡូឡា ឈ្លោះប្រកែកគ្នា ។</div>
+                <div class="rule-body">ពេលចេញលេងត្រូវប្រកាន់អាកប្បកិរិយាសមរម្យ មិនទាត់ធាក់ មិនត្រូវឡូឡា <span class="nowrap-punct">ឈ្លោះប្រកែកគ្នា ។</span></div>
               </div>
 
               <div class="rule-row">
                 <span class="rule-name">ប្រការដប់</span>
                 <span class="rule-colon">៖</span>
-                <div class="rule-body">លោកគ្រូ អ្នកគ្រូចូលដល់ក្នុងថ្នាក់រៀនសិស្សត្រូវក្រោកឈរសំពះដើម្បីសម្តែងការគួរសម ។</div>
+                <div class="rule-body">លោកគ្រូ អ្នកគ្រូចូលដល់ក្នុងថ្នាក់រៀនសិស្សត្រូវក្រោកឈរសំពះដើម្បី<span class="nowrap-punct">សម្តែងការគួរសម ។</span></div>
               </div>
 
               <div class="rule-row">
                 <span class="rule-name">ប្រការដប់មួយ</span>
                 <span class="rule-colon">៖</span>
-                <div class="rule-body">ហាមយកនំចំណីញ៉ាំក្នុងថ្នាក់ ហាមជិះកង់ ពាក់មួកចូលក្នុងបរិវេណសាលា ។</div>
+                <div class="rule-body">ហាមយកនំចំណីញ៉ាំក្នុងថ្នាក់ ហាមជិះកង់ ពាក់មួកចូលក្នុង<span class="nowrap-punct">បរិវេណសាលា ។</span></div>
               </div>
 
-              <!-- 🌟 ប្រការដប់ពីរ ថ្មី -->
+              <!-- 🌟 ប្រការដប់ពីរ (ការពារសញ្ញា ។ មិនឱ្យធ្លាក់ជួរតែឯង) -->
               <div class="rule-row">
                 <span class="rule-name">ប្រការដប់ពីរ</span>
                 <span class="rule-colon">៖</span>
-                <div class="rule-body">សិស្សទាំងអស់ត្រូវគោរពវិន័យសាលា និងអនុវត្តបទបញ្ជាផ្ទៃក្នុងរបស់សាលាឱ្យបានខ្ជាប់ខ្ជួន ។</div>
+                <div class="rule-body">សិស្សទាំងអស់ត្រូវគោរពវិន័យសាលា និងអនុវត្តបទបញ្ជាផ្ទៃក្នុងរបស់សាលាឱ្យបាន<span class="nowrap-punct">ខ្ជាប់ខ្ជួន ។</span></div>
               </div>
 
             </div>
@@ -760,10 +794,25 @@
     }
 
     /* =========================================================
-       2. DYNAMIC CLASS LOADING FROM SUPABASE
+       2. CUSTOM DROPDOWN ENGINE (FONT BATTAMBANG ១០០%)
     ========================================================= */
+    function toggleDropdown(id) {
+      const p = document.getElementById(id);
+      const isShow = p.classList.contains('show');
+      closeAllDropdowns();
+      if (!isShow) p.classList.add('show');
+    }
+
+    function closeAllDropdowns() {
+      document.querySelectorAll('.dd-popup').forEach(p => p.classList.remove('show'));
+    }
+
+    document.addEventListener('click', e => {
+      if (!e.target.closest('.dd-wrap')) closeAllDropdowns();
+    });
+
     async function initClassesDropdown() {
-      const select = document.getElementById('classSelect');
+      const dd = document.getElementById('ddClassSelect');
       
       try {
         const { data: stList } = await sb.from('students').select('grade');
@@ -774,30 +823,49 @@
         }
         classes.sort((a,b) => a.localeCompare(b, 'km'));
 
-        select.innerHTML = classes.map(c => `
-          <option value="${c}" ${c === currentSelectedClass ? 'selected' : ''}>ថ្នាក់ទី ${c}</option>
+        dd.innerHTML = classes.map(c => `
+          <div class="dd-item ${c === currentSelectedClass ? 'active' : ''}" data-class="${c}" onclick="selectClass('${c}')">
+            <span class="dd-item-left"><i class="fa-solid fa-school" style="color:var(--primary);"></i> ថ្នាក់ទី ${c}</span>
+            <i class="fa-solid fa-check" style="${c === currentSelectedClass ? '' : 'display:none;'}"></i>
+          </div>
         `).join('');
 
         if (!classes.includes(currentSelectedClass)) {
           currentSelectedClass = classes[0];
-          select.value = currentSelectedClass;
         }
 
-        onClassChange(currentSelectedClass);
+        selectClass(currentSelectedClass);
       } catch(e) {
-        select.innerHTML = `
-          <option value="៤(ក)" selected>ថ្នាក់ទី ៤(ក)</option>
-          <option value="៥">ថ្នាក់ទី ៥</option>
-          <option value="៦">ថ្នាក់ទី ៦</option>
+        dd.innerHTML = `
+          <div class="dd-item active" data-class="៤(ក)" onclick="selectClass('៤(ក)')">
+            <span class="dd-item-left"><i class="fa-solid fa-school" style="color:var(--primary);"></i> ថ្នាក់ទី ៤(ក)</span>
+            <i class="fa-solid fa-check"></i>
+          </div>
+          <div class="dd-item" data-class="៥" onclick="selectClass('៥')">
+            <span class="dd-item-left"><i class="fa-solid fa-school" style="color:var(--primary);"></i> ថ្នាក់ទី ៥</span>
+            <i class="fa-solid fa-check" style="display:none;"></i>
+          </div>
         `;
-        onClassChange('៤(ក)');
+        selectClass('៤(ក)');
       }
     }
 
-    async function onClassChange(cls) {
+    async function selectClass(cls) {
       currentSelectedClass = cleanGrade(cls);
+      document.getElementById('txtClassSelect').innerText = `ថ្នាក់ទី ${currentSelectedClass}`;
       document.getElementById('lblDisplayClass').innerText = `ថ្នាក់ទី ${currentSelectedClass}`;
 
+      document.querySelectorAll('#ddClassSelect .dd-item').forEach(el => {
+        const itemClass = el.getAttribute('data-class');
+        const isActive = (itemClass === currentSelectedClass);
+        el.classList.toggle('active', isActive);
+        const icon = el.querySelector('.fa-check');
+        if (icon) icon.style.display = isActive ? 'inline' : 'none';
+      });
+
+      closeAllDropdowns();
+
+      // ទាញយកឈ្មោះគ្រូទទួលបន្ទុកថ្នាក់នោះពី Table users
       try {
         const { data: uData } = await sb.from('users').select('teacher_name').eq('assigned_classes', currentSelectedClass).maybeSingle();
         if (uData && uData.teacher_name) {
@@ -810,13 +878,20 @@
       }
     }
 
-    function onFormatChange(val) {
+    function selectRulesFormat(val, label) {
+      document.getElementById('txtRulesFormat').innerText = label;
+      document.getElementById('optFmtClass').classList.toggle('active', val === 'CLASS');
+      document.getElementById('optFmtSchool').classList.toggle('active', val === 'SCHOOL');
+      document.querySelector('#optFmtClass .fa-check').style.display = (val === 'CLASS') ? 'inline' : 'none';
+      document.querySelector('#optFmtSchool .fa-check').style.display = (val === 'SCHOOL') ? 'inline' : 'none';
+
       const title = document.getElementById('lblTitleMain');
       if (val === 'SCHOOL') {
         title.innerText = 'បទបញ្ជាផ្ទៃក្នុងសាលារៀន';
       } else {
         title.innerText = 'បទបញ្ជាផ្ទៃក្នុង';
       }
+      closeAllDropdowns();
     }
 
     /* =========================================================
@@ -824,7 +899,7 @@
     ========================================================= */
     let calCurrentYear = 2026;
     let calCurrentMonth = 9; // October
-    let activeCalendarTarget = 'teacher'; // 'teacher' | 'principal'
+    let activeCalendarTarget = 'teacher';
     let selectedCalendarDay = 16;
 
     function initCalendarDropdowns() {
@@ -1006,12 +1081,12 @@
       const usableH = Math.round(h - PS.margin * 2);
       document.getElementById('psUsable').innerText = `ផ្ទៃប្រើ ${usableW}×${usableH}mm`;
 
-      // Font scaling (ធំច្បាស់ពេញទំព័រ)
-      const baseSize = 14.5;
+      // Font scaling (ដំឡើងទំហំធំច្បាស់ ~14.8px)
+      const baseSize = 14.8;
       document.querySelectorAll('.rule-row, .rule-name, .rule-colon, .rule-body').forEach(el => {
         el.style.fontSize = `${(baseSize * PS.font) / 100}px`;
       });
-      document.querySelector('.rules-preamble').style.fontSize = `${(14.0 * PS.font) / 100}px`;
+      document.querySelector('.rules-preamble').style.fontSize = `${(14.5 * PS.font) / 100}px`;
 
       // Row height
       if (PS.rowH) {
@@ -1075,7 +1150,7 @@
       const element = document.getElementById('printablePaper');
       closePageSetup();
       const opt = {
-        margin: [PS.margin, PS.margin, PS.margin, PS.margin],
+        margin: [5, 5, 5, 5],
         filename: `បទបញ្ជាផ្ទៃក្នុង_ថ្នាក់ទី_${currentSelectedClass}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2.5, useCORS: true },
