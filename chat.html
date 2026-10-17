@@ -202,9 +202,33 @@ window.addEventListener('message',e=>{if(e.data&&e.data.type==='THEME_CHANGE')ap
 window.addEventListener('storage',e=>{if(e.key==='krou_theme_manual'&&e.newValue)applyTheme(e.newValue)});
 
 /* ---------- viewport (keyboard-safe on all devices) ---------- */
-function fitViewport(){const framed=window.self!==window.top;const h=(!framed&&window.visualViewport)?window.visualViewport.height:window.innerHeight;document.documentElement.style.setProperty('--vh',h+'px');if(nearBottom(260))scrollBottom()}
+let lastH=0;
+function availH(){
+  let h=window.innerHeight;
+  try{
+    if(window.parent!==window&&window.frameElement){            /* ក្នុង iframe របស់ index.html */
+      const fr=window.frameElement.getBoundingClientRect(),P=window.parent;
+      let bottom=fr.bottom;
+      const nav=P.document.querySelector('.mobile-bottom-nav');   /* មីនុយខាងក្រោមលើទូរសព្ទ */
+      if(nav&&P.getComputedStyle(nav).display!=='none')bottom=Math.min(bottom,nav.getBoundingClientRect().top);
+      if(P.visualViewport)bottom=Math.min(bottom,P.visualViewport.offsetTop+P.visualViewport.height); /* keyboard */
+      h=Math.max(200,Math.min(h,bottom-fr.top));
+    }else if(window.visualViewport)h=window.visualViewport.height;
+  }catch(e){}
+  return Math.round(h);
+}
+function fitViewport(){
+  const h=availH();if(h===lastH)return;lastH=h;
+  document.documentElement.style.setProperty('--vh',h+'px');
+  if(nearBottom(260))scrollBottom();
+}
 window.addEventListener('resize',fitViewport);
-if(window.visualViewport){visualViewport.addEventListener('resize',fitViewport);visualViewport.addEventListener('scroll',()=>window.scrollTo(0,0))}
+try{
+  const VV=(window.parent!==window&&window.parent.visualViewport)||window.visualViewport;
+  if(VV){VV.addEventListener('resize',fitViewport);VV.addEventListener('scroll',fitViewport)}
+  if(window.parent!==window)window.parent.addEventListener('resize',fitViewport);
+}catch(e){}
+setInterval(fitViewport,700);
 
 /* ---------- users (from database) ---------- */
 let users={};try{users=JSON.parse(localStorage.getItem('krou_teachers_cache')||'{}');Object.values(users).forEach(u=>{delete u.password;delete u.phone;delete u.dob;delete u.address})}catch(e){}
