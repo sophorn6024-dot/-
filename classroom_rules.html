@@ -74,7 +74,7 @@
 
     /* ══════════════ 🛠️ TOP TOOLBAR ══════════════ */
     .top-toolbar {
-      max-width: 1280px; margin: 0 auto 16px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+      max-width: 1320px; margin: 0 auto 16px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
     }
     .tb-btn {
       height: 38px; padding: 0 13px; border-radius: 11px; border: 1px solid rgba(255, 255, 255, 0.15);
@@ -92,6 +92,10 @@
       height: 38px; border-radius: 11px; border: 1.5px solid #38bdf8;
       background: #1e293b; color: #f8fafc; padding: 0 12px; font-size: 13px; font-weight: 700;
       outline: none; cursor: pointer; display: flex; align-items: center; gap: 6px;
+      font-family: 'Khmer OS Battambang', 'Battambang', sans-serif !important;
+    }
+    .tb-select-box option {
+      background: #1e293b; color: #f8fafc; font-family: 'Khmer OS Battambang', 'Battambang', sans-serif !important;
     }
 
     /* ══════════════ 📄 PAPER CONTAINER (A4 PORTRAIT) ══════════════ */
@@ -123,7 +127,7 @@
     /* 💧 Background Watermark (MoEYS) */
     .watermark-seal {
       position: absolute; top: 52%; left: 50%; transform: translate(-50%, -50%);
-      width: 360px; height: 360px; opacity: 0.08; pointer-events: none; z-index: 1;
+      width: 380px; height: 380px; opacity: 0.08; pointer-events: none; z-index: 1;
     }
 
     .rules-content-wrap {
@@ -132,50 +136,46 @@
 
     /* 👑 Header Section */
     .rules-header { text-align: center; margin-bottom: 4px; }
-    .rules-header h2 { font-size: 15.5px; margin-bottom: 2px; }
-    .rules-header h3 { font-size: 14px; margin-bottom: 2px; }
+    .rules-header h2 { font-size: 16px; margin-bottom: 2px; }
+    .rules-header h3 { font-size: 14.5px; margin-bottom: 2px; }
 
     .rules-sub-meta {
       display: flex; justify-content: space-between; align-items: flex-start;
-      margin-top: 4px; margin-bottom: 8px; font-size: 12.5px; font-weight: 700; line-height: 1.45;
+      margin-top: 4px; margin-bottom: 8px; font-size: 13.5px; font-weight: 700; line-height: 1.45;
     }
 
     .rules-title-box { text-align: center; margin-bottom: 10px; }
     .rules-title-box h1 {
-      font-size: 18.5px; color: #b91c1c !important; margin-bottom: 6px;
+      font-size: 20px; color: #b91c1c !important; margin-bottom: 6px;
     }
     .rules-preamble {
-      font-size: 13px; font-weight: 600; text-align: left; text-indent: 32px; margin-bottom: 10px; line-height: 1.5;
+      font-size: 14.5px; font-weight: 600; text-align: left; text-indent: 32px; margin-bottom: 10px; line-height: 1.6;
     }
 
-    /* 📜 Articles (ប្រការ) : 3-Column Clean Aligned Grid */
+    /* 📜 Articles (ប្រការ) : 3-Column Clean Aligned Grid & Larger Font */
     .rules-list {
-      display: flex; flex-direction: column; gap: 6px;
+      display: flex; flex-direction: column; gap: 5.5px;
     }
     .rule-row {
       display: grid;
-      grid-template-columns: 106px 16px 1fr;
+      grid-template-columns: 118px 20px 1fr;
       align-items: baseline;
-      font-size: 13.2px;
-      line-height: 1.6;
+      font-size: 14.5px;
+      line-height: 1.65;
     }
-    .rule-name { font-weight: 800; white-space: nowrap; color: #000; }
-    .rule-colon { font-weight: 800; text-align: center; color: #000; }
-    .rule-body { text-align: justify; font-weight: 500; color: #000; }
+    .rule-name { font-weight: 800; white-space: nowrap; color: #000; font-size: 14.5px; }
+    .rule-colon { font-weight: 800; text-align: center; color: #000; font-size: 14.5px; }
+    .rule-body { text-align: justify; font-weight: 500; color: #000; font-size: 14.5px; }
     .rule-body p { margin-bottom: 2px; }
-
-    .rules-closing {
-      text-align: center; font-weight: 800; font-size: 13.5px; margin-top: 10px; margin-bottom: 8px;
-    }
 
     /* ✍️ Signature Section */
     .sign-row {
-      display: flex; justify-content: space-between; align-items: flex-start; margin-top: 6px; padding: 0 8px;
+      display: flex; justify-content: space-between; align-items: flex-start; margin-top: 14px; padding: 0 8px;
     }
-    .sign-col { text-align: center; min-width: 220px; font-size: 12px; }
-    .sign-col .sign-title { font-size: 13px; margin-top: 4px; }
-    .sign-col .sign-space { height: 60px; }
-    .sign-col .sign-name { font-weight: 700; font-size: 13px; }
+    .sign-col { text-align: center; min-width: 230px; font-size: 13px; }
+    .sign-col .sign-title { font-size: 14px; margin-top: 4px; }
+    .sign-col .sign-space { height: 60px; } /* ចន្លោះទំនេរស្អាត */
+    .sign-col .sign-name { font-weight: 700; font-size: 14px; }
 
     .editable-text {
       border: none; background: transparent; outline: none; font-size: inherit; font-family: inherit; font-weight: inherit;
@@ -185,7 +185,70 @@
     }
 
     /* =========================================================
-       ⚙️ RESPONSIVE PAGE SETUP (ដូចរូបភាពគំរូ ១០០%)
+       📅 BEAUTIFUL CUSTOM KHMER CALENDAR POPUP
+    ========================================================= */
+    .cal-popup-backdrop {
+      display: none; position: fixed; inset: 0; z-index: 2900; background: rgba(0,0,0,0.5);
+    }
+    .cal-popup-backdrop.show { display: block; }
+    .khmer-cal-popup {
+      display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.96);
+      width: 320px; max-width: calc(100vw - 32px); background: #ffffff; border-radius: 24px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.45); border: 1.5px solid #e2e8f0;
+      padding: 18px 16px 14px; z-index: 3000; animation: calZoomIn .18s ease-out forwards;
+      color: #0f172a; user-select: none;
+    }
+    .khmer-cal-popup.show { display: block; }
+    @keyframes calZoomIn { to { transform: translate(-50%, -50%) scale(1); } }
+
+    .cal-header-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+    .cal-select-wrap { position: relative; }
+    .cal-select-wrap select {
+      width: 100%; height: 38px; border-radius: 12px; border: 1px solid #cbd5e1;
+      background: #f1f5f9; color: #0f172a; font-size: 13.5px; font-weight: 700;
+      padding: 0 26px 0 12px; outline: none; cursor: pointer; appearance: none; -webkit-appearance: none;
+      font-family: 'Khmer OS Battambang', 'Battambang', sans-serif !important;
+    }
+    .cal-chev {
+      position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+      pointer-events: none; font-size: 11px; color: #2563eb; font-weight: bold;
+    }
+    .cal-weekdays {
+      display: grid; grid-template-columns: repeat(7, 1fr); text-align: center;
+      font-size: 12px; font-weight: 700; color: #64748b; margin-bottom: 8px;
+    }
+    .cal-days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+    .cal-cell {
+      height: 36px; display: flex; align-items: center; justify-content: center;
+      font-size: 13.5px; font-weight: 700; border-radius: 50%; cursor: pointer;
+      color: #0f172a; transition: all .14s;
+    }
+    .cal-cell:hover { background: #e0f2fe; color: #2563eb; }
+    .cal-cell.other-month { color: #94a3b8; opacity: 0.4; font-weight: 500; }
+    .cal-cell.selected {
+      background: #2563eb !important; color: #ffffff !important;
+      box-shadow: 0 4px 12px rgba(37,99,235,0.4);
+    }
+    .cal-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 12px; padding-top: 10px; border-top: 1px solid #e2e8f0;
+    }
+    .cal-btn-today {
+      background: transparent; border: none; color: #2563eb; font-size: 13px;
+      font-weight: 800; cursor: pointer; padding: 4px 8px; border-radius: 8px;
+    }
+    .cal-btn-today:hover { background: #eff6ff; }
+    .cal-btn-clear {
+      background: transparent; border: none; color: #dc2626; font-size: 13px;
+      font-weight: 800; cursor: pointer; padding: 4px 8px; border-radius: 8px;
+    }
+    .cal-btn-close {
+      background: transparent; border: none; color: #64748b; font-size: 13px;
+      font-weight: 700; cursor: pointer; padding: 4px 8px; border-radius: 8px;
+    }
+
+    /* =========================================================
+       ⚙️ RESPONSIVE PAGE SETUP (A4/F4 & SLIDER)
     ========================================================= */
     .ps-backdrop {
       display: none; position: fixed; inset: 0; z-index: 2500;
@@ -202,7 +265,7 @@
       -webkit-overflow-scrolling: touch;
     }
     .ps-panel.show { display: block; }
-    @keyframes psIn { from { opacity: 0; transform: translateY(-8px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    @keyframes psIn { from { opacity: 0; transform: translateY(-8px) scale(0.98); } to { opacity: 1; transform: translateY(0); } }
 
     .ps-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
     .ps-head h3 { font-size: 17px; font-weight: 800; color: #f8fafc; }
@@ -276,7 +339,7 @@
     @media print {
       * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
       body { background: #fff !important; color: #000 !important; padding: 0 !important; margin: 0 !important; }
-      .top-toolbar, .ps-panel, .ps-backdrop, #authDeniedWrap { display: none !important; }
+      .top-toolbar, .ps-panel, .ps-backdrop, #authDeniedWrap, .khmer-cal-popup, .cal-popup-backdrop { display: none !important; }
       .report-paper-wrap { padding: 0 !important; overflow: visible !important; }
       #paperScaler { transform: none !important; width: auto !important; height: auto !important; }
       .rules-paper {
@@ -304,19 +367,19 @@
   <!-- ══════════════ 🌟 MAIN CONTENT WRAPPER ══════════════ -->
   <div id="mainPageContent" style="display:none;">
 
-    <!-- 🛠️ TOP TOOLBAR (ដូចរូបភាពទី១) -->
+    <!-- 🛠️ TOP TOOLBAR -->
     <div class="top-toolbar">
       <button type="button" class="tb-btn" onclick="goBack()">
         <i class="fa-solid fa-arrow-left"></i> <span>ត្រឡប់</span>
       </button>
 
-      <!-- 🏫 ថ្នាក់ Dropdown (ទាញថ្នាក់ទាំងអស់ពី Supabase) -->
+      <!-- 🏫 ថ្នាក់ Dropdown (Font Battambang ១០០%) -->
       <div class="tb-select-wrap">
         <span class="tb-select-label"><i class="fa-solid fa-school" style="color:#38bdf8;"></i> ថ្នាក់៖</span>
         <select class="tb-select-box" id="classSelect" onchange="onClassChange(this.value)"></select>
       </div>
 
-      <!-- 🌟 ទម្រង់ Dropdown -->
+      <!-- 🌟 ទម្រង់ Dropdown (Font Battambang ១០០%) -->
       <div class="tb-select-wrap">
         <span class="tb-select-label">ទម្រង់</span>
         <select class="tb-select-box" id="rulesFormatSelect" onchange="onFormatChange(this.value)">
@@ -325,16 +388,16 @@
         </select>
       </div>
 
-      <!-- 📅 ថ្ងៃអ្នកធ្វើចុះហត្ថលេខា -->
-      <button type="button" class="tb-btn" onclick="editTeacherDate()">
+      <!-- 📅 ថ្ងៃអ្នកធ្វើចុះហត្ថលេខា (បើកប្រតិទិនខ្មែរស្អាត) -->
+      <button type="button" class="tb-btn" onclick="openKhmerCalendar('teacher')">
         <span style="color:#94a3b8; font-weight:normal;">ថ្ងៃអ្នកធ្វើចុះហត្ថលេខា</span>
         <span style="background:rgba(255,255,255,0.08); padding:2px 8px; border-radius:6px; display:inline-flex; align-items:center; gap:5px;">
           <i class="fa-regular fa-calendar-days" style="color:#60a5fa;"></i> ជ្រើសថ្ងៃ
         </span>
       </button>
 
-      <!-- 📅 ថ្ងៃនាយកចុះហត្ថលេខា -->
-      <button type="button" class="tb-btn" onclick="editPrincipalDate()">
+      <!-- 📅 ថ្ងៃនាយកចុះហត្ថលេខា (បើកប្រតិទិនខ្មែរស្អាត) -->
+      <button type="button" class="tb-btn" onclick="openKhmerCalendar('principal')">
         <span style="color:#94a3b8; font-weight:normal;">ថ្ងៃនាយកចុះហត្ថលេខា</span>
         <span id="principalDateBadge" style="background:rgba(255,255,255,0.08); padding:2px 8px; border-radius:6px; display:inline-flex; align-items:center; gap:5px;">
           <i class="fa-regular fa-calendar-xmark" style="color:#f59e0b;"></i> មិនដាក់
@@ -362,7 +425,7 @@
       <div id="paperScaler">
         <div class="rules-paper" id="printablePaper">
 
-          <!-- 🖼️ Ornate Kbach Border Frame (ដូចរូបភាព PDF) -->
+          <!-- 🖼️ Ornate Kbach Border Frame -->
           <div class="kbach-border-frame">
             <div class="kbach-border-inner"></div>
           </div>
@@ -399,7 +462,7 @@
               </div>
             </div>
 
-            <!-- 📜 Articles List (ប្រការ) : រៀបចំជា 3-Column Grid ធ្វើឱ្យ « ៖ » ស្មើជួរគ្នា ១០០% -->
+            <!-- 📜 Articles List (ប្រការ) : 3-Column Clean Aligned Grid & Font Size ធំល្មមស្អាត -->
             <div class="rules-list" id="rulesListContainer" contenteditable="true">
               
               <div class="rule-row">
@@ -471,14 +534,19 @@
                 <div class="rule-body">ហាមយកនំចំណីញ៉ាំក្នុងថ្នាក់ ហាមជិះកង់ ពាក់មួកចូលក្នុងបរិវេណសាលា ។</div>
               </div>
 
-            </div>
+              <!-- 🌟 ប្រការដប់ពីរ ថ្មី -->
+              <div class="rule-row">
+                <span class="rule-name">ប្រការដប់ពីរ</span>
+                <span class="rule-colon">៖</span>
+                <div class="rule-body">សិស្សទាំងអស់ត្រូវគោរពវិន័យសាលា និងអនុវត្តបទបញ្ជាផ្ទៃក្នុងរបស់សាលាឱ្យបានខ្ជាប់ខ្ជួន ។</div>
+              </div>
 
-            <div class="rules-closing">សិស្សទាំងអស់ត្រូវអនុវត្តឱ្យបានខ្ជាប់ខ្ជួន ។</div>
+            </div>
 
             <!-- ✍️ Signatures (ចន្លោះទំនេរ មិនមានហត្ថលេខាគំរូឡើយ) -->
             <div class="sign-row">
               <div class="sign-col" style="margin-top: 26px;">
-                <div id="lblPrincipalDate" style="font-size:11.5px; margin-bottom:3px; display:none;"></div>
+                <div id="lblPrincipalDate" style="font-size:12px; margin-bottom:3px; display:none;"></div>
                 <div style="font-weight:700;">បានឃើញ និងឯកភាព</div>
                 <div class="f-moul sign-title">នាយកសាលា</div>
                 <div class="sign-space"></div>
@@ -501,7 +569,31 @@
 
   </div> <!-- END #mainPageContent -->
 
-  <!-- ══════════════ ⚙️ MODAL: RESPONSIVE PAGE SETUP (ដូចរូបភាពគំរូ) ══════════════ -->
+  <!-- ══════════════ 📅 BEAUTIFUL KHMER CALENDAR POPUP MODAL ══════════════ -->
+  <div class="cal-popup-backdrop" id="calBackdrop" onclick="closeCalendarPopup()"></div>
+  <div class="khmer-cal-popup" id="khmerCalPopup" onclick="event.stopPropagation()">
+    <div class="cal-header-row">
+      <div class="cal-select-wrap">
+        <select id="calMonthSelect" onchange="renderCalendarDays()"></select>
+        <span class="cal-chev">⌵</span>
+      </div>
+      <div class="cal-select-wrap">
+        <select id="calYearSelect" onchange="renderCalendarDays()"></select>
+        <span class="cal-chev">⌵</span>
+      </div>
+    </div>
+    <div class="cal-weekdays">
+      <span>អា</span><span>ច</span><span>អ</span><span>ព</span><span>ព្រ</span><span>សុ</span><span>ស</span>
+    </div>
+    <div class="cal-days-grid" id="calDaysGrid"></div>
+    <div class="cal-footer">
+      <button type="button" class="cal-btn-today" onclick="selectCalendarToday()">ថ្ងៃនេះ</button>
+      <button type="button" class="cal-btn-clear" id="calBtnClear" style="display:none;" onclick="clearPrincipalDate()">មិនដាក់</button>
+      <button type="button" class="cal-btn-close" onclick="closeCalendarPopup()">បិទ</button>
+    </div>
+  </div>
+
+  <!-- ══════════════ ⚙️ MODAL: RESPONSIVE PAGE SETUP ══════════════ -->
   <div class="ps-backdrop" id="psBackdrop" onclick="closePageSetup()"></div>
   <div class="ps-panel" id="psPanel" role="dialog" aria-label="ការរៀបចំទំព័រ">
     <div class="ps-handle-bar" style="display:none;"></div>
@@ -602,6 +694,14 @@
     const SUPABASE_URL = "https://nggnuobnrxiqjtcwlvwk.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_AHDcUJbuMAfhaocyfm2X7w_O9s06wML";
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const khmerDigits = ['០','១','២','៣','៤','៥','៦','៧','៨','៩'];
+    const KHMER_MONTHS = ['មករា','កុម្ភៈ','មីនា','មេសា','ឧសភា','មិថុនា','កក្កដា','សីហា','កញ្ញា','តុលា','វិច្ឆិកា','ធ្នូ'];
+
+    function toKhmerNum(num) {
+      if (num === null || num === undefined) return '';
+      return num.toString().replace(/\d/g, d => khmerDigits[parseInt(d)]);
+    }
 
     function readSession() {
       try { return JSON.parse(localStorage.getItem('krou_supabase_user') || 'null'); } catch(e) { return null; }
@@ -720,32 +820,123 @@
     }
 
     /* =========================================================
-       3. DATE PICKERS
+       3. 📅 BEAUTIFUL CUSTOM KHMER CALENDAR ENGINE
     ========================================================= */
-    function editTeacherDate() {
-      const val = prompt('កែប្រែកាលបរិច្ឆេទចុះហត្ថលេខាគ្រូ៖', document.getElementById('lblSolarDate').value);
-      if (val !== null && val.trim() !== '') document.getElementById('lblSolarDate').value = val.trim();
+    let calCurrentYear = 2026;
+    let calCurrentMonth = 9; // October
+    let activeCalendarTarget = 'teacher'; // 'teacher' | 'principal'
+    let selectedCalendarDay = 16;
+
+    function initCalendarDropdowns() {
+      const mSel = document.getElementById('calMonthSelect');
+      const ySel = document.getElementById('calYearSelect');
+      if (!mSel || !ySel) return;
+
+      mSel.innerHTML = KHMER_MONTHS.map((m, i) => `<option value="${i}">${m}</option>`).join('');
+
+      let yHtml = '';
+      const thisYr = new Date().getFullYear();
+      for (let y = thisYr + 5; y >= 2020; y--) {
+        yHtml += `<option value="${y}">${y}</option>`;
+      }
+      ySel.innerHTML = yHtml;
     }
 
-    function editPrincipalDate() {
-      const current = document.getElementById('lblPrincipalDate').innerText;
-      const val = prompt('បញ្ចូលកាលបរិច្ឆេទនាយកចុះហត្ថលេខា (ទុកទទេបើមិនដាក់)៖', current);
-      const badge = document.getElementById('principalDateBadge');
-      const lbl = document.getElementById('lblPrincipalDate');
+    function renderCalendarDays() {
+      const mSel = document.getElementById('calMonthSelect');
+      const ySel = document.getElementById('calYearSelect');
+      const grid = document.getElementById('calDaysGrid');
+      if (!mSel || !ySel || !grid) return;
 
-      if (val && val.trim() !== '') {
-        lbl.innerText = val.trim();
-        lbl.style.display = 'block';
-        badge.innerHTML = `<i class="fa-regular fa-calendar-check" style="color:#10b981;"></i> ${val.trim()}`;
-      } else {
-        lbl.innerText = '';
-        lbl.style.display = 'none';
-        badge.innerHTML = `<i class="fa-regular fa-calendar-xmark" style="color:#f59e0b;"></i> មិនដាក់`;
+      calCurrentMonth = parseInt(mSel.value, 10);
+      calCurrentYear = parseInt(ySel.value, 10);
+      grid.innerHTML = '';
+
+      const firstDay = new Date(calCurrentYear, calCurrentMonth, 1).getDay();
+      const totalDays = new Date(calCurrentYear, calCurrentMonth + 1, 0).getDate();
+      const prevTotal = new Date(calCurrentYear, calCurrentMonth, 0).getDate();
+
+      // Preceding days
+      for (let p = firstDay - 1; p >= 0; p--) {
+        const dNum = prevTotal - p;
+        const cell = document.createElement('div');
+        cell.className = 'cal-cell other-month';
+        cell.innerText = dNum;
+        cell.onclick = () => {
+          let prevM = calCurrentMonth - 1;
+          let prevY = calCurrentYear;
+          if (prevM < 0) { prevM = 11; prevY--; }
+          pickCalendarDate(prevY, prevM, dNum);
+        };
+        grid.appendChild(cell);
+      }
+
+      // Current month days
+      for (let d = 1; d <= totalDays; d++) {
+        const cell = document.createElement('div');
+        const isSelected = (d === selectedCalendarDay);
+        cell.className = `cal-cell ${isSelected ? 'selected' : ''}`;
+        cell.innerText = d;
+        cell.onclick = () => pickCalendarDate(calCurrentYear, calCurrentMonth, d);
+        grid.appendChild(cell);
       }
     }
 
+    function openKhmerCalendar(target) {
+      activeCalendarTarget = target;
+      const popup = document.getElementById('khmerCalPopup');
+      const backdrop = document.getElementById('calBackdrop');
+      const btnClear = document.getElementById('calBtnClear');
+
+      btnClear.style.display = (target === 'principal') ? 'inline-block' : 'none';
+
+      document.getElementById('calMonthSelect').value = calCurrentMonth;
+      document.getElementById('calYearSelect').value = calCurrentYear;
+      renderCalendarDays();
+
+      backdrop.classList.add('show');
+      popup.classList.add('show');
+    }
+
+    function closeCalendarPopup() {
+      document.getElementById('calBackdrop').classList.remove('show');
+      document.getElementById('khmerCalPopup').classList.remove('show');
+    }
+
+    function pickCalendarDate(y, m, d) {
+      selectedCalendarDay = d;
+      calCurrentYear = y;
+      calCurrentMonth = m;
+
+      const dateStrKh = `ធ្វើនៅកំពង់ល្ពៅ ថ្ងៃទី${toKhmerNum(d)} ខែ${KHMER_MONTHS[m]} ឆ្នាំ${toKhmerNum(y)}`;
+
+      if (activeCalendarTarget === 'teacher') {
+        document.getElementById('lblSolarDate').value = dateStrKh;
+      } else {
+        const lbl = document.getElementById('lblPrincipalDate');
+        const badge = document.getElementById('principalDateBadge');
+        lbl.innerText = `ថ្ងៃទី${toKhmerNum(d)} ខែ${KHMER_MONTHS[m]} ឆ្នាំ${toKhmerNum(y)}`;
+        lbl.style.display = 'block';
+        badge.innerHTML = `<i class="fa-regular fa-calendar-check" style="color:#10b981;"></i> ថ្ងៃទី${toKhmerNum(d)}`;
+      }
+
+      closeCalendarPopup();
+    }
+
+    function selectCalendarToday() {
+      const now = new Date();
+      pickCalendarDate(now.getFullYear(), now.getMonth(), now.getDate());
+    }
+
+    function clearPrincipalDate() {
+      document.getElementById('lblPrincipalDate').innerText = '';
+      document.getElementById('lblPrincipalDate').style.display = 'none';
+      document.getElementById('principalDateBadge').innerHTML = `<i class="fa-regular fa-calendar-xmark" style="color:#f59e0b;"></i> មិនដាក់`;
+      closeCalendarPopup();
+    }
+
     /* =========================================================
-       4. ⚙️ COMPLETE PAGE SETUP ENGINE (RESPONSIVE)
+       4. ⚙️ RESPONSIVE PAGE SETUP ENGINE
     ========================================================= */
     const PX = 96 / 25.4;
     const PAPERS = { A4: [210, 297], F4: [216, 330] };
@@ -769,7 +960,7 @@
       if (key === 'margin') PS.margin = Math.max(2, Math.min(25, PS.margin + dir));
       if (key === 'font') PS.font = Math.max(75, Math.min(135, PS.font + dir));
       if (key === 'rowH') {
-        let cur = PS.rowH || 6.0;
+        let cur = PS.rowH || 6.2;
         PS.rowH = Math.max(4.0, Math.min(18.0, Number((cur + dir).toFixed(1))));
       }
       updatePsAll();
@@ -811,16 +1002,16 @@
       paper.style.minHeight = `${h}mm`;
       paper.style.padding = `${PS.margin}mm`;
 
-      // Update Usable Size
       const usableW = Math.round(w - PS.margin * 2);
       const usableH = Math.round(h - PS.margin * 2);
       document.getElementById('psUsable').innerText = `ផ្ទៃប្រើ ${usableW}×${usableH}mm`;
 
-      // Font scaling
-      document.querySelectorAll('.rule-row').forEach(el => {
-        el.style.fontSize = `${(13.2 * PS.font) / 100}px`;
+      // Font scaling (ធំច្បាស់ពេញទំព័រ)
+      const baseSize = 14.5;
+      document.querySelectorAll('.rule-row, .rule-name, .rule-colon, .rule-body').forEach(el => {
+        el.style.fontSize = `${(baseSize * PS.font) / 100}px`;
       });
-      document.querySelector('.rules-preamble').style.fontSize = `${(13.0 * PS.font) / 100}px`;
+      document.querySelector('.rules-preamble').style.fontSize = `${(14.0 * PS.font) / 100}px`;
 
       // Row height
       if (PS.rowH) {
@@ -833,7 +1024,6 @@
         });
       }
 
-      // Check pages count
       setTimeout(() => {
         const totalHeightPx = paper.offsetHeight;
         const pageHeightPx = h * PX;
@@ -903,6 +1093,7 @@
       const isAuth = await checkAuthentication();
       if (!isAuth) return;
 
+      initCalendarDropdowns();
       await initClassesDropdown();
       applyPsStyles();
       setTimeout(fitPaper, 100);
