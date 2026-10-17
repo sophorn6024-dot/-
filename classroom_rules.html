@@ -87,7 +87,7 @@
     .tb-btn.primary { background: #2563eb; border-color: transparent; }
     .tb-btn.primary:hover { background: #1d4ed8; }
 
-    /* Custom Dropdown (Font Battambang) */
+    /* 🌟 Custom Dropdown (Font Battambang) */
     .dd-wrap { position: relative; display: inline-block; }
     .dd-popup {
       display: none; position: absolute; top: calc(100% + 6px); left: 0; min-width: 210px; max-height: 290px; overflow-y: auto;
@@ -140,35 +140,36 @@
       width: 380px; height: 380px; opacity: 0.08; pointer-events: none; z-index: 1;
     }
 
+    /* 🌟 Content Container ជាមួយនឹងគម្លាតលើក្រោមស្អាតពេញក្រដាស */
     .rules-content-wrap {
-      position: relative; z-index: 2; padding: 5mm 6mm 4mm;
+      position: relative; z-index: 2; padding: 6mm 7mm 8mm;
     }
 
     /* 👑 Header Section */
-    .rules-header { text-align: center; margin-bottom: 4px; }
-    .rules-header h2 { font-size: 16px; margin-bottom: 2px; }
+    .rules-header { text-align: center; margin-bottom: 6px; }
+    .rules-header h2 { font-size: 16px; margin-bottom: 3px; }
     .rules-header h3 { font-size: 14.5px; margin-bottom: 2px; }
 
     .rules-sub-meta {
       display: flex; justify-content: space-between; align-items: flex-start;
-      margin-top: 4px; margin-bottom: 8px; font-size: 13.5px; font-weight: 700; line-height: 1.45;
+      margin-top: 6px; margin-bottom: 12px; font-size: 13.5px; font-weight: 700; line-height: 1.5;
     }
 
-    .rules-title-box { text-align: center; margin-bottom: 8px; }
+    .rules-title-box { text-align: center; margin-bottom: 12px; }
     .rules-title-box h1 {
-      font-size: 21px; color: #b91c1c !important; margin-bottom: 5px;
+      font-size: 21px; color: #b91c1c !important; margin-bottom: 6px;
     }
     .rules-preamble {
-      font-size: 14.2px; font-weight: 600; text-align: left; text-indent: 32px; margin-bottom: 8px; line-height: 1.6;
+      font-size: 14.5px; font-weight: 600; text-align: left; text-indent: 32px; margin-bottom: 12px; line-height: 1.65;
     }
 
-    /* 📜 Articles (ប្រការ) : 3-Column Clean Aligned Grid & Font Size ធំល្មមស្អាត */
+    /* 📜 Articles (ប្រការ) : 3-Column Clean Aligned Grid & គម្លាតលើក្រោមធំល្មម */
     .rules-list {
-      display: flex; flex-direction: column; gap: 5px;
+      display: flex; flex-direction: column; gap: 8.5px;
     }
     .rule-row {
       display: grid;
-      grid-template-columns: 104px 14px 1fr;
+      grid-template-columns: 108px 18px 1fr;
       align-items: baseline;
       font-size: 14.5px;
       line-height: 1.68;
@@ -197,14 +198,19 @@
       display: inline-block;
     }
 
-    /* ✍️ Signature Section */
+    /* ✍️ Signature Section : នាយកសាលានៅទាបជាង (ក្រោម) គ្រូ */
     .sign-row {
-      display: flex; justify-content: space-between; align-items: flex-start; margin-top: 10px; padding: 0 8px;
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-top: 18px; padding: 0 8px;
     }
     .sign-col { text-align: center; min-width: 230px; font-size: 13px; }
     .sign-col .sign-title { font-size: 14px; margin-top: 4px; }
-    .sign-col .sign-space { height: 55px; }
+    .sign-col .sign-space { height: 60px; }
     .sign-col .sign-name { font-weight: 700; font-size: 14px; }
+
+    .principal-col {
+      margin-top: 65px !important;
+    }
 
     .editable-text {
       border: none; background: transparent; outline: none; font-size: inherit; font-family: inherit; font-weight: inherit;
@@ -435,7 +441,7 @@
         </div>
       </div>
 
-      <!-- 📅 ថ្ងៃអ្នកធ្វើចុះហត្ថលេខា (បើកប្រតិទិនខ្មែរស្អាត) -->
+      <!-- 📅 ថ្ងៃអ្នកធ្វើចុះហត្ថលេខា -->
       <button type="button" class="tb-btn" onclick="openKhmerCalendar('teacher')">
         <span style="color:#94a3b8; font-weight:normal;">ថ្ងៃអ្នកធ្វើចុះហត្ថលេខា</span>
         <span style="background:rgba(255,255,255,0.08); padding:2px 8px; border-radius:6px; display:inline-flex; align-items:center; gap:5px;">
@@ -443,7 +449,7 @@
         </span>
       </button>
 
-      <!-- 📅 ថ្ងៃនាយកចុះហត្ថលេខា (បើកប្រតិទិនខ្មែរស្អាត) -->
+      <!-- 📅 ថ្ងៃនាយកចុះហត្ថលេខា -->
       <button type="button" class="tb-btn" onclick="openKhmerCalendar('principal')">
         <span style="color:#94a3b8; font-weight:normal;">ថ្ងៃនាយកចុះហត្ថលេខា</span>
         <span id="principalDateBadge" style="background:rgba(255,255,255,0.08); padding:2px 8px; border-radius:6px; display:inline-flex; align-items:center; gap:5px;">
@@ -518,7 +524,7 @@
                 <span class="rule-colon">៖</span>
                 <div class="rule-body rule-body-two-lines">
                   <div class="line-1">កុមារទាំងពីរភេទអាចចូលរៀនថ្នាក់ទី១ ត្រូវមានអាយុ៦ឆ្នាំ ឬយ៉ាងតិច៧០ខែ</div>
-                  <div class="line-2">សិស្សទាំងអស់ត្រូវកាត់សក់ខ្លី តាមភេទភាព ភាពឆើតឆាយនិងគ្រឿងអលង្ការត្រូវបានហាមឃាត់នៅក្នុង<span class="nowrap-punct">សាលារៀន&nbsp;។</span></div>
+                  <div class="line-2">សិស្សទាំងអស់ត្រូវកាត់សក់ខ្លី តាមភេទ ភាពឆើតឆាយនិងគ្រឿងអលង្ការត្រូវបានហាមឃាត់នៅក្នុង<span class="nowrap-punct">សាលារៀន&nbsp;។</span></div>
                 </div>
               </div>
 
@@ -591,9 +597,9 @@
 
             </div>
 
-            <!-- ✍️ Signatures (ចន្លោះទំនេរ មិនមានហត្ថលេខាគំរូឡើយ) -->
+            <!-- ✍️ Signatures : នាយកសាលានៅក្រោម (ទាបជាង) គ្រូបន្ទុកថ្នាក់ -->
             <div class="sign-row">
-              <div class="sign-col" style="margin-top: 26px;">
+              <div class="sign-col principal-col">
                 <div id="lblPrincipalDate" style="font-size:12px; margin-bottom:3px; display:none;"></div>
                 <div style="font-weight:700;">បានឃើញ និងឯកភាព</div>
                 <div class="f-moul sign-title">នាយកសាលា</div>
@@ -911,7 +917,7 @@
        3. 📅 BEAUTIFUL CUSTOM KHMER CALENDAR ENGINE
     ========================================================= */
     let calCurrentYear = 2026;
-    let calCurrentMonth = 9; // October
+    let calCurrentMonth = 9;
     let activeCalendarTarget = 'teacher';
     let selectedCalendarDay = 16;
 
@@ -1092,12 +1098,12 @@
       const usableH = Math.round(h - PS.margin * 2);
       document.getElementById('psUsable').innerText = `ផ្ទៃប្រើ ${usableW}×${usableH}mm`;
 
-      // Font scaling (ដំឡើងទំហំធំច្បាស់ ~14.8px)
+      // Font scaling
       const baseSize = 14.8;
       document.querySelectorAll('.rule-row, .rule-name, .rule-colon, .rule-body').forEach(el => {
         el.style.fontSize = `${(baseSize * PS.font) / 100}px`;
       });
-      document.querySelector('.rules-preamble').style.fontSize = `${(14.2 * PS.font) / 100}px`;
+      document.querySelector('.rules-preamble').style.fontSize = `${(14.5 * PS.font) / 100}px`;
 
       // Row height
       if (PS.rowH) {
