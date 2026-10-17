@@ -510,6 +510,8 @@
     .custom-table td.text-left { text-align: left; padding-left: 7px; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
     .red-bold { color: #dc2626 !important; font-weight: bold; font-size: 13.5px; }
+    .sheet3 .custom-table th, .sheet3 .custom-table td { height: 25px; padding: 3px 2px; }
+    .sheet3 .custom-table { font-size: 13.5px; }
     .custom-table td.red-bold, .custom-table th.red-bold, .custom-table .red-bold { color: #dc2626 !important; }
     /* ពាក្យ "ចំណាត់ថ្នាក់" ពណ៌ក្រហម (ទុកទំហំអក្សរតាមតួដើម) */
     .red-text { color: #dc2626 !important; font-weight: bold; }
@@ -1434,17 +1436,17 @@
           const s2TotRank = (s2Total > 0 && s2TotRanks[student.id]) ? s2TotRanks[student.id] : '';
 
           const sheet3 = document.createElement('div');
-          sheet3.className = 'sheet-page';
+          sheet3.className = 'sheet-page sheet3';
           sheet3.innerHTML = `
             <div class="page-box">
               <div>
-                <div style="display: flex; justify-content: space-between; font-size: 13.5px; margin-bottom: 4px;" class="f-bold">
+                <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 8px;" class="f-bold">
                   <div>នាមត្រកូល និងនាមខ្លួន ៖ ${student.name}</div>
                   <div>ថ្នាក់ទី ៖ ${cls}</div>
                   <div>ចំនួនសិស្ស ៖ ${toKhmerNum(totalClassCount)} នាក់</div>
                 </div>
 
-                <div class="f-bold" style="margin-bottom: 3px; font-size: 13.5px;">ក. លទ្ធផលនៃការប្រឡងឆមាស</div>
+                <div class="f-bold" style="margin-bottom: 6px; font-size: 14px;">ក. លទ្ធផលនៃការប្រឡងឆមាស</div>
                 <table class="custom-table">
                   <thead>
                     <tr>
@@ -1495,7 +1497,7 @@
                   </tbody>
                 </table>
 
-                <div class="f-bold" style="margin: 6px 0 3px 0; font-size: 13.5px;">ខ. ចំនួនពេលអវត្តមាន</div>
+                <div class="f-bold" style="margin: 13px 0 6px 0; font-size: 14px;">ខ. ចំនួនពេលអវត្តមាន</div>
                 <table class="custom-table">
                   <thead>
                     <tr>
@@ -1525,13 +1527,13 @@
 
             <div class="page-box">
               <div>
-                <div style="display: flex; justify-content: space-between; font-size: 13.5px; margin-bottom: 4px;" class="f-bold">
+                <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 8px;" class="f-bold">
                   <div>សាលា ៖ ${bundleData.schoolName || 'កំពង់ល្ពៅ'}</div>
                   <div>ឆ្នាំសិក្សា ៖ ២០២៦-២០២៧</div>
                 </div>
 
-                <div class="f-bold" style="margin-bottom: 3px; font-size: 13.5px;">គ. វាយតម្លៃសិស្សលើការសិក្សា</div>
-                <table class="custom-table" style="height: 65px;">
+                <div class="f-bold" style="margin-bottom: 6px; font-size: 14px;">គ. វាយតម្លៃសិស្សលើការសិក្សា</div>
+                <table class="custom-table" style="height: 95px;">
                   <thead>
                     <tr>
                       <th style="width: 25%;">ឆមាសទី១</th>
@@ -1540,7 +1542,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr style="font-size: 12.5px; text-align: left; vertical-align: top; padding: 4px;">
+                    <tr style="font-size: 13.5px; text-align: left; vertical-align: top; padding: 4px;">
                       <td>${s1AvgVal >= 5 ? 'លទ្ធផលសិក្សាមធ្យម' : ''}</td>
                       <td>${s2AvgVal >= 5 ? 'លទ្ធផលសិក្សាមធ្យម គួរខិតខំរៀនបន្ថែម' : ''}</td>
                       <td>និទ្ទេសប្រចាំឆ្នាំ ${yGradeVal} លទ្ធផលសិក្សាមធ្យម គួរខិតខំរៀនបន្ថែមទៀត។ សមនឹងឡើងថ្នាក់បាន។</td>
@@ -1548,15 +1550,15 @@
                   </tbody>
                 </table>
 
-                <div class="f-bold" style="margin: 6px 0 3px 0; font-size: 13.5px;">ឃ. លទ្ធផលប្រចាំឆ្នាំ</div>
-                <div style="font-size: 13px; line-height: 1.65; margin-left: 6px;">
+                <div class="f-bold" style="margin: 13px 0 6px 0; font-size: 14px;">ឃ. លទ្ធផលប្រចាំឆ្នាំ</div>
+                <div style="font-size: 14px; line-height: 2.1; margin-left: 6px;">
                   <div>ត្រូវបានឡើងថ្នាក់ទី ៖ <strong class="f-bold">${parseInt(cls) < 6 ? toKhmerNum(parseInt(cls) + 1) : 'បញ្ចប់បឋម'}</strong></div>
                   <div>ត្រូវប្រឡងឡើងថ្នាក់ ៖ ................. មុខវិជ្ជាដែលត្រូវប្រឡង ៖ .................</div>
                   <div>ត្រូវរៀនត្រួតថ្នាក់ ៖ ................. ត្រូវរៀនឡើងថ្នាក់ទី ៖ .................</div>
                 </div>
 
-                <div class="f-bold" style="margin: 6px 0 3px 0; font-size: 13.5px;">ង. ការសរសើរ និងកំណែទម្រង់</div>
-                <table class="custom-table" style="height: 55px;">
+                <div class="f-bold" style="margin: 13px 0 6px 0; font-size: 14px;">ង. ការសរសើរ និងកំណែទម្រង់</div>
+                <table class="custom-table" style="height: 80px;">
                   <thead>
                     <tr>
                       <th style="width: 50%;">ការសរសើរ</th>
@@ -1564,26 +1566,26 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr style="font-size: 12.5px; text-align: left; vertical-align: top; padding: 4px;">
+                    <tr style="font-size: 13.5px; text-align: left; vertical-align: top; padding: 4px;">
                       <td>${Number(yRankNum) <= 5 && Number(yRankNum) > 0 ? 'បានចំណាត់ថ្នាក់ទី ' + toKhmerNum(yRankNum) + ' ក្នុងថ្នាក់ ។ ពូកែខាងសិក្សាសង្គម ។' : 'ខិតខំរៀនសូត្រ'}</td>
                       <td>គួរពង្រឹងមុខវិជ្ជាសរសេរតាមអាន ។</td>
                     </tr>
                   </tbody>
                 </table>
 
-                <div class="sig-block" style="margin-top: 4px; font-size: 12.5px;">
+                <div class="sig-block" style="margin-top: 12px; font-size: 13.5px;">
                   <div class="sig-inner">
                     <div>ថ្ងៃទី...... ខែ...... ឆ្នាំ២០២៦</div>
                     <div class="f-bold" style="margin-top: 2px;">គ្រូទទួលបន្ទុកថ្នាក់</div>
-                    <div style="font-weight: bold; margin-top: 20px; font-size: 13.5px;">${TEACHER_NAME || ''}</div>
+                    <div style="font-weight: bold; margin-top: 34px; font-size: 14px;">${TEACHER_NAME || ''}</div>
                   </div>
                 </div>
 
-                <div class="f-bold" style="margin-top: 4px; font-size: 13.5px;">ច. មូលវិចាររបស់នាយកសាលា</div>
-                <div style="border-bottom: 1.2px dotted var(--navy); min-height: 18px;"></div>
-                <div style="border-bottom: 1.2px dotted var(--navy); min-height: 18px;"></div>
+                <div class="f-bold" style="margin-top: 18px; font-size: 14px;">ច. មូលវិចាររបស់នាយកសាលា</div>
+                <div style="border-bottom: 1.2px dotted var(--navy); min-height: 30px;"></div>
+                <div style="border-bottom: 1.2px dotted var(--navy); min-height: 30px;"></div>
                 
-                <div class="sig-block" style="margin-top: 4px; font-size: 12.5px;">
+                <div class="sig-block" style="margin-top: 12px; font-size: 13.5px;">
                   <div class="sig-inner">
                     <div>ថ្ងៃទី...... ខែ...... ឆ្នាំ២០២៦</div>
                     <div class="f-bold" style="margin-top: 2px;">នាយកសាលា</div>
