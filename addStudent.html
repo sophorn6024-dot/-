@@ -74,7 +74,7 @@
     * {
       box-sizing: border-box;
       margin: 0; padding: 0;
-      font-family: 'Khmer OS Battambang', 'Battambang', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'Battambang', 'Khmer OS Battambang', -apple-system, BlinkMacSystemFont, sans-serif;
       -webkit-tap-highlight-color: transparent;
     }
 
@@ -370,6 +370,21 @@
     .input-left { text-align: left; }
 
     .gender-pill:focus { outline: 2px solid #0284c7; outline-offset: 1px; }
+
+    /* 🔤 Dropdown (select + option) ប្រើ font Battambang */
+    select, select option, select optgroup,
+    .gender-pill, .gender-pill option,
+    .pill-select-class, .pill-select-class option,
+    .modal-input, .modal-input option,
+    .cal-select, .cal-select option,
+    .profile-pill-select, .profile-pill-select option {
+      font-family: 'Battambang', 'Khmer OS Battambang', sans-serif !important;
+    }
+    .gender-pill option, .pill-select-class option, .cal-select option,
+    .modal-input option, .profile-pill-select option {
+      font-size: 13px; font-weight: 700;
+      background: var(--surface); color: var(--text);
+    }
 
     .table-container.is-locked .table-input,
     .table-container.is-locked .gender-pill,
