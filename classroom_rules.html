@@ -87,7 +87,7 @@
     .tb-btn.primary { background: #2563eb; border-color: transparent; }
     .tb-btn.primary:hover { background: #1d4ed8; }
 
-    /* 🌟 Custom Dropdown Using Font Battambang */
+    /* Custom Dropdown (Font Battambang) */
     .dd-wrap { position: relative; display: inline-block; }
     .dd-popup {
       display: none; position: absolute; top: calc(100% + 6px); left: 0; min-width: 210px; max-height: 290px; overflow-y: auto;
@@ -141,7 +141,7 @@
     }
 
     .rules-content-wrap {
-      position: relative; z-index: 2; padding: 6mm 8mm 4mm;
+      position: relative; z-index: 2; padding: 5mm 6mm 4mm;
     }
 
     /* 👑 Header Section */
@@ -154,29 +154,42 @@
       margin-top: 4px; margin-bottom: 8px; font-size: 13.5px; font-weight: 700; line-height: 1.45;
     }
 
-    .rules-title-box { text-align: center; margin-bottom: 10px; }
+    .rules-title-box { text-align: center; margin-bottom: 8px; }
     .rules-title-box h1 {
-      font-size: 21px; color: #b91c1c !important; margin-bottom: 6px;
+      font-size: 21px; color: #b91c1c !important; margin-bottom: 5px;
     }
     .rules-preamble {
-      font-size: 14.5px; font-weight: 600; text-align: left; text-indent: 32px; margin-bottom: 10px; line-height: 1.65;
+      font-size: 14.2px; font-weight: 600; text-align: left; text-indent: 32px; margin-bottom: 8px; line-height: 1.6;
     }
 
     /* 📜 Articles (ប្រការ) : 3-Column Clean Aligned Grid & Font Size ធំល្មមស្អាត */
     .rules-list {
-      display: flex; flex-direction: column; gap: 6px;
+      display: flex; flex-direction: column; gap: 5px;
     }
     .rule-row {
       display: grid;
-      grid-template-columns: 118px 20px 1fr;
+      grid-template-columns: 104px 14px 1fr;
       align-items: baseline;
-      font-size: 14.8px;
-      line-height: 1.7;
+      font-size: 14.5px;
+      line-height: 1.68;
     }
-    .rule-name { font-weight: 800; white-space: nowrap; color: #000; font-size: 14.8px; }
-    .rule-colon { font-weight: 800; text-align: center; color: #000; font-size: 14.8px; }
-    .rule-body { text-align: justify; font-weight: 500; color: #000; font-size: 14.8px; }
-    .rule-body p { margin-bottom: 2px; }
+    .rule-name { font-weight: 800; white-space: nowrap; color: #000; font-size: 14.5px; }
+    .rule-colon { font-weight: 800; text-align: center; color: #000; font-size: 14.5px; }
+    .rule-body { text-align: justify; font-weight: 500; color: #000; font-size: 14.5px; }
+
+    /* 🌟 បង្ហាញប្រការមួយឱ្យត្រូវតែ ២ ជួរគត់ */
+    .rule-body-two-lines {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5px;
+    }
+    .rule-body-two-lines .line-1 {
+      white-space: nowrap;
+    }
+    .rule-body-two-lines .line-2 {
+      white-space: nowrap;
+      letter-spacing: -0.15px;
+    }
 
     /* 🌟 ការពារសញ្ញាខណ្ឌ « ។ » មិនឱ្យធ្លាក់ជួរតែឯង */
     .nowrap-punct {
@@ -186,11 +199,11 @@
 
     /* ✍️ Signature Section */
     .sign-row {
-      display: flex; justify-content: space-between; align-items: flex-start; margin-top: 14px; padding: 0 8px;
+      display: flex; justify-content: space-between; align-items: flex-start; margin-top: 10px; padding: 0 8px;
     }
     .sign-col { text-align: center; min-width: 230px; font-size: 13px; }
     .sign-col .sign-title { font-size: 14px; margin-top: 4px; }
-    .sign-col .sign-space { height: 60px; }
+    .sign-col .sign-space { height: 55px; }
     .sign-col .sign-name { font-weight: 700; font-size: 14px; }
 
     .editable-text {
@@ -499,80 +512,81 @@
             <!-- 📜 Articles List (ប្រការ) : 3-Column Clean Aligned Grid & Font Size ធំល្មមស្អាត -->
             <div class="rules-list" id="rulesListContainer" contenteditable="true">
               
+              <!-- 🌟 ប្រការមួយ ៖ បង្ហាញត្រឹមតែ ២ ជួរយ៉ាងស្មើស្អាត -->
               <div class="rule-row">
                 <span class="rule-name">ប្រការមួយ</span>
                 <span class="rule-colon">៖</span>
-                <div class="rule-body">
-                  <p>កុមារទាំងពីរភេទអាចចូលរៀនថ្នាក់ទី១ ត្រូវមានអាយុ៦ឆ្នាំ ឬយ៉ាងតិច៧០ខែ</p>
-                  <p>សិស្សទាំងអស់ត្រូវកាត់សក់ខ្លី តាមភេទភាព ភាពឆើតឆាយនិងគ្រឿងអលង្ការត្រូវបានហាមឃាត់នៅក្នុង<span class="nowrap-punct">សាលារៀន ។</span></p>
+                <div class="rule-body rule-body-two-lines">
+                  <div class="line-1">កុមារទាំងពីរភេទអាចចូលរៀនថ្នាក់ទី១ ត្រូវមានអាយុ៦ឆ្នាំ ឬយ៉ាងតិច៧០ខែ</div>
+                  <div class="line-2">សិស្សទាំងអស់ត្រូវកាត់សក់ខ្លី តាមភេទភាព ភាពឆើតឆាយនិងគ្រឿងអលង្ការត្រូវបានហាមឃាត់នៅក្នុង<span class="nowrap-punct">សាលារៀន&nbsp;។</span></div>
                 </div>
               </div>
 
               <div class="rule-row">
                 <span class="rule-name">ប្រការពីរ</span>
                 <span class="rule-colon">៖</span>
-                <div class="rule-body">សិស្សទាំងអស់ត្រូវស្អាតជានិច្ច និងស្លៀកពាក់<span class="nowrap-punct">សមរម្យ ។</span></div>
+                <div class="rule-body">សិស្សទាំងអស់ត្រូវស្អាតជានិច្ច និងស្លៀកពាក់<span class="nowrap-punct">សមរម្យ&nbsp;។</span></div>
               </div>
 
               <div class="rule-row">
                 <span class="rule-name">ប្រការបី</span>
                 <span class="rule-colon">៖</span>
-                <div class="rule-body">សិស្សទាំងអស់ត្រូវមករៀនឱ្យបាន<span class="nowrap-punct">ទាន់ពេលវេលា ។</span></div>
+                <div class="rule-body">សិស្សទាំងអស់ត្រូវមករៀនឱ្យបាន<span class="nowrap-punct">ទាន់ពេលវេលា&nbsp;។</span></div>
               </div>
 
               <div class="rule-row">
                 <span class="rule-name">ប្រការបួន</span>
                 <span class="rule-colon">៖</span>
-                <div class="rule-body">ក្រោយពេលគោរពទង់ជាតិរួចសិស្សត្រូវឈរនៅមុខថ្នាក់ក្រោមការត្រួតត្រារបស់លោកគ្រូ អ្នកគ្រូ ឬ<span class="nowrap-punct">ប្រធានថ្នាក់ ។</span></div>
+                <div class="rule-body">ក្រោយពេលគោរពទង់ជាតិរួចសិស្សត្រូវឈរនៅមុខថ្នាក់ក្រោមការត្រួតត្រារបស់លោកគ្រូ អ្នកគ្រូ ឬ<span class="nowrap-punct">ប្រធានថ្នាក់&nbsp;។</span></div>
               </div>
 
               <div class="rule-row">
                 <span class="rule-name">ប្រការប្រាំ</span>
                 <span class="rule-colon">៖</span>
-                <div class="rule-body">សិស្សទាំងអស់ត្រូវគោរពទង់ជាតិរាល់ព្រឹក <span class="nowrap-punct">ឬល្ងាច ។</span></div>
+                <div class="rule-body">សិស្សទាំងអស់ត្រូវគោរពទង់ជាតិរាល់ព្រឹក <span class="nowrap-punct">ឬល្ងាច&nbsp;។</span></div>
               </div>
 
               <div class="rule-row">
                 <span class="rule-name">ប្រការប្រាំមួយ</span>
                 <span class="rule-colon">៖</span>
-                <div class="rule-body">សិស្សទាំងអស់ត្រូវចូលរួមសូត្រ នមស្ការ ព្រះរតនត្រ័យ ក្រោយពេល<span class="nowrap-punct">គោរពទង់ជាតិ ។</span></div>
+                <div class="rule-body">សិស្សទាំងអស់ត្រូវចូលរួមសូត្រ នមស្ការ ព្រះរតនត្រ័យ ក្រោយពេល<span class="nowrap-punct">គោរពទង់ជាតិ&nbsp;។</span></div>
               </div>
 
               <div class="rule-row">
                 <span class="rule-name">ប្រការប្រាំពីរ</span>
                 <span class="rule-colon">៖</span>
-                <div class="rule-body">សិស្សមិនត្រូវឈប់ឥតច្បាប់ដោយប្រការផ្សេងៗ ឈប់មួយពេល ត្រូវសុំច្បាប់បញ្ជាក់មូលហេតុច្បាស់លាស់ ឬអាណាព្យាបាល<span class="nowrap-punct">មកសុំផ្ទាល់ ។</span></div>
+                <div class="rule-body">សិស្សមិនត្រូវឈប់ឥតច្បាប់ដោយប្រការផ្សេងៗ ឈប់មួយពេល ត្រូវសុំច្បាប់បញ្ជាក់មូលហេតុច្បាស់លាស់ ឬអាណាព្យាបាល<span class="nowrap-punct">មកសុំផ្ទាល់&nbsp;។</span></div>
               </div>
 
               <div class="rule-row">
                 <span class="rule-name">ប្រការប្រាំបី</span>
                 <span class="rule-colon">៖</span>
-                <div class="rule-body">ពេលម៉ោងរៀនសិស្សត្រូវខិតខំរៀន ត្រូវមានសណ្តាប់ធ្នាប់មិនត្រូវរំខានដល់<span class="nowrap-punct">មិត្តរួមថ្នាក់ ។</span></div>
+                <div class="rule-body">ពេលម៉ោងរៀនសិស្សត្រូវខិតខំរៀន ត្រូវមានសណ្តាប់ធ្នាប់មិនត្រូវរំខានដល់<span class="nowrap-punct">មិត្តរួមថ្នាក់&nbsp;។</span></div>
               </div>
 
               <div class="rule-row">
                 <span class="rule-name">ប្រការប្រាំបួន</span>
                 <span class="rule-colon">៖</span>
-                <div class="rule-body">ពេលចេញលេងត្រូវប្រកាន់អាកប្បកិរិយាសមរម្យ មិនទាត់ធាក់ មិនត្រូវឡូឡា <span class="nowrap-punct">ឈ្លោះប្រកែកគ្នា ។</span></div>
+                <div class="rule-body">ពេលចេញលេងត្រូវប្រកាន់អាកប្បកិរិយាសមរម្យ មិនទាត់ធាក់ មិនត្រូវឡូឡា <span class="nowrap-punct">ឈ្លោះប្រកែកគ្នា&nbsp;។</span></div>
               </div>
 
               <div class="rule-row">
                 <span class="rule-name">ប្រការដប់</span>
                 <span class="rule-colon">៖</span>
-                <div class="rule-body">លោកគ្រូ អ្នកគ្រូចូលដល់ក្នុងថ្នាក់រៀនសិស្សត្រូវក្រោកឈរសំពះដើម្បី<span class="nowrap-punct">សម្តែងការគួរសម ។</span></div>
+                <div class="rule-body">លោកគ្រូ អ្នកគ្រូចូលដល់ក្នុងថ្នាក់រៀនសិស្សត្រូវក្រោកឈរសំពះដើម្បី<span class="nowrap-punct">សម្តែងការគួរសម&nbsp;។</span></div>
               </div>
 
               <div class="rule-row">
                 <span class="rule-name">ប្រការដប់មួយ</span>
                 <span class="rule-colon">៖</span>
-                <div class="rule-body">ហាមយកនំចំណីញ៉ាំក្នុងថ្នាក់ ហាមជិះកង់ ពាក់មួកចូលក្នុង<span class="nowrap-punct">បរិវេណសាលា ។</span></div>
+                <div class="rule-body">ហាមយកនំចំណីញ៉ាំក្នុងថ្នាក់ ហាមជិះកង់ ពាក់មួកចូលក្នុង<span class="nowrap-punct">បរិវេណសាលា&nbsp;។</span></div>
               </div>
 
-              <!-- 🌟 ប្រការដប់ពីរ (ការពារសញ្ញា ។ មិនឱ្យធ្លាក់ជួរតែឯង) -->
+              <!-- 🌟 ប្រការដប់ពីរ -->
               <div class="rule-row">
                 <span class="rule-name">ប្រការដប់ពីរ</span>
                 <span class="rule-colon">៖</span>
-                <div class="rule-body">សិស្សទាំងអស់ត្រូវគោរពវិន័យសាលា និងអនុវត្តបទបញ្ជាផ្ទៃក្នុងរបស់សាលាឱ្យបាន<span class="nowrap-punct">ខ្ជាប់ខ្ជួន ។</span></div>
+                <div class="rule-body">សិស្សទាំងអស់ត្រូវគោរពវិន័យសាលា និងអនុវត្តបទបញ្ជាផ្ទៃក្នុងរបស់សាលាឱ្យបាន<span class="nowrap-punct">ខ្ជាប់ខ្ជួន&nbsp;។</span></div>
               </div>
 
             </div>
@@ -865,7 +879,6 @@
 
       closeAllDropdowns();
 
-      // ទាញយកឈ្មោះគ្រូទទួលបន្ទុកថ្នាក់នោះពី Table users
       try {
         const { data: uData } = await sb.from('users').select('teacher_name').eq('assigned_classes', currentSelectedClass).maybeSingle();
         if (uData && uData.teacher_name) {
@@ -931,7 +944,6 @@
       const totalDays = new Date(calCurrentYear, calCurrentMonth + 1, 0).getDate();
       const prevTotal = new Date(calCurrentYear, calCurrentMonth, 0).getDate();
 
-      // Preceding days
       for (let p = firstDay - 1; p >= 0; p--) {
         const dNum = prevTotal - p;
         const cell = document.createElement('div');
@@ -946,7 +958,6 @@
         grid.appendChild(cell);
       }
 
-      // Current month days
       for (let d = 1; d <= totalDays; d++) {
         const cell = document.createElement('div');
         const isSelected = (d === selectedCalendarDay);
@@ -1086,7 +1097,7 @@
       document.querySelectorAll('.rule-row, .rule-name, .rule-colon, .rule-body').forEach(el => {
         el.style.fontSize = `${(baseSize * PS.font) / 100}px`;
       });
-      document.querySelector('.rules-preamble').style.fontSize = `${(14.5 * PS.font) / 100}px`;
+      document.querySelector('.rules-preamble').style.fontSize = `${(14.2 * PS.font) / 100}px`;
 
       // Row height
       if (PS.rowH) {
