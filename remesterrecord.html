@@ -695,6 +695,15 @@
       return num.toString().replace(/\d/g, d => KHMER_DIGITS[parseInt(d)] !== undefined ? KHMER_DIGITS[parseInt(d)] : d);
     }
 
+    /* ថ្នាក់ឡើងបន្ទាប់ ៖ ១→២, ២→៣, ៤(ក)→៥ ... ៦→បញ្ចប់បឋម (ទទួលបានទាំងលេខខ្មែរ និងលេខអារ៉ាប់) */
+    function getNextGrade(cls) {
+      const ascii = String(cls || '').replace(/[០-៩]/g, d => KHMER_DIGITS.indexOf(d));
+      const m = ascii.match(/\d+/);
+      if (!m) return '.................';
+      const n = parseInt(m[0], 10);
+      return n < 6 ? toKhmerNum(n + 1) : 'បញ្ចប់បឋម';
+    }
+
     function applyTheme(theme) { document.documentElement.setAttribute('data-theme', theme || 'dark'); }
     applyTheme(localStorage.getItem('krou_theme_manual') || 'dark');
     window.addEventListener('message', e => { if (e.data && (e.data.type === 'THEME_CHANGE' || e.data.theme)) applyTheme(e.data.theme || e.data); });
@@ -1552,7 +1561,7 @@
 
                 <div class="f-bold" style="margin: 13px 0 6px 0; font-size: 14px;">ឃ. លទ្ធផលប្រចាំឆ្នាំ</div>
                 <div style="font-size: 14px; line-height: 2.1; margin-left: 6px;">
-                  <div>ត្រូវបានឡើងថ្នាក់ទី ៖ <strong class="f-bold">${parseInt(cls) < 6 ? toKhmerNum(parseInt(cls) + 1) : 'បញ្ចប់បឋម'}</strong></div>
+                  <div>ត្រូវបានឡើងថ្នាក់ទី ៖ <strong class="f-bold">${getNextGrade(cls)}</strong></div>
                   <div>ត្រូវប្រឡងឡើងថ្នាក់ ៖ ................. មុខវិជ្ជាដែលត្រូវប្រឡង ៖ .................</div>
                   <div>ត្រូវរៀនត្រួតថ្នាក់ ៖ ................. ត្រូវរៀនឡើងថ្នាក់ទី ៖ .................</div>
                 </div>
