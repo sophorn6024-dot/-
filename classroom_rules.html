@@ -74,10 +74,10 @@
 
     /* ══════════════ 🛠️ TOP TOOLBAR (ដូចរូបភាពទី១) ══════════════ */
     .top-toolbar {
-      max-width: 1200px; margin: 0 auto 16px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+      max-width: 1280px; margin: 0 auto 16px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
     }
     .tb-btn {
-      height: 38px; padding: 0 14px; border-radius: 11px; border: 1px solid rgba(255, 255, 255, 0.15);
+      height: 38px; padding: 0 13px; border-radius: 11px; border: 1px solid rgba(255, 255, 255, 0.15);
       background: #1e293b; color: #f8fafc; font-size: 12.5px; font-weight: 700; cursor: pointer;
       display: inline-flex; align-items: center; justify-content: space-between; gap: 8px;
       transition: all .15s ease; outline: none; white-space: nowrap; user-select: none;
@@ -86,19 +86,15 @@
     .tb-btn.primary { background: #2563eb; border-color: transparent; }
     .tb-btn.primary:hover { background: #1d4ed8; }
 
-    .tb-select-wrap {
-      display: inline-flex; align-items: center; gap: 6px;
-    }
-    .tb-select-label {
-      font-size: 12.5px; font-weight: 700; color: #cbd5e1; white-space: nowrap;
-    }
+    .tb-select-wrap { display: inline-flex; align-items: center; gap: 6px; }
+    .tb-select-label { font-size: 12.5px; font-weight: 700; color: #cbd5e1; white-space: nowrap; }
     .tb-select-box {
       height: 38px; border-radius: 11px; border: 1.5px solid #38bdf8;
       background: #1e293b; color: #f8fafc; padding: 0 12px; font-size: 13px; font-weight: 700;
       outline: none; cursor: pointer; display: flex; align-items: center; gap: 6px;
     }
 
-    /* ══════════════ 📄 PAPER WITH CERTIFICATE FRAME (ដូចរូបភាពទី២) ══════════════ */
+    /* ══════════════ 📄 PAPER CONTAINER (A4 PORTRAIT) ══════════════ */
     .report-paper-wrap {
       width: 100%; display: flex; justify-content: center; padding: 4px 0 20px; overflow-x: auto;
     }
@@ -106,86 +102,88 @@
 
     .rules-paper {
       width: 210mm; min-height: 297mm; background: #ffffff; color: #000000;
-      padding: 12mm 14mm; border-radius: 4px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+      padding: 10mm 12mm 14mm; border-radius: 4px; box-shadow: 0 12px 45px rgba(0, 0, 0, 0.45);
       position: relative; transform-origin: top left; overflow: hidden;
     }
     .rules-paper * { color: #000000; }
 
-    /* 🖼️ Ornate Certificate Border */
-    .cert-border-frame {
-      position: absolute; inset: 6mm; pointer-events: none;
-      border: 3px double #b91c1c; border-radius: 8px;
+    /* 🖼️ Authentic Kbach Flower Pattern Border (ដូចរូប PDF) */
+    .kbach-border-frame {
+      position: absolute; inset: 5mm; pointer-events: none;
+      border: 8px solid transparent;
+      border-image: repeating-linear-gradient(45deg, #b91c1c 0, #b91c1c 4px, #f59e0b 4px, #f59e0b 8px, #15803d 8px, #15803d 12px) 12 round;
+      box-shadow: inset 0 0 0 1.5px #b91c1c, 0 0 0 1.5px #b91c1c;
+      border-radius: 4px;
     }
-    .cert-border-inner {
-      position: absolute; inset: 2px;
-      border: 1px dashed #b91c1c; border-radius: 6px;
+    .kbach-border-inner {
+      position: absolute; inset: 4px; border: 1px dashed #b91c1c; pointer-events: none;
     }
-    .cert-corner-flower {
-      position: absolute; width: 28px; height: 28px; fill: #b91c1c;
-    }
-    .corner-tl { top: 0; left: 0; }
-    .corner-tr { top: 0; right: 0; transform: scaleX(-1); }
-    .corner-bl { bottom: 0; left: 0; transform: scaleY(-1); }
-    .corner-br { bottom: 0; right: 0; transform: scale(-1); }
 
-    /* 💧 Background Watermark */
+    /* 💧 Background Watermark (MoEYS) */
     .watermark-seal {
-      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-      width: 320px; height: 320px; opacity: 0.08; pointer-events: none; z-index: 1;
+      position: absolute; top: 52%; left: 50%; transform: translate(-50%, -50%);
+      width: 360px; height: 360px; opacity: 0.08; pointer-events: none; z-index: 1;
     }
 
     .rules-content-wrap {
-      position: relative; z-index: 2; padding: 4mm 6mm;
+      position: relative; z-index: 2; padding: 6mm 8mm 4mm;
     }
 
-    /* 👑 Header */
-    .rules-header { text-align: center; margin-bottom: 8px; }
-    .rules-header h2 { font-size: 14.5px; margin-bottom: 2px; }
-    .rules-header h3 { font-size: 13px; margin-bottom: 2px; }
+    /* 👑 Header Section */
+    .rules-header { text-align: center; margin-bottom: 4px; }
+    .rules-header h2 { font-size: 15.5px; margin-bottom: 2px; }
+    .rules-header h3 { font-size: 14px; margin-bottom: 2px; }
 
     .rules-sub-meta {
       display: flex; justify-content: space-between; align-items: flex-start;
-      margin-top: 4px; margin-bottom: 12px; font-size: 11.5px; font-weight: 700; line-height: 1.45;
+      margin-top: 4px; margin-bottom: 8px; font-size: 12.5px; font-weight: 700; line-height: 1.45;
     }
 
-    .rules-title-box { text-align: center; margin-bottom: 14px; }
+    .rules-title-box { text-align: center; margin-bottom: 10px; }
     .rules-title-box h1 {
-      font-size: 17px; color: #b91c1c !important; margin-bottom: 6px;
+      font-size: 18.5px; color: #b91c1c !important; margin-bottom: 6px;
     }
     .rules-preamble {
-      font-size: 12px; font-weight: 600; text-align: left; text-indent: 28px; margin-bottom: 12px;
+      font-size: 13px; font-weight: 600; text-align: left; text-indent: 32px; margin-bottom: 10px; line-height: 1.5;
     }
 
-    /* 📜 Articles (ប្រការ) */
+    /* 📜 Articles (ប្រការ) - 3-Column Clean Aligned Grid */
     .rules-list {
-      display: flex; flex-direction: column; gap: 8px; font-size: 11.5px; line-height: 1.5;
+      display: flex; flex-direction: column; gap: 6px;
     }
-    .rule-item {
-      display: flex; align-items: flex-start; gap: 8px; text-align: justify;
+    .rule-row {
+      display: grid;
+      grid-template-columns: 106px 16px 1fr;
+      align-items: baseline;
+      font-size: 13.2px;
+      line-height: 1.6;
     }
-    .rule-tag {
-      font-weight: 800; white-space: nowrap; min-width: 95px; flex-shrink: 0;
+    .rule-name {
+      font-weight: 800; white-space: nowrap; color: #000;
+    }
+    .rule-colon {
+      font-weight: 800; text-align: center; color: #000;
     }
     .rule-body {
-      flex: 1; font-weight: 500;
+      text-align: justify; font-weight: 500; color: #000;
     }
-    .rule-body p { margin-bottom: 3px; }
+    .rule-body p { margin-bottom: 2px; }
 
     .rules-closing {
-      text-align: center; font-weight: 800; font-size: 12px; margin-top: 14px; margin-bottom: 12px;
+      text-align: center; font-weight: 800; font-size: 13.5px; margin-top: 10px; margin-bottom: 8px;
     }
 
-    /* ✍️ Signature */
+    /* ✍️ Signature Section */
     .sign-row {
-      display: flex; justify-content: space-between; align-items: flex-start; margin-top: 10px; padding: 0 10px;
+      display: flex; justify-content: space-between; align-items: flex-start; margin-top: 6px; padding: 0 8px;
     }
-    .sign-col { text-align: center; min-width: 200px; font-size: 11px; }
-    .sign-col .sign-title { font-size: 12px; margin-top: 4px; }
-    .sign-col .sign-space { height: 65px; } /* ចន្លោះទំនេរស្អាត */
-    .sign-col .sign-name { font-weight: 700; font-size: 12.5px; }
+    .sign-col { text-align: center; min-width: 220px; font-size: 12px; }
+    .sign-col .sign-title { font-size: 13px; margin-top: 4px; }
+    .sign-col .sign-space { height: 60px; } /* ចន្លោះទំនេរស្អាត */
+    .sign-col .sign-name { font-weight: 700; font-size: 13px; }
 
     .editable-text {
-      border: none; background: transparent; outline: none; font-size: inherit; font-family: inherit;
+      border: none; background: transparent; outline: none; font-size: inherit; font-family: inherit; font-weight: inherit;
     }
     .editable-text:hover, .editable-text:focus {
       background: rgba(2, 132, 199, 0.08); border-radius: 4px;
@@ -216,7 +214,7 @@
       .report-paper-wrap { padding: 0 !important; overflow: visible !important; }
       #paperScaler { transform: none !important; width: auto !important; height: auto !important; }
       .rules-paper {
-        width: 100% !important; min-height: 0 !important; padding: 10mm 12mm !important;
+        width: 100% !important; min-height: 0 !important; padding: 8mm 10mm !important;
         box-shadow: none !important; border-radius: 0 !important; page-break-inside: avoid;
       }
     }
@@ -245,6 +243,12 @@
       <button type="button" class="tb-btn" onclick="goBack()">
         <i class="fa-solid fa-arrow-left"></i> <span>ត្រឡប់</span>
       </button>
+
+      <!-- 🏫 ថ្នាក់ Dropdown (ទាញថ្នាក់ទាំងអស់ពី Supabase) -->
+      <div class="tb-select-wrap">
+        <span class="tb-select-label"><i class="fa-solid fa-school" style="color:#38bdf8;"></i> ថ្នាក់៖</span>
+        <select class="tb-select-box" id="classSelect" onchange="onClassChange(this.value)"></select>
+      </div>
 
       <!-- 🌟 ទម្រង់ Dropdown -->
       <div class="tb-select-wrap">
@@ -287,27 +291,22 @@
       </button>
     </div>
 
-    <!-- 📄 PRINTABLE RULES PAPER (ដូចរូបភាពទី២) -->
+    <!-- 📄 PRINTABLE RULES PAPER (ដូចរូបភាព PDF ដើម ១០០%) -->
     <div class="report-paper-wrap">
       <div id="paperScaler">
         <div class="rules-paper" id="printablePaper">
 
-          <!-- 🖼️ Certificate Decorative Frame Border -->
-          <div class="cert-border-frame">
-            <div class="cert-border-inner"></div>
-            <!-- Corner Ornaments -->
-            <svg class="cert-corner-flower corner-tl" viewBox="0 0 100 100"><path d="M0 0 L40 0 C40 30 30 40 0 40 Z M15 15 L35 0 L0 35 Z"/></svg>
-            <svg class="cert-corner-flower corner-tr" viewBox="0 0 100 100"><path d="M0 0 L40 0 C40 30 30 40 0 40 Z M15 15 L35 0 L0 35 Z"/></svg>
-            <svg class="cert-corner-flower corner-bl" viewBox="0 0 100 100"><path d="M0 0 L40 0 C40 30 30 40 0 40 Z M15 15 L35 0 L0 35 Z"/></svg>
-            <svg class="cert-corner-flower corner-br" viewBox="0 0 100 100"><path d="M0 0 L40 0 C40 30 30 40 0 40 Z M15 15 L35 0 L0 35 Z"/></svg>
+          <!-- 🖼️ Ornate Kbach Border Frame (ដូចរូបភាព PDF) -->
+          <div class="kbach-border-frame">
+            <div class="kbach-border-inner"></div>
           </div>
 
-          <!-- 💧 Watermark Emblem -->
+          <!-- 💧 MoEYS Emblem Watermark -->
           <svg class="watermark-seal" viewBox="0 0 200 200">
-            <circle cx="100" cy="100" r="90" fill="none" stroke="#2563eb" stroke-width="4"/>
-            <circle cx="100" cy="100" r="75" fill="none" stroke="#2563eb" stroke-width="2"/>
-            <text x="100" y="70" text-anchor="middle" font-size="12" fill="#2563eb" font-family="'Khmer OS Muol Light', Moul">ក្រសួងអប់រំ យុវជន និងកីឡា</text>
-            <path d="M60 120 L100 80 L140 120 L100 140 Z" fill="none" stroke="#2563eb" stroke-width="3"/>
+            <circle cx="100" cy="100" r="90" fill="none" stroke="#2563eb" stroke-width="3"/>
+            <circle cx="100" cy="100" r="75" fill="none" stroke="#2563eb" stroke-width="1.5"/>
+            <text x="100" y="70" text-anchor="middle" font-size="11.5" fill="#2563eb" font-family="'Khmer OS Muol Light', Moul">ក្រសួងអប់រំ យុវជន និងកីឡា</text>
+            <path d="M60 120 L100 80 L140 120 L100 140 Z" fill="none" stroke="#2563eb" stroke-width="2.5"/>
           </svg>
 
           <!-- 📜 Document Main Body -->
@@ -323,7 +322,7 @@
                 <div>រដ្ឋបាលស្រុកសំឡូត</div>
                 <div>កម្រងសាលារៀន អូររំដួល</div>
                 <div>សាលាបឋមសិក្សា កំពង់ល្ពៅ</div>
-                <div id="lblDisplayClass" style="font-weight:700;">ថ្នាក់ទី ៤(ក)</div>
+                <div id="lblDisplayClass">ថ្នាក់ទី ៤(ក)</div>
               </div>
             </div>
 
@@ -334,65 +333,78 @@
               </div>
             </div>
 
-            <!-- 📜 Articles List (ប្រការ) អាចកែសម្រួលបានភ្លាមៗ -->
+            <!-- 📜 Articles List (ប្រការ) : រៀបចំជា 3-Column Grid ធ្វើឱ្យ « ៖ » ស្មើជួរគ្នា ១០០% -->
             <div class="rules-list" id="rulesListContainer" contenteditable="true">
-              <div class="rule-item">
-                <span class="rule-tag">ប្រការមួយ ៖</span>
+              
+              <div class="rule-row">
+                <span class="rule-name">ប្រការមួយ</span>
+                <span class="rule-colon">៖</span>
                 <div class="rule-body">
                   <p>កុមារទាំងពីរភេទអាចចូលរៀនថ្នាក់ទី១ ត្រូវមានអាយុ៦ឆ្នាំ ឬយ៉ាងតិច៧០ខែ</p>
                   <p>សិស្សទាំងអស់ត្រូវកាត់សក់ខ្លី តាមភេទភាព ភាពឆើតឆាយនិងគ្រឿងអលង្ការត្រូវបានហាមឃាត់នៅក្នុងសាលារៀន ។</p>
                 </div>
               </div>
 
-              <div class="rule-item">
-                <span class="rule-tag">ប្រការពីរ ៖</span>
+              <div class="rule-row">
+                <span class="rule-name">ប្រការពីរ</span>
+                <span class="rule-colon">៖</span>
                 <div class="rule-body">សិស្សទាំងអស់ត្រូវស្អាតជានិច្ច និងស្លៀកពាក់សមរម្យ ។</div>
               </div>
 
-              <div class="rule-item">
-                <span class="rule-tag">ប្រការបី ៖</span>
+              <div class="rule-row">
+                <span class="rule-name">ប្រការបី</span>
+                <span class="rule-colon">៖</span>
                 <div class="rule-body">សិស្សទាំងអស់ត្រូវមករៀនឱ្យបានទាន់ពេលវេលា ។</div>
               </div>
 
-              <div class="rule-item">
-                <span class="rule-tag">ប្រការបួន ៖</span>
+              <div class="rule-row">
+                <span class="rule-name">ប្រការបួន</span>
+                <span class="rule-colon">៖</span>
                 <div class="rule-body">ក្រោយពេលគោរពទង់ជាតិរួចសិស្សត្រូវឈរនៅមុខថ្នាក់ក្រោមការត្រួតត្រារបស់លោកគ្រូ អ្នកគ្រូ ឬប្រធានថ្នាក់ ។</div>
               </div>
 
-              <div class="rule-item">
-                <span class="rule-tag">ប្រការប្រាំ ៖</span>
+              <div class="rule-row">
+                <span class="rule-name">ប្រការប្រាំ</span>
+                <span class="rule-colon">៖</span>
                 <div class="rule-body">សិស្សទាំងអស់ត្រូវគោរពទង់ជាតិរាល់ព្រឹក ឬល្ងាច ។</div>
               </div>
 
-              <div class="rule-item">
-                <span class="rule-tag">ប្រការប្រាំមួយ ៖</span>
+              <div class="rule-row">
+                <span class="rule-name">ប្រការប្រាំមួយ</span>
+                <span class="rule-colon">៖</span>
                 <div class="rule-body">សិស្សទាំងអស់ត្រូវចូលរួមសូត្រ នមស្ការ ព្រះរតនត្រ័យ ក្រោយពេលគោរពទង់ជាតិ ។</div>
               </div>
 
-              <div class="rule-item">
-                <span class="rule-tag">ប្រការប្រាំពីរ ៖</span>
+              <div class="rule-row">
+                <span class="rule-name">ប្រការប្រាំពីរ</span>
+                <span class="rule-colon">៖</span>
                 <div class="rule-body">សិស្សមិនត្រូវឈប់ឥតច្បាប់ដោយប្រការផ្សេងៗ ឈប់មួយពេល ត្រូវសុំច្បាប់បញ្ជាក់មូលហេតុច្បាស់លាស់ ឬអាណាព្យាបាលមកសុំផ្ទាល់ ។</div>
               </div>
 
-              <div class="rule-item">
-                <span class="rule-tag">ប្រការប្រាំបី ៖</span>
+              <div class="rule-row">
+                <span class="rule-name">ប្រការប្រាំបី</span>
+                <span class="rule-colon">៖</span>
                 <div class="rule-body">ពេលម៉ោងរៀនសិស្សត្រូវខិតខំរៀន ត្រូវមានសណ្តាប់ធ្នាប់មិនត្រូវរំខានដល់មិត្តរួមថ្នាក់ ។</div>
               </div>
 
-              <div class="rule-item">
-                <span class="rule-tag">ប្រការប្រាំបួន ៖</span>
+              <div class="rule-row">
+                <span class="rule-name">ប្រការប្រាំបួន</span>
+                <span class="rule-colon">៖</span>
                 <div class="rule-body">ពេលចេញលេងត្រូវប្រកាន់អាកប្បកិរិយាសមរម្យ មិនទាត់ធាក់ មិនត្រូវឡូឡា ឈ្លោះប្រកែកគ្នា ។</div>
               </div>
 
-              <div class="rule-item">
-                <span class="rule-tag">ប្រការដប់ ៖</span>
+              <div class="rule-row">
+                <span class="rule-name">ប្រការដប់</span>
+                <span class="rule-colon">៖</span>
                 <div class="rule-body">លោកគ្រូ អ្នកគ្រូចូលដល់ក្នុងថ្នាក់រៀនសិស្សត្រូវក្រោកឈរសំពះដើម្បីសម្តែងការគួរសម ។</div>
               </div>
 
-              <div class="rule-item">
-                <span class="rule-tag">ប្រការដប់មួយ ៖</span>
+              <div class="rule-row">
+                <span class="rule-name">ប្រការដប់មួយ</span>
+                <span class="rule-colon">៖</span>
                 <div class="rule-body">ហាមយកនំចំណីញ៉ាំក្នុងថ្នាក់ ហាមជិះកង់ ពាក់មួកចូលក្នុងបរិវេណសាលា ។</div>
               </div>
+
             </div>
 
             <div class="rules-closing">សិស្សទាំងអស់ត្រូវអនុវត្តឱ្យបានខ្ជាប់ខ្ជួន ។</div>
@@ -400,7 +412,7 @@
             <!-- ✍️ Signatures (ចន្លោះទំនេរ មិនមានហត្ថលេខាគំរូឡើយ) -->
             <div class="sign-row">
               <div class="sign-col" style="margin-top: 26px;">
-                <div id="lblPrincipalDate" style="font-size:11px; margin-bottom:3px; display:none;"></div>
+                <div id="lblPrincipalDate" style="font-size:11.5px; margin-bottom:3px; display:none;"></div>
                 <div style="font-weight:700;">បានឃើញ និងឯកភាព</div>
                 <div class="f-moul sign-title">នាយកសាលា</div>
                 <div class="sign-space"></div>
@@ -500,15 +512,64 @@
 
     const USER_CLASS = CURRENT_USER?.assigned_classes || CURRENT_USER?.assigned_class || "៤(ក)";
     const TEACHER_NAME = CURRENT_USER?.teacher_name || "សេង សុភាស់";
+    const IS_ADMIN = String(CURRENT_USER?.role || '').toLowerCase().trim() === 'admin';
+
+    let currentSelectedClass = cleanGrade(USER_CLASS) || '៤(ក)';
 
     function cleanGrade(g) {
       return String(g || '').replace(/^(ថ្នាក់ទី|ថ្នាក់)\s*/, '').trim();
     }
 
-    function initPageData() {
-      const cls = cleanGrade(USER_CLASS);
-      document.getElementById('lblDisplayClass').innerText = `ថ្នាក់ទី ${cls || '៤(ក)'}`;
-      document.getElementById('lblTeacherName').innerText = TEACHER_NAME;
+    /* =========================================================
+       2. DYNAMIC CLASS LOADING FROM SUPABASE
+    ========================================================= */
+    async function initClassesDropdown() {
+      const select = document.getElementById('classSelect');
+      
+      try {
+        const { data: stList } = await sb.from('students').select('grade');
+        let classes = [...new Set((stList || []).map(s => cleanGrade(s.grade)).filter(Boolean))];
+        
+        if (!classes.length) {
+          classes = ['១', '២', '៣', '៤(ក)', '៤(ខ)', '៥', '៦'];
+        }
+        classes.sort((a,b) => a.localeCompare(b, 'km'));
+
+        select.innerHTML = classes.map(c => `
+          <option value="${c}" ${c === currentSelectedClass ? 'selected' : ''}>ថ្នាក់ទី ${c}</option>
+        `).join('');
+
+        if (!classes.includes(currentSelectedClass)) {
+          currentSelectedClass = classes[0];
+          select.value = currentSelectedClass;
+        }
+
+        onClassChange(currentSelectedClass);
+      } catch(e) {
+        select.innerHTML = `
+          <option value="៤(ក)" selected>ថ្នាក់ទី ៤(ក)</option>
+          <option value="៥">ថ្នាក់ទី ៥</option>
+          <option value="៦">ថ្នាក់ទី ៦</option>
+        `;
+        onClassChange('៤(ក)');
+      }
+    }
+
+    async function onClassChange(cls) {
+      currentSelectedClass = cleanGrade(cls);
+      document.getElementById('lblDisplayClass').innerText = `ថ្នាក់ទី ${currentSelectedClass}`;
+
+      // 🌟 ទាញយកឈ្មោះគ្រូទទួលបន្ទុកថ្នាក់នោះពី Table users
+      try {
+        const { data: uData } = await sb.from('users').select('teacher_name').eq('assigned_classes', currentSelectedClass).maybeSingle();
+        if (uData && uData.teacher_name) {
+          document.getElementById('lblTeacherName').innerText = uData.teacher_name;
+        } else {
+          document.getElementById('lblTeacherName').innerText = TEACHER_NAME;
+        }
+      } catch(e) {
+        document.getElementById('lblTeacherName').innerText = TEACHER_NAME;
+      }
     }
 
     function onFormatChange(val) {
@@ -521,7 +582,7 @@
     }
 
     /* =========================================================
-       2. DATE PICKERS
+       3. DATE PICKERS
     ========================================================= */
     function editTeacherDate() {
       const val = prompt('កែប្រែកាលបរិច្ឆេទចុះហត្ថលេខាគ្រូ៖', document.getElementById('lblSolarDate').value);
@@ -546,7 +607,7 @@
     }
 
     /* =========================================================
-       3. PAGE SETUP & SCALER
+       4. PAGE SETUP & SCALER
     ========================================================= */
     const PX = 96 / 25.4;
     let currentPaper = 'A4';
@@ -572,9 +633,11 @@
     }
 
     function stepFont(dir) {
-      currentFontScale = Math.max(80, Math.min(125, currentFontScale + dir));
+      currentFontScale = Math.max(85, Math.min(130, currentFontScale + dir));
       document.getElementById('inFontScale').value = currentFontScale + '%';
-      document.getElementById('printablePaper').style.fontSize = `${(11.5 * currentFontScale) / 100}px`;
+      document.querySelectorAll('.rule-row').forEach(el => {
+        el.style.fontSize = `${(13.2 * currentFontScale) / 100}px`;
+      });
     }
 
     function fitPaper() {
@@ -605,7 +668,7 @@
       closePageSetup();
       const opt = {
         margin: [5, 5, 5, 5],
-        filename: `បទបញ្ជាផ្ទៃក្នុង_${cleanGrade(USER_CLASS)}.pdf`,
+        filename: `បទបញ្ជាផ្ទៃក្នុង_ថ្នាក់ទី_${currentSelectedClass}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2.5, useCORS: true },
         jsPDF: { unit: 'mm', format: currentPaper.toLowerCase(), orientation: 'portrait' }
@@ -622,7 +685,7 @@
       const isAuth = await checkAuthentication();
       if (!isAuth) return;
 
-      initPageData();
+      await initClassesDropdown();
       fitPaper();
     });
   </script>
