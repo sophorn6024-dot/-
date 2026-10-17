@@ -17,8 +17,8 @@
 
   <style>
     :root {
-      --primary: #0284c7;
-      --primary-hover: #0369a1;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
       --bg: #0f172a;
       --surface: #1e293b;
       --surface-card: #1e293b;
@@ -65,14 +65,14 @@
     .auth-card h2 { font-size: 18px; margin-bottom: 8px; color: #ef4444; font-weight: 700; }
     .auth-card p { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 24px; }
     .btn-login-redirect {
-      background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+      background: linear-gradient(135deg, var(--primary), #1d4ed8);
       color: #ffffff; padding: 10px 24px; border-radius: 12px; font-weight: 700;
       font-size: 13.5px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); transition: all 0.2s; cursor: pointer; border: none;
     }
     .btn-login-redirect:hover { transform: translateY(-2px); }
 
-    /* ══════════════ 🛠️ TOP TOOLBAR (ដូចរូបភាពទី១) ══════════════ */
+    /* ══════════════ 🛠️ TOP TOOLBAR ══════════════ */
     .top-toolbar {
       max-width: 1280px; margin: 0 auto 16px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
     }
@@ -102,12 +102,13 @@
 
     .rules-paper {
       width: 210mm; min-height: 297mm; background: #ffffff; color: #000000;
-      padding: 10mm 12mm 14mm; border-radius: 4px; box-shadow: 0 12px 45px rgba(0, 0, 0, 0.45);
+      padding: 5mm; border-radius: 4px; box-shadow: 0 12px 45px rgba(0, 0, 0, 0.45);
       position: relative; transform-origin: top left; overflow: hidden;
+      transition: width 0.2s, min-height 0.2s, padding 0.2s;
     }
     .rules-paper * { color: #000000; }
 
-    /* 🖼️ Authentic Kbach Flower Pattern Border (ដូចរូប PDF) */
+    /* 🖼️ Kbach Flower Pattern Border (ដូចរូប PDF) */
     .kbach-border-frame {
       position: absolute; inset: 5mm; pointer-events: none;
       border: 8px solid transparent;
@@ -147,7 +148,7 @@
       font-size: 13px; font-weight: 600; text-align: left; text-indent: 32px; margin-bottom: 10px; line-height: 1.5;
     }
 
-    /* 📜 Articles (ប្រការ) - 3-Column Clean Aligned Grid */
+    /* 📜 Articles (ប្រការ) : 3-Column Clean Aligned Grid */
     .rules-list {
       display: flex; flex-direction: column; gap: 6px;
     }
@@ -158,15 +159,9 @@
       font-size: 13.2px;
       line-height: 1.6;
     }
-    .rule-name {
-      font-weight: 800; white-space: nowrap; color: #000;
-    }
-    .rule-colon {
-      font-weight: 800; text-align: center; color: #000;
-    }
-    .rule-body {
-      text-align: justify; font-weight: 500; color: #000;
-    }
+    .rule-name { font-weight: 800; white-space: nowrap; color: #000; }
+    .rule-colon { font-weight: 800; text-align: center; color: #000; }
+    .rule-body { text-align: justify; font-weight: 500; color: #000; }
     .rule-body p { margin-bottom: 2px; }
 
     .rules-closing {
@@ -179,7 +174,7 @@
     }
     .sign-col { text-align: center; min-width: 220px; font-size: 12px; }
     .sign-col .sign-title { font-size: 13px; margin-top: 4px; }
-    .sign-col .sign-space { height: 60px; } /* ចន្លោះទំនេរស្អាត */
+    .sign-col .sign-space { height: 60px; }
     .sign-col .sign-name { font-weight: 700; font-size: 13px; }
 
     .editable-text {
@@ -189,23 +184,94 @@
       background: rgba(2, 132, 199, 0.08); border-radius: 4px;
     }
 
-    /* ══════════════ ⚙️ MODAL: PAGE SETUP ══════════════ */
-    .ps-backdrop { display: none; position: fixed; inset: 0; z-index: 2500; background: rgba(0,0,0,0.6); }
+    /* =========================================================
+       ⚙️ RESPONSIVE PAGE SETUP (ដូចរូបភាពគំរូ ១០០%)
+    ========================================================= */
+    .ps-backdrop {
+      display: none; position: fixed; inset: 0; z-index: 2500;
+      background: rgba(0,0,0,0.65); backdrop-filter: blur(4px);
+    }
     .ps-backdrop.show { display: block; }
+
     .ps-panel {
-      display: none; position: fixed; z-index: 2600; top: 58px; right: 20px; width: 360px; max-width: calc(100vw - 24px);
-      background: #25272b; color: #f1f5f9; border: 1px solid #3f434a; border-radius: 20px; padding: 18px;
-      box-shadow: 0 24px 60px rgba(0,0,0,.6);
+      display: none; position: fixed; z-index: 2600; top: 58px; right: 20px;
+      width: 390px; max-width: calc(100vw - 24px); max-height: calc(100vh - 74px);
+      overflow-y: auto; background: #22252a; color: #f1f5f9;
+      border: 1px solid #3f434a; border-radius: 22px; padding: 18px 20px 16px;
+      box-shadow: 0 24px 60px rgba(0,0,0,.7); animation: psIn .18s ease-out;
+      -webkit-overflow-scrolling: touch;
     }
     .ps-panel.show { display: block; }
+    @keyframes psIn { from { opacity: 0; transform: translateY(-8px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
     .ps-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-    .ps-head h3 { font-size: 16px; font-weight: 800; color: #f8fafc; }
-    .ps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
-    .ps-opt {
-      background: #34373d; color: #f1f5f9; border: none; border-radius: 11px; padding: 9px 4px;
-      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; cursor: pointer; font-size: 13px; font-weight: 700;
+    .ps-head h3 { font-size: 17px; font-weight: 800; color: #f8fafc; }
+    .ps-head .ps-reset {
+      background: none; border: none; color: #9ca3af; font-size: 13px; font-weight: 700;
+      cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
     }
-    .ps-opt.active { background: #0284c7; color: #fff; }
+    .ps-head .ps-reset:hover { color: #38bdf8; }
+
+    .ps-sec {
+      display: flex; align-items: center; gap: 8px; color: #9ca3af; font-size: 13.5px;
+      font-weight: 700; margin: 12px 0 8px;
+    }
+    .ps-sec .ps-line { flex: 1; height: 1px; background: #374151; }
+
+    .ps-grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; margin-bottom: 8px; }
+    .ps-opt {
+      background: #34373d; color: #f1f5f9; border: none; border-radius: 13px; padding: 10px 4px;
+      min-height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 3px; cursor: pointer; font-size: 13.5px; font-weight: 800; transition: all .15s; outline: none;
+    }
+    .ps-opt small { font-size: 11px; font-weight: 500; color: #9ca3af; }
+    .ps-opt.active { background: #2563eb !important; color: #fff !important; }
+    .ps-opt.active small { color: rgba(255,255,255,.85); }
+    .ps-opt:hover:not(.active) { background: #3f434a; }
+
+    .ps-row { display: grid; grid-template-columns: 65px auto 1fr; align-items: center; gap: 8px; margin: 10px 0; font-size: 13.5px; }
+    .ps-row label { color: #f1f5f9; font-weight: 700; }
+    .ps-row .ps-hint { font-size: 11.5px; color: #9ca3af; line-height: 1.3; }
+
+    .ps-step { display: inline-flex; align-items: center; gap: 5px; }
+    .ps-step > button {
+      width: 36px; height: 38px; border-radius: 11px; border: none; background: #34373d; color: #f1f5f9;
+      font-size: 17px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    }
+    .ps-step > button:active { transform: scale(0.95); }
+
+    .ps-val {
+      display: inline-flex; align-items: center; gap: 4px; background: #34373d;
+      border-radius: 11px; height: 38px; padding: 0 8px; width: 92px;
+    }
+    .ps-val input {
+      flex: 1; min-width: 0; width: 100%; background: transparent; border: none; outline: none; text-align: center;
+      color: #f1f5f9; font-size: 13.5px; font-weight: 700;
+    }
+    .ps-val span { color: #9ca3af; font-size: 12px; }
+
+    .ps-foot {
+      display: flex; align-items: center; justify-content: space-between;
+      border-top: 1px solid #374151; margin-top: 14px; padding-top: 10px;
+    }
+    .ps-foot b { color: #3b82f6; font-size: 17px; font-weight: 800; }
+
+    /* 📱 RESPONSIVE BOTTOM-SHEET ON MOBILE */
+    @media (max-width: 768px) {
+      .ps-panel {
+        top: auto; bottom: 0; left: 0; right: 0;
+        width: 100%; max-width: 100%; max-height: 85vh;
+        border-radius: 24px 24px 0 0; border-bottom: none;
+        padding: 14px 18px max(20px, env(safe-area-inset-bottom));
+        animation: psSlideUp .22s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .ps-handle-bar {
+        display: block !important;
+        width: 44px; height: 5px; border-radius: 10px;
+        background: #4b5563; margin: 0 auto 12px;
+      }
+    }
+    @keyframes psSlideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
     @media print {
       * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
@@ -214,7 +280,7 @@
       .report-paper-wrap { padding: 0 !important; overflow: visible !important; }
       #paperScaler { transform: none !important; width: auto !important; height: auto !important; }
       .rules-paper {
-        width: 100% !important; min-height: 0 !important; padding: 8mm 10mm !important;
+        width: 100% !important; min-height: 0 !important;
         box-shadow: none !important; border-radius: 0 !important; page-break-inside: avoid;
       }
     }
@@ -423,7 +489,6 @@
                 <input type="text" class="editable-text" id="lblLunarDate" value="ថ្ងៃចន្ទ ១៣កើត ខែកត្តិក ឆ្នាំម្សាញ់ សប្តស័ក ពុទ្ធសករាជ ២៥៦៩" style="width:100%; text-align:center;">
                 <input type="text" class="editable-text" id="lblSolarDate" value="ធ្វើនៅកំពង់ល្ពៅ ថ្ងៃទី០៣ ខែវិច្ឆិកា ឆ្នាំ២០២៥" style="width:100%; text-align:center; margin-top:2px;">
                 <div class="f-moul sign-title" style="margin-top:4px;">គ្រូបន្ទុកថ្នាក់</div>
-                <!-- 🌟 ចន្លោះទំនេរសម្រាប់ចុះហត្ថលេខាដោយដៃផ្ទាល់ -->
                 <div class="sign-space"></div>
                 <div class="sign-name" id="lblTeacherName">សេង សុភាស់</div>
               </div>
@@ -436,23 +501,97 @@
 
   </div> <!-- END #mainPageContent -->
 
-  <!-- ══════════════ ⚙️ MODAL: PAGE SETUP ══════════════ -->
+  <!-- ══════════════ ⚙️ MODAL: RESPONSIVE PAGE SETUP (ដូចរូបភាពគំរូ) ══════════════ -->
   <div class="ps-backdrop" id="psBackdrop" onclick="closePageSetup()"></div>
   <div class="ps-panel" id="psPanel" role="dialog" aria-label="ការរៀបចំទំព័រ">
+    <div class="ps-handle-bar" style="display:none;"></div>
+
     <div class="ps-head">
       <h3>ការរៀបចំទំព័រ</h3>
-      <button type="button" style="background:none;border:none;color:#ef4444;font-size:16px;cursor:pointer;" onclick="closePageSetup()">✕</button>
+      <button type="button" class="ps-reset" onclick="psReset()">
+        <i class="fa-solid fa-rotate-left"></i> ដើមវិញ
+      </button>
     </div>
-    <div style="font-size:12px; color:#9ca3af; margin-bottom:8px;">ទំហំក្រដាស</div>
-    <div class="ps-grid">
-      <button type="button" class="ps-opt active" id="btnA4" onclick="setPaper('A4')">A4 (210×297)</button>
-      <button type="button" class="ps-opt" id="btnF4" onclick="setPaper('F4')">F4 (216×330)</button>
+
+    <div class="ps-sec">
+      <i class="fa-regular fa-file-lines"></i> ក្រដាស <span class="ps-line"></span>
     </div>
-    <div style="font-size:12px; color:#9ca3af; margin-bottom:8px;">ទំហំអក្សរ (%)</div>
-    <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
-      <button type="button" class="tb-btn" style="height:34px;" onclick="stepFont(-5)">−</button>
-      <input type="text" id="inFontScale" value="100%" readonly style="width:70px; height:34px; text-align:center; border-radius:8px; border:1px solid #3f434a; background:#34373d; color:#fff;">
-      <button type="button" class="tb-btn" style="height:34px;" onclick="stepFont(5)">+</button>
+
+    <div class="ps-grid4">
+      <button type="button" class="ps-opt active" data-paper="A4" onclick="psSetPaper('A4')">
+        <span>A4</span><small>210×297</small>
+      </button>
+      <button type="button" class="ps-opt" data-paper="F4" onclick="psSetPaper('F4')">
+        <span>F4</span><small>216×330</small>
+      </button>
+      <button type="button" class="ps-opt active" data-orient="portrait" onclick="psSetOrient('portrait')">
+        <i class="fa-regular fa-file" style="font-size:14px;"></i><span>បញ្ឈរ</span>
+      </button>
+      <button type="button" class="ps-opt" data-orient="landscape" onclick="psSetOrient('landscape')">
+        <i class="fa-regular fa-file" style="transform:rotate(90deg); font-size:14px;"></i><span>ផ្តេក</span>
+      </button>
+    </div>
+
+    <div class="ps-grid4">
+      <button type="button" class="ps-opt" data-m="2" onclick="psPreset(2)">
+        <span>តូច</span><small>2</small>
+      </button>
+      <button type="button" class="ps-opt active" data-m="5" onclick="psPreset(5)">
+        <span>មធ្យម</span><small>5</small>
+      </button>
+      <button type="button" class="ps-opt" data-m="10" onclick="psPreset(10)">
+        <span>ធំ</span><small>10</small>
+      </button>
+      <button type="button" class="ps-opt" data-m="15" onclick="psPreset(15)">
+        <span>ធំបំផុត</span><small>15</small>
+      </button>
+    </div>
+
+    <div class="ps-row">
+      <label>គែម</label>
+      <div class="ps-step">
+        <button type="button" onclick="psStep('margin', -1)">−</button>
+        <div class="ps-val">
+          <input id="psIn_margin" inputmode="decimal" value="5" onchange="psInput('margin', this.value)">
+          <span>mm</span>
+        </div>
+        <button type="button" onclick="psStep('margin', 1)">+</button>
+      </div>
+      <div class="ps-hint" id="psUsable">ផ្ទៃប្រើ 200×287mm</div>
+    </div>
+
+    <div class="ps-sec">
+      <i class="fa-solid fa-layer-group"></i> អក្សរ និងក្រឡា <span class="ps-line"></span>
+    </div>
+
+    <div class="ps-row">
+      <label>អក្សរ</label>
+      <div class="ps-step">
+        <button type="button" onclick="psStep('font', -5)">−</button>
+        <div class="ps-val">
+          <input id="psIn_font" inputmode="numeric" value="100" onchange="psInput('font', this.value)">
+          <span>%</span>
+        </div>
+        <button type="button" onclick="psStep('font', 5)">+</button>
+      </div>
+      <div class="ps-hint" id="psFontHint">ធម្មតា</div>
+    </div>
+
+    <div class="ps-row">
+      <label>កម្ពស់ជួរ</label>
+      <div class="ps-step">
+        <button type="button" onclick="psStep('rowH', -0.5)">−</button>
+        <div class="ps-val">
+          <input id="psIn_rowH" inputmode="decimal" value="តាមអក្សរ" onchange="psInput('rowH', this.value)">
+          <span>mm</span>
+        </div>
+        <button type="button" onclick="psStep('rowH', 0.5)">+</button>
+      </div>
+      <div class="ps-hint" id="psRowHint">តាមអក្សរ</div>
+    </div>
+
+    <div class="ps-foot">
+      <b id="psSheets">1 សន្លឹក</b>
     </div>
   </div>
 
@@ -559,7 +698,6 @@
       currentSelectedClass = cleanGrade(cls);
       document.getElementById('lblDisplayClass').innerText = `ថ្នាក់ទី ${currentSelectedClass}`;
 
-      // 🌟 ទាញយកឈ្មោះគ្រូទទួលបន្ទុកថ្នាក់នោះពី Table users
       try {
         const { data: uData } = await sb.from('users').select('teacher_name').eq('assigned_classes', currentSelectedClass).maybeSingle();
         if (uData && uData.teacher_name) {
@@ -607,45 +745,125 @@
     }
 
     /* =========================================================
-       4. PAGE SETUP & SCALER
+       4. ⚙️ COMPLETE PAGE SETUP ENGINE (RESPONSIVE)
     ========================================================= */
     const PX = 96 / 25.4;
-    let currentPaper = 'A4';
-    let currentFontScale = 100;
+    const PAPERS = { A4: [210, 297], F4: [216, 330] };
+    let PS = { paper: 'A4', orient: 'portrait', margin: 5, font: 100, rowH: null };
 
     function openPageSetup() {
       document.getElementById('psPanel').classList.add('show');
       document.getElementById('psBackdrop').classList.add('show');
+      updatePsPanel();
     }
     function closePageSetup() {
       document.getElementById('psPanel').classList.remove('show');
       document.getElementById('psBackdrop').classList.remove('show');
     }
 
-    function setPaper(type) {
-      currentPaper = type;
-      document.getElementById('btnA4').classList.toggle('active', type === 'A4');
-      document.getElementById('btnF4').classList.toggle('active', type === 'F4');
-      const paper = document.getElementById('printablePaper');
-      paper.style.width = type === 'A4' ? '210mm' : '216mm';
-      paper.style.minHeight = type === 'A4' ? '297mm' : '330mm';
+    function psSetPaper(p) { PS.paper = p; updatePsAll(); }
+    function psSetOrient(o) { PS.orient = o; updatePsAll(); }
+    function psPreset(m) { PS.margin = m; updatePsAll(); }
+
+    function psStep(key, dir) {
+      if (key === 'margin') PS.margin = Math.max(2, Math.min(25, PS.margin + dir));
+      if (key === 'font') PS.font = Math.max(75, Math.min(135, PS.font + dir));
+      if (key === 'rowH') {
+        let cur = PS.rowH || 6.0;
+        PS.rowH = Math.max(4.0, Math.min(18.0, Number((cur + dir).toFixed(1))));
+      }
+      updatePsAll();
+    }
+
+    function psInput(key, val) {
+      if (key === 'rowH' && (val === 'តាមអក្សរ' || val === '' || isNaN(parseFloat(val)))) {
+        PS.rowH = null;
+        updatePsAll();
+        return;
+      }
+      const v = parseFloat(val);
+      if (isNaN(v)) return;
+      if (key === 'margin') PS.margin = v;
+      if (key === 'font') PS.font = v;
+      if (key === 'rowH') PS.rowH = v;
+      updatePsAll();
+    }
+
+    function psReset() {
+      PS = { paper: 'A4', orient: 'portrait', margin: 5, font: 100, rowH: null };
+      updatePsAll();
+    }
+
+    function updatePsAll() {
+      applyPsStyles();
+      updatePsPanel();
       fitPaper();
     }
 
-    function stepFont(dir) {
-      currentFontScale = Math.max(85, Math.min(130, currentFontScale + dir));
-      document.getElementById('inFontScale').value = currentFontScale + '%';
+    function applyPsStyles() {
+      const pDim = PAPERS[PS.paper];
+      const isL = (PS.orient === 'landscape');
+      const w = isL ? pDim[1] : pDim[0];
+      const h = isL ? pDim[0] : pDim[1];
+      const paper = document.getElementById('printablePaper');
+
+      paper.style.width = `${w}mm`;
+      paper.style.minHeight = `${h}mm`;
+      paper.style.padding = `${PS.margin}mm`;
+
+      // Update Usable Size
+      const usableW = Math.round(w - PS.margin * 2);
+      const usableH = Math.round(h - PS.margin * 2);
+      document.getElementById('psUsable').innerText = `ផ្ទៃប្រើ ${usableW}×${usableH}mm`;
+
+      // Font scaling
       document.querySelectorAll('.rule-row').forEach(el => {
-        el.style.fontSize = `${(13.2 * currentFontScale) / 100}px`;
+        el.style.fontSize = `${(13.2 * PS.font) / 100}px`;
       });
+      document.querySelector('.rules-preamble').style.fontSize = `${(13.0 * PS.font) / 100}px`;
+
+      // Row height
+      if (PS.rowH) {
+        document.querySelectorAll('.rule-row').forEach(el => {
+          el.style.minHeight = `${PS.rowH}mm`;
+        });
+      } else {
+        document.querySelectorAll('.rule-row').forEach(el => {
+          el.style.minHeight = '';
+        });
+      }
+
+      // Check pages count
+      setTimeout(() => {
+        const totalHeightPx = paper.offsetHeight;
+        const pageHeightPx = h * PX;
+        const sheets = Math.max(1, Math.ceil(totalHeightPx / pageHeightPx - 0.02));
+        document.getElementById('psSheets').innerText = `${sheets} សន្លឹក`;
+      }, 60);
     }
 
+    function updatePsPanel() {
+      document.querySelectorAll('#psPanel [data-paper]').forEach(b => b.classList.toggle('active', b.dataset.paper === PS.paper));
+      document.querySelectorAll('#psPanel [data-orient]').forEach(b => b.classList.toggle('active', b.dataset.orient === PS.orient));
+      document.querySelectorAll('#psPanel [data-m]').forEach(b => b.classList.toggle('active', parseFloat(b.dataset.m) === PS.margin));
+
+      document.getElementById('psIn_margin').value = PS.margin;
+      document.getElementById('psIn_font').value = PS.font;
+      document.getElementById('psIn_rowH').value = PS.rowH ? PS.rowH : 'តាមអក្សរ';
+
+      document.getElementById('psFontHint').innerText = PS.font < 95 ? 'តូច' : (PS.font > 105 ? 'ធំ' : 'ធម្មតា');
+      document.getElementById('psRowHint').innerText = PS.rowH ? 'កំណត់ដោយខ្លួនឯង' : 'តាមអក្សរ';
+    }
+
+    /* 🌟 RESPONSIVE SCREEN FITTER */
     function fitPaper() {
       const paper = document.getElementById('printablePaper');
       const sc = document.getElementById('paperScaler');
       if (!paper || !sc) return;
 
-      const wMm = currentPaper === 'A4' ? 210 : 216;
+      const pDim = PAPERS[PS.paper];
+      const isL = (PS.orient === 'landscape');
+      const wMm = isL ? pDim[1] : pDim[0];
       const wPx = wMm * PX;
       const availW = window.innerWidth - 24;
 
@@ -667,11 +885,11 @@
       const element = document.getElementById('printablePaper');
       closePageSetup();
       const opt = {
-        margin: [5, 5, 5, 5],
+        margin: [PS.margin, PS.margin, PS.margin, PS.margin],
         filename: `បទបញ្ជាផ្ទៃក្នុង_ថ្នាក់ទី_${currentSelectedClass}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2.5, useCORS: true },
-        jsPDF: { unit: 'mm', format: currentPaper.toLowerCase(), orientation: 'portrait' }
+        jsPDF: { unit: 'mm', format: PS.paper.toLowerCase(), orientation: PS.orient }
       };
       html2pdf().from(element).set(opt).save();
     }
@@ -686,7 +904,8 @@
       if (!isAuth) return;
 
       await initClassesDropdown();
-      fitPaper();
+      applyPsStyles();
+      setTimeout(fitPaper, 100);
     });
   </script>
 </body>
