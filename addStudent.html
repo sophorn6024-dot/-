@@ -369,6 +369,8 @@
     .table-input[readonly] { opacity: 0.75; cursor: not-allowed; }
     .input-left { text-align: left; }
 
+    .gender-pill:focus { outline: 2px solid #0284c7; outline-offset: 1px; }
+
     .table-container.is-locked .table-input,
     .table-container.is-locked .gender-pill,
     .table-container.is-locked .date-picker-trigger { cursor: not-allowed; opacity: 0.8; }
@@ -829,7 +831,7 @@
 
   <!-- ══════════════ 🌟 MAIN PAGE CONTENT WRAPPER ══════════════ -->
   <div id="mainPageContent" style="display:none;">
-    
+
     <!-- 🌟 HEADER NAVIGATION -->
     <div class="top-nav">
       <button type="button" class="nav-back" onclick="goBack()" title="ត្រឡប់ក្រោយ" aria-label="ត្រឡប់ក្រោយ">
@@ -1328,8 +1330,9 @@
     let activeRowIndex = null;
     let uploadTargetIndex = null;
 
-    // 🌟 មុខងារចាក់សោ៖ រក្សាទុកក្នុង localStorage ពេល Refresh នៅចាក់សោដដែល
-    let isTableLocked = localStorage.getItem('krou_addstudent_locked') === 'true';
+    // 🌟 មុខងារចាក់សោ៖ រក្សាទុកក្នុង localStorage ដាច់ដោយឡែកតាមគណនីនីមួយៗ (key មាន username)
+    const LOCK_KEY = 'krou_addstudent_locked_' + String(CURRENT_USER?.username || 'guest').trim().toLowerCase();
+    let isTableLocked = localStorage.getItem(LOCK_KEY) === 'true';
 
     let modalPhotoBase64 = null;
     let currentStatusFilter = 'កំពុងសិក្សា';
@@ -1456,7 +1459,7 @@
     }
 
     /* =========================================================
-       🔒 LOCK SYSTEM (រក្សាទុកក្នុង localStorage)
+       🔒 LOCK SYSTEM (រក្សាទុកក្នុង localStorage តាមគណនីនីមួយៗ)
     ========================================================= */
     const SVG_LOCK = '<svg class="ic" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
     const SVG_UNLOCK = '<svg class="ic" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.5-2"/></svg>';
@@ -1497,7 +1500,7 @@
 
     function toggleLockTable() {
       isTableLocked = !isTableLocked;
-      localStorage.setItem('krou_addstudent_locked', isTableLocked ? 'true' : 'false');
+      try { localStorage.setItem(LOCK_KEY, isTableLocked ? 'true' : 'false'); } catch (e) {}
       if (isTableLocked) hideBottomNavBar();
       else if (studentsList.some(s => s.isDraft)) showBottomNavBar();
       applyLockState();
@@ -2565,19 +2568,64 @@
     function showBottomNavBar() { if (!isTableLocked) document.getElementById('bottomNavBar').classList.add('visible'); }
     function hideBottomNavBar() { document.getElementById('bottomNavBar').classList.remove('visible'); }
 
-    function navigateTable(dir) {
-      const el = document.activeElement;
-      if (!el) return;
+    /* =========================================================
+       ⌨️ ARROW KEY NAVIGATION (↑ ↓ ← → និង Enter)
+    ========================================================= */
+    // យកតែប្រអប់ដែលកំពុងបង្ហាញ (រំលងជួរឈរដែលបានលាក់)
+    function getVisibleFields(tr) {
+      return Array.from(tr.querySelectorAll('[data-field]')).filter(el => el.offsetParent !== null);
+    }
+
+    function moveFocus(el, dir) {
+      if (!el || !el.dataset || !el.dataset.field) return;
       const tr = el.closest('tr');
       if (!tr) return;
-      if (dir === 'down') tr.nextElementSibling?.querySelector(`[data-field="${el.dataset.field}"]`)?.focus();
-      if (dir === 'up') tr.previousElementSibling?.querySelector(`[data-field="${el.dataset.field}"]`)?.focus();
-      if (dir === 'right' || dir === 'left') {
-        const inputs = Array.from(tr.querySelectorAll('[data-field]'));
-        const i = inputs.indexOf(el);
-        const next = inputs[dir === 'right' ? i + 1 : i - 1];
-        next?.focus();
+      let target = null;
+
+      if (dir === 'left' || dir === 'right') {
+        const fields = getVisibleFields(tr);
+        const i = fields.indexOf(el);
+        target = fields[dir === 'right' ? i + 1 : i - 1];
+      } else {
+        let row = dir === 'down' ? tr.nextElementSibling : tr.previousElementSibling;
+        while (row && !target) {
+          target = getVisibleFields(row).find(f => f.dataset.field === el.dataset.field);
+          row = dir === 'down' ? row.nextElementSibling : row.previousElementSibling;
+        }
       }
+
+      if (target) {
+        target.focus();
+        if (target.tagName === 'INPUT' && typeof target.select === 'function') target.select();
+        target.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      }
+    }
+
+    // ប្រើសម្រាប់ប៊ូតុងនៅរបារក្រោម (ទូរស័ព្ទ)
+    function navigateTable(dir) { moveFocus(document.activeElement, dir); }
+
+    function installArrowKeyNavigation() {
+      document.getElementById('tableBody').addEventListener('keydown', (e) => {
+        const el = e.target;
+        if (!el.matches || !el.matches('input[data-field], select[data-field]')) return;
+        if (e.isComposing || e.altKey || e.ctrlKey || e.metaKey) return;
+
+        const map = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right', Enter: 'down' };
+        const dir = map[e.key];
+        if (!dir) return;
+
+        // ក្នុង input៖ ←/→ ផ្លាស់ក្រឡាតែពេលកាបនៅដើម/ចុងអក្សរប៉ុណ្ណោះ
+        if (el.tagName === 'INPUT' && (dir === 'left' || dir === 'right')) {
+          const s = el.selectionStart, en = el.selectionEnd;
+          if (s !== null && s !== undefined) {
+            if (dir === 'left' && !(s === 0 && en === 0)) return;
+            if (dir === 'right' && !(s === el.value.length && en === el.value.length)) return;
+          }
+        }
+
+        e.preventDefault();
+        moveFocus(el, dir);
+      });
     }
 
     document.addEventListener('click', () => {
@@ -2612,6 +2660,7 @@
 
       initKhmerCalendarComponent();
       installLockInterceptors();
+      installArrowKeyNavigation();
       updateLockUI();
       document.getElementById('roleBadge').innerText = IS_ADMIN ? 'អ្នកគ្រប់គ្រង (Admin)' : `ថ្នាក់ទី ${currentSelectedClass || 'ទូទៅ'}`;
 
