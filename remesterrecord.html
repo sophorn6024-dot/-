@@ -1185,7 +1185,10 @@
 
       const s1SubRanks = {}, s2SubRanks = {};
       const s1TotList = [], s2TotList = [];
-      const s1AvgList = [], s2AvgList = [], yAvgList = [];
+      const s1SemList = [], s2SemList = [], yAvgList = [];
+      const calcMap = {};
+      const r2 = x => Number(Number(x).toFixed(2));
+      const combine2 = (a, b) => (a > 0 && b > 0) ? (a + b) / 2 : (a > 0 ? a : (b > 0 ? b : 0));
 
       SEMESTER_SUBJECTS.forEach(sub => {
         const s1Items = [], s2Items = [];
@@ -1211,25 +1214,31 @@
           const v2 = s2[sub.key]; if (v2 !== '' && v2 !== undefined && !isNaN(Number(v2))) { tot2 += Number(v2); cnt2++; }
         });
 
-        if (tot1 > 0) {
-          s1TotList.push({ id: st.id, val: tot1 });
-          s1AvgList.push({ id: st.id, val: Number((tot1 / (cnt1 || 1)).toFixed(2)) });
-        }
-        if (tot2 > 0) {
-          s2TotList.push({ id: st.id, val: tot2 });
-          s2AvgList.push({ id: st.id, val: Number((tot2 / (cnt2 || 1)).toFixed(2)) });
-        }
+        if (tot1 > 0) s1TotList.push({ id: st.id, val: tot1 });
+        if (tot2 > 0) s2TotList.push({ id: st.id, val: tot2 });
 
-        const a1 = cnt1 > 0 ? (tot1 / cnt1) : 0;
-        const a2 = cnt2 > 0 ? (tot2 / cnt2) : 0;
-        const yAvg = (a1 > 0 && a2 > 0) ? ((a1 + a2) / 2) : (a1 || a2 || 0);
-        if (yAvg > 0) yAvgList.push({ id: st.id, val: Number(yAvg.toFixed(2)) });
+        /* ── ក្បួនគណនា ──
+           មធ្យមភាគប្រចាំខែ   = មធ្យមភាគតាមខែក្នុងឆមាស / ចំនួនខែ
+           មធ្យមភាគប្រចាំឆមាស = (មធ្យមភាគប្រចាំខែ + មធ្យមភាគប្រឡងឆមាស) / ២
+           មធ្យមភាគប្រចាំឆ្នាំ  = (ប្រចាំឆមាសទី១ + ប្រចាំឆមាសទី២) / ២ */
+        const exam1 = Number(s1.avg) > 0 ? Number(s1.avg) : (cnt1 > 0 ? tot1 / cnt1 : 0);
+        const exam2 = Number(s2.avg) > 0 ? Number(s2.avg) : (cnt2 > 0 ? tot2 / cnt2 : 0);
+        const month1 = Number(bundleData.s1MonthlyAvgMap && bundleData.s1MonthlyAvgMap[st.id]) || 0;
+        const month2 = Number(bundleData.s2MonthlyAvgMap && bundleData.s2MonthlyAvgMap[st.id]) || 0;
+        const sem1 = r2(combine2(month1, exam1));
+        const sem2 = r2(combine2(month2, exam2));
+        const year = r2(combine2(sem1, sem2));
+        calcMap[st.id] = { exam1: r2(exam1), exam2: r2(exam2), month1, month2, sem1, sem2, year };
+
+        if (sem1 > 0) s1SemList.push({ id: st.id, val: sem1 });
+        if (sem2 > 0) s2SemList.push({ id: st.id, val: sem2 });
+        if (year > 0) yAvgList.push({ id: st.id, val: year });
       });
 
       const s1TotRanks = computeCompetitionRanks(s1TotList);
       const s2TotRanks = computeCompetitionRanks(s2TotList);
-      const s1AvgRanks = computeCompetitionRanks(s1AvgList);
-      const s2AvgRanks = computeCompetitionRanks(s2AvgList);
+      const s1AvgRanks = computeCompetitionRanks(s1SemList);
+      const s2AvgRanks = computeCompetitionRanks(s2SemList);
       const yAvgRanks  = computeCompetitionRanks(yAvgList);
 
       targetStudents.forEach(student => {
@@ -1241,18 +1250,22 @@
         const yRankObj  = (bundleData.yearRankMap && bundleData.yearRankMap[student.id]) ? bundleData.yearRankMap[student.id] : {};
         const att       = (bundleData.attMap && bundleData.attMap[student.id]) ? bundleData.attMap[student.id] : { sem1_p:0, sem1_a:0, sem2_p:0, sem2_a:0 };
 
-        const s1AvgVal = Number(s1Score.avg || s1RankObj.avg || 0);
-        const s2AvgVal = Number(s2Score.avg || s2RankObj.avg || 0);
+        const cm = calcMap[student.id] || { exam1: 0, exam2: 0, month1: 0, month2: 0, sem1: 0, sem2: 0, year: 0 };
 
-        const s1RankNum = s1RankObj.rank || s1AvgRanks[student.id] || '-';
-        const s2RankNum = s2RankObj.rank || s2AvgRanks[student.id] || '-';
-        const yRankNum  = yRankObj.rank || yAvgRanks[student.id] || '-';
+        const s1AvgVal = cm.exam1;   // មធ្យមភាគប្រឡងឆមាសទី១
+        const s2AvgVal = cm.exam2;   // មធ្យមភាគប្រឡងឆមាសទី២
+        const s1SemVal = cm.sem1;    // មធ្យមភាគប្រចាំឆមាសទី១
+        const s2SemVal = cm.sem2;    // មធ្យមភាគប្រចាំឆមាសទី២
 
-        const yAvgVal = Number(yRankObj.avg || ((s1AvgVal > 0 && s2AvgVal > 0) ? ((s1AvgVal + s2AvgVal) / 2) : (s1AvgVal || s2AvgVal || 0))).toFixed(2);
-        const yGradeVal = yRankObj.grade || getGradeFromAverage(yAvgVal);
+        const s1RankNum = s1AvgRanks[student.id] || '-';
+        const s2RankNum = s2AvgRanks[student.id] || '-';
+        const yRankNum  = yAvgRanks[student.id] || '-';
 
-        const s1MonthlyVal = (bundleData.s1MonthlyAvgMap && bundleData.s1MonthlyAvgMap[student.id]) ? bundleData.s1MonthlyAvgMap[student.id] : (s1AvgVal > 0 ? s1AvgVal.toFixed(2) : '');
-        const s2MonthlyVal = (bundleData.s2MonthlyAvgMap && bundleData.s2MonthlyAvgMap[student.id]) ? bundleData.s2MonthlyAvgMap[student.id] : (s2AvgVal > 0 ? s2AvgVal.toFixed(2) : '');
+        const yAvgVal = cm.year.toFixed(2);
+        const yGradeVal = getGradeFromAverage(cm.year);
+
+        const s1MonthlyVal = cm.month1 > 0 ? cm.month1.toFixed(2) : '';
+        const s2MonthlyVal = cm.month2 > 0 ? cm.month2.toFixed(2) : '';
 
         // ================= SHEET 1: ក្របក្រៅ =================
         if (sheetFilter === 'ALL' || sheetFilter === '1') {
@@ -1493,9 +1506,9 @@
                     </tr>
                     <tr class="f-bold">
                       <td class="text-left">មធ្យមភាគប្រចាំឆមាស</td>
-                      <td>${s1AvgVal > 0 ? s1AvgVal.toFixed(2) : '0'}</td>
+                      <td>${s1SemVal > 0 ? s1SemVal.toFixed(2) : '0'}</td>
                       <td class="red-bold">${s1RankNum !== '-' ? toKhmerNum(s1RankNum) : '-'}</td>
-                      <td>${s2AvgVal > 0 ? s2AvgVal.toFixed(2) : '0'}</td>
+                      <td>${s2SemVal > 0 ? s2SemVal.toFixed(2) : '0'}</td>
                       <td class="red-bold">${s2RankNum !== '-' ? toKhmerNum(s2RankNum) : '-'}</td>
                     </tr>
                     <tr class="f-bold" style="background: #f1f5f9; font-size: 13.5px;">
@@ -1552,8 +1565,8 @@
                   </thead>
                   <tbody>
                     <tr style="font-size: 13.5px; text-align: left; vertical-align: top; padding: 4px;">
-                      <td>${s1AvgVal >= 5 ? 'លទ្ធផលសិក្សាមធ្យម' : ''}</td>
-                      <td>${s2AvgVal >= 5 ? 'លទ្ធផលសិក្សាមធ្យម គួរខិតខំរៀនបន្ថែម' : ''}</td>
+                      <td>${s1SemVal >= 5 ? 'លទ្ធផលសិក្សាមធ្យម' : ''}</td>
+                      <td>${s2SemVal >= 5 ? 'លទ្ធផលសិក្សាមធ្យម គួរខិតខំរៀនបន្ថែម' : ''}</td>
                       <td>និទ្ទេសប្រចាំឆ្នាំ ${yGradeVal} លទ្ធផលសិក្សាមធ្យម គួរខិតខំរៀនបន្ថែមទៀត។ សមនឹងឡើងថ្នាក់បាន។</td>
                     </tr>
                   </tbody>
