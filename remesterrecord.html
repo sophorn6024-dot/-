@@ -451,8 +451,14 @@
     }
 
     /* 📝 សេចក្តីណែនាំ (សន្លឹកទី២) — គម្លាតបន្ទាត់ធំជាងមុនឱ្យពេញក្រដាស */
-    .guide-box p { margin-bottom: 8px !important; }
-    .guide-box .calc-block p { margin-bottom: 3px !important; }
+    .guide-box { font-size: 14px; line-height: 1.75; text-align: justify; }
+    .guide-box p { margin-bottom: 7px !important; font-weight: 400; }
+    .guide-box .note-line { margin: 0 0 3px 14px !important; }
+    .guide-box .calc-row { display: flex; align-items: center; gap: 8px; margin: 3px 0 3px 14px; text-align: left; }
+    .guide-box .calc-label { font-weight: 700; white-space: nowrap; }
+    .guide-box .frac { display: inline-flex; flex-direction: column; align-items: center; text-align: center; line-height: 1.5; font-size: 13.5px; }
+    .guide-box .frac .num { border-bottom: 1.2px solid var(--navy); padding: 0 4px; }
+    .guide-box .frac .den { padding: 0 4px; }
 
     .header-text { text-align: center; color: var(--navy); }
     .header-text h2 { font-size: 17.5px; margin-bottom: 2px; line-height: 1.3; }
@@ -544,7 +550,11 @@
       <!-- 🌟 ថ្នាក់៖ បង្ហាញតែសម្រាប់ ADMIN ប៉ុណ្ណោះ (គ្រូមិនបាច់បង្ហាញឡើយ) -->
       <div class="panel-pill-box" id="adminClassBox" style="display:none;">
         <span class="toolbar-label"><i class="fa-solid fa-graduation-cap" style="color:#0284c7;"></i> ថ្នាក់៖</span>
-        <select id="classSelect" class="form-control" onchange="onClassSelectChange()">
+        <button type="button" class="custom-dd-btn" id="classBtn" onclick="toggleClassPicker(event)" style="min-width: 120px;">
+          <span class="custom-dd-label" id="classLabel">កំពុងទាញយក...</span>
+          <i class="fa-solid fa-chevron-down custom-dd-chev" id="classChev"></i>
+        </button>
+        <select id="classSelect" style="display:none;">
           <option value="">កំពុងទាញយក...</option>
         </select>
       </div>
@@ -602,6 +612,11 @@
       <input type="text" id="spInput" placeholder="ស្វែងរកសិស្ស..." autocomplete="off" oninput="renderSpList(this.value)">
     </div>
     <div class="custom-dd-list" id="spList"></div>
+  </div>
+
+  <!-- 0. POPUP ថ្នាក់ -->
+  <div class="custom-dd-popup" id="classPopup" style="width: 170px;">
+    <div class="custom-dd-list" id="classList"></div>
   </div>
 
   <!-- 2. POPUP សន្លឹក -->
@@ -799,9 +814,11 @@
 
         select.innerHTML = classes.map(c => `<option value="${c}">ថ្នាក់ទី ${c}</option>`).join('');
         if (cleanCls && classes.includes(cleanCls)) select.value = cleanCls;
+        updateClassLabel();
         loadSemesterData();
       } catch (err) {
         select.innerHTML = '<option value="">កំហុសទាញយកថ្នាក់</option>';
+        updateClassLabel();
       }
     }
 
@@ -817,10 +834,13 @@
       document.getElementById('spBtn')?.classList.remove('open');
       document.getElementById('sheetPopup')?.classList.remove('show');
       document.getElementById('sheetBtn')?.classList.remove('open');
+      document.getElementById('classPopup')?.classList.remove('show');
+      document.getElementById('classBtn')?.classList.remove('open');
     }
 
     document.addEventListener('click', (e) => {
-      if (!e.target.closest('#spPopup') && !e.target.closest('#spBtn') &&
+      if (!e.target.closest('#classPopup') && !e.target.closest('#classBtn') &&
+          !e.target.closest('#spPopup') && !e.target.closest('#spBtn') &&
           !e.target.closest('#sheetPopup') && !e.target.closest('#sheetBtn')) {
         closeAllPopups();
       }
@@ -828,6 +848,47 @@
 
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAllPopups(); });
     document.getElementById('controlToolbar').addEventListener('scroll', closeAllPopups);
+
+    /* ── 0. POPUP ថ្នាក់ (CLASS PICKER) ── */
+    function updateClassLabel() {
+      const sel = document.getElementById('classSelect');
+      const cur = sel.options[sel.selectedIndex];
+      document.getElementById('classLabel').textContent = cur ? cur.textContent : 'ជ្រើសរើសថ្នាក់';
+    }
+
+    function toggleClassPicker(e) {
+      if (e) e.stopPropagation();
+      const pop = document.getElementById('classPopup');
+      const btn = document.getElementById('classBtn');
+      if (pop.classList.contains('show')) { closeAllPopups(); return; }
+
+      closeAllPopups();
+      const sel = document.getElementById('classSelect');
+      const list = document.getElementById('classList');
+      list.innerHTML = '';
+      Array.from(sel.options).forEach(opt => {
+        if (!opt.value) return;
+        const item = document.createElement('div');
+        item.className = 'custom-dd-item' + (opt.value === sel.value ? ' active' : '');
+        item.innerHTML = `<span>${opt.textContent}</span><i class="fa-solid fa-check"></i>`;
+        item.onclick = (ev) => {
+          ev.stopPropagation();
+          sel.value = opt.value;
+          updateClassLabel();
+          closeAllPopups();
+          loadSemesterData();
+        };
+        list.appendChild(item);
+      });
+
+      const r = btn.getBoundingClientRect();
+      const w = 170;
+      pop.style.width = w + 'px';
+      pop.style.left = Math.max(8, Math.min(r.left, window.innerWidth - w - 8)) + 'px';
+      pop.style.top = (r.bottom + 6) + 'px';
+      pop.classList.add('show');
+      btn.classList.add('open');
+    }
 
     /* ── A. POPUP សន្លឹក (SHEET PICKER) ── */
     function toggleSheetPicker(e) {
@@ -1238,32 +1299,37 @@
           const sheet2 = document.createElement('div');
           sheet2.className = 'sheet-page';
           sheet2.innerHTML = `
-            <div class="page-box guide-box" style="font-size: 13px; line-height: 1.8;">
+            <div class="page-box guide-box">
               <div style="display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
                 <div>
-                  <div style="text-align: center; margin-bottom: 12px;">
-                    <h2 class="f-moul" style="font-size: 16.5px;">សេចក្តីណែនាំ</h2>
+                  <div style="text-align: center; margin-bottom: 10px;">
+                    <h2 class="f-moul" style="font-size: 21px; text-decoration: underline; text-underline-offset: 6px;">សេចក្តីណែនាំ</h2>
                   </div>
-                  <p style="margin-bottom: 7px;">នាយកសាលាត្រូវចេញ និងគ្រប់គ្រងសៀវភៅសិក្ខាគារិក ហើយត្រូវអនុវត្តតាមចំណុចខាងក្រោម ៖</p>
-                  <p style="margin-bottom: 6px;">១. ចាប់ពីថ្នាក់ទី៣ ឡើងទៅ សិស្សត្រូវមានសៀវភៅសិក្ខាគារិកដែលចេញឱ្យដោយនាយកសាលា ។</p>
-                  <p style="margin-bottom: 6px;">២. ត្រូវចុះនាមត្រកូល និងនាមខ្លួន ភេទ ថ្ងៃ ខែ ឆ្នាំកំណើត ទីកន្លែងកំណើត ឈ្មោះ និងមុខរបរឪពុក/ម្តាយ ឱ្យបានច្បាស់លាស់ ។</p>
-                  <p style="margin-bottom: 6px;">៣. នៅបញ្ចប់ឆមាសនីមួយៗ និងបញ្ចប់ឆ្នាំសិក្សា គ្រូទទួលបន្ទុកថ្នាក់ត្រូវចុះ <span class="red-text">ចំណាត់ថ្នាក់</span> និងមធ្យមភាគឱ្យបានត្រឹមត្រូវ ។ ចំណែកនាយកសាលាក៏ត្រូវចុះមូលវិចារ ការសរសើរ ឬកំណែទម្រង់ នៅចុងឆ្នាំសិក្សានីមួយៗដែរ ។</p>
-                  <p style="margin-bottom: 6px;">៤. ចំពោះសិស្សផ្ទេរការសិក្សា នាយកសាលាត្រូវបូកសរុបលទ្ធផលនៃការសិក្សារបស់សិស្ស ឱ្យបានសព្វគ្រប់ រួចចុះហត្ថលេខាដោយដាក់ឈ្មោះ ។</p>
-                  <p style="margin-bottom: 6px;">៥. ហាមគូសលុប ឬសរសេរបន្ថែម ។ ក្នុងករណីមានកែកំហុស ត្រូវចុះហត្ថលេខា និងបញ្ជាក់បន្ថែមពីនាយកសាលា ។</p>
-                  <p style="font-weight: bold; margin-top: 7px; margin-bottom: 3px;">៦. របៀបគណនាមធ្យមភាគប្រចាំឆមាស និងដំណាច់ឆ្នាំ ៖</p>
-                  <div class="calc-block" style="margin-left: 15px; font-size: 12.5px; margin-bottom: 8px; line-height: 1.8;">
-                    <p><strong>ក. ឆមាសទី១ ៖</strong> (មធ្យមភាគពិន្ទុខែ + មធ្យមភាគពិន្ទុប្រឡងឆមាសទី១) / ២</p>
-                    <p><strong>ខ. ឆមាសទី២ ៖</strong> (មធ្យមភាគពិន្ទុខែ + មធ្យមភាគពិន្ទុប្រឡងឆមាសទី២) / ២</p>
-                    <p><strong>គ. ដំណាច់ឆ្នាំសិក្សា ៖</strong> (មធ្យមភាគប្រចាំឆមាសទី១ + មធ្យមភាគប្រចាំឆមាសទី២) / ២</p>
+                  <p>នាយកសាលាត្រូវចេញ និងគ្រប់គ្រងសៀវភៅសិក្ខាគារិក ហើយត្រូវអនុវត្តតាមចំណុចខាងក្រោម ៖</p>
+                  <p>១. ចាប់ពីថ្នាក់ទី៣ ឡើងទៅ សិស្សត្រូវមានសៀវភៅសិក្ខាគារិកដែលចេញឱ្យដោយនាយកសាលា ។</p>
+                  <p>២. ត្រូវចុះនាមត្រកូល និងនាមខ្លួន ភេទ ថ្ងៃ ខែ ឆ្នាំកំណើត ទីកន្លែងកំណើត ឈ្មោះ និងមុខរបរឪពុក/ម្តាយ ឱ្យបានច្បាស់លាស់ ។</p>
+                  <p>៣. នៅបញ្ចប់ឆមាសនីមួយៗ និងបញ្ចប់ឆ្នាំសិក្សា ត្រូវទទួលបន្ទុកកត់ត្រាពិន្ទុ ចំណាត់ថ្នាក់ និងមធ្យមភាគឱ្យបានត្រឹមត្រូវ ។ ចំណែកនាយកសាលាក៏ត្រូវចុះមូលវិចារ ការសរសើរ ឬកំណែលម្អ នៅចុងឆ្នាំសិក្សានីមួយៗដែរ ។</p>
+                  <p>៤. ចំពោះសិស្សផ្ទេរការសិក្សា នាយកសាលាត្រូវបូកសរុបលទ្ធផលនៃការសិក្សារបស់សិស្ស ឱ្យបានសព្វគ្រប់ រួចចុះហត្ថលេខាដោយដាក់ឈ្មោះ ។</p>
+                  <p>៥. ហាមគូសលុប ឬសរសេរបន្ថែម ។ ក្នុងករណីមានកែតម្រូវ ត្រូវចុះហត្ថលេខា និងបញ្ជាក់បន្ថែមពីនាយកសាលា ។</p>
+                  <p>៦. របៀបគណនាមធ្យមភាគប្រចាំឆមាស និងដំណាច់ឆ្នាំ ៖</p>
+                  <div class="calc-row">
+                    <span class="calc-label">ក. ឆមាសទី១ ៖</span>
+                    <span class="frac"><span class="num">មធ្យមភាគពិន្ទុខែ (១ ខែ) + មធ្យមភាគពិន្ទុប្រឡងឆមាសទី១</span><span class="den">២</span></span>
                   </div>
-                  <p style="margin-bottom: 6px;">៧. មធ្យមភាគប្រចាំឆមាសទី១ ទី២ និងដំណាច់ឆ្នាំ ដែលលោកគ្រូ/អ្នកគ្រូ រកឃើញ ហើយត្រូវស្រង់យកទៅដាក់ត្រង់លទ្ធផលនៃការប្រឡងឆមាស ត្រង់ឆមាស និងដំណាច់ឆ្នាំ ។</p>
-                  <div style="margin-top: 8px;">
-                    <p><strong>កំណត់សម្គាល់ ៖</strong></p>
-                    <p>- ក្នុង ១ ឆមាស មាន ៤ ខែ ឬ ៦ ខែ ។</p>
-                    <p>- នាយកសាលាត្រូវចុះហត្ថលេខាលើរូបថតសិស្ស ។</p>
+                  <div class="calc-row">
+                    <span class="calc-label">ខ. ឆមាសទី២ ៖</span>
+                    <span class="frac"><span class="num">មធ្យមភាគពិន្ទុខែ (១ ខែ) + មធ្យមភាគពិន្ទុប្រឡងឆមាសទី២</span><span class="den">២</span></span>
                   </div>
+                  <div class="calc-row">
+                    <span class="calc-label">គ. ដំណាច់ឆ្នាំសិក្សា ៖</span>
+                    <span class="frac"><span class="num">មធ្យមភាគប្រចាំឆមាសទី១ + មធ្យមភាគប្រចាំឆមាសទី២</span><span class="den">២</span></span>
+                  </div>
+                  <p style="margin-top: 7px;">៧. មធ្យមភាគប្រចាំឆមាសទី១ ទី២ និងដំណាច់ឆ្នាំ ដែលលោកគ្រូ/អ្នកគ្រូ រកឃើញ ហើយត្រូវស្រង់យកទៅដាក់ត្រង់លទ្ធផលនៃការប្រឡងឆមាស ត្រង់ឆមាស និងដំណាច់ឆ្នាំ ។</p>
+                  <p>កំណត់សម្គាល់ ៖</p>
+                  <p class="note-line">- ក្នុង ១ ឆមាស មាន ៤ ខែ ឬ ៦ ខែ ។</p>
+                  <p class="note-line">- នាយកសាលាត្រូវចុះហត្ថលេខាលើរូបថតសិស្ស ។</p>
                 </div>
-                <div style="text-align: center; letter-spacing: 6px; color: var(--red-star); margin-bottom: 4px;">✻ ✻ ✻ ✻ ✻</div>
+                <div style="text-align: center; font-size: 17px; letter-spacing: 12px; color: var(--navy); margin-bottom: 4px;">✳ ✳ ✳ ✳ ✳</div>
               </div>
             </div>
 
@@ -1377,9 +1443,9 @@
                     </tr>
                     <tr>
                       <th style="width: 15%;">ពិន្ទុ</th>
-                      <th style="width: 15%;"><span class="red-text">ចំណាត់ថ្នាក់</span></th>
+                      <th style="width: 15%;">ចំណាត់ថ្នាក់</th>
                       <th style="width: 15%;">ពិន្ទុ</th>
-                      <th style="width: 15%;"><span class="red-text">ចំណាត់ថ្នាក់</span></th>
+                      <th style="width: 15%;">ចំណាត់ថ្នាក់</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1387,16 +1453,14 @@
                     <tr class="f-bold">
                       <td class="text-left">សរុបពិន្ទុ</td>
                       <td>${s1Total > 0 ? s1Total.toFixed(2) : ''}</td>
-                      <td class="red-bold">${s1TotRank !== '' ? toKhmerNum(s1TotRank) : ''}</td>
+                      <td rowspan="2" class="red-bold">${s1TotRank !== '' ? toKhmerNum(s1TotRank) : ''}</td>
                       <td>${s2Total > 0 ? s2Total.toFixed(2) : ''}</td>
-                      <td class="red-bold">${s2TotRank !== '' ? toKhmerNum(s2TotRank) : ''}</td>
+                      <td rowspan="2" class="red-bold">${s2TotRank !== '' ? toKhmerNum(s2TotRank) : ''}</td>
                     </tr>
                     <tr class="f-bold">
                       <td class="text-left">មធ្យមភាគ</td>
                       <td>${s1AvgVal > 0 ? s1AvgVal.toFixed(2) : ''}</td>
-                      <td></td>
                       <td>${s2AvgVal > 0 ? s2AvgVal.toFixed(2) : ''}</td>
-                      <td></td>
                     </tr>
                     <tr class="f-bold">
                       <td class="text-left">មធ្យមភាគប្រចាំខែ</td>
@@ -1414,7 +1478,7 @@
                     </tr>
                     <tr class="f-bold" style="background: #f1f5f9; font-size: 13.5px;">
                       <td colspan="5" style="padding: 4.5px;">
-                        លទ្ធផលដំណាច់ឆ្នាំ ( មធ្យមភាគ <strong class="red-bold">${yAvgVal > 0 ? yAvgVal : '0'}</strong> - <span class="red-text">ចំណាត់ថ្នាក់</span> <strong class="red-bold">${yRankNum !== '-' ? toKhmerNum(yRankNum) : '-'}</strong> - និទ្ទេស <strong class="red-bold">${yGradeVal}</strong> )
+                        លទ្ធផលដំណាច់ឆ្នាំ ( មធ្យមភាគ <strong class="red-bold">${yAvgVal > 0 ? yAvgVal : '0'}</strong> - ចំណាត់ថ្នាក់ <strong class="red-bold">${yRankNum !== '-' ? toKhmerNum(yRankNum) : '-'}</strong> - និទ្ទេស <strong class="red-bold">${yGradeVal}</strong> )
                       </td>
                     </tr>
                   </tbody>
