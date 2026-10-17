@@ -470,16 +470,22 @@
     .dotted-space { flex: 1; border-bottom: 1.5px dotted var(--navy); margin-left: 6px; padding-left: 6px; min-height: 23px; font-weight: bold; font-size: 15px; }
 
     .cover-info-block {
-      margin: 30px 0 20px 0;
+      margin: 0 0 14px 0;
       display: flex;
       flex-direction: column;
-      gap: 22px;
+      gap: 26px;
     }
-    .cover-dotted-row { display: flex; align-items: flex-end; width: 100%; font-size: 16px; }
-    .cover-dotted-label { white-space: nowrap; font-weight: bold; font-size: 16px; }
+    .cover-dotted-row { display: flex; align-items: flex-end; width: 100%; font-size: 17px; }
+    .cover-dotted-label { white-space: nowrap; font-weight: 400; font-size: 17px; }
     .cover-dotted-space {
-      flex: 1; border-bottom: 1.6px dotted var(--navy); margin-left: 6px; padding-left: 6px; min-height: 26px; font-weight: bold; font-size: 16px;
+      flex: 1; border-bottom: 1.4px dotted var(--navy); margin-left: 8px; padding: 0 6px; min-height: 28px;
+      font-weight: 400; font-size: 17px; text-align: center;
     }
+    .cover-corner { position: absolute; font-size: 18px; line-height: 1; color: var(--red-star); }
+    .cover-corner.tl { top: 8px; left: 10px; }
+    .cover-corner.tr { top: 8px; right: 10px; }
+    .cover-corner.bl { bottom: 8px; left: 10px; }
+    .cover-corner.br { bottom: 8px; right: 10px; }
 
     /* ── Table Styling ── */
     .custom-table {
@@ -504,6 +510,7 @@
     .custom-table td.text-left { text-align: left; padding-left: 7px; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
     .red-bold { color: #dc2626 !important; font-weight: bold; font-size: 13.5px; }
+    .custom-table td.red-bold, .custom-table th.red-bold, .custom-table .red-bold { color: #dc2626 !important; }
     /* ពាក្យ "ចំណាត់ថ្នាក់" ពណ៌ក្រហម (ទុកទំហំអក្សរតាមតួដើម) */
     .red-text { color: #dc2626 !important; font-weight: bold; }
 
@@ -1243,51 +1250,55 @@
           sheet1.innerHTML = `
             <div></div>
             <div class="page-box">
-              <div style="display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+              <span class="cover-corner tl">✳</span>
+              <span class="cover-corner tr">✳</span>
+              <span class="cover-corner bl">✳</span>
+              <span class="cover-corner br">✳</span>
+
+              <div style="display: flex; flex-direction: column; justify-content: space-between; height: 100%; padding: 4px 0 6px 0;">
                 <div>
-                  <div class="header-text" style="margin-top: 5px;">
-                    <h2 class="f-moul">ព្រះរាជាណាចក្រកម្ពុជា</h2>
-                    <h3 class="f-moul">ជាតិ សាសនា ព្រះមហាក្សត្រ</h3>
-                    <div class="header-icons">✻ ✻ ✻ 📖 ✻ ✻ ✻</div>
-                    <h2 class="f-moul" style="font-size: 17px; margin-top: 15px;">ក្រសួងអប់រំ យុវជន និងកីឡា</h2>
-                  </div>
-
-                  <div style="text-align: center; margin: 30px 0 20px 0;">
-                    <h1 class="f-moul" style="font-size: 32px; color: var(--navy); line-height: 1.35;">សៀវភៅសិក្ខាគារិក</h1>
-                    <h3 class="f-moul" style="font-size: 17px; margin-top: 10px;">សាលាបឋមសិក្សាចំណេះទូទៅ</h3>
-                  </div>
-
-                  <div class="cover-info-block">
-                    <div class="cover-dotted-row">
-                      <span class="cover-dotted-label">សាលាបឋមសិក្សា ៖</span>
-                      <span class="cover-dotted-space">${bundleData.schoolName || 'កំពង់ល្ពៅ'}</span>
-                    </div>
-                    <div class="cover-dotted-row">
-                      <span class="cover-dotted-label">ឃុំ/សង្កាត់</span>
-                      <span class="cover-dotted-space">កំពង់ល្ពៅ</span>
-                      <span class="cover-dotted-label" style="margin-left: 12px;">ស្រុក/ខណ្ឌ</span>
-                      <span class="cover-dotted-space">សំឡូត</span>
-                      <span class="cover-dotted-label" style="margin-left: 12px;">ខេត្ត/ក្រុង</span>
-                      <span class="cover-dotted-space">បាត់ដំបង</span>
-                    </div>
-                    <div class="cover-dotted-row">
-                      <span class="cover-dotted-label">នាមត្រកូល និងនាមខ្លួន ៖</span>
-                      <span class="cover-dotted-space">${student.name}</span>
-                    </div>
-                    <div class="cover-dotted-row">
-                      <span class="cover-dotted-label">ថ្ងៃ ខែ ឆ្នាំកំណើត ៖</span>
-                      <span class="cover-dotted-space">${student.dob || ''}</span>
-                    </div>
-                    <div class="cover-dotted-row">
-                      <span class="cover-dotted-label">ទីកន្លែងកំណើត ៖</span>
-                      <span class="cover-dotted-space">${student.pob || ''}</span>
-                    </div>
+                  <div class="header-text">
+                    <h2 class="f-moul" style="font-size: 18px; margin-bottom: 0;">ព្រះរាជាណាចក្រកម្ពុជា</h2>
+                    <h3 class="f-moul" style="font-size: 18px;">ជាតិ សាសនា ព្រះមហាក្សត្រ</h3>
+                    <div class="header-icons" style="margin: 8px 0 12px 0;">✳ ✳ ✳ 📖 ✳ ✳ ✳</div>
+                    <h2 class="f-moul" style="font-size: 19px; margin-top: 8px;">ក្រសួងអប់រំ យុវជន និងកីឡា</h2>
                   </div>
                 </div>
 
-                <div style="text-align: center; font-size: 17px; letter-spacing: 10px; color: var(--red-star); margin-bottom: 12px;">
-                  ✻ ✻ ✻ ✻ ✻
+                <div style="text-align: center;">
+                  <h1 class="f-moul" style="font-size: 38px; color: var(--navy); line-height: 1.35;">សៀវភៅសិក្ខាគារិក</h1>
+                  <h3 class="f-moul" style="font-size: 20px; margin-top: 22px;">សាលាបឋមសិក្សាចំណេះទូទៅ</h3>
+                  <div style="width: 62mm; height: 3px; background: var(--navy); margin: 8px auto 0 auto;"></div>
                 </div>
+
+                <div class="cover-info-block">
+                  <div class="cover-dotted-row">
+                    <span class="cover-dotted-label">សាលាបឋមសិក្សា ៖</span>
+                    <span class="cover-dotted-space">សាលាបឋមសិក្សា${bundleData.schoolName || 'កំពង់ល្ពៅ'}</span>
+                  </div>
+                  <div class="cover-dotted-row">
+                    <span class="cover-dotted-label">ឃុំ/សង្កាត់</span>
+                    <span class="cover-dotted-space">កំពង់ល្ពៅ</span>
+                    <span class="cover-dotted-label" style="margin-left: 12px;">ស្រុក/ខណ្ឌ</span>
+                    <span class="cover-dotted-space">សំឡូត</span>
+                    <span class="cover-dotted-label" style="margin-left: 12px;">ខេត្ត/ក្រុង</span>
+                    <span class="cover-dotted-space">បាត់ដំបង</span>
+                  </div>
+                  <div class="cover-dotted-row">
+                    <span class="cover-dotted-label">នាមត្រកូល និងនាមខ្លួន ៖</span>
+                    <span class="cover-dotted-space">${student.name}</span>
+                  </div>
+                  <div class="cover-dotted-row">
+                    <span class="cover-dotted-label">ថ្ងៃ ខែ ឆ្នាំកំណើត ៖</span>
+                    <span class="cover-dotted-space">${student.dob || ''}</span>
+                  </div>
+                  <div class="cover-dotted-row">
+                    <span class="cover-dotted-label">ទីកន្លែងកំណើត ៖</span>
+                    <span class="cover-dotted-space">${student.pob || ''}</span>
+                  </div>
+                </div>
+
+                <div style="text-align: center; font-size: 19px; letter-spacing: 14px; color: var(--navy);">✳ ✳ ✳ ✳ ✳</div>
               </div>
             </div>
           `;
