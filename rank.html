@@ -156,7 +156,7 @@
        📄 A4 PRINT PAGE CONTAINER
     ========================================================= */
     #printPage {
-      position: relative; transition: zoom 0.2s ease; padding: 20px 30px 40px; max-width: 1050px;
+      position: relative; transition: zoom 0.2s ease; padding: 20px 30px 200px; max-width: 1050px;
       margin: 20px auto 0; background: #ffffff !important; color: #000000 !important;
       box-shadow: 0 10px 35px rgba(0, 0, 0, 0.2); border-radius: 4px;
     }
@@ -201,6 +201,39 @@
 
     .inline-input { font-family: inherit; }
 
+    /* 🌟 DROPDOWN ទាំងអស់ប្រើ Battambang */
+    select, option, .form-control, .font-dd-btn, .font-dd-popup, .font-dd-popup *,
+    .custom-dd-btn, .custom-dd-popup, .custom-dd-popup * {
+      font-family: 'Khmer OS Battambang', 'Battambang', sans-serif !important;
+      font-weight: 700 !important;
+    }
+
+    .custom-dd-btn {
+      display: inline-flex; align-items: center; justify-content: space-between; gap: 8px;
+      min-width: 130px; height: 32px; padding: 4px 10px; font-size: 13px;
+      color: var(--text-main); background: var(--input-bg); border: 1.5px solid var(--input-border);
+      border-radius: 8px; cursor: pointer; outline: none; transition: all 0.2s ease;
+    }
+    .custom-dd-btn:hover, .custom-dd-btn.open { border-color: var(--input-focus); box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15); }
+    .custom-dd-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .custom-dd-chev { font-size: 10px; color: #0284c7; transition: transform 0.2s ease; flex-shrink: 0; }
+    .custom-dd-btn.open .custom-dd-chev { transform: rotate(180deg); }
+    .custom-dd-popup {
+      display: none; position: fixed; z-index: 99999; background: #ffffff; color: #0f172a;
+      border: 1px solid #e2e8f0; border-radius: 16px; box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35); padding: 6px;
+    }
+    .custom-dd-popup.show { display: block; }
+    .custom-dd-list { max-height: 320px; overflow-y: auto; scrollbar-width: thin; }
+    .custom-dd-item {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 12px;
+      border-radius: 10px; cursor: pointer; font-size: 13.5px; color: #1e293b; border-bottom: 1px solid #f1f5f9;
+    }
+    .custom-dd-item:last-child { border-bottom: none; }
+    .custom-dd-item:hover { background: #f8fafc; color: #0284c7; }
+    .custom-dd-item.active { background: #e0f2fe; color: #0284c7; }
+    .custom-dd-item .fa-check { display: none; font-size: 11px; }
+    .custom-dd-item.active .fa-check { display: inline; }
+
     /* 🔤 FONT SWITCHER */
     .font-dd-btn {
       display: inline-flex; align-items: center; justify-content: space-between; gap: 8px;
@@ -226,7 +259,7 @@
 
     .teacher-name-display {
       font-family: 'Moul', cursive; font-size: 12px; color: #000; margin-top: 6px; min-height: 20px;
-      text-align: center; display: inline-block; cursor: grab; user-select: none; padding: 4px 10px;
+      text-align: center; display: inline-block; cursor: grab; user-select: none; padding: 10px 22px; min-width: 150px; touch-action: none;
       border: 1px dashed transparent; border-radius: 4px; white-space: nowrap !important; z-index: 50;
     }
     .teacher-name-display:hover { border-color: #93c5fd; background: rgba(59,130,246,0.06); }
@@ -272,7 +305,7 @@
       }
 
       .inline-input { border: none !important; background: transparent !important; }
-      .teacher-name-display { border: none !important; background: transparent !important; }
+      .teacher-name-display { border: none !important; background: transparent !important; padding: 4px 10px !important; min-width: 0 !important; }
     }
   </style>
 </head>
@@ -332,6 +365,7 @@
         <div class="layout-switcher">
           <button id="layout1Btn" class="layout-btn active" onclick="setRankLayout(1)">ទម្រង់ទី ១</button>
           <button id="layout2Btn" class="layout-btn" onclick="setRankLayout(2)">ទម្រង់ទី ២ (ចែកជា២)</button>
+          <button id="layout3Btn" class="layout-btn" onclick="setRankLayout(3)">ទម្រង់ទី ៣ (មានអវត្តមាន)</button>
         </div>
 
         <button id="resetTeacherPosBtn" class="btn btn-secondary" onclick="resetTeacherNamePosition()">
@@ -381,6 +415,11 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- POPUP ទូទៅ សម្រាប់ dropdown (ថ្នាក់ / ខែ / ឆមាស) -->
+  <div class="custom-dd-popup no-print" id="selPopup">
+    <div class="custom-dd-list" id="selList"></div>
   </div>
 
   <!-- 🔤 POPUP ជ្រើសរើសពុម្ពអក្សរ -->
@@ -442,6 +481,33 @@
           <tbody id="rankBodyRight"><tr><td colspan="9" style="padding:15px; color:#64748b;">កំពុងទាញយកទិន្នន័យ...</td></tr></tbody>
         </table>
       </div>
+    </div>
+
+    <!-- Layout 3 : មានអវត្តមាន -->
+    <div id="rankLayout3" class="rank-layout">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th rowspan="2" style="width:5%;">ល.រ</th>
+            <th rowspan="2" style="width:8%;">អត្តលេខ</th>
+            <th rowspan="2" style="width:23%;">គោត្តនាម និងនាម</th>
+            <th rowspan="2" style="width:6%;">ភេទ</th>
+            <th rowspan="2" id="thTotalHeader3" style="width:8%;">ពិន្ទុសរុប</th>
+            <th rowspan="2" style="width:8%;">មធ្យមភាគ</th>
+            <th rowspan="2" style="width:8%;">ចំណាត់ថ្នាក់</th>
+            <th rowspan="2" style="width:14%;">និទ្ទេស</th>
+            <th rowspan="2" style="width:7%;">លទ្ធផល</th>
+            <th colspan="2" style="width:13%;">អវត្តមាន</th>
+          </tr>
+          <tr>
+            <th style="width:6.5%; font-size:9.5px;">មានច្បាប់</th>
+            <th style="width:6.5%; font-size:9.5px;">គ្មានច្បាប់</th>
+          </tr>
+        </thead>
+        <tbody id="rankBody3">
+          <tr><td colspan="11" style="padding:20px; color:#64748b;">កំពុងទាញយកទិន្នន័យ...</td></tr>
+        </tbody>
+      </table>
     </div>
 
     <!-- Summary Box -->
@@ -664,6 +730,78 @@
       return { A:'#0070c0', B:'#16a34a', C:'#b45309', D:'#7030a0', E:'#0891b2', F:'#dc2626' }[code] || '#000000';
     }
 
+    /* ── 🌟 CUSTOM SELECT (ប្រើ Battambang ១០០%) ── */
+    const CUSTOM_SELECTS = ['classSelect', 'monthSelect', 'semesterSelect'];
+
+    function syncCustomSelect(id) {
+      const sel = document.getElementById(id);
+      const btn = document.getElementById(id + 'Btn');
+      if (!sel || !btn) return;
+      const cur = sel.options[sel.selectedIndex];
+      btn.querySelector('.custom-dd-label').textContent = cur ? cur.textContent : 'ជ្រើសរើស';
+    }
+
+    function buildCustomSelect(id) {
+      const sel = document.getElementById(id);
+      if (!sel || document.getElementById(id + 'Btn')) return;
+      sel.style.display = 'none';
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'custom-dd-btn';
+      btn.id = id + 'Btn';
+      btn.innerHTML = '<span class="custom-dd-label"></span><i class="fa-solid fa-chevron-down custom-dd-chev"></i>';
+      btn.onclick = (e) => toggleSelectPicker(e, id);
+      sel.parentNode.insertBefore(btn, sel);
+      syncCustomSelect(id);
+    }
+
+    function closeSelPicker() {
+      document.getElementById('selPopup')?.classList.remove('show');
+      document.querySelectorAll('.custom-dd-btn.open').forEach(b => b.classList.remove('open'));
+    }
+
+    function toggleSelectPicker(e, id) {
+      if (e) e.stopPropagation();
+      const pop = document.getElementById('selPopup');
+      const btn = document.getElementById(id + 'Btn');
+      const wasOpenHere = pop.classList.contains('show') && btn.classList.contains('open');
+      closeSelPicker();
+      closeFontPicker();
+      if (wasOpenHere) return;
+
+      const sel = document.getElementById(id);
+      const list = document.getElementById('selList');
+      list.innerHTML = '';
+      Array.from(sel.options).forEach(opt => {
+        if (!opt.value) return;
+        const item = document.createElement('div');
+        item.className = 'custom-dd-item' + (opt.value === sel.value ? ' active' : '');
+        item.innerHTML = '<span>' + opt.textContent + '</span><i class="fa-solid fa-check"></i>';
+        item.onclick = (ev) => {
+          ev.stopPropagation();
+          sel.value = opt.value;
+          syncCustomSelect(id);
+          closeSelPicker();
+          sel.dispatchEvent(new Event('change'));
+        };
+        list.appendChild(item);
+      });
+
+      const r = btn.getBoundingClientRect();
+      const w = Math.max(r.width, 190);
+      pop.style.width = w + 'px';
+      pop.style.left = Math.max(8, Math.min(r.left, window.innerWidth - w - 8)) + 'px';
+      pop.style.top = (r.bottom + 6) + 'px';
+      pop.classList.add('show');
+      btn.classList.add('open');
+    }
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('#selPopup') && !e.target.closest('.custom-dd-btn')) closeSelPicker();
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSelPicker(); });
+    window.addEventListener('scroll', closeSelPicker, true);
+
     /* ── 🔤 FONT SWITCHER ── */
     const DOC_FONTS = [
       { id: 'default',    label: 'ពុម្ពអក្សរដើម (បច្ចុប្បន្ន)', family: "'Noto Serif Khmer','Kantumruy Pro','Noto Sans Khmer',sans-serif" },
@@ -698,13 +836,13 @@
       const btn = document.getElementById('fontBtn');
       if (pop.classList.contains('show')) { closeFontPicker(); return; }
 
+      closeSelPicker();
       const cur = getSavedFontId();
       const list = document.getElementById('fontList');
       list.innerHTML = '';
       DOC_FONTS.forEach(f => {
         const item = document.createElement('div');
         item.className = 'font-dd-item' + (f.id === cur ? ' active' : '');
-        item.style.fontFamily = f.family;
         item.innerHTML = '<span>' + f.label + '</span><i class="fa-solid fa-check"></i>';
         item.onclick = (ev) => { ev.stopPropagation(); applyDocFont(f.id); closeFontPicker(); };
         list.appendChild(item);
@@ -728,6 +866,7 @@
       if (!checkAuthentication()) return;
 
       applyDocFont(getSavedFontId());
+      CUSTOM_SELECTS.forEach(buildCustomSelect);
 
       const now = new Date();
       document.getElementById('currentYearTxt').textContent = toKhmerNum(now.getFullYear());
@@ -789,6 +928,7 @@
 
     /* ── LOAD RANK DATA ── */
     async function loadRankData() {
+      CUSTOM_SELECTS.forEach(syncCustomSelect);
       const selectedClass = document.getElementById('classSelect').value || cleanGrade(USER_CLASS);
       const selectedPeriod = getSelectedPeriod();
       if (!selectedClass) return;
@@ -806,6 +946,8 @@
 
       const isSummaryAveragePeriod = ["ប្រចាំឆមាសទី១", "ប្រចាំឆមាសទី២", "ប្រចាំឆ្នាំ"].includes(selectedPeriod);
       document.getElementById('thTotalHeader').textContent = isSummaryAveragePeriod ? "មធ្យមភាគសរុប" : "ពិន្ទុសរុប";
+      const th3 = document.getElementById('thTotalHeader3');
+      if (th3) th3.textContent = isSummaryAveragePeriod ? "មធ្យមភាគសរុប" : "ពិន្ទុសរុប";
       document.getElementById('rankBody').innerHTML = '<tr><td colspan="9" style="padding:20px; color:#0284c7;"><i class="fa-solid fa-spinner fa-spin"></i> កំពុងទាញយកទិន្នន័យ...</td></tr>';
 
       try {
@@ -961,10 +1103,50 @@
           }
         });
 
+        await attachAbsence(rankResults, curPure, selectedPeriod, studentIds);
         renderRankTable(rankResults);
 
       } catch (err) {
         document.getElementById('rankBody').innerHTML = `<tr><td colspan="9" style="padding:20px; color:#ef4444;">❌ មានបញ្ហា៖ ${err.message}</td></tr>`;
+      }
+    }
+
+    /* ── អវត្តមាន ៖ A = គ្មានច្បាប់ , C = មានច្បាប់ (តាមខែ / ឆមាស / ឆ្នាំ) ── */
+    function getPeriodMonthSet(period) {
+      if (period === 'ឆមាសទី១' || period === 'ប្រចាំឆមាសទី១') return [11, 12, 1, 2, 3, 4];
+      if (period === 'ឆមាសទី២' || period === 'ប្រចាំឆមាសទី២') return [5, 6, 7, 8, 9, 10];
+      if (period === 'ប្រចាំឆ្នាំ') return null;
+      const idx = KHMER_MONTHS.indexOf(period);
+      return idx >= 0 ? [idx + 1] : null;
+    }
+
+    async function attachAbsence(list, cls, period, ids) {
+      list.forEach(s => { s.absP = 0; s.absA = 0; });
+      try {
+        const { data, error } = await sb
+          .from('attendance')
+          .select('student_id, attendance_date, status')
+          .eq('assigned_class', cls)
+          .in('student_id', ids)
+          .in('status', ['A', 'C']);
+        if (error) throw error;
+
+        const months = getPeriodMonthSet(period);
+        const map = {};
+        list.forEach(s => { map[String(s.id)] = s; });
+
+        (data || []).forEach(r => {
+          const st = map[String(r.student_id)];
+          if (!st) return;
+          const raw = String(r.attendance_date || '');
+          let m = parseInt(raw.slice(5, 7), 10);
+          if (!Number.isFinite(m)) m = new Date(raw).getMonth() + 1;
+          if (months && !months.includes(m)) return;
+          if (r.status === 'C') st.absP++;
+          else if (r.status === 'A') st.absA++;
+        });
+      } catch (e) {
+        console.warn('Attendance error:', e);
       }
     }
 
@@ -987,7 +1169,7 @@
     }
 
     /* 🌟 បង្កើតជួរដេកដោយភ្ជាប់ពណ៌ជាក់លាក់ទៅតាមនិទ្ទេស និងលទ្ធផល (ធានាថាចេញពណ៌ទាំងពេលបោះពុម្ព) */
-    function makeRankRow(s) {
+    function makeRankRow(s, withAbs) {
       const avg = Number(s.avg);
       const gradeCode = getGradeCodeFromAverage(avg);
       const gradeName = getGradeName(gradeCode);
@@ -1005,7 +1187,7 @@
         <td>${avg > 0 ? avg.toFixed(2) : ''}</td>
         <td style="font-weight:bold; color:${rankColor} !important;">${s.rank ? toKhmerNum(s.rank) : ''}</td>
         <td style="font-weight:bold; color:${avg > 0 ? gradeColor : 'inherit'} !important;">${avg > 0 ? `${gradeName} (${gradeCode})` : ''}</td>
-        <td style="font-weight:bold; color:${resultColor} !important;">${result}</td>
+        <td style="font-weight:bold; color:${resultColor} !important;">${result}</td>${withAbs ? '<td>' + toKhmerNum(s.absP || 0) + '</td><td style="font-weight:bold; color:' + (s.absA > 0 ? '#dc2626' : '#000000') + ' !important;">' + toKhmerNum(s.absA || 0) + '</td>' : ''}
       </tr>`;
     }
 
@@ -1017,6 +1199,7 @@
         document.getElementById('rankBodyRight').innerHTML = '<tr><td colspan="9" style="padding:15px; color:#ef4444;">ពុំទាន់មានទិន្នន័យ</td></tr>';
         document.getElementById('rankHeadLeft').innerHTML = getRankTableHeader();
         document.getElementById('rankHeadRight').innerHTML = getRankTableHeader();
+        document.getElementById('rankBody3').innerHTML = '<tr><td colspan="11" style="padding:20px; color:#ef4444;">ពុំទាន់មានទិន្នន័យ</td></tr>';
         resetSummary();
         return;
       }
@@ -1036,6 +1219,13 @@
       });
 
       tbody.innerHTML = data.map((s, idx) => makeRankRow(Object.assign({}, s, { displayNo: idx + 1 }))).join('');
+
+      const sumAbsP = data.reduce((t, s) => t + (s.absP || 0), 0);
+      const sumAbsA = data.reduce((t, s) => t + (s.absA || 0), 0);
+      document.getElementById('rankBody3').innerHTML =
+        data.map((s, idx) => makeRankRow(Object.assign({}, s, { displayNo: idx + 1 }), true)).join('') +
+        '<tr style="font-weight:bold;"><td colspan="9" style="text-align:right; padding-right:10px;">សរុបអវត្តមាន</td>' +
+        '<td>' + toKhmerNum(sumAbsP) + '</td><td style="color:#dc2626 !important;">' + toKhmerNum(sumAbsA) + '</td></tr>';
 
       const splitAt = Math.ceil(data.length / 2);
       const leftData = data.slice(0, splitAt);
@@ -1077,17 +1267,10 @@
     }
 
     function setRankLayout(layoutNo) {
-      const layout1 = document.getElementById('rankLayout1');
-      const layout2 = document.getElementById('rankLayout2');
-      const btn1 = document.getElementById('layout1Btn');
-      const btn2 = document.getElementById('layout2Btn');
-      if (layoutNo === 2) {
-        layout1.classList.remove('active'); layout2.classList.add('active');
-        btn1.classList.remove('active'); btn2.classList.add('active');
-      } else {
-        layout2.classList.remove('active'); layout1.classList.add('active');
-        btn2.classList.remove('active'); btn1.classList.add('active');
-      }
+      [1, 2, 3].forEach(n => {
+        document.getElementById('rankLayout' + n)?.classList.toggle('active', n === layoutNo);
+        document.getElementById('layout' + n + 'Btn')?.classList.toggle('active', n === layoutNo);
+      });
     }
 
     function resetSummary() {
