@@ -926,6 +926,25 @@
       }
     }
 
+    /* ── ក្បួនគណនាមធ្យមភាគ ──
+       ប្រចាំខែ   = មធ្យមភាគតាមខែក្នុងឆមាស / ចំនួនខែ
+       ប្រចាំឆមាស = (ប្រចាំខែ + ប្រឡងឆមាស) / ២
+       ប្រចាំឆ្នាំ  = (ប្រចាំឆមាសទី១ + ប្រចាំឆមាសទី២) / ២ */
+    const R2 = x => Number(Number(x).toFixed(2));
+    function combine2(a, b) { return (a > 0 && b > 0) ? (a + b) / 2 : (a > 0 ? a : (b > 0 ? b : 0)); }
+
+    function calcSemester(myScores, months, examPeriod) {
+      let sum = 0, cnt = 0;
+      months.forEach(m => {
+        const row = myScores.find(sc => sc.score_type === 'monthly' && sc.period === m);
+        if (row && Number(row.average) > 0) { sum += Number(row.average); cnt++; }
+      });
+      const monthly = cnt > 0 ? sum / cnt : 0;
+      const examRow = myScores.find(sc => sc.score_type === 'semester' && sc.period === examPeriod);
+      const exam = (examRow && Number(examRow.average) > 0) ? Number(examRow.average) : 0;
+      return { monthly, exam, sem: R2(combine2(monthly, exam)), sum: (monthly > 0 ? monthly : 0) + (exam > 0 ? exam : 0) };
+    }
+
     /* ── LOAD RANK DATA ── */
     async function loadRankData() {
       CUSTOM_SELECTS.forEach(syncCustomSelect);
@@ -991,27 +1010,13 @@
             const sId = String(s.student_id || s.id);
             const myScores = (scoresData || []).filter(sc => String(sc.student_id) === sId);
             
-            let sumAvgs = 0, countAvgs = 0;
-            semMonths.forEach(m => {
-              const row = myScores.find(sc => sc.score_type === 'monthly' && sc.period === m);
-              if (row && Number(row.average) > 0) {
-                sumAvgs += Number(row.average);
-                countAvgs++;
-              }
-            });
-            const examRow = myScores.find(sc => sc.score_type === 'semester' && sc.period === examPeriod);
-            if (examRow && Number(examRow.average) > 0) {
-              sumAvgs += Number(examRow.average);
-              countAvgs++;
-            }
-
-            const finalAvg = countAvgs > 0 ? (sumAvgs / countAvgs) : 0;
+            const c = calcSemester(myScores, semMonths, examPeriod);
             return {
               id: sId,
               name: s.student_name || 'គ្មានឈ្មោះ',
               sex: s.gender || 'ប្រុស',
-              total: finalAvg > 0 ? sumAvgs.toFixed(2) : '',
-              avg: finalAvg > 0 ? finalAvg.toFixed(2) : 0
+              total: c.sem > 0 ? c.sum.toFixed(2) : '',
+              avg: c.sem > 0 ? c.sem.toFixed(2) : 0
             };
           });
 
@@ -1029,34 +1034,15 @@
             const sem1Months = ['វិច្ឆិកា', 'ធ្នូ', 'មករា', 'កុម្ភៈ', 'មីនា', 'មេសា'];
             const sem2Months = ['ឧសភា', 'មិថុនា', 'កក្កដា', 'សីហា', 'កញ្ញា', 'តុលា'];
 
-            let s1Sum = 0, s1Count = 0, s2Sum = 0, s2Count = 0;
-            sem1Months.forEach(m => {
-              const r = myScores.find(sc => sc.score_type === 'monthly' && sc.period === m);
-              if (r && Number(r.average) > 0) { s1Sum += Number(r.average); s1Count++; }
-            });
-            const e1 = myScores.find(sc => sc.score_type === 'semester' && sc.period === 'ឆមាសទី១');
-            if (e1 && Number(e1.average) > 0) { s1Sum += Number(e1.average); s1Count++; }
-
-            sem2Months.forEach(m => {
-              const r = myScores.find(sc => sc.score_type === 'monthly' && sc.period === m);
-              if (r && Number(r.average) > 0) { s2Sum += Number(r.average); s2Count++; }
-            });
-            const e2 = myScores.find(sc => sc.score_type === 'semester' && sc.period === 'ឆមាសទី២');
-            if (e2 && Number(e2.average) > 0) { s2Sum += Number(e2.average); s2Count++; }
-
-            const avg1 = s1Count > 0 ? (s1Sum / s1Count) : 0;
-            const avg2 = s2Count > 0 ? (s2Sum / s2Count) : 0;
-
-            let yearlyAvg = 0;
-            if (avg1 > 0 && avg2 > 0) yearlyAvg = (avg1 + avg2) / 2;
-            else if (avg1 > 0) yearlyAvg = avg1;
-            else if (avg2 > 0) yearlyAvg = avg2;
+            const c1 = calcSemester(myScores, sem1Months, 'ឆមាសទី១');
+            const c2 = calcSemester(myScores, sem2Months, 'ឆមាសទី២');
+            const yearlyAvg = R2(combine2(c1.sem, c2.sem));
 
             return {
               id: sId,
               name: s.student_name || 'គ្មានឈ្មោះ',
               sex: s.gender || 'ប្រុស',
-              total: (avg1 + avg2 > 0) ? (avg1 + avg2).toFixed(2) : '',
+              total: yearlyAvg > 0 ? (c1.sem + c2.sem).toFixed(2) : '',
               avg: yearlyAvg > 0 ? yearlyAvg.toFixed(2) : 0
             };
           });
