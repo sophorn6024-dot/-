@@ -284,70 +284,93 @@
         <div class="dd-popup" id="ddClassSelect"></div>
       </div>
 
-      <!-- 📅 Dropdown 2: ជម្រើសកាលកំណត់ (ប្រចាំឆ្នាំ vs ប្រចាំខែ) -->
+      <!-- 📅 Dropdown: ជ្រើសរើសខែ ដាច់ដោយឡែក -->
       <div class="dd-wrap">
-        <button type="button" class="tb-btn" id="btnPeriodMode" onclick="toggleDropdown('ddPeriodMode')">
-          <span style="display:flex; align-items:center; gap:7px;">
-            <i class="fa-solid fa-calendar-check" style="color:#fbbf24;"></i>
-            <span id="txtPeriodMode">ប្រចាំឆ្នាំ</span>
+        <button type="button" class="tb-btn" id="btnMonthSelect" onclick="toggleDropdown('ddMonthSelect')">
+          <span style="display:flex;align-items:center;gap:7px;">
+            <i class="fa-regular fa-calendar" style="color:#38bdf8;"></i>
+            <span id="txtMonthSelect">ខែតុលា</span>
           </span>
-          <i class="fa-solid fa-chevron-down" id="chevPeriodMode" style="font-size:11px; margin-left:4px;"></i>
+          <i class="fa-solid fa-chevron-down" style="font-size:11px;margin-left:4px;"></i>
         </button>
-        <div class="dd-popup" id="ddPeriodMode">
-          <div class="dd-item active" data-period="ANNUAL" onclick="selectPeriodMode('ANNUAL')">
-            <span class="dd-item-left"><i class="fa-solid fa-calendar-days" style="color:#eab308;"></i> ប្រចាំឆ្នាំ</span>
-            <i class="fa-solid fa-check"></i>
-          </div>
-          <div class="dd-item" data-period="តុលា" onclick="selectPeriodMode('តុលា')">
+        <div class="dd-popup" id="ddMonthSelect">
+          <div class="dd-item active" data-month="តុលា" onclick="selectReportMonth('តុលា')">
             <span class="dd-item-left"><i class="fa-regular fa-calendar" style="color:var(--primary);"></i> ខែតុលា</span>
-            <i class="fa-solid fa-check" style="display:none;"></i>
+            <i class="fa-solid fa-check" style=""></i>
           </div>
-          <div class="dd-item" data-period="វិច្ឆិកា" onclick="selectPeriodMode('វិច្ឆិកា')">
+          <div class="dd-item " data-month="វិច្ឆិកា" onclick="selectReportMonth('វិច្ឆិកា')">
             <span class="dd-item-left"><i class="fa-regular fa-calendar" style="color:var(--primary);"></i> ខែវិច្ឆិកា</span>
             <i class="fa-solid fa-check" style="display:none;"></i>
           </div>
-          <div class="dd-item" data-period="ធ្នូ" onclick="selectPeriodMode('ធ្នូ')">
+          <div class="dd-item " data-month="ធ្នូ" onclick="selectReportMonth('ធ្នូ')">
             <span class="dd-item-left"><i class="fa-regular fa-calendar" style="color:var(--primary);"></i> ខែធ្នូ</span>
             <i class="fa-solid fa-check" style="display:none;"></i>
           </div>
-          <div class="dd-item" data-period="មករា" onclick="selectPeriodMode('មករា')">
+          <div class="dd-item " data-month="មករា" onclick="selectReportMonth('មករា')">
             <span class="dd-item-left"><i class="fa-regular fa-calendar" style="color:var(--primary);"></i> ខែមករា</span>
             <i class="fa-solid fa-check" style="display:none;"></i>
           </div>
-          <div class="dd-item" data-period="កុម្ភៈ" onclick="selectPeriodMode('កុម្ភៈ')">
+          <div class="dd-item " data-month="កុម្ភៈ" onclick="selectReportMonth('កុម្ភៈ')">
             <span class="dd-item-left"><i class="fa-regular fa-calendar" style="color:var(--primary);"></i> ខែកុម្ភៈ</span>
             <i class="fa-solid fa-check" style="display:none;"></i>
           </div>
-          <div class="dd-item" data-period="មីនា" onclick="selectPeriodMode('មីនា')">
+          <div class="dd-item " data-month="មីនា" onclick="selectReportMonth('មីនា')">
             <span class="dd-item-left"><i class="fa-regular fa-calendar" style="color:var(--primary);"></i> ខែមីនា</span>
             <i class="fa-solid fa-check" style="display:none;"></i>
           </div>
-          <div class="dd-item" data-period="មេសា" onclick="selectPeriodMode('មេសា')">
+          <div class="dd-item " data-month="មេសា" onclick="selectReportMonth('មេសា')">
             <span class="dd-item-left"><i class="fa-regular fa-calendar" style="color:var(--primary);"></i> ខែមេសា</span>
             <i class="fa-solid fa-check" style="display:none;"></i>
           </div>
-          <div class="dd-item" data-period="ឧសភា" onclick="selectPeriodMode('ឧសភា')">
+          <div class="dd-item " data-month="ឧសភា" onclick="selectReportMonth('ឧសភា')">
             <span class="dd-item-left"><i class="fa-regular fa-calendar" style="color:var(--primary);"></i> ខែឧសភា</span>
             <i class="fa-solid fa-check" style="display:none;"></i>
           </div>
-          <div class="dd-item" data-period="មិថុនា" onclick="selectPeriodMode('មិថុនា')">
+          <div class="dd-item " data-month="មិថុនា" onclick="selectReportMonth('មិថុនា')">
             <span class="dd-item-left"><i class="fa-regular fa-calendar" style="color:var(--primary);"></i> ខែមិថុនា</span>
             <i class="fa-solid fa-check" style="display:none;"></i>
           </div>
-          <div class="dd-item" data-period="កក្កដា" onclick="selectPeriodMode('កក្កដា')">
+          <div class="dd-item " data-month="កក្កដា" onclick="selectReportMonth('កក្កដា')">
             <span class="dd-item-left"><i class="fa-regular fa-calendar" style="color:var(--primary);"></i> ខែកក្កដា</span>
             <i class="fa-solid fa-check" style="display:none;"></i>
           </div>
-          <div class="dd-item" data-period="សីហា" onclick="selectPeriodMode('សីហា')">
+          <div class="dd-item " data-month="សីហា" onclick="selectReportMonth('សីហា')">
             <span class="dd-item-left"><i class="fa-regular fa-calendar" style="color:var(--primary);"></i> ខែសីហា</span>
             <i class="fa-solid fa-check" style="display:none;"></i>
           </div>
-          <div class="dd-item" data-period="កញ្ញា" onclick="selectPeriodMode('កញ្ញា')">
+          <div class="dd-item " data-month="កញ្ញា" onclick="selectReportMonth('កញ្ញា')">
             <span class="dd-item-left"><i class="fa-regular fa-calendar" style="color:var(--primary);"></i> ខែកញ្ញា</span>
             <i class="fa-solid fa-check" style="display:none;"></i>
           </div>
         </div>
       </div>
+
+      <!-- 📚 Dropdown: ជ្រើសរើសឆមាស ដាច់ដោយឡែក -->
+      <div class="dd-wrap">
+        <button type="button" class="tb-btn" id="btnSemesterSelect" onclick="toggleDropdown('ddSemesterSelect')">
+          <span style="display:flex;align-items:center;gap:7px;">
+            <i class="fa-solid fa-book-open" style="color:#c084fc;"></i>
+            <span id="txtSemesterSelect">ជ្រើសឆមាស</span>
+          </span>
+          <i class="fa-solid fa-chevron-down" style="font-size:11px;margin-left:4px;"></i>
+        </button>
+        <div class="dd-popup" id="ddSemesterSelect">
+          <div class="dd-item" data-semester="ឆមាសទី១" onclick="selectReportSemester('ឆមាសទី១')">
+            <span class="dd-item-left"><i class="fa-solid fa-book" style="color:#8b5cf6;"></i> ឆមាសទី ១</span>
+            <i class="fa-solid fa-check" style="display:none;"></i>
+          </div>
+          <div class="dd-item" data-semester="ឆមាសទី២" onclick="selectReportSemester('ឆមាសទី២')">
+            <span class="dd-item-left"><i class="fa-solid fa-book" style="color:#8b5cf6;"></i> ឆមាសទី ២</span>
+            <i class="fa-solid fa-check" style="display:none;"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- ជម្រើសប្រចាំឆ្នាំ -->
+      <button type="button" class="tb-btn" id="btnAnnualSelect" onclick="selectAnnualReport()">
+        <i class="fa-solid fa-calendar-days" style="color:#fbbf24;"></i>
+        <span>ប្រចាំឆ្នាំ</span>
+      </button>
 
       <!-- 🌟 Dropdown 3: របៀបបង្ហាញនិទ្ទេស (A-F vs ពាក្យខ្មែរ) -->
       <div class="dd-wrap">
@@ -596,7 +619,8 @@
     const IS_ADMIN = String(USER_ROLE).toLowerCase().trim() === 'admin';
 
     let currentSelectedClass = cleanGrade(USER_CLASS) || '៤(ក)';
-    let currentPeriod = 'ANNUAL';
+    let currentPeriod = 'តុលា';
+    let currentPeriodType = 'monthly'; // monthly | semester | annual
     let currentGradeMode = 'AF';     // 'AF' | 'KH'
     let currentSubjectMode = 'ALL';  // 'KM_MA' | 'ALL'
     let rawStudentsList = [];
@@ -679,19 +703,53 @@
       }
     }
 
-    function selectPeriodMode(period) {
-      currentPeriod = period;
-      const label = (period === 'ANNUAL') ? 'ប្រចាំឆ្នាំ' : `ខែ${period}`;
-      document.getElementById('txtPeriodMode').innerText = label;
-
-      document.querySelectorAll('#ddPeriodMode .dd-item').forEach(el => {
-        const pVal = el.getAttribute('data-period');
-        const isActive = (pVal === period);
-        el.classList.toggle('active', isActive);
-        const icon = el.querySelector('.fa-check');
-        if (icon) icon.style.display = isActive ? 'inline' : 'none';
+    function updatePeriodSelectionUI() {
+      document.querySelectorAll('#ddMonthSelect .dd-item').forEach(el => {
+        const active = currentPeriodType === 'monthly' && el.dataset.month === currentPeriod;
+        el.classList.toggle('active', active);
+        const check = el.querySelector('.fa-check');
+        if (check) check.style.display = active ? 'inline' : 'none';
       });
+      document.querySelectorAll('#ddSemesterSelect .dd-item').forEach(el => {
+        const active = currentPeriodType === 'semester' && el.dataset.semester === currentPeriod;
+        el.classList.toggle('active', active);
+        const check = el.querySelector('.fa-check');
+        if (check) check.style.display = active ? 'inline' : 'none';
+      });
+      const monthText = document.getElementById('txtMonthSelect');
+      if (monthText) monthText.textContent = currentPeriodType === 'monthly' ? `ខែ${currentPeriod}` : 'ជ្រើសខែ';
+      const semText = document.getElementById('txtSemesterSelect');
+      if (semText) semText.textContent = currentPeriodType === 'semester' ? currentPeriod.replace('ទី','ទី ') : 'ជ្រើសឆមាស';
+      const annualBtn = document.getElementById('btnAnnualSelect');
+      if (annualBtn) annualBtn.classList.toggle('primary', currentPeriodType === 'annual');
+      const monthBtn = document.getElementById('btnMonthSelect');
+      if (monthBtn) monthBtn.classList.toggle('primary', currentPeriodType === 'monthly');
+      const semBtn = document.getElementById('btnSemesterSelect');
+      if (semBtn) semBtn.classList.toggle('primary', currentPeriodType === 'semester');
+    }
 
+    function selectReportMonth(month) {
+      currentPeriodType = 'monthly';
+      currentPeriod = month;
+      updatePeriodSelectionUI();
+      closeAllDropdowns();
+      updateMainDocumentTitle();
+      loadReportData();
+    }
+
+    function selectReportSemester(semester) {
+      currentPeriodType = 'semester';
+      currentPeriod = semester;
+      updatePeriodSelectionUI();
+      closeAllDropdowns();
+      updateMainDocumentTitle();
+      loadReportData();
+    }
+
+    function selectAnnualReport() {
+      currentPeriodType = 'annual';
+      currentPeriod = 'ANNUAL';
+      updatePeriodSelectionUI();
       closeAllDropdowns();
       updateMainDocumentTitle();
       loadReportData();
@@ -699,7 +757,10 @@
 
     function updateMainDocumentTitle() {
       const isKMMA = (currentSubjectMode === 'KM_MA');
-      const pText = (currentPeriod === 'ANNUAL') ? 'ប្រចាំឆ្នាំ' : `ប្រចាំខែ${currentPeriod}`;
+      let pText;
+      if (currentPeriodType === 'annual') pText = 'ប្រចាំឆ្នាំ';
+      else if (currentPeriodType === 'semester') pText = `ប្រចាំ${currentPeriod}`;
+      else pText = `ប្រចាំខែ${currentPeriod}`;
 
       if (isKMMA) {
         document.getElementById('lblDocMainTitle').innerText = `តារាងនិទ្ទេស ភាសាខ្មែរ និងគណិតវិទ្យា ${pText}`;
@@ -813,11 +874,13 @@
       const requestId = ++reportLoadSeq;
       const cls = normalizeClassForDatabase(currentSelectedClass);
       const selectedPeriod = currentPeriod;
-      const periodForDb = normalizePeriodForDatabase(selectedPeriod);
+      const selectedPeriodType = currentPeriodType;
+      const periodForDb = selectedPeriodType === 'monthly' ? normalizePeriodForDatabase(selectedPeriod) : selectedPeriod;
 
       document.getElementById('lblDisplayClass').innerText = `ថ្នាក់ទី ${cls || '៤(ក)'}`;
       document.getElementById('lblTeacherName').innerText = TEACHER_NAME;
-      updateMainDocumentTitle();
+      updatePeriodSelectionUI();
+    updateMainDocumentTitle();
 
       try {
         if (IS_ADMIN) {
@@ -844,33 +907,43 @@
         if (studentsError) throw new Error(`ទាញបញ្ជីសិស្សមិនបាន៖ ${studentsError.message}`);
         if (requestId !== reportLoadSeq) return;
 
-        // ទាញកំណត់ត្រាពិន្ទុតែប្រភេទ និងខែដែលបានជ្រើស។
+        // ទាញពិន្ទុតាមប្រភេទជាមុន។ កុំ filter period/class តឹងពេក ព្រោះ
+        // form បញ្ចូលពិន្ទុខ្លះរក្សាទុក 'តុលា' ខ្លះអាចរក្សាទុក 'ខែតុលា'
+        // ហើយ assigned_class អាចមាន/គ្មានពាក្យ 'ថ្នាក់ទី'។
         let scoreQuery = sb.from('scores').select(
           'id, student_id, assigned_class, score_type, period, scores, total, average, rank, grade_label, result, created_at, updated_at'
         );
-        if (cls) scoreQuery = scoreQuery.eq('assigned_class', cls);
+        const dbScoreType = selectedPeriodType === 'annual' ? 'annual' : selectedPeriodType;
+        scoreQuery = scoreQuery.eq('score_type', dbScoreType);
 
-        if (selectedPeriod === 'ANNUAL') {
-          scoreQuery = scoreQuery.eq('score_type', 'annual');
-        } else {
-          scoreQuery = scoreQuery
-            .eq('score_type', 'monthly')
-            .eq('period', periodForDb);
-        }
-
-        const { data: scoresData, error: scoresError } = await scoreQuery;
+        const { data: allScoresData, error: scoresError } = await scoreQuery;
         if (scoresError) throw new Error(`ទាញពិន្ទុមិនបាន៖ ${scoresError.message}`);
         if (requestId !== reportLoadSeq) return;
 
-        console.log('[តារាងនិទ្ទេស] ថ្នាក់:', cls,
-          '| ខែ:', selectedPeriod,
-          '| period DB:', periodForDb,
-          '| សិស្ស:', (studentsData || []).length,
-          '| កំណត់ត្រាពិន្ទុ:', (scoresData || []).length);
+        const normalizePeriodValue = value => String(value ?? '')
+          .trim().replace(/^ខែ\s*/, '').replace(/\s+/g, '');
+        const normalizeClassValue = value => String(value ?? '')
+          .replace(/^(ថ្នាក់ទី|ថ្នាក់)\s*/, '').trim().replace(/\s+/g, '');
 
-        // Map តាម student_id (text)។ កុំសន្មតថា student_id = id ជានិច្ច។
+        const scoresData = (allScoresData || []).filter(row => {
+          const classMatches = !cls ||
+            normalizeClassValue(row.assigned_class) === normalizeClassValue(cls);
+          const periodMatches = selectedPeriodType === 'annual' ||
+            normalizePeriodValue(row.period) === normalizePeriodValue(selectedPeriod);
+          return classMatches && periodMatches;
+        });
+
+        console.log('[តារាងនិទ្ទេស] ថ្នាក់ជ្រើស:', cls,
+          '| ខែជ្រើស:', selectedPeriod,
+          '| period ស្វែងរក:', periodForDb,
+          '| សិស្ស:', (studentsData || []).length,
+          '| ពិន្ទុទាំងអស់តាមប្រភេទ:', (allScoresData || []).length,
+          '| ពិន្ទុត្រូវនឹងខែ/ថ្នាក់:', scoresData.length,
+          '| គំរូកំណត់ត្រា:', scoresData[0] || (allScoresData || [])[0] || null);
+
+        // Map តាម student_id ជាអក្សរ។ រក្សាទាំង key ដើម និង trim value។
         const scoreMap = new Map();
-        (scoresData || []).forEach(row => {
+        scoresData.forEach(row => {
           if (row.student_id !== null && row.student_id !== undefined) {
             scoreMap.set(String(row.student_id).trim(), row);
           }
@@ -886,8 +959,12 @@
           }
 
           // JSONB scores ជាទិន្នន័យប្រភពសំខាន់។ គាំទ្រទាំង keys ប្រចាំខែ និង keys ចាស់។
-          const sj = scoreRow?.scores && typeof scoreRow.scores === 'object'
-            ? scoreRow.scores : {};
+          let sj = scoreRow?.scores;
+          // Supabase jsonb 通常回傳 object; ក៏គាំទ្រករណី data ត្រូវបានរក្សាទុកជាអក្សរ JSON។
+          if (typeof sj === 'string') {
+            try { sj = JSON.parse(sj); } catch (_) { sj = {}; }
+          }
+          if (!sj || typeof sj !== 'object' || Array.isArray(sj)) sj = {};
 
           const km = averageJsonScores(sj, ['kh_listen', 'kh_write', 'kh_read', 'kh_speak']);
           const ma = averageJsonScores(sj, ['m_num', 'm_measure', 'm_geo', 'm_algebra', 'm_stat']);
@@ -926,11 +1003,19 @@
           };
         });
 
+        const matchedScoreCount = rawStudentsList.filter(s => {
+          const id = String(s.studentId ?? '').trim();
+          return scoreMap.has(id) || scoreMap.has(String(s.id ?? '').trim());
+        }).length;
+        console.log('[តារាងនិទ្ទេស] សិស្សបានផ្គូផ្គងពិន្ទុ:', matchedScoreCount,
+          '/', rawStudentsList.length,
+          '| ឧទាហរណ៍ scores JSONB:', scoresData[0]?.scores ?? null);
+
         if (!(studentsData || []).length) {
           console.warn('មិនមានសិស្សក្នុងថ្នាក់នេះ ឬតម្លៃ students.grade មិនត្រូវគ្នា។');
         }
         if (!(scoresData || []).length) {
-          console.warn(`មិនមានកំណត់ត្រាពិន្ទុសម្រាប់ ${selectedPeriod === 'ANNUAL' ? 'ប្រចាំឆ្នាំ' : periodForDb} ក្នុងថ្នាក់ ${cls}។ តារាងនឹងបង្ហាញ 0 សម្រាប់ពិន្ទុដែលគ្មានទិន្នន័យ។`);
+          console.warn(`មិនមានកំណត់ត្រាពិន្ទុសម្រាប់ ${selectedPeriodType === 'annual' ? 'ប្រចាំឆ្នាំ' : periodForDb} ក្នុងថ្នាក់ ${cls}។ តារាងនឹងបង្ហាញ 0 សម្រាប់ពិន្ទុដែលគ្មានទិន្នន័យ។`);
         }
       } catch (e) {
         console.error('loadReportData error:', e);
@@ -1103,7 +1188,7 @@
 
       const passPct = total ? ((pass / total) * 100).toFixed(2) : "0.00";
       const failPct = total ? ((fail / total) * 100).toFixed(2) : "0.00";
-      const periodLabel = (currentPeriod === 'ANNUAL') ? 'ឆ្នាំនេះ' : 'ខែនេះ';
+      const periodLabel = currentPeriodType === 'annual' ? 'ឆ្នាំនេះ' : (currentPeriodType === 'semester' ? 'ឆមាសនេះ' : 'ខែនេះ');
 
       let statsHtml = '';
       if (isAF) {
@@ -1286,7 +1371,7 @@
       const isL = (PS.orient === 'landscape');
       closePageSetup();
 
-      const periodLabel = (currentPeriod === 'ANNUAL') ? 'ប្រចាំឆ្នាំ' : `ខែ${currentPeriod}`;
+      const periodLabel = currentPeriodType === 'annual' ? 'ប្រចាំឆ្នាំ' : (currentPeriodType === 'semester' ? currentPeriod : `ខែ${currentPeriod}`);
       const opt = {
         margin: [PS.margin, PS.margin, PS.margin, PS.margin],
         filename: `តារាងនិទ្ទេស_${currentSelectedClass}_${periodLabel}.pdf`,
