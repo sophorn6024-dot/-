@@ -204,7 +204,7 @@
     .search-pill-wrap {
       display: flex; align-items: center; gap: 8px; background: var(--surface-elevated); border: 1px solid var(--border); border-radius: 14px; padding: 8px 14px; margin-bottom: 12px;
     }
-    .search-pill-wrap input { border: none; background: transparent; outline: none; font-size: 13px; color: var(--text); width: 100%; }
+    .search-pill-wrap input { border: none; background: transparent; outline: none; font-size: 13px; color: var(--text); width: 100%; min-width: 0; }
     
     .bulk-actions-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
     .btn-bulk {
@@ -212,6 +212,7 @@
     }
     .btn-bulk.present { background: #059669; }
     .btn-bulk.absent  { background: #dc2626; }
+    .bulk-short { display: none; }
 
     .student-item-card {
       background: var(--surface-elevated); border: 1px solid var(--border); border-radius: 15px; padding: 12px 14px; margin-bottom: 8px; transition: all 0.15s ease;
@@ -220,7 +221,7 @@
     .student-item-card.is-dropped { border-color: rgba(220, 38, 38, 0.6); background: rgba(220, 38, 38, 0.08); }
 
     .st-top-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-    .st-name-title { font-size: 14px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; cursor: pointer; }
+    .st-name-title { font-size: 14px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; cursor: pointer; min-width: 0; flex-wrap: wrap; }
 
     .dropout-badge {
       font-size: 10px; font-weight: 800; color: #dc2626; background: rgba(220, 38, 38, 0.15);
@@ -238,6 +239,22 @@
     .q-btn.active-A { background: var(--a-bg); color: var(--a-txt); font-weight: 800; border: 1px solid var(--a-bd); }
     .q-btn.active-L { background: var(--l-bg); color: var(--l-txt); font-weight: 800; border: 1px solid var(--l-bd); }
     .q-btn.active-C { background: var(--c-bg); color: var(--c-txt); font-weight: 800; border: 1px solid var(--c-bd); }
+
+    /* 📱 ប៊ូតុងស្ថានភាពតែមួយ (សម្រាប់ទូរស័ព្ទ) */
+    .m-status { display: none; align-items: center; gap: 6px; flex-shrink: 0; }
+    .m-btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 0 14px; height: 40px;
+      border-radius: 14px; border: 1.5px solid transparent; font-size: 12.5px; font-weight: 700; cursor: pointer; white-space: nowrap;
+    }
+    .m-btn.s-P { background: var(--p-bg); color: var(--p-txt); border-color: var(--p-bd); }
+    .m-btn.s-A { background: var(--a-bg); color: var(--a-txt); border-color: var(--a-bd); }
+    .m-btn.s-L { background: var(--l-bg); color: var(--l-txt); border-color: var(--l-bd); }
+    .m-btn.s-C { background: var(--c-bg); color: var(--c-txt); border-color: var(--c-bd); }
+    .m-chev {
+      width: 40px; height: 40px; border-radius: 14px; border: 1.5px solid var(--border); background: var(--surface);
+      color: var(--text-muted); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; font-size: 13px;
+    }
+    .m-chev:active, .m-btn:active { transform: scale(.96); }
 
     .st-note-input {
       width: 100%; margin-top: 8px; padding: 7px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 12px; outline: none;
@@ -269,6 +286,56 @@
     .btn-sheet-cancel {
       width: 100%; padding: 11px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface-elevated); color: var(--text-muted); font-size: 13px; font-weight: 600; cursor: pointer;
     }
+
+    /* ⚠️ បញ្ជីព្រមានសិស្សអវត្តមានញឹកញាប់ */
+    .absence-alert-card {
+      display: none; background: var(--surface); border: 1px solid var(--border); border-left: 6px solid #fb7185;
+      border-radius: 22px; padding: 16px 20px; box-shadow: var(--card-shadow); margin-bottom: 16px;
+    }
+    .absence-alert-card.show { display: block; }
+    .aa-title { font-size: 15px; font-weight: 800; color: var(--text); margin-bottom: 12px; line-height: 1.5; }
+    .aa-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+    .aa-chip {
+      display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 999px;
+      font-size: 13px; font-weight: 700; border: 1.5px solid;
+    }
+    .aa-chip.warn   { background: var(--l-bg); color: var(--l-txt); border-color: var(--l-bd); }
+    .aa-chip.danger { background: var(--a-bg); color: var(--a-txt); border-color: var(--a-bd); }
+    .aa-legend { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+
+    /* 📊 តារាងសង្ខេបវត្តមានសិស្ស */
+    .summary-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 22px; padding: 16px 18px;
+      box-shadow: var(--card-shadow); margin-top: 16px;
+    }
+    .summary-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+    .summary-head h3 { font-size: 15px; font-weight: 800; color: var(--text); }
+    .summary-head span.sub { font-size: 11.5px; color: var(--text-muted); }
+    .seg-group { display: inline-flex; background: var(--surface-elevated); border: 1px solid var(--border); border-radius: 12px; padding: 3px; gap: 3px; }
+    .seg-btn {
+      border: none; background: transparent; color: var(--text-muted); padding: 6px 14px; border-radius: 9px;
+      font-size: 12px; font-weight: 700; cursor: pointer;
+    }
+    .seg-btn.active { background: var(--primary); color: #fff; }
+    .sum-scroll { overflow-x: auto; border: 1px solid var(--border); border-radius: 16px; }
+    .sum-table { width: 100%; border-collapse: collapse; min-width: 440px; }
+    .sum-table th {
+      padding: 14px 12px; font-size: 13px; font-weight: 800; text-align: center; background: var(--surface-elevated);
+      border-bottom: 1px solid var(--border); white-space: nowrap;
+    }
+    .sum-table td { padding: 12px; font-size: 14px; text-align: center; border-bottom: 1px solid var(--border); font-weight: 600; }
+    .sum-table tr:last-child td { border-bottom: none; }
+    .sum-table th:first-child, .sum-table td:first-child { text-align: left; padding-left: 16px; }
+    .sum-table td:first-child { font-weight: 700; }
+    .sum-table .th-p { color: var(--p-txt); } .sum-table .td-p { color: var(--p-txt); }
+    .sum-table .th-a { color: var(--a-txt); } .sum-table .td-a { color: var(--a-txt); }
+    .sum-table .th-l { color: var(--l-txt); } .sum-table .td-l { color: var(--l-txt); }
+    .sum-table .th-c { color: var(--c-txt); } .sum-table .td-c { color: var(--c-txt); }
+    .pct-badge { display: inline-block; padding: 5px 12px; border-radius: 10px; font-size: 12.5px; font-weight: 800; border: 1px solid; }
+    .pct-badge.good { background: var(--p-bg); color: var(--p-txt); border-color: var(--p-bd); }
+    .pct-badge.mid  { background: var(--l-bg); color: var(--l-txt); border-color: var(--l-bd); }
+    .pct-badge.bad  { background: var(--a-bg); color: var(--a-txt); border-color: var(--a-bd); }
+    .sum-empty { text-align: center; padding: 22px; color: var(--text-muted); font-size: 13px; }
 
     .report-menu-row {
       display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-radius: 14px; background: var(--surface-elevated); border: 1px solid var(--border); margin-top: 10px; gap: 10px;
@@ -478,6 +545,59 @@
     }
     @keyframes psUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     @media (max-width: 380px) { .ps-grid4 { grid-template-columns: repeat(2, 1fr); } }
+
+    /* =========================================================
+       📱 MOBILE LAYOUT (វត្តមានប្រចាំថ្ងៃ) — ទូរស័ព្ទ
+    ========================================================= */
+    @media (max-width: 700px) {
+      body { padding: 10px 10px 120px; }
+      .top-nav-bar { padding: 8px 10px; border-radius: 16px; }
+      .daily-sidebar-card, .daily-list-card { padding: 14px 12px; border-radius: 20px; }
+
+      /* ១. ប្រអប់រាប់ ៤ ក្នុងមួយជួរ (ស្លាកខាងឆ្វេង លេខខាងស្តាំ) */
+      .status-counter-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin: 10px 0 12px; }
+      .counter-card {
+        flex-direction: row; align-items: center; justify-content: space-between; gap: 4px;
+        height: 44px; padding: 0 9px; border-radius: 14px;
+      }
+      .counter-card .c-label { font-size: 10.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .counter-card .c-val { font-size: 15px; }
+
+      /* ២. ស្វែងរក + ប៊ូតុងវត្តមាន/អវត្តមានទាំងអស់ ក្នុងមួយជួរ */
+      .search-bulk-row {
+        display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1fr);
+        gap: 6px; align-items: stretch; margin-bottom: 12px;
+      }
+      .bulk-actions-row { display: contents; }
+      .search-pill-wrap { margin-bottom: 0; height: 46px; padding: 0 10px; border-radius: 14px; gap: 6px; }
+      .search-pill-wrap input { font-size: 12.5px; }
+      .btn-bulk { height: 46px; padding: 0 4px; border-radius: 14px; font-size: 12px; white-space: nowrap; gap: 5px; }
+      .bulk-full { display: none; }
+      .bulk-short { display: inline; }
+      .tip-box { display: none; }
+
+      /* ៣. ប័ណ្ណសិស្ស៖ ប៊ូតុងស្ថានភាពតែមួយ + ព្រួញជ្រើសរើស */
+      .quick-status-selector { display: none; }
+      .m-status { display: flex; }
+      .student-item-card { border-radius: 18px; padding: 10px 12px; }
+      .student-item-card.status-P { background: var(--p-bg); border-color: var(--p-bd); }
+      .student-item-card.status-L { background: var(--l-bg); border-color: var(--l-bd); }
+      .student-item-card.status-C { background: var(--c-bg); border-color: var(--c-bd); }
+      .student-item-card.status-A { background: var(--a-bg); border-color: var(--a-bd); }
+      .st-name-title { font-size: 14px; gap: 10px; flex-wrap: nowrap; }
+      .st-name-title .st-idx { color: #be185d; }
+
+      .absence-alert-card { padding: 14px 14px; border-radius: 20px; }
+      .aa-title { font-size: 14px; }
+      .summary-card { padding: 14px 10px; border-radius: 20px; }
+      .sum-table th { padding: 12px 8px; font-size: 12px; }
+      .sum-table td { padding: 11px 8px; font-size: 13px; }
+    }
+    @media (max-width: 380px) {
+      .counter-card { flex-direction: column; justify-content: center; gap: 0; height: 52px; padding: 0 4px; }
+      .counter-card .c-label { font-size: 10px; }
+      .m-btn { padding: 0 10px; font-size: 12px; }
+    }
   </style>
 </head>
 
@@ -565,6 +685,14 @@
     </div>
 
     <div id="tabDailyView">
+
+      <!-- ⚠️ បញ្ជីព្រមានសិស្សអវត្តមានញឹកញាប់ (ទាញពី Database) -->
+      <div class="absence-alert-card" id="absenceAlertCard">
+        <div class="aa-title" id="aaTitle">⚠️ សិស្សអវត្តមានញឹកញាប់</div>
+        <div class="aa-chips" id="aaChips"></div>
+        <div class="aa-legend" id="aaLegend"></div>
+      </div>
+
       <div class="daily-layout-grid">
         
         <div class="daily-sidebar-card">
@@ -590,7 +718,7 @@
 
           <div class="status-counter-grid">
             <div class="counter-card present">
-              <div class="c-label">វត្តមាន</div>
+              <div class="c-label">មានវត្តមាន</div>
               <div class="c-val" id="cntPresent">0</div>
             </div>
             <div class="counter-card absent">
@@ -607,21 +735,25 @@
             </div>
           </div>
 
-          <div class="search-pill-wrap">
-            <i class="fa-solid fa-magnifying-glass" style="color:var(--text-muted); font-size:12px;"></i>
-            <input type="text" id="searchBox" placeholder="ស្វែងរកឈ្មោះសិស្ស..." oninput="renderDailyList()">
+          <div class="search-bulk-row">
+            <div class="search-pill-wrap">
+              <i class="fa-solid fa-magnifying-glass" style="color:var(--text-muted); font-size:12px;"></i>
+              <input type="text" id="searchBox" placeholder="ស្វែងរក..." oninput="renderDailyList()">
+            </div>
+
+            <div class="bulk-actions-row">
+              <button class="btn-bulk present" onclick="setBulkDailyStatus('P')">
+                <i class="fa-solid fa-check"></i>
+                <span class="bulk-full">វត្តមានទាំងអស់</span><span class="bulk-short">វត្តមាន</span>
+              </button>
+              <button class="btn-bulk absent" onclick="setBulkDailyStatus('A')">
+                <i class="fa-solid fa-xmark"></i>
+                <span class="bulk-full">អវត្តមានទាំងអស់</span><span class="bulk-short">អវត្តមាន</span>
+              </button>
+            </div>
           </div>
 
-          <div class="bulk-actions-row">
-            <button class="btn-bulk present" onclick="setBulkDailyStatus('P')">
-              <i class="fa-solid fa-check-double"></i> វត្តមានទាំងអស់
-            </button>
-            <button class="btn-bulk absent" onclick="setBulkDailyStatus('A')">
-              <i class="fa-solid fa-xmark"></i> អវត្តមានទាំងអស់
-            </button>
-          </div>
-
-          <div style="background:var(--surface-elevated); border-radius:12px; padding:10px; font-size:11.5px; color:var(--text-muted); line-height:1.45;">
+          <div class="tip-box" style="background:var(--surface-elevated); border-radius:12px; padding:10px; font-size:11.5px; color:var(--text-muted); line-height:1.45;">
             💡 <b>ចំណាំ៖</b> ចុចលើ [វត្តមាន | អវត្តមាន | យឺត | ច្បាប់] ដើម្បីប្ដូរវត្តមានរហ័ស ឬចុចលើឈ្មោះសិស្សដើម្បីបើកផ្ទាំងជ្រើសរើស។
           </div>
         </div>
@@ -641,6 +773,38 @@
         </div>
 
       </div>
+
+      <!-- 📊 តារាងសង្ខេបវត្តមានសិស្ស (ទាញពី Database) -->
+      <div class="summary-card" id="summaryCard">
+        <div class="summary-head">
+          <div>
+            <h3>សង្ខេបវត្តមានសិស្ស</h3>
+            <span class="sub" id="summarySubTitle">...</span>
+          </div>
+          <div class="seg-group">
+            <button type="button" class="seg-btn" id="segMonth" onclick="setSummaryMode('month')">ខែនេះ</button>
+            <button type="button" class="seg-btn active" id="segYear" onclick="setSummaryMode('year')">ឆ្នាំសិក្សា</button>
+          </div>
+        </div>
+        <div class="sum-scroll">
+          <table class="sum-table">
+            <thead>
+              <tr>
+                <th>ឈ្មោះ</th>
+                <th class="th-p">មានវត្តមាន</th>
+                <th class="th-a">អវត្តមាន</th>
+                <th class="th-l">យឺត</th>
+                <th class="th-c">មានច្បាប់</th>
+                <th>%</th>
+              </tr>
+            </thead>
+            <tbody id="summaryTbody">
+              <tr><td colspan="6" class="sum-empty">កំពុងទាញយកទិន្នន័យ...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
     </div>
 
     <div id="tabReportsMenu" style="display:none;">
@@ -908,6 +1072,18 @@
     var activeActionSheetSid = null;
     var saveDebounceTimer = null;
 
+    /* 🌟 ការកំណត់ព្រមាន/ឆ្នាំសិក្សា (កែបានតាមចិត្ត) */
+    var SCHOOL_YEAR_START_MONTH = 10;   // ឆ្នាំសិក្សាចាប់ផ្តើមខែតុលា (10) រហូតដល់ខែកញ្ញា
+    var ABS_WARN_COUNT = 5;             // ⚠ អវត្តមានគ្មានច្បាប់ ≥ ៥ ដង
+    var ABS_DANGER_COUNT = 10;          // 🔴 អវត្តមានគ្មានច្បាប់ ≥ ១០ ដង
+
+    var STATUS_META = {
+      P: { label: 'មានវត្តមាន', icon: 'fa-check' },
+      A: { label: 'អវត្តមាន',   icon: 'fa-xmark' },
+      L: { label: 'យឺត',        icon: 'fa-clock' },
+      C: { label: 'មានច្បាប់',   icon: 'fa-shield-halved' }
+    };
+
     function toKhmerNum(n) { return String(n).replace(/\d/g, d => KHMER_DIGITS[d]); }
     function cleanGrade(g) { return String(g || '').replace(/^ថ្នាក់ទី\s*/, '').trim(); }
     function escapeHtml(s) {
@@ -1171,6 +1347,7 @@
 
         renderDailyList();
         updateStatsCounters();
+        loadAttendanceSummary();   // 🌟 ព្រមាន + តារាងសង្ខេប (ទាញពី Database)
       } catch (err) {
         console.error(err);
         renderDailyList();
@@ -1181,7 +1358,7 @@
       var container = document.getElementById('studentListContainer');
       if (!rawStudentsData.length) {
         container.innerHTML = `<div style="text-align:center; padding:40px; color:var(--text-muted);">
-          មិនមានសិស្សនៅក្នុងថ្នាក់ទី ${currentClassName} ឡើយ
+          មិនមានសិស្សនៅក្នុងថ្នាក់ទី ${escapeHtml(currentClassName)} ឡើយ
         </div>`;
         updateStatsCounters();
         return;
@@ -1192,9 +1369,10 @@
       var html = '';
       list.forEach(function(s, idx) {
         var st = dailyAttendanceState[s.id] || 'P';
+        var meta = STATUS_META[st] || STATUS_META.P;
         var isPresent = (st === 'P');
         var isAbsent = (st === 'A');
-        var noteVal = studentNotesMap[s.id] || '';
+        var noteVal = escapeHtml(studentNotesMap[s.id] || '');
         
         var drop = parseDropout(s);
         var dropBadgeHtml = drop.isDropped ? `<span class="dropout-badge">បោះបង់ ${drop.semester}</span>` : '';
@@ -1206,10 +1384,10 @@
         html += `
           <div class="student-item-card status-${st} ${isAbsent ? 'has-absent' : ''} ${drop.isDropped ? 'is-dropped' : ''}" id="stCard_${s.id}">
             <div class="st-top-row">
-              <div class="st-name-title" onclick="openStatusActionSheet('${s.id}', '${s.name}')" title="ចុចដើម្បីបើកផ្ទាំងជ្រើសរើស">
-                <span style="color:var(--text-muted); font-size:12px; width:22px;">${idx + 1}</span>
-                <span>${s.name}</span>
-                <span style="font-size:11px; color:var(--text-muted); font-weight:normal;">(${s.sex || 'ប្រុស'})</span>
+              <div class="st-name-title" onclick="openStatusActionSheet('${s.id}')" title="ចុចដើម្បីបើកផ្ទាំងជ្រើសរើស">
+                <span class="st-idx" style="color:var(--text-muted); font-size:12px; width:22px;">${idx + 1}</span>
+                <span>${escapeHtml(s.name)}</span>
+                <span style="font-size:11px; color:var(--text-muted); font-weight:normal;">(${escapeHtml(s.sex || 'ប្រុស')})</span>
                 ${dropBadgeHtml}
               </div>
               
@@ -1218,6 +1396,15 @@
                 <button type="button" class="q-btn ${st==='A'?'active-A':''}" onclick="setStudentDirectStatus('${s.id}', 'A')">អវត្តមាន</button>
                 <button type="button" class="q-btn ${st==='L'?'active-L':''}" onclick="setStudentDirectStatus('${s.id}', 'L')">យឺត</button>
                 <button type="button" class="q-btn ${st==='C'?'active-C':''}" onclick="setStudentDirectStatus('${s.id}', 'C')">ច្បាប់</button>
+              </div>
+
+              <div class="m-status">
+                <button type="button" class="m-btn s-${st}" onclick="toggleQuickPresentAbsent('${s.id}')" title="ចុចដើម្បីប្តូរ វត្តមាន ⇄ អវត្តមាន">
+                  <i class="fa-solid ${meta.icon}"></i> ${meta.label}
+                </button>
+                <button type="button" class="m-chev" onclick="openStatusActionSheet('${s.id}')" title="ជ្រើសរើសស្ថានភាពផ្សេង">
+                  <i class="fa-solid fa-chevron-down"></i>
+                </button>
               </div>
             </div>
             ${noteInputHtml}
@@ -1232,6 +1419,12 @@
       renderDailyList();
       updateStatsCounters();
       triggerDebouncedSave();
+    }
+
+    /* 📱 ប៊ូតុងស្ថានភាពលើទូរស័ព្ទ៖ ចុចម្តង ប្តូរ វត្តមាន ⇄ អវត្តមាន */
+    function toggleQuickPresentAbsent(sid) {
+      var cur = dailyAttendanceState[sid] || 'P';
+      setStudentDirectStatus(sid, cur === 'P' ? 'A' : 'P');
     }
 
     function selectActionStatus(code) {
@@ -1253,6 +1446,10 @@
 
     function openStatusActionSheet(sid, name) {
       activeActionSheetSid = sid;
+      if (!name) {
+        var f = rawStudentsData.find(function(x) { return x.id === sid; });
+        name = f ? f.name : '';
+      }
       document.getElementById('actionSheetStudentName').textContent = name;
       document.getElementById('statusActionSheetModal').classList.add('show');
     }
@@ -1314,9 +1511,158 @@
       try {
         const { error } = await sb.from('attendance').upsert(records, { onConflict: 'student_id,attendance_date' });
         if (error) console.error('Save attendance error:', error);
+        else loadAttendanceSummary();   // 🌟 ធ្វើបច្ចុប្បន្នភាពព្រមាន + តារាងសង្ខេប
       } catch (err) {
         console.warn('Save attendance exception:', err);
       }
+    }
+
+    /* =========================================================
+       6.1 🌟 ព្រមានសិស្សអវត្តមានញឹកញាប់ + តារាងសង្ខេបវត្តមាន (ទាញពី Table: attendance)
+    ========================================================= */
+    var yearAttRows = [];        // ទិន្នន័យវត្តមានទាំងឆ្នាំសិក្សា របស់ថ្នាក់បច្ចុប្បន្ន
+    var yearAttLabel = '';
+    var summaryMode = 'year';    // 'year' | 'month'
+    var summaryToken = 0;
+
+    function pad2(n) { return String(n).padStart(2, '0'); }
+
+    /* ឆ្នាំសិក្សា៖ ចាប់ពីខែ SCHOOL_YEAR_START_MONTH រហូតដល់ខែមុនវា នៅឆ្នាំបន្ទាប់ */
+    function getSchoolYearRange(dateObj) {
+      var y = dateObj.getFullYear(), m = dateObj.getMonth() + 1;
+      var startY = (m >= SCHOOL_YEAR_START_MONTH) ? y : y - 1;
+      var endLastDay = new Date(startY + 1, SCHOOL_YEAR_START_MONTH - 1, 0);
+      return {
+        label: startY + '-' + (startY + 1),
+        from: startY + '-' + pad2(SCHOOL_YEAR_START_MONTH) + '-01',
+        to: endLastDay.getFullYear() + '-' + pad2(endLastDay.getMonth() + 1) + '-' + pad2(endLastDay.getDate())
+      };
+    }
+
+    /* ទាញវត្តមានតាមចន្លោះកាលបរិច្ឆេទ (ទាញម្តង ១០០០ ជួរ រហូតគ្រប់) */
+    async function fetchAttendanceRows(fromStr, toStr, curPure) {
+      var out = [], step = 1000, from = 0;
+      while (true) {
+        const { data, error } = await sb.from('attendance')
+          .select('student_id, attendance_date, status, assigned_class')
+          .gte('attendance_date', fromStr)
+          .lte('attendance_date', toStr)
+          .in('assigned_class', [curPure, 'ថ្នាក់ទី' + curPure, 'ថ្នាក់ទី ' + curPure])
+          .order('attendance_date', { ascending: true })
+          .order('student_id', { ascending: true })
+          .range(from, from + step - 1);
+        if (error) throw error;
+        out = out.concat(data || []);
+        if (!data || data.length < step) break;
+        from += step;
+      }
+      return out;
+    }
+
+    async function loadAttendanceSummary() {
+      if (!currentClassName) return;
+      var curPure = cleanGrade(currentClassName);
+      var token = ++summaryToken;
+      var yr = getSchoolYearRange(selectedDate);
+      try {
+        var rows = await fetchAttendanceRows(yr.from, yr.to, curPure);
+        if (token !== summaryToken) return;   // មានការស្នើថ្មីជាងនេះ
+        yearAttRows = rows;
+        yearAttLabel = yr.label;
+        renderAbsenceAlert();
+        renderSummaryTable();
+      } catch (err) {
+        console.warn('Attendance summary error:', err);
+        var tb = document.getElementById('summaryTbody');
+        if (tb) tb.innerHTML = '<tr><td colspan="6" class="sum-empty" style="color:var(--danger);">⚠️ មិនអាចទាញយកទិន្នន័យសង្ខេបបានទេ</td></tr>';
+      }
+    }
+
+    /* រាប់ P/A/L/C ក្នុងមួយសិស្ស តាមតម្រង (filterFn) */
+    function aggregateAttendance(filterFn) {
+      var map = {};
+      rawStudentsData.forEach(function(s) { map[s.id] = { P: 0, A: 0, L: 0, C: 0 }; });
+      yearAttRows.forEach(function(r) {
+        if (filterFn && !filterFn(r)) return;
+        var sid = String(r.student_id);
+        if (!map[sid]) return;     // មិនរាប់សិស្សដែលមិនស្ថិតក្នុងបញ្ជីបច្ចុប្បន្ន
+        if (map[sid][r.status] !== undefined) map[sid][r.status]++;
+      });
+      return map;
+    }
+
+    /* ⚠️ សិស្សអវត្តមានគ្មានច្បាប់ (A) ញឹកញាប់ក្នុងឆ្នាំសិក្សា */
+    function renderAbsenceAlert() {
+      var card = document.getElementById('absenceAlertCard');
+      if (!card) return;
+      var agg = aggregateAttendance(null);
+      var list = [];
+      rawStudentsData.forEach(function(s) {
+        var a = agg[s.id] ? agg[s.id].A : 0;
+        if (a >= ABS_WARN_COUNT) list.push({ name: s.name, count: a });
+      });
+
+      if (!list.length) { card.classList.remove('show'); return; }
+      list.sort(function(x, y) { return y.count - x.count; });
+
+      document.getElementById('aaTitle').textContent = '⚠️ សិស្សអវត្តមានញឹកញាប់ (' + yearAttLabel + ')។ គួរតាមដាន/អន្តរាគមន៍';
+      document.getElementById('aaChips').innerHTML = list.map(function(it) {
+        var danger = it.count >= ABS_DANGER_COUNT;
+        return '<span class="aa-chip ' + (danger ? 'danger' : 'warn') + '">' + (danger ? '🔴' : '⚠') + ' ' +
+               escapeHtml(it.name) + ' ' + it.count + ' ដង</span>';
+      }).join('');
+      document.getElementById('aaLegend').textContent =
+        '🔴 អវត្តមានគ្មានច្បាប់ ≥ ' + ABS_DANGER_COUNT + ' ដង · ⚠ ≥ ' + ABS_WARN_COUNT + ' ដង ក្នុងឆ្នាំសិក្សា';
+      card.classList.add('show');
+    }
+
+    function setSummaryMode(mode) {
+      summaryMode = mode;
+      document.getElementById('segMonth').classList.toggle('active', mode === 'month');
+      document.getElementById('segYear').classList.toggle('active', mode === 'year');
+      renderSummaryTable();
+    }
+
+    /* 📊 តារាងសង្ខេប៖ ឈ្មោះ | មានវត្តមាន | អវត្តមាន | យឺត | មានច្បាប់ | % */
+    function renderSummaryTable() {
+      var tb = document.getElementById('summaryTbody');
+      if (!tb) return;
+      if (!rawStudentsData.length) {
+        tb.innerHTML = '<tr><td colspan="6" class="sum-empty">មិនមានសិស្សក្នុងថ្នាក់នេះទេ</td></tr>';
+        return;
+      }
+
+      var filterFn = null, subText;
+      if (summaryMode === 'month') {
+        var prefix = selectedDate.getFullYear() + '-' + pad2(selectedDate.getMonth() + 1);
+        filterFn = function(r) { return String(r.attendance_date).indexOf(prefix) === 0; };
+        subText = 'ខែ' + KHMER_MONTHS[selectedDate.getMonth()] + ' ' + selectedDate.getFullYear() + ' · ថ្នាក់ទី ' + currentClassName;
+      } else {
+        subText = 'ឆ្នាំសិក្សា ' + yearAttLabel + ' · ថ្នាក់ទី ' + currentClassName;
+      }
+      document.getElementById('summarySubTitle').textContent = subText;
+
+      var agg = aggregateAttendance(filterFn);
+      var html = '';
+      rawStudentsData.forEach(function(s) {
+        var c = agg[s.id] || { P: 0, A: 0, L: 0, C: 0 };
+        var total = c.P + c.A + c.L + c.C;
+        var pctHtml = '<span style="color:var(--text-muted);">-</span>';
+        if (total > 0) {
+          var pct = Math.round(((c.P + c.L) / total) * 100);   // យឺត រាប់ជាមករៀន
+          var cls = pct >= 90 ? 'good' : (pct >= 75 ? 'mid' : 'bad');
+          pctHtml = '<span class="pct-badge ' + cls + '">' + pct + '%</span>';
+        }
+        html += '<tr>' +
+          '<td>' + escapeHtml(s.name) + '</td>' +
+          '<td class="td-p">' + c.P + '</td>' +
+          '<td class="td-a">' + c.A + '</td>' +
+          '<td class="td-l">' + c.L + '</td>' +
+          '<td class="td-c">' + c.C + '</td>' +
+          '<td>' + pctHtml + '</td>' +
+        '</tr>';
+      });
+      tb.innerHTML = html;
     }
 
     /* =========================================================
@@ -1883,7 +2229,7 @@
 
           sem2Months.forEach(function(m) {
             var rec = (mData[m] && mData[m][s.id]) ? mData[m][s.id] : { c: 0, a: 0 };
-            // បើសិនសិស្សបោះបង់ឆមាសទី១ មិនបូកវត្តមានក្នុងឆមាសទី២ ទេ
+            // បើសិស្សបោះបង់ឆមាសទី១ មិនបូកវត្តមានក្នុងឆមាសទី២ ទេ
             if (drop.isDropped && drop.semester === 'ឆមាសទី១') {
               rec = { c: 0, a: 0 };
             }
